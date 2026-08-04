@@ -1,6 +1,7 @@
-# Headhunter
+# Universal HeadHunter
 
-Job search and recruitment platform. Two repositories, developed together.
+Mobile-only recruitment platform for Uzbekistan. Two repositories, developed
+together.
 
 | Repo | Path | Stack |
 |---|---|---|
@@ -11,6 +12,37 @@ The backend is reachable from a Claude Code session rooted here via
 `permissions.additionalDirectories` in [.claude/settings.json](.claude/settings.json).
 Open both at once in one editor window with
 [headhunter.code-workspace](headhunter.code-workspace).
+
+## Which document to read
+
+| File | Contents |
+|---|---|
+| [docs/SPEC.md](docs/SPEC.md) | The client specification. **Cite it** as §n, BR-nn, UAT-nn. |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Design decisions: role shell, localization, forms, offline. Read before adding a feature. |
+| [PLAN.md](PLAN.md) | Milestones in dependency order, mapped to BR/UAT. |
+| [TODO.md](TODO.md) | Working checklist and what is blocked on whom. |
+| [MEMORY.md](MEMORY.md) | Why decisions were made; traps already paid for. |
+| [README.md](README.md) | Prerequisites, commands, run instructions. |
+
+Before implementing anything from the spec, check ARCHITECTURE.md - several
+requirements have already been designed against, and the reasoning is not
+re-derivable from the spec text.
+
+## Domain rules that are easy to get wrong
+
+- **Four interface variants, three languages.** Uzbek ships in Latin *and*
+  Cyrillic. Never key on `locale.languageCode` alone - it collapses the two.
+- **Pickers display labels but bind dictionary IDs** (BR-13, §3.3). Binding a
+  label breaks cross-language search, and it fails silently.
+- **Structured profile fields are what search uses**; the CV is an attachment.
+  There is no CV parsing in this product (§1, §5.4).
+- **Three roles in one app, switchable at runtime** (§2.3), and **admin is one of
+  them** (§10) - there is no web admin panel, ever (§2.4).
+- **Forms are schema-driven** because the field set depends on work category and
+  admins add categories at runtime (§5.2, §6.3, §10.3).
+- **Never show a candidate's phone on a search card** (BR-09, §11.1).
+- **Idempotency keys are persisted, not regenerated per attempt** (§12.4, BR-07).
+- **User-entered content is never translated** (§2.4).
 
 ## Local ports
 
