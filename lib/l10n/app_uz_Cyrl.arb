@@ -1,0 +1,55 @@
+{
+  "@@locale": "uz_Cyrl",
+
+  "appTitle": "HeadHunter",
+
+  "commonRetry": "Қайта уриниш",
+  "commonCancel": "Бекор қилиш",
+  "commonSave": "Сақлаш",
+  "commonNext": "Кейинги",
+  "commonBack": "Орқага",
+  "commonClose": "Ёпиш",
+  "commonSearch": "Қидириш",
+  "commonSignOut": "Чиқиш",
+
+  "stateLoading": "Юкланмоқда…",
+  "stateEmptyTitle": "Ҳозирча бўш",
+  "stateEmptyBody": "Бу экранда ҳозирча кўрсатиладиган маълумот йўқ.",
+  "stateErrorTitle": "Нимадир хато кетди",
+  "stateErrorBody": "Сўровни бажариб бўлмади. Қайта уриниб кўринг.",
+  "stateOfflineTitle": "Интернет алоқаси йўқ",
+  "stateOfflineBody": "Алоқани текширинг ва қайта уриниб кўринг.",
+  "statePermissionDeniedTitle": "Рухсат керак",
+  "statePermissionDeniedBody": "Давом этиш учун Созламаларда рухсат беринг.",
+
+  "sessionExpired": "Сессия муддати тугади. Илтимос, қайтадан киринг.",
+
+  "settingsLanguage": "Тил",
+
+  "roleCandidate": "Номзод",
+  "roleEmployer": "Иш берувчи",
+  "roleAdmin": "Администратор",
+
+  "navHome": "Бош саҳифа",
+  "navVacancies": "Вакансиялар",
+  "navApplications": "Аризалар",
+  "navMessages": "Хабарлар",
+  "navProfile": "Профил",
+  "navCandidates": "Номзодлар",
+  "navCompany": "Компания",
+  "navDashboard": "Бошқарув",
+  "navQueue": "Модерация",
+  "navComplaints": "Шикоятлар",
+  "navUsers": "Фойдалан\u00ADувчилар",
+  "navDictionaries": "Луғатлар",
+
+  "blockedTitle": "Ҳисоб блокланган",
+  "blockedBody": "Администратор бу ҳисобни блоклаган. Блок олиб ташланмагунча иловадан фойдалана олмайсиз.",
+
+  "authSignInTitle": "Кириш",
+  "authTelegramSignIn": "Telegram орқали кириш",
+  "authTermsAgree": "Фойдаланиш шартлари ва Махфийлик сиёсатини қабул қиламан",
+  "authSignInFailed": "Telegram орқали кириб бўлмади. Қайта уриниб кўринг.",
+  "authSignInNoConnection": "Telegram билан алоқа йўқ. Интернетни текшириб, қайта уриниб кўринг.",
+  "authSignInUnavailable": "Бу версияда Telegram орқали кириш мавжуд эмас."
+}

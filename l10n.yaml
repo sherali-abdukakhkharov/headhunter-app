@@ -1,0 +1,26 @@
+# Configuration for `flutter gen-l10n`, run automatically by `flutter pub get`
+# and `flutter run`.
+#
+# `app_en.arb` is the template: it is the only file carrying `@key` metadata
+# (descriptions and placeholder types), and it is the last link in the fallback
+# chain uz-Cyrl -> uz-Latn -> en. It is not the product's primary language -
+# Uzbek is - but it is the language the code is written in, so it is where a new
+# key is added first.
+#
+# Uzbek locales carry a scriptCode: the ARB suffixes are `uz_Latn` and `uz_Cyrl`,
+# never a bare `uz`. See ARCHITECTURE.md §4.2 - anything keyed on languageCode
+# alone silently collapses the two scripts.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: app_l10n.dart
+output-class: AppL10n
+
+# `AppL10n.of(context)` returns non-nullable, so a screen can never accidentally
+# render a null-coalesced key name.
+nullable-getter: false
+
+# Any key present in the template but missing from a translation is written
+# here. The CI check fails the build on a non-empty list - §3.2 requires that a
+# missing translation never reaches a user as a raw key.
+untranslated-messages-file: l10n_untranslated.json

@@ -1,0 +1,184 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "HeadHunter",
+  "@appTitle": {
+    "description": "Application name. Brand term - left untranslated in every locale."
+  },
+
+  "commonRetry": "Try again",
+  "@commonRetry": {
+    "description": "Action on an error state. Every error state must offer one."
+  },
+  "commonCancel": "Cancel",
+  "@commonCancel": {
+    "description": "Dismisses a dialog or sheet without applying changes."
+  },
+  "commonSave": "Save",
+  "@commonSave": {
+    "description": "Commits a form."
+  },
+  "commonNext": "Next",
+  "@commonNext": {
+    "description": "Advances a multi-step flow."
+  },
+  "commonBack": "Back",
+  "@commonBack": {
+    "description": "Returns to the previous step."
+  },
+  "commonClose": "Close",
+  "@commonClose": {
+    "description": "Closes a sheet or full-screen surface."
+  },
+  "commonSearch": "Search",
+  "@commonSearch": {
+    "description": "Placeholder for a search input."
+  },
+  "commonSignOut": "Sign out",
+  "@commonSignOut": {
+    "description": "Ends the session at the user's request. Distinct from an expired session, which the user did not choose."
+  },
+
+  "stateLoading": "Loading…",
+  "@stateLoading": {
+    "description": "Accessible label for a loading state. Read by screen readers where the spinner itself carries no text."
+  },
+  "stateEmptyTitle": "Nothing here yet",
+  "@stateEmptyTitle": {
+    "description": "Heading for an empty list, as distinct from an error."
+  },
+  "stateEmptyBody": "There is nothing to show on this screen yet.",
+  "@stateEmptyBody": {
+    "description": "Body for an empty list."
+  },
+  "stateErrorTitle": "Something went wrong",
+  "@stateErrorTitle": {
+    "description": "Heading for a failed request."
+  },
+  "stateErrorBody": "The request could not be completed. Please try again.",
+  "@stateErrorBody": {
+    "description": "Generic error body, used when the server sent no localized message of its own."
+  },
+  "stateOfflineTitle": "No connection",
+  "@stateOfflineTitle": {
+    "description": "Heading shown when the device is offline. Distinct from a server error - the user can act on this one."
+  },
+  "stateOfflineBody": "Check your connection and try again.",
+  "@stateOfflineBody": {
+    "description": "Body for the offline state."
+  },
+  "statePermissionDeniedTitle": "Permission needed",
+  "@statePermissionDeniedTitle": {
+    "description": "Heading when an OS permission was refused."
+  },
+  "statePermissionDeniedBody": "Grant permission in Settings to continue.",
+  "@statePermissionDeniedBody": {
+    "description": "Body when an OS permission was refused."
+  },
+
+  "sessionExpired": "Your session has expired. Please sign in again.",
+  "@sessionExpired": {
+    "description": "Shown when refresh fails and the user is returned to onboarding."
+  },
+
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Label for the interface-language setting."
+  },
+
+  "roleCandidate": "Candidate",
+  "@roleCandidate": {
+    "description": "Role name. Someone looking for work."
+  },
+  "roleEmployer": "Employer",
+  "@roleEmployer": {
+    "description": "Role name. Someone posting vacancies - a company or an individual."
+  },
+  "roleAdmin": "Administrator",
+  "@roleAdmin": {
+    "description": "Role name. Platform moderator."
+  },
+
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom-nav tab. Candidate and employer home. LENGTH-CRITICAL: the bar reserves two label lines at a constant 70pt and clips beyond them - keep to two lines at 320pt and 2.0x text scale, or add a soft hyphen."
+  },
+  "navVacancies": "Vacancies",
+  "@navVacancies": {
+    "description": "Bottom-nav tab. The vacancy feed for a candidate, the employer's own vacancies for an employer. Length-critical - see navHome."
+  },
+  "navApplications": "Applications",
+  "@navApplications": {
+    "description": "Bottom-nav tab, candidate. The candidate's own applications and their stages (§8.1). Length-critical - see navHome."
+  },
+  "navMessages": "Messages",
+  "@navMessages": {
+    "description": "Bottom-nav tab. Conversations (§9.1). Length-critical - see navHome."
+  },
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "Bottom-nav tab, candidate. Their own profile (§5). Length-critical - see navHome."
+  },
+  "navCandidates": "Candidates",
+  "@navCandidates": {
+    "description": "Bottom-nav tab, employer. Candidate search and saved candidates (§7). Length-critical - see navHome."
+  },
+  "navCompany": "Company",
+  "@navCompany": {
+    "description": "Bottom-nav tab, employer. The employer's own profile and verification state (§6.1) - used for an individual employer too, so avoid wording that implies a legal entity."
+  },
+  "navDashboard": "Dashboard",
+  "@navDashboard": {
+    "description": "Bottom-nav tab, administrator. The counters of §10.1. Length-critical - see navHome."
+  },
+  "navQueue": "Moderation",
+  "@navQueue": {
+    "description": "Bottom-nav tab, administrator. Covers both queues of §10.2 - employer verification and vacancy moderation - so it must not name only one of them. Length-critical - see navHome."
+  },
+  "navComplaints": "Complaints",
+  "@navComplaints": {
+    "description": "Bottom-nav tab, administrator. The complaint review queue (§10.2). Length-critical - see navHome."
+  },
+  "navUsers": "Users",
+  "@navUsers": {
+    "description": "Bottom-nav tab, administrator. User search and warn/restrict/block (§10.2, UAT-14). Length-critical - the Uzbek and Russian words are far longer than the English and carry a soft hyphen."
+  },
+  "navDictionaries": "Dictionaries",
+  "@navDictionaries": {
+    "description": "Bottom-nav tab, administrator. Dictionary management with all four localized labels (§10.3). Length-critical - see navHome."
+  },
+
+  "blockedTitle": "Account blocked",
+  "@blockedTitle": {
+    "description": "BR-10. Heading of the screen a blocked account is held on. The app must explain the restriction rather than fail mysteriously."
+  },
+  "blockedBody": "An administrator has blocked this account. You cannot use the app until the block is lifted.",
+  "@blockedBody": {
+    "description": "BR-10. Shown only when the administrator supplied no reason; when they did, their reason is displayed verbatim instead and is never translated client-side (§2.4)."
+  },
+
+  "authSignInTitle": "Sign in",
+  "@authSignInTitle": {
+    "description": "Heading of the sign-in screen (§4.1)."
+  },
+  "authTelegramSignIn": "Log in with Telegram",
+  "@authTelegramSignIn": {
+    "description": "The primary sign-in action. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones."
+  },
+  "authTermsAgree": "I accept the Terms of Service and the Privacy Policy",
+  "@authTermsAgree": {
+    "description": "§4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked. Telegram does not collect this for us."
+  },
+  "authSignInFailed": "Could not sign in with Telegram. Please try again.",
+  "@authSignInFailed": {
+    "description": "Telegram or its SDK failed for a reason the user cannot act on beyond retrying. Deliberately does not expose the SDK's own English error text."
+  },
+  "authSignInNoConnection": "No connection to Telegram. Check your internet and try again.",
+  "@authSignInNoConnection": {
+    "description": "Network failure while contacting Telegram, as distinct from our own server being unreachable - the user can act on this one."
+  },
+  "authSignInUnavailable": "Telegram sign-in is not available in this build.",
+  "@authSignInUnavailable": {
+    "description": "This build's application id has no redirect URI registered with BotFather, so a login cannot start. Should never reach a real user; shown instead of failing silently."
+  }
+}

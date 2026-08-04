@@ -27,8 +27,8 @@ critical path.
 | # | Milestone | State |
 |---|---|---|
 | M0 | Foundations: toolchain, health slice, error handling | **done** |
-| M0.5 | App shell: localization, flavors, design system, role shell skeleton | next |
-| M1 | Onboarding: language, phone + OTP, role selection, session | after M0.5 |
+| M0.5 | App shell: localization, flavors, design system, role shell skeleton | **done** - two items carried, see TODO.md |
+| M1 | Onboarding: language, phone + OTP, role selection, session | **next** - blocked on the auth contract for the session half |
 | M2 | Dictionary cache + reusable pickers | after M1 |
 | M3 | Candidate profile: dynamic forms, completeness, privacy, CV | after M2 |
 | M4 | Employer profile + verification status | after M1 |
@@ -36,7 +36,7 @@ critical path.
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
 | M7 | Candidate search + invitations + shortlists (employer) | after M2 + M5 |
 | M8 | Chat + interviews | after M6 + M7 |
-| M9 | Notifications + push + deep links | after M6 |
+| M9 | Notifications + push | **last feature milestone** - after M10 |
 | M10 | Admin module | after M4 + M5 |
 | M11 | Hardening: performance, accessibility, offline, acceptance | last |
 
@@ -71,13 +71,37 @@ which is the expensive way to learn this lesson.
 **Done when:** the app launches in all four variants, switches language live,
 builds in three flavors, and the role shell can be switched with a hardcoded role.
 
+**Met, verified on an emulator** (2026-08-04): onboarding → developer tools → all
+three role shells, live switch to Uzbek Cyrillic across the whole shell, the BR-10
+blocked notice with the admin's reason verbatim, session restored across a cold
+start, and the long admin label wrapping at its soft hyphen without growing the
+70pt bar. 132 tests; `flutter analyze` clean.
+
+Carried forward, neither blocking M1: **bottom sheets** (the last design-system
+primitive, first needed by the M2 pickers) and **iOS flavor schemes** (needs a
+Mac). Installing `AuthInterceptor` remains blocked on the backend's auth contract.
+
+Three M1 items landed here because the redirect chain needed real destinations
+rather than dead ends: the pre-registration language picker, the role-selection
+mechanism, and the blocked-account screen.
+
 ## M1 - Onboarding and session
 
 **Covers** §4, §2.3 · **BR-01, BR-10** · **UAT-01**
 
+**Sign-in is "Log in with Telegram"** (client direction 2026-08-05), not phone +
+OTP. Telegram's OIDC `phone` scope returns a number Telegram itself verified, so
+**BR-01 is satisfied with no SMS cost**. OTP is **deferred, not dropped**: it is
+the fallback when no verified phone comes back, since BR-01 admits no account
+without one. Research, wire contract, security requirements and the three client
+decisions: [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+
+*Note UAT-01 and BR-01 are worded around OTP and need the client's written
+sign-off — tracked at the top of [TODO.md](TODO.md).*
+
 - Language selection **before** registration (§3.2).
-- Phone entry, terms and privacy acceptance, OTP entry with resend timer and
-  attempt feedback driven by server config.
+- Terms and privacy acceptance, then Telegram login; the no-verified-phone branch
+  falls back to the OTP screens.
 - Role selection: candidate, employer, or both; route into the right onboarding.
 - Role switching from the profile area (§2.3).
 - Sessions screen: list devices, sign out, terminate all.
@@ -178,15 +202,28 @@ selected values (IDs) stay put - the client half of UAT-13.
 - Report and block; read-only history for closed interactions.
 - Interview scheduling display by type (phone / in-person / external link),
   instructions, and confirm / request-another-time.
+- **Deep links, including the role switch before navigating** (ARCHITECTURE.md
+  §3). Moved here from M9: routing infrastructure that chat and share-a-vacancy
+  both need, and it must not sit behind the deferred notifications milestone.
+  Notification taps reuse it later rather than introducing it.
 
 ## M9 - Notifications
 
-**Covers** §9.2
+**Covers** §9.2 · **deferred to last on client direction (2026-08-04)**
 
-- In-app list, unread badge, mark read.
-- Push registration and handling; **deep links that switch role first when needed**
-  (ARCHITECTURE.md §3).
+Ordering changed from "after M6" to the last feature milestone. No Firebase
+dependency is added to `pubspec.yaml` until this milestone opens, which keeps the
+load-bearing version pins untouched for the whole build.
+
+- In-app list, unread badge, mark read. *(No push dependency - this is an
+  API-backed list screen and can be pulled forward at any time at no cost if the
+  client wants notification history earlier.)*
+- Push registration and handling.
 - Preferences with security/account categories not disableable.
+
+**Deep links moved out of this milestone** - see M8. They are routing
+infrastructure, not a notification feature, and holding them to last would strand
+share-a-vacancy and chat entry points behind a deferred milestone.
 
 ## M10 - Admin module
 

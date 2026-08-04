@@ -3,8 +3,11 @@
          debug/ and profile/ manifests, so release builds would fail every request. -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- android:label comes from the per-flavor `appName` manifestPlaceholder in
+         build.gradle.kts. A hardcoded label would make all three flavors
+         identical on the home screen, defeating side-by-side installation. -->
     <application
-        android:label="Headhunter"
+        android:label="${appName}"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

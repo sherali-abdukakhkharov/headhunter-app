@@ -1,0 +1,55 @@
+{
+  "@@locale": "uz_Latn",
+
+  "appTitle": "HeadHunter",
+
+  "commonRetry": "Qayta urinish",
+  "commonCancel": "Bekor qilish",
+  "commonSave": "Saqlash",
+  "commonNext": "Keyingi",
+  "commonBack": "Orqaga",
+  "commonClose": "Yopish",
+  "commonSearch": "Qidirish",
+  "commonSignOut": "Chiqish",
+
+  "stateLoading": "Yuklanmoqda…",
+  "stateEmptyTitle": "Hozircha bo'sh",
+  "stateEmptyBody": "Bu ekranda hozircha ko'rsatiladigan ma'lumot yo'q.",
+  "stateErrorTitle": "Nimadir xato ketdi",
+  "stateErrorBody": "So'rovni bajarib bo'lmadi. Qayta urinib ko'ring.",
+  "stateOfflineTitle": "Internet aloqasi yo'q",
+  "stateOfflineBody": "Aloqani tekshiring va qayta urinib ko'ring.",
+  "statePermissionDeniedTitle": "Ruxsat kerak",
+  "statePermissionDeniedBody": "Davom etish uchun Sozlamalarda ruxsat bering.",
+
+  "sessionExpired": "Sessiya muddati tugadi. Iltimos, qaytadan kiring.",
+
+  "settingsLanguage": "Til",
+
+  "roleCandidate": "Nomzod",
+  "roleEmployer": "Ish beruvchi",
+  "roleAdmin": "Administrator",
+
+  "navHome": "Bosh sahifa",
+  "navVacancies": "Vakansiyalar",
+  "navApplications": "Arizalar",
+  "navMessages": "Xabarlar",
+  "navProfile": "Profil",
+  "navCandidates": "Nomzodlar",
+  "navCompany": "Kompaniya",
+  "navDashboard": "Boshqaruv",
+  "navQueue": "Moderatsiya",
+  "navComplaints": "Shikoyatlar",
+  "navUsers": "Foydalan\u00ADuvchilar",
+  "navDictionaries": "Lug'atlar",
+
+  "blockedTitle": "Hisob bloklangan",
+  "blockedBody": "Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.",
+
+  "authSignInTitle": "Kirish",
+  "authTelegramSignIn": "Telegram orqali kirish",
+  "authTermsAgree": "Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman",
+  "authSignInFailed": "Telegram orqali kirib bo'lmadi. Qayta urinib ko'ring.",
+  "authSignInNoConnection": "Telegram bilan aloqa yo'q. Internetni tekshirib, qayta urinib ko'ring.",
+  "authSignInUnavailable": "Bu versiyada Telegram orqali kirish mavjud emas."
+}

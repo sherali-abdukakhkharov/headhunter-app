@@ -1,5 +1,9 @@
 gradle-wrapper.jar
 /.gradle
+# Gradle writes reports here (lint, dependency-verification). The root
+# .gitignore's `/build/` is anchored to the repo root and does not cover this
+# one, so an APK build otherwise leaves untracked files behind.
+/build/
 /captures/
 /gradlew
 /gradlew.bat

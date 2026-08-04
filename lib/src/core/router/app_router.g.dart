@@ -8,26 +8,62 @@ part of 'app_router.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// The app's router.
+/// The app's router: one navigation shell per role, plus the redirect chain.
 ///
-/// When auth lands, add a `redirect` here that watches the auth provider and
-/// bounces unauthenticated users to the login route.
+/// ## All three shells are registered at once
+///
+/// Not "the shell for the active role, rebuilt on switch". Each role owns a
+/// path namespace ([AppRole.pathPrefix]) and its own `StatefulShellRoute`, so:
+///
+/// - **navigation stacks cannot leak across a role switch** - leaving
+///   `/candidate/...` for `/employer/...` pops the candidate shell off the
+///   router's stack entirely and disposes its branch navigators, which is
+///   exactly the isolation §2.3 needs;
+/// - **a deep link is self-describing** - the path says which role it needs, so
+///   "activate the role, then navigate" is one rule in [_redirect] rather than
+///   a branch in every caller that might produce a link;
+/// - the router is not rebuilt on a role switch, so switching does not tear
+///   down and re-create the whole widget tree.
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
 
-/// The app's router.
+/// The app's router: one navigation shell per role, plus the redirect chain.
 ///
-/// When auth lands, add a `redirect` here that watches the auth provider and
-/// bounces unauthenticated users to the login route.
+/// ## All three shells are registered at once
+///
+/// Not "the shell for the active role, rebuilt on switch". Each role owns a
+/// path namespace ([AppRole.pathPrefix]) and its own `StatefulShellRoute`, so:
+///
+/// - **navigation stacks cannot leak across a role switch** - leaving
+///   `/candidate/...` for `/employer/...` pops the candidate shell off the
+///   router's stack entirely and disposes its branch navigators, which is
+///   exactly the isolation §2.3 needs;
+/// - **a deep link is self-describing** - the path says which role it needs, so
+///   "activate the role, then navigate" is one rule in [_redirect] rather than
+///   a branch in every caller that might produce a link;
+/// - the router is not rebuilt on a role switch, so switching does not tear
+///   down and re-create the whole widget tree.
 
 final class AppRouterProvider
     extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
     with $Provider<GoRouter> {
-  /// The app's router.
+  /// The app's router: one navigation shell per role, plus the redirect chain.
   ///
-  /// When auth lands, add a `redirect` here that watches the auth provider and
-  /// bounces unauthenticated users to the login route.
+  /// ## All three shells are registered at once
+  ///
+  /// Not "the shell for the active role, rebuilt on switch". Each role owns a
+  /// path namespace ([AppRole.pathPrefix]) and its own `StatefulShellRoute`, so:
+  ///
+  /// - **navigation stacks cannot leak across a role switch** - leaving
+  ///   `/candidate/...` for `/employer/...` pops the candidate shell off the
+  ///   router's stack entirely and disposes its branch navigators, which is
+  ///   exactly the isolation §2.3 needs;
+  /// - **a deep link is self-describing** - the path says which role it needs, so
+  ///   "activate the role, then navigate" is one rule in [_redirect] rather than
+  ///   a branch in every caller that might produce a link;
+  /// - the router is not rebuilt on a role switch, so switching does not tear
+  ///   down and re-create the whole widget tree.
   AppRouterProvider._()
     : super(
         from: null,
@@ -61,4 +97,4 @@ final class AppRouterProvider
   }
 }
 
-String _$appRouterHash() => r'ad4230552d4804dd728fe4c327326eac6417fb3a';
+String _$appRouterHash() => r'c25d9afad0994f612cb209b4f85a12ca2b3b0205';

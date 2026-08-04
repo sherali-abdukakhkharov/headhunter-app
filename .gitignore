@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# gen-l10n diagnostic output. Regenerated on every build; the ARB key-set parity
+# test is what actually enforces completeness, not this file.
+/l10n_untranslated.json

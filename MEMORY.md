@@ -33,6 +33,197 @@ Not for: things the code already says, or the milestone checklist (that is
 
 ## Architectural decisions
 
+### 2026-08-05 - iOS is out of scope. Do not work on it until asked
+Owner direction, explicit: **"never consider [iOS] until I ask it, because I don't
+want to support iOS for now."**
+
+What that means in practice:
+
+- **Android only.** Do not add, change or "fix" anything under `ios/`, do not
+  touch `IPHONEOS_DEPLOYMENT_TARGET`, and do not add iOS setup steps to a plan or
+  a checklist.
+- `.github/workflows/ios-build.yml` is **triggered by `workflow_dispatch` only** —
+  no longer on push or pull request. It was not deleted: the configuration is
+  correct and rewriting it later would be waste.
+- The trigger change was not tidiness. `telegram_login` requires **iOS 15** and
+  the project stays at Flutter's default 13.0, so that job would fail on every
+  push — and fixing it is precisely the out-of-scope work.
+- Dart stays cross-platform anyway; nothing in `lib/` needs an Android-only
+  concession, and adding one would cost more later than it saves now.
+
+*Consequence for iOS knowledge already gathered:* it is kept, marked out of scope,
+not deleted — docs/TELEGRAM_LOGIN.md still records the Apple Team ID requirement
+and the iOS 15 floor, because that research is correct and will be needed if the
+decision reverses.
+
+*Superseded by this:* earlier notes that treat the iOS CI job as a live safety net
+(the M0/M0.5 entries below, and the iOS-flavors item in TODO.md). iOS compile
+breakage is now **not** caught by anything.
+
+### 2026-08-05 - MVP signs in with Telegram; OTP is deferred, not deleted
+Client direction. Full research, wire contract and open questions in
+[docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+
+*Why it works at all*, which is the non-obvious part: **BR-01 requires a verified
+phone number**, and a Telegram user id is not one. It works because the OIDC
+`phone` scope returns `phone_number` + `phone_number_verified` inside a JWT
+Telegram signed - and Telegram only ever holds a number it verified itself at
+account registration. So the verification is genuine and costs no SMS. A design
+that took only the Telegram identity would quietly fail BR-01.
+
+*Why OTP survives:* the user can decline to share their phone. BR-01 admits no
+account without one, so that branch needs a phone-verification step, and the
+backend's OTP module already is one. Deleting it would mean rebuilding it. If SMS
+cost becomes the objection, **Telegram Gateway** delivers the same codes at ~$0.01
+each - a backend delivery-channel swap, no client change.
+
+*Three things found in research that cost money or time if missed:*
+- the official **Android SDK is on GitHub Packages behind a PAT**; the Maven
+  Central artifact everyone reaches for (`io.khode:…`) is a **community fork** of
+  the SDK that guards every account;
+- the iOS SDK needs **iOS 15**, and this project is on 13;
+- BotFather registration is **per application id and per signing certificate**, so
+  the three flavors need three registrations - and it fails at runtime, in one
+  environment only.
+
+### 2026-08-05 - The backend auth contract exists; `API_CONTRACTS.md` did not say so
+`headhunter-backend/src/modules/auth` already implements OTP send/resend/verify,
+sessions, **rotating refresh with reuse detection**, logout, logout-all, session
+listing/revocation, `POST /auth/roles` and `POST /auth/active-role`.
+
+This repo recorded "install `AuthInterceptor`" as blocked on a missing contract,
+because `docs/API_CONTRACTS.md` covers only locale, timestamps, dictionaries and
+schemas. It was never blocked - the contract was in the code the whole time.
+*Lesson worth keeping:* when a dependency is marked blocked on another repo, check
+that repo's source, not only its docs.
+
+The new Telegram endpoint returns the **same** `AuthTokensResponseDto` as the OTP
+path, which is what lets the client's session handling, role-selection redirect and
+`isNewUser` routing carry over untouched.
+
+### 2026-08-04 - A role switch must state its destination; the location is authoritative
+`SessionController.switchRole` changes state only. Navigation is paired with it in
+exactly one place, `switchRoleAndGo` in `core/router/role_navigation.dart`.
+
+*Why it cannot be state alone*, which is the opposite of what it looks like: the
+redirect chain implements ARCHITECTURE.md §3's deep-link rule - a granted role
+named by the **path** becomes the active one, so a notification can open an
+employer screen without the guard bouncing it. After `switchRole(employer)` the
+location is still `/candidate/home`, so that same rule reads the location and
+re-activates **candidate**, undoing the switch. Both rules are right and they pull
+opposite ways, because `(location, session)` cannot distinguish "the user asked
+for another role" from "the user opened a link belonging to another role".
+
+Fixing it inside the redirect needs a flag saying which of the two just happened -
+a mode bit in a guard, which is where routing bugs live. So the location stays
+authoritative and a switch names its destination. One rule, no ambiguity.
+
+*Found on a device*, with `flutter analyze` green and 129 tests passing: the
+switcher simply appeared to do nothing. Two tests now pin it, one asserting that
+`switchRole` alone does **not** move shells.
+
+### 2026-08-04 - Underscore-prefixed routes are development surfaces
+`/_dev`, `/_design`, `/_health`. They are exempt from the redirect chain, never
+linked from product UI, and **not registered at all** when
+`AppFlavor.allowsDevelopmentTools` is false.
+*Why exempt:* the tools have to work *because* the session is in an awkward
+state - that is when they are needed. Guarding them behind the chain they exist to
+debug locks the keys inside.
+*Why unregistered rather than hidden in production:* a hidden screen is still
+reachable by deep link; an absent route is not.
+*Consequence:* the health screen moved off `/` to `/_health`, so the product's
+entry point is the shell and nothing can link the M0 scaffolding into it by
+accident.
+
+### 2026-08-04 - Gate development surfaces on the flavor, not `kDebugMode`
+`AppFlavor.allowsDevelopmentTools`, i.e. "not production".
+*Why:* a **release** build of the development flavor is exactly what gets handed
+to the client for a look, and the role switcher has to work there. Conversely a
+*profile* build of production is still production, so `kDebugMode` is wrong in
+both directions. Network logging uses the same gate.
+
+### 2026-08-04 - Design round 1 answered; the status vocabulary is fixed
+The designer answered the handoff questions in §08 of the design file (also
+committed as their standalone note). Everything below is *their* decision, not
+ours — do not "improve" any of it without going back to them.
+
+- **Twenty states, one table.** Vacancy 6, application 9, verification 5. Each is
+  a named constructor on `HhBadge`; the tone answers *whose turn is it and did it
+  end well*, and the **glyph rule** does the rest: no glyph repeats within an
+  object type, and the same glyph always means the same thing across types
+  (shield = identity checked, check-circle = person accepted, clock = a reviewer
+  holds it, pencil = yours to edit, lock = finished/read-only, eye =
+  visible/seen, x-circle = negative outcome with a reason). That is why *hired*
+  and *verified* can share green, and why *withdrawn / paused / closed* can all
+  be neutral without becoming indistinguishable. Tests assert both halves of the
+  rule.
+- **Green is not reserved for verification.** An active vacancy is success-toned.
+- **Two states never get a badge**: `Faol` is employer-list only (a live vacancy
+  is the candidate's default and badging it adds noise to every card), and
+  `Qoralama` is employer-only.
+- **The category band never disappears.** Five bands, one per §2.1 category — no
+  generic band, because the band is the fastest signal on a scanned list. With no
+  photograph it keeps its full height and fills with the category tint, glyph and
+  name. Omitting it is the single behaviour the design calls out as breaking list
+  rhythm, so `HhVacancyCard` *requires* a category and always renders
+  `HhCategoryBand`.
+- **Turquoise has exactly three jobs**, and the load-bearing one is the
+  **conditional-field rail** (`HhConditionalField`): a block that appeared
+  because of a choice, with a caption naming the trigger. The others are the brand
+  mark on navy, and progress/value on dark surfaces. Never a button fill, never a
+  selected state, never a status tone, never text on white — selection stays blue
+  so "selected" and "conditional" can never read as the same signal.
+- **Bottom nav reserves two label lines**, constant 70pt across roles and
+  languages, because a bar that changes height on role switch reads as a bug and
+  moves the safe-area inset. Box model:
+  `8 + 22 icon + 4 + 25 label + 10 + 1 hairline = 70`.
+- **Text scale is clamped at 2.0x** app-wide: beyond it a sticky action bar eats
+  the scroll area on a 320pt device.
+- **Skeletons are ours to derive**, by a stated rule: one bar per text line at
+  that line's real height, 5px radius, primary/secondary tints, widths 40-60% of
+  the real string, same padding and gaps as the live card.
+- Copy: the designer owns **uz-Latn + en**; **uz-Cyrl and ru need certified
+  translation from the client** — machine translation of recruitment and consent
+  strings is a liability. A string table with per-component longest-variant test
+  strings is the next deliverable from them.
+
+### 2026-08-04 - Design system implemented from the client's shipped design
+The client shipped `Universal HeadHunter.dc.html` (Claude Design project
+`33eea5d6-85d6-459c-a4ca-ce3c1efb752d`). It is now implemented under
+`lib/src/core/design/`, and it — not our judgement — is the source of truth for
+colour, type, spacing and elevation.
+
+Three decisions the design says drive everything, restated because they erode one
+screen at a time:
+1. **Institutional trust, not startup energy** — Registan blue, one turquoise
+   accent, flat surfaces, a single elevation level.
+2. **One control size for everyone** — every control 52px with a persistent
+   label. No "simple mode" for manual workers; a welder and a frontend developer
+   use the same components and only the *fields* differ. Adding a second control
+   height re-opens a decision the client already made.
+3. **Status is never colour alone** — every badge is icon + word, and vacancy,
+   application, verification, invitation and complaint state all use `HhBadge`.
+
+Supporting decisions we made while implementing:
+
+- **Icons are transcribed SVG paths rendered by `flutter_svg`**, not Material
+  icons. The design ships a bespoke 24px/1.75-stroke outline family; Material
+  icons are filled, sit on a different optical grid and have square joins, so
+  mixing them in is immediately visible. `active: true` thickens the stroke to
+  2.2 per the design's outline-vs-active rule.
+- **Golos Text is bundled, not fetched at runtime.** The design chose it for
+  complete Uzbek Cyrillic coverage (ў, қ, ғ, ҳ) alongside Latin and Russian, so
+  one family renders all four interface variants with no vertical-rhythm drift.
+  It is a **variable** font (wght 400-900), and `fontWeight` alone is not
+  reliably applied to variable fonts — `HhTypography._style` also emits an
+  explicit `FontVariation('wght', …)`. Build styles through that helper or
+  weights silently collapse to Regular.
+- **No dark theme.** The design specifies a single light scheme; inventing a dark
+  one would be us making visual decisions the client has not approved. There is a
+  test asserting this.
+- **`accent500` (turquoise) is never a text colour on white** — surface/accent
+  only. It does not meet contrast as text.
+
 ### 2026-08-04 - Role-aware navigation shell, one shell per role
 `go_router` with a `StatefulShellRoute` selected by the active role, plus a
 redirect chain for unauthenticated / no-role / blocked / ungranted-role.
@@ -99,7 +290,162 @@ The client renders the score and its per-group breakdown; it does not compute th
 *Why:* §7.3 defines ranking server-side. A client-side reimplementation would
 disagree with the server's ordering and pagination.
 
+### 2026-08-04 - Notifications deferred to last; deep links split out of M9
+Client direction: build the MVP first, notifications are the last thing to
+implement and test. M9 moved from "after M6" to after M10 in
+[PLAN.md](PLAN.md).
+*Why it matters beyond the reorder:* M9 also owned **deep links**, which are
+routing infrastructure rather than a notification feature - chat entry points and
+share-a-vacancy both need them. Leaving them bundled would have stranded them
+behind a deferred milestone, so they moved to M8. Notification taps reuse that
+routing later instead of introducing it.
+*Second consequence:* no Firebase package enters `pubspec.yaml` until M9 opens,
+so the load-bearing pin chain stays untouched for the whole build. The push
+provider decision (FCM-only) is recorded but not needed yet.
+The in-app notification list has no push dependency and can be pulled forward at
+no cost if the client wants notification history earlier.
+
 ## Traps already paid for
+
+### 2026-08-04 - Three Android flavor traps, in the order they fire
+Adding the three flavors of §12.1 hit three separate walls. All of them fail at
+Gradle *configuration* time, so none of them is visible from Dart.
+
+1. **`ProductFlavor names cannot start with 'test'.`** AGP reserves that prefix
+   because it collides with the `test` and `androidTest` source sets - so §12.1's
+   "testing" flavor cannot be called `testing`. It is `staging` on **both** sides
+   rather than `testing` in Dart and something else in Gradle, because two names
+   for one environment is a trap every time somebody pairs `--flavor` with
+   `--dart-define=FLAVOR=`. A test asserts no flavor name starts with `test`.
+2. **`Product Flavor development contains custom resource values, but the feature
+   is disabled.`** AGP 9 ships with `buildFeatures.resValues` **off**, so the
+   usual `resValue("string", "app_name", …)` per-flavor label fails outright. The
+   label goes through a `manifestPlaceholders["appName"]` instead, which needs no
+   feature flag - and the launcher name is deliberately never localized anyway
+   (§2.4).
+3. **`--flavor` becomes mandatory.** With product flavors defined there is no
+   plain `assembleDebug`, so a bare `flutter run` can no longer resolve one APK.
+   Every documented command now carries `--flavor`.
+
+`app_flavor_test.dart` reads `build.gradle.kts` and the manifest and asserts they
+agree with `AppFlavor` on the suffixes and display names. Nothing else connects
+the two halves, and a drift stays invisible until a device ends up with two builds
+claiming one application id - at which point installing one uninstalls the other
+and takes its data.
+
+### 2026-08-04 - Kotlin incremental compilation is broken on this toolchain
+Every build failed at `:shared_preferences_android:compileDebugKotlin` with
+`Could not close incremental caches … class-fq-name-to-source.tab` and, beneath
+it, `Storage for [...] is already registered`. The sequence: the Kotlin daemon
+compile fails, the Build Tools API falls back to in-process compilation, and the
+fallback re-registers the storages the failed attempt left behind.
+
+`android/gradle.properties` now sets **`kotlin.incremental=false`**, which fixes
+it. The cost is nil - the only Kotlin in this repo is `MainActivity.kt`.
+
+Worth recording what it is *not*, because each of these was tried:
+
+- **not the product flavors** - the failing task belongs to a plugin subproject
+  with no flavors, and the build fails identically with the pre-flavor `android/`
+  config (verified by stashing it);
+- **not stale state** - the cache directory is recreated from scratch each build
+  and still fails; it survives `flutter clean`, deleting `android/.gradle`,
+  `gradlew --stop`, and killing the Kotlin daemons;
+- **not a JDK downgrade** - Flutter is using Android Studio's JBR 25 as intended.
+
+Note that `gradlew --stop` does **not** stop Kotlin daemons; they are separate
+`java.exe` processes identified by `KotlinCompileDaemon` in their command line.
+Revisit when the Kotlin plugin or the bundled JBR moves.
+
+### 2026-08-04 - `pumpAndSettle` cannot be used on any route reaching the splash
+The splash screen carries a `CircularProgressIndicator`, which animates forever,
+so `pumpAndSettle` times out - and the timeout looks exactly like a stuck
+redirect. `test/core/router/app_router_test.dart` uses a bounded `_pumpRoute`
+helper (`pump()` plus two 400ms pumps) instead. Two long pumps, not one: a deep
+link into a non-active role converges over **two** redirect passes.
+
+### 2026-08-04 - `gen-l10n` drops the script code from `supportedLocales`
+It generates working `AppL10nUzLatn` and `AppL10nUzCyrl` classes and a
+`lookupAppL10n` that dispatches correctly on `scriptCode` - and then emits
+`supportedLocales = [Locale('en'), Locale('ru'), Locale('uz')]`.
+
+Hand that list to `MaterialApp` and `basicLocaleListResolution` collapses a
+`uz-Cyrl` preference onto plain `uz`, which resolves to Latin. **Cyrillic becomes
+unreachable through the UI and nothing fails.** This is exactly the §4.2 collapse
+the architecture warns about, delivered by the tooling itself.
+
+`AppLocale.supportedLocales` restores the script codes and is what `app.dart`
+passes. The delegate accepts them because its `isSupported` matches on
+`languageCode` alone. Pinned by `test/core/l10n/app_locale_test.dart`, which
+asserts the two scripts load *different* strings - the only assertion that
+actually catches a regression here.
+
+### 2026-08-04 - `gen-l10n` demands a base `app_uz.arb` it then never uses
+Script-coded ARB files are rejected unless a bare-language base file exists
+alongside them. So `app_uz.arb` duplicates the Latin content, and duplication
+with nothing enforcing it is a drift hazard.
+
+`test/core/l10n/arb_parity_test.dart` asserts `app_uz.arb` and `app_uz_Latn.arb`
+agree on every value. Do not "tidy up" the apparent redundancy by deleting either
+file.
+
+### 2026-08-04 - `flutter_localizations` pins `intl` to exactly 0.20.2
+The pubspec had `intl: ^0.20.3`; adding `flutter_localizations` failed version
+solving outright, because the SDK package depends on `intl` **0.20.2 exactly**.
+`intl` is now pinned exactly, and it belongs to the same load-bearing family as
+the analyzer chain: it moves only when Flutter moves.
+
+### 2026-08-04 - `DateTime.parse` discards the offset, and Tashkent hides it
+`DateTime.parse('2026-08-12T14:00:00+05:00')` returns a **UTC** `DateTime`
+(`isUtc: true`, `.hour == 9`). The offset is normalised away, not retained.
+`.toLocal()` then renders in the **device** zone.
+
+Verified on the repo toolchain. The trap: every machine on this project is on
+UTC+5, so `.toLocal()` prints the correct wall clock and the bug is invisible
+during development. A user who opens the app in Moscow sees an interview two
+hours early - the one bug in this feature that costs someone a job.
+
+The backend sends `scheduledAt` with the offset already resolved plus an explicit
+`timeZone` name (`Asia/Tashkent`), and the platform zone is single-zone by
+decision. So: **keep the wall-clock components from the string and label them
+with `timeZone`; never call `.toLocal()` on an API timestamp.** No `timezone`
+package and no ~1MB of tzdata - the server already did the zone resolution, and
+this stays correct if Uzbekistan ever reintroduces DST.
+Pin it with a test that fakes a non-UTC+5 device, because that is the only way
+this stays fixed.
+
+### 2026-08-04 - `Container.alignment` expands, twice over
+The same trap bit twice in one day, in two different shapes, so it is worth
+knowing as a rule: **a `Container` with an `alignment` grows to the largest size
+its constraints allow.**
+
+1. With a fixed `height`, it stretched auto-width buttons across the full width,
+   silently defeating `expand: false`.
+2. Once the fixed height became a `minHeight` (per the design's min-52 answer),
+   the same `alignment` stretched buttons to the **full 600pt viewport**.
+
+Fix in both cases: drop `alignment` and let the `Row` centre on both axes.
+
+### 2026-08-04 - `DecoratedBox` borders do not occupy space
+The nav bar measured 69pt instead of the specified 70. The design's box model
+counts the 1pt hairline, but a `DecoratedBox` *paints* a border without laying it
+out. `Container` insets its child by the border width; `DecoratedBox` does not.
+
+### 2026-08-04 - Three UI bugs that `analyze` and unit tests both missed
+All three were found only by building the APK and looking at it on an emulator.
+Worth remembering as a pattern: **a green analyze plus green tests says nothing
+about whether a widget actually paints.** Run the gallery on a device after
+touching the design system.
+
+1. **`Material` asserts if given both `shape` and `borderRadius`.** Every
+   bordered button variant crashed with a red error box. The button tests only
+   exercised `primary`, which has no border and therefore no `shape` — so the
+   suite was green. There is now a test that builds *every* variant.
+2. **`Container.alignment` forces maximum width**, which silently defeated
+   `expand: false` and stretched auto-width buttons full-bleed. `alignment` is now
+   only set when expanding.
+3. **A hand-rolled `Stack` progress bar laid out to zero height** and was
+   invisible on device. Replaced with a themed `LinearProgressIndicator`.
 
 ### 2026-08-04 - Riverpod 3 auto-retry produced an endless spinner
 Riverpod 3 retries a failing provider with exponential backoff, and **while
@@ -136,6 +482,30 @@ account.
 
 ## Local environment
 
+### 2026-08-05 - Commands in this repository are PowerShell, not bash
+Owner direction: the machine and terminal are **Windows PowerShell**, so every
+command in chat, docs and comments is written as PowerShell, in ```powershell
+fences.
+
+It matters because bash snippets here *fail* rather than degrade. Windows
+PowerShell **5.1** specifically:
+
+- `&&` and `||` are **parser errors** - use `;` or `if ($?) { … }`;
+- **`<` input redirection is unsupported** - pipe instead;
+- line continuation is a backtick `` ` ``, not `\`;
+- no `base64`, `rm`, `cat`, `which`, `head`, `wc`. Base64 a file with
+  `[Convert]::ToBase64String([IO.File]::ReadAllBytes('path'))`.
+
+Caught after docs/RELEASE.md shipped `base64 -w0 … > f` followed by
+`gh secret set NAME < f` - three separate failures in two lines.
+
+**`gh` is not installed** either, so docs give the GitHub web UI first and `gh`
+only as an optional alternative. `Set-Clipboard` is usually the neatest way to
+hand over a long value with no temp file to clean up.
+
+**Exception:** the bash inside `.github/workflows/*.yml` is correct as bash - it
+runs on `ubuntu-latest` runners. Do not "fix" it.
+
 - Flutter 3.44.8 at `D:\Dev\sdk\flutter`; Android SDK platform 36 /
   build-tools 36.0.0; AVD `headhunter_pixel` with WHPX acceleration.
 - Gradle 9.1 + AGP 9.0.1 + Android Studio's bundled JBR (JDK 25) - this
@@ -146,11 +516,23 @@ account.
   loopback; `localhost` inside the emulator is the emulator itself.
 - Physical device testing needs the machine's LAN IP via
   `--dart-define=API_BASE_URL=...`.
-- Release builds currently sign with the **debug keystore** - must be replaced
-  before any store upload.
+- Release builds sign with `android/upload-keystore.jks` (created 2026-08-05, RSA
+  2048, alias `upload`, valid to 2053), loaded from a gitignored
+  `android/key.properties`. **Neither file is in the repository** and the keystore
+  is not recoverable - see [docs/RELEASE.md](docs/RELEASE.md) for the backup
+  warning and the four CI secrets.
+  *Consequence that is easy to miss:* this is a **different signing certificate**
+  from the debug one, so Telegram login needs its SHA-256 registered with
+  BotFather separately, or login fails in downloaded APKs only.
+  When no `key.properties` exists the release build falls back to debug signing
+  and says so loudly in the log, so a fresh clone still builds - both paths are
+  verified.
 
 ## Open questions
 
-Tracked as `[?]` items at the top of [TODO.md](TODO.md). Summary: Figma design
-deliverable, the dictionary and category-field-schema contracts from the backend,
-push provider, time-zone policy for interviews, and app icons.
+Tracked as `[?]` items at the top of [TODO.md](TODO.md). Summary: the dictionary
+and category-field-schema contracts from the backend (shapes now proposed, six
+holes raised), the MVP milestone cut, and app icons.
+
+Closed since: the design deliverable shipped; time-zone policy is single-zone
+`Asia/Tashkent`; push provider is no longer blocking after the M9 deferral.

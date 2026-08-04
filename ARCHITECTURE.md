@@ -82,10 +82,23 @@ information architectures, plus runtime switching (§2.3).
   chosen → role selection; blocked account → a blocking notice screen (BR-10, so
   the client explains rather than failing mysteriously); role not granted → back
   to the default shell.
-- Route paths are constants in one place, never inline strings.
+- Route paths are constants in one place, never inline strings, and a shell path
+  starts with its role's prefix (`/candidate`, `/employer`, `/admin`). The prefix
+  is load-bearing: it is how a path states which role it needs.
 - **Deep links must survive a role switch**: a notification opening an employer
   screen has to activate the employer role first, or the redirect will bounce it.
   Handle this in one place in the router, not per notification type.
+- **The location is authoritative, so a role switch states its destination.**
+  Call `switchRoleAndGo`, never `SessionController.switchRole` alone. The two
+  rules collide otherwise: after a bare `switchRole` the location is still the old
+  role's shell, and the deep-link rule above reads that location and re-activates
+  the old role, undoing the switch. `(location, session)` cannot tell "the user
+  asked for another role" from "the user opened another role's link", and
+  resolving that inside the guard means a mode bit in the guard. See MEMORY.md -
+  this was a real bug, invisible to a green analyze and a green suite.
+- **Underscore-prefixed paths are development surfaces** (`/_dev`, `/_design`,
+  `/_health`): outside the redirect chain, never linked from product UI, and not
+  registered at all in the production flavor.
 
 Admin is a role, therefore a shell - not a hidden debug menu (§10).
 
@@ -175,6 +188,27 @@ produces a typed value map.
 ---
 
 ## 7. Networking, auth and offline safety
+
+### 7.0 Sign-in is Telegram; OTP is the fallback
+
+Client direction 2026-08-05. The MVP authenticates with **Log in with Telegram**
+(OIDC, official native SDKs), and the app sends the resulting **ID token** to
+`POST /auth/telegram`, which returns the same session payload the OTP path
+returns. Design, security requirements and open decisions:
+[docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+
+Two rules that constrain everything downstream:
+
+- **The backend never trusts the client's claim of identity.** The only accepted
+  input is a JWT Telegram signed, validated against Telegram's JWKS with `iss`,
+  `aud` and `exp` checked. A `telegram_user_id` sent as a plain field would let
+  anyone impersonate anyone.
+- **BR-01 still requires a verified phone number.** Telegram's `phone` scope
+  normally supplies one, but the user may decline - so the client must handle an
+  authenticated account that cannot yet act, and route it into phone
+  verification. That is why the OTP flow is deferred rather than removed.
+
+The Client Secret stays server-side; the app holds only the `client_id`.
 
 - **Single `dio` instance** (already in `core/network/dio_provider.dart`) with
   interceptors: auth token, `x-lang`, idempotency key, error mapping, logging.

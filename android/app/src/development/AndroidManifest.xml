@@ -1,0 +1,37 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      Telegram login App Link, development flavor ONLY.
+
+      Why this is a flavor manifest rather than a placeholder in the main one:
+      Telegram binds a redirect URI to one application id plus one signing
+      certificate, and only `com.headhunter.app.dev` is registered with BotFather
+      so far. Putting the filter in the shared manifest would mean inventing a
+      host for staging and production - either a dummy that fails App Link
+      verification on every install, or the dev host, which would let a staging
+      build capture a link meant for development. Absent is the honest state.
+
+      When staging and production get their own keystores and registrations, add
+      src/staging/ and src/production/ manifests with their own hosts. The Dart
+      half already refuses to start a login when
+      `AppFlavor.telegramRedirectUri` is empty, so the two sides fail together.
+
+      The host is Telegram's own `tg.dev` domain, so no domain of ours needs
+      App-Link verification - which is why autoVerify can be true here without
+      us hosting an assetlinks.json.
+
+      Merged into the activity declared in the main manifest; `launchMode`
+      singleTop there is what makes the callback arrive via onNewIntent.
+    -->
+    <application>
+        <activity android:name=".MainActivity">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="app1562839855-login.tg.dev" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
