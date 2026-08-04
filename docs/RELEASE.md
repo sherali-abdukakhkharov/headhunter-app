@@ -11,6 +11,12 @@ Android only — iOS is out of scope (see [CLAUDE.md](../CLAUDE.md)).
 > The bash in `.github/workflows/release-apk.yml` is correct and must stay bash —
 > that runs on a `ubuntu-latest` GitHub runner, not on your machine.
 
+**Cost:** this repository is **public**, and GitHub Actions on standard runners is
+free with unmetered minutes for public repositories. So there is nothing to
+optimise here — if a run refuses to start, it is an account or billing block, not
+this workflow spending anything. See "Releasing by hand" below for the way round
+it, which needs no Actions at all.
+
 Push a version tag and GitHub builds a signed production APK and attaches it to a
 release. The download link never changes, so the README needs no edit per release:
 
@@ -175,6 +181,42 @@ them all per variant:
 Push-Location android
 try { & ./gradlew.bat signingReport } finally { Pop-Location }
 ```
+
+---
+
+## Releasing by hand, when Actions cannot run
+
+A locked GitHub account, a billing block, or a spending limit disables Actions —
+but **not** Releases. Uploading the APK yourself produces the identical download
+URL, so the README link and anything already sharing it keep working.
+
+Build and stage it under the exact name the permanent link expects:
+
+```powershell
+flutter build apk --release --flavor production --dart-define=FLAVOR=production
+New-Item -ItemType Directory -Force dist | Out-Null
+Copy-Item build\app\outputs\flutter-apk\app-production-release.apk dist\headhunter.apk -Force
+```
+
+Confirm it carries the **release** key before uploading — see the next section.
+This matters more than it sounds: a release build silently falls back to debug
+signing when `android/key.properties` is missing, and Telegram login then fails
+only in the downloaded APK.
+
+```powershell
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+Then **Releases → Draft a new release**, pick that tag, and attach
+`dist\headhunter.apk`. The filename must be exactly `headhunter.apk` — the
+permanent URL is `latest/download/headhunter.apk`, so a different name breaks it.
+
+`dist/` is gitignored: a 52 MB binary belongs in a release attachment, never in
+git history, where it cannot be removed without a rewrite.
+
+When Actions is available again the tag-triggered workflow does all of this,
+including the SHA-256 in the release notes. Nothing needs undoing.
 
 ---
 
