@@ -33,8 +33,12 @@ enum AppFlavor {
   /// Gradle, which is a trap every time someone pairs `--flavor` with
   /// `--dart-define=FLAVOR=`, both say `staging`.
   ///
-  /// The host is a placeholder until the environment exists; a build for it
-  /// passes `--dart-define=API_BASE_URL=...` explicitly, which always wins.
+  /// **The host below does not exist**, and that is deliberate rather than
+  /// neglect. There is one real backend today (`hh.qitmir.uz`, on
+  /// [production]); pointing staging at it as well would let a staging build
+  /// write production data with nothing to signal it. A staging build therefore
+  /// fails to reach anything until a second environment exists, or someone
+  /// passes `--dart-define=API_BASE_URL=...` deliberately, which always wins.
   staging(
     apiBaseUrl: 'https://api.staging.headhunter.uz',
     appIdSuffix: '.staging',
@@ -48,8 +52,12 @@ enum AppFlavor {
 
   /// The store build. No suffix, and the display name carries no environment
   /// marker.
+  ///
+  /// `hh.qitmir.uz` is the live backend, confirmed 2026-08-05: `GET /health`
+  /// answers 200 over HTTPS and `POST /auth/telegram` answers 401 for a bogus
+  /// token rather than 404, so that deployment carries the Telegram endpoint.
   production(
-    apiBaseUrl: 'https://api.headhunter.uz',
+    apiBaseUrl: 'https://hh.qitmir.uz',
     appIdSuffix: '',
     displayName: 'HeadHunter',
     // Empty until com.headhunter.app is registered against the **Play App

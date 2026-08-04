@@ -91,9 +91,14 @@ silently replaces another and takes its data.
 
 | Flavor | Application id | Launcher name | Default API base URL |
 |---|---|---|---|
-| `development` | `com.headhunter.app.dev` | HeadHunter Dev | `http://10.0.2.2:3001` |
-| `staging` | `com.headhunter.app.staging` | HeadHunter Staging | `https://api.staging.headhunter.uz` |
-| `production` | `com.headhunter.app` | HeadHunter | `https://api.headhunter.uz` |
+| `development` | `com.headhunter.app.dev` | HeadHunter Dev | `http://10.0.2.2:3001` (host loopback) |
+| `staging` | `com.headhunter.app.staging` | HeadHunter Staging | *(no environment yet — see below)* |
+| `production` | `com.headhunter.app` | HeadHunter | `https://hh.qitmir.uz` (live) |
+
+`staging`'s host does not exist, deliberately. There is one real backend today, and
+pointing staging at it too would let a staging build write production data with
+nothing to signal it — so a staging build reaches nothing until either a second
+environment exists or someone passes `--dart-define=API_BASE_URL=…` on purpose.
 
 ```powershell
 flutter run   --flavor development                                   # FLAVOR defaults to development

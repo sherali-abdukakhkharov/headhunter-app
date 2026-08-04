@@ -510,6 +510,24 @@ runs on `ubuntu-latest` runners. Do not "fix" it.
   build-tools 36.0.0; AVD `headhunter_pixel` with WHPX acceleration.
 - Gradle 9.1 + AGP 9.0.1 + Android Studio's bundled JBR (JDK 25) - this
   combination builds successfully; do not "helpfully" downgrade the JDK.
+- **Live backend: `https://hh.qitmir.uz`** (Cloudflare-fronted), wired in as
+  `AppFlavor.production.apiBaseUrl` on 2026-08-05. Verified that day: `/health`
+  200 over HTTPS, `POST /auth/telegram` **401 rather than 404** - so that
+  deployment carries the Telegram endpoint, unlike the local dev process, which
+  404s because it was started before that module landed. **Restart the local API
+  before blaming the client for a 404 on an auth route.**
+  Two things worth knowing about that host: it also answers **plaintext HTTP**
+  without redirecting to HTTPS, so a client misconfigured with `http://` would put
+  bearer tokens on the wire in clear - the app only ever uses the `https://`
+  constant; and `staging` deliberately points at a host that does not exist, so a
+  staging build cannot silently write production data.
+- **The long-running emulator cannot resolve `hh.qitmir.uz`** even though
+  `google.com` resolves inside it and three public resolvers answer for the name.
+  Chrome in the emulator fails on it too, so it is the emulator's DNS, not the
+  app - most likely a stale resolver in an instance that has been up for hours.
+  Relaunch with `flutter emulators --launch headhunter_pixel` (or
+  `emulator -avd headhunter_pixel -dns-server 8.8.8.8`) before concluding the app
+  cannot reach the API.
 - Backend API on **3001** (`sahih-bot` owns 3000) and its Postgres on **5435**
   (5432/5433/5434 are taken by sibling projects). The app's default base URL is
   `http://10.0.2.2:3001` - `10.0.2.2` is the emulator's alias for the host

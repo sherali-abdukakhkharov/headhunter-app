@@ -123,13 +123,20 @@ to debug signing. That fallback would produce an APK that installs happily and
 then cannot complete a Telegram login, because its fingerprint is not the one
 registered with BotFather.
 
-### 3. The API base URL
+### 3. The API base URL — optional now
 
-A repository **variable**, not a secret — it is a hostname, and §12.5 keeps
+**You can skip this.** `AppFlavor.production` points at the live backend,
+`https://hh.qitmir.uz`, so a release build already talks to the right place.
+Verified 2026-08-05: `GET /health` answers 200 over HTTPS, `POST /auth/telegram`
+answers 401 for a bogus token rather than 404 (so that deployment carries the
+Telegram endpoint), and the name resolves on Google, Cloudflare and Quad9 DNS.
+
+Set the variable only to point a build somewhere else without editing code. It is
+a repository **variable**, not a secret — it is a hostname, and §12.5 keeps
 secrets out of the binary entirely.
 
 **Settings → Secrets and variables → Actions → Variables → New repository
-variable**, named `API_BASE_URL`, e.g. `https://api.staging.headhunter.uz`.
+variable**, named `API_BASE_URL`.
 
 Direct link: `https://github.com/sherali-abdukakhkharov/headhunter-app/settings/variables/actions`
 
