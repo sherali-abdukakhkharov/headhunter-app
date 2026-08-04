@@ -189,6 +189,27 @@ produces a typed value map.
 
 ## 7. Networking, auth and offline safety
 
+### 7.0 Sign-in is Telegram; OTP is the fallback
+
+Client direction 2026-08-05. The MVP authenticates with **Log in with Telegram**
+(OIDC, official native SDKs), and the app sends the resulting **ID token** to
+`POST /auth/telegram`, which returns the same session payload the OTP path
+returns. Design, security requirements and open decisions:
+[docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+
+Two rules that constrain everything downstream:
+
+- **The backend never trusts the client's claim of identity.** The only accepted
+  input is a JWT Telegram signed, validated against Telegram's JWKS with `iss`,
+  `aud` and `exp` checked. A `telegram_user_id` sent as a plain field would let
+  anyone impersonate anyone.
+- **BR-01 still requires a verified phone number.** Telegram's `phone` scope
+  normally supplies one, but the user may decline - so the client must handle an
+  authenticated account that cannot yet act, and route it into phone
+  verification. That is why the OTP flow is deferred rather than removed.
+
+The Client Secret stays server-side; the app holds only the `client_id`.
+
 - **Single `dio` instance** (already in `core/network/dio_provider.dart`) with
   interceptors: auth token, `x-lang`, idempotency key, error mapping, logging.
 - **Token storage** in `flutter_secure_storage` - never `shared_preferences`

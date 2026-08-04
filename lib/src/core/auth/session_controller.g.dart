@@ -13,17 +13,21 @@ part of 'session_controller.dart';
 /// Kept alive: the router redirects on it and every shell reads it, so it must
 /// survive a screen being disposed.
 ///
-/// ## What is real here and what is a seam
+/// ## What is real here and what is still a seam
 ///
 /// The **role model** is real - the granted set, the active choice, the
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is a seam. The backend's `docs/API_CONTRACTS.md`
-/// does not yet specify the auth endpoints, so [restore] cannot exchange a
-/// stored refresh token for a profile, and inventing that shape now would mean
-/// rewriting it in M1. Until then a session is established by
-/// [signInAsDevelopmentRole], which is gated on the flavor.
+/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
+/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
+/// from the response (docs/TELEGRAM_LOGIN.md).
+///
+/// Still a seam: [restore] cannot rebuild a session from a stored refresh token
+/// until the refresh call is wired through the repository, so a cold start with
+/// valid tokens currently lands on onboarding rather than the shell.
+/// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
+/// redirect chain is exercised without a network or a real bot.
 
 @ProviderFor(SessionController)
 final sessionControllerProvider = SessionControllerProvider._();
@@ -33,17 +37,21 @@ final sessionControllerProvider = SessionControllerProvider._();
 /// Kept alive: the router redirects on it and every shell reads it, so it must
 /// survive a screen being disposed.
 ///
-/// ## What is real here and what is a seam
+/// ## What is real here and what is still a seam
 ///
 /// The **role model** is real - the granted set, the active choice, the
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is a seam. The backend's `docs/API_CONTRACTS.md`
-/// does not yet specify the auth endpoints, so [restore] cannot exchange a
-/// stored refresh token for a profile, and inventing that shape now would mean
-/// rewriting it in M1. Until then a session is established by
-/// [signInAsDevelopmentRole], which is gated on the flavor.
+/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
+/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
+/// from the response (docs/TELEGRAM_LOGIN.md).
+///
+/// Still a seam: [restore] cannot rebuild a session from a stored refresh token
+/// until the refresh call is wired through the repository, so a cold start with
+/// valid tokens currently lands on onboarding rather than the shell.
+/// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
+/// redirect chain is exercised without a network or a real bot.
 final class SessionControllerProvider
     extends $NotifierProvider<SessionController, SessionState> {
   /// App-wide session and active-role state.
@@ -51,17 +59,21 @@ final class SessionControllerProvider
   /// Kept alive: the router redirects on it and every shell reads it, so it must
   /// survive a screen being disposed.
   ///
-  /// ## What is real here and what is a seam
+  /// ## What is real here and what is still a seam
   ///
   /// The **role model** is real - the granted set, the active choice, the
   /// fallback when a role is revoked, and the persistence of the active choice.
   /// Those are decided by §2.3 and do not depend on the auth wire format.
   ///
-  /// **Acquiring** a session is a seam. The backend's `docs/API_CONTRACTS.md`
-  /// does not yet specify the auth endpoints, so [restore] cannot exchange a
-  /// stored refresh token for a profile, and inventing that shape now would mean
-  /// rewriting it in M1. Until then a session is established by
-  /// [signInAsDevelopmentRole], which is gated on the flavor.
+  /// **Acquiring** a session is now real too: [signInWithTelegram] posts a
+  /// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
+  /// from the response (docs/TELEGRAM_LOGIN.md).
+  ///
+  /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
+  /// until the refresh call is wired through the repository, so a cold start with
+  /// valid tokens currently lands on onboarding rather than the shell.
+  /// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
+  /// redirect chain is exercised without a network or a real bot.
   SessionControllerProvider._()
     : super(
         from: null,
@@ -89,24 +101,28 @@ final class SessionControllerProvider
   }
 }
 
-String _$sessionControllerHash() => r'4ae562ca6042775db2d7bf00b101c9dd5a236f86';
+String _$sessionControllerHash() => r'86e148b43eac3209167e26603150f441708ae3d8';
 
 /// App-wide session and active-role state.
 ///
 /// Kept alive: the router redirects on it and every shell reads it, so it must
 /// survive a screen being disposed.
 ///
-/// ## What is real here and what is a seam
+/// ## What is real here and what is still a seam
 ///
 /// The **role model** is real - the granted set, the active choice, the
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is a seam. The backend's `docs/API_CONTRACTS.md`
-/// does not yet specify the auth endpoints, so [restore] cannot exchange a
-/// stored refresh token for a profile, and inventing that shape now would mean
-/// rewriting it in M1. Until then a session is established by
-/// [signInAsDevelopmentRole], which is gated on the flavor.
+/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
+/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
+/// from the response (docs/TELEGRAM_LOGIN.md).
+///
+/// Still a seam: [restore] cannot rebuild a session from a stored refresh token
+/// until the refresh call is wired through the repository, so a cold start with
+/// valid tokens currently lands on onboarding rather than the shell.
+/// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
+/// redirect chain is exercised without a network or a real bot.
 
 abstract class _$SessionController extends $Notifier<SessionState> {
   SessionState build();

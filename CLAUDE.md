@@ -18,6 +18,7 @@ Open both at once in one editor window with
 | File | Contents |
 |---|---|
 | [docs/SPEC.md](docs/SPEC.md) | The client specification. **Cite it** as §n, BR-nn, UAT-nn. |
+| [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) | MVP sign-in is **Log in with Telegram**, not OTP. Read before touching auth. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Design decisions: role shell, localization, forms, offline. Read before adding a feature. |
 | [PLAN.md](PLAN.md) | Milestones in dependency order, mapped to BR/UAT. |
 | [TODO.md](TODO.md) | Working checklist and what is blocked on whom. |
@@ -61,6 +62,11 @@ and a green test suite both missed.
 - **Forms are schema-driven** because the field set depends on work category and
   admins add categories at runtime (§5.2, §6.3, §10.3).
 - **Never show a candidate's phone on a search card** (BR-09, §11.1).
+- **Sign-in is Telegram, and BR-01 still needs a verified phone.** The MVP uses
+  Telegram OIDC; its `phone` scope supplies a Telegram-verified number, but the
+  user can decline, so an authenticated account may still be unable to act until
+  it verifies a phone. OTP is the deferred fallback, not dead code
+  ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
 - **Idempotency keys are persisted, not regenerated per attempt** (§12.4, BR-07).
 - **User-entered content is never translated** (§2.4).
 
@@ -241,13 +247,23 @@ Revisit the whole block together when a Flutter release unpins `meta`.
 (3.2.5 caps at <11; the analyzer-12 build is the 3.2.6-dev.1 prerelease). Add
 it when a stable release lands and migrate models then.
 
-## iOS
+## iOS - out of scope
 
-`ios/` is generated and the Dart code is fully cross-platform, but **iOS cannot
-be built on Windows** - Xcode is macOS-only. Compile breakage is caught by the
-`ios-build.yml` GitHub Actions workflow (macOS runner, `--no-codesign`, no
-certificates needed). Producing a real `.ipa` needs a Mac and an Apple
-Developer account.
+**Owner direction 2026-08-05: do no iOS work, and do not raise iOS as a
+consideration, until asked.** Android only.
+
+- Do not edit anything under `ios/`, and do not touch
+  `IPHONEOS_DEPLOYMENT_TARGET`.
+- `ios-build.yml` is **`workflow_dispatch`-only** — it no longer runs on push. It
+  would fail anyway: `telegram_login` needs iOS 15 and the project stays at 13.
+- **Nothing catches iOS compile breakage now.** That is accepted.
+- Keep Dart cross-platform regardless. No Android-only concessions in `lib/` —
+  they cost more to undo than they save.
+
+Background, if this ever reverses: iOS cannot be built on this Windows machine
+(Xcode is macOS-only), an installable `.ipa` needs a Mac and an Apple Developer
+account, and Telegram login additionally needs a bundle id + Apple Team ID
+registered with BotFather (docs/TELEGRAM_LOGIN.md).
 
 ## Backend contract
 

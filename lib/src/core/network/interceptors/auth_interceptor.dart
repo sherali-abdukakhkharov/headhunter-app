@@ -55,7 +55,8 @@ class AuthInterceptor extends Interceptor {
   static const _retriedFlag = 'auth.retried';
 
   /// Marks requests that must never trigger a refresh - the refresh call itself
-  /// and the OTP/sign-in endpoints, where a 401 means bad credentials.
+  /// and the sign-in endpoints (`/auth/telegram`, and the deferred OTP pair),
+  /// where a 401 means bad credentials rather than an expired session.
   static const skipAuthFlag = 'auth.skip';
 
   @override

@@ -183,7 +183,10 @@ void main() {
 
       await expectLater(
         h.dio.get<dynamic>(
-          '/auth/otp',
+          // The MVP's sign-in endpoint. A 401 here means Telegram's ID token
+          // was rejected, not that a session expired - so a refresh would be
+          // nonsense, there is no session yet.
+          '/auth/telegram',
           options: Options(extra: {AuthInterceptor.skipAuthFlag: true}),
         ),
         throwsA(isA<DioException>()),

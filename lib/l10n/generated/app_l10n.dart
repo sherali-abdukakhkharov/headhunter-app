@@ -322,6 +322,42 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'An administrator has blocked this account. You cannot use the app until the block is lifted.'**
   String get blockedBody;
+
+  /// Heading of the sign-in screen (§4.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authSignInTitle;
+
+  /// The primary sign-in action. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in with Telegram'**
+  String get authTelegramSignIn;
+
+  /// §4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked. Telegram does not collect this for us.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the Terms of Service and the Privacy Policy'**
+  String get authTermsAgree;
+
+  /// Telegram or its SDK failed for a reason the user cannot act on beyond retrying. Deliberately does not expose the SDK's own English error text.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign in with Telegram. Please try again.'**
+  String get authSignInFailed;
+
+  /// Network failure while contacting Telegram, as distinct from our own server being unreachable - the user can act on this one.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection to Telegram. Check your internet and try again.'**
+  String get authSignInNoConnection;
+
+  /// This build's application id has no redirect URI registered with BotFather, so a login cannot start. Should never reach a real user; shown instead of failing silently.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram sign-in is not available in this build.'**
+  String get authSignInUnavailable;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

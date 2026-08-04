@@ -44,5 +44,12 @@
   "navDictionaries": "Lug'atlar",
 
   "blockedTitle": "Hisob bloklangan",
-  "blockedBody": "Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz."
+  "blockedBody": "Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.",
+
+  "authSignInTitle": "Kirish",
+  "authTelegramSignIn": "Telegram orqali kirish",
+  "authTermsAgree": "Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman",
+  "authSignInFailed": "Telegram orqali kirib bo'lmadi. Qayta urinib ko'ring.",
+  "authSignInNoConnection": "Telegram bilan aloqa yo'q. Internetni tekshirib, qayta urinib ko'ring.",
+  "authSignInUnavailable": "Bu versiyada Telegram orqali kirish mavjud emas."
 }

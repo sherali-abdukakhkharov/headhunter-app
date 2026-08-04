@@ -33,6 +33,74 @@ Not for: things the code already says, or the milestone checklist (that is
 
 ## Architectural decisions
 
+### 2026-08-05 - iOS is out of scope. Do not work on it until asked
+Owner direction, explicit: **"never consider [iOS] until I ask it, because I don't
+want to support iOS for now."**
+
+What that means in practice:
+
+- **Android only.** Do not add, change or "fix" anything under `ios/`, do not
+  touch `IPHONEOS_DEPLOYMENT_TARGET`, and do not add iOS setup steps to a plan or
+  a checklist.
+- `.github/workflows/ios-build.yml` is **triggered by `workflow_dispatch` only** —
+  no longer on push or pull request. It was not deleted: the configuration is
+  correct and rewriting it later would be waste.
+- The trigger change was not tidiness. `telegram_login` requires **iOS 15** and
+  the project stays at Flutter's default 13.0, so that job would fail on every
+  push — and fixing it is precisely the out-of-scope work.
+- Dart stays cross-platform anyway; nothing in `lib/` needs an Android-only
+  concession, and adding one would cost more later than it saves now.
+
+*Consequence for iOS knowledge already gathered:* it is kept, marked out of scope,
+not deleted — docs/TELEGRAM_LOGIN.md still records the Apple Team ID requirement
+and the iOS 15 floor, because that research is correct and will be needed if the
+decision reverses.
+
+*Superseded by this:* earlier notes that treat the iOS CI job as a live safety net
+(the M0/M0.5 entries below, and the iOS-flavors item in TODO.md). iOS compile
+breakage is now **not** caught by anything.
+
+### 2026-08-05 - MVP signs in with Telegram; OTP is deferred, not deleted
+Client direction. Full research, wire contract and open questions in
+[docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+
+*Why it works at all*, which is the non-obvious part: **BR-01 requires a verified
+phone number**, and a Telegram user id is not one. It works because the OIDC
+`phone` scope returns `phone_number` + `phone_number_verified` inside a JWT
+Telegram signed - and Telegram only ever holds a number it verified itself at
+account registration. So the verification is genuine and costs no SMS. A design
+that took only the Telegram identity would quietly fail BR-01.
+
+*Why OTP survives:* the user can decline to share their phone. BR-01 admits no
+account without one, so that branch needs a phone-verification step, and the
+backend's OTP module already is one. Deleting it would mean rebuilding it. If SMS
+cost becomes the objection, **Telegram Gateway** delivers the same codes at ~$0.01
+each - a backend delivery-channel swap, no client change.
+
+*Three things found in research that cost money or time if missed:*
+- the official **Android SDK is on GitHub Packages behind a PAT**; the Maven
+  Central artifact everyone reaches for (`io.khode:…`) is a **community fork** of
+  the SDK that guards every account;
+- the iOS SDK needs **iOS 15**, and this project is on 13;
+- BotFather registration is **per application id and per signing certificate**, so
+  the three flavors need three registrations - and it fails at runtime, in one
+  environment only.
+
+### 2026-08-05 - The backend auth contract exists; `API_CONTRACTS.md` did not say so
+`headhunter-backend/src/modules/auth` already implements OTP send/resend/verify,
+sessions, **rotating refresh with reuse detection**, logout, logout-all, session
+listing/revocation, `POST /auth/roles` and `POST /auth/active-role`.
+
+This repo recorded "install `AuthInterceptor`" as blocked on a missing contract,
+because `docs/API_CONTRACTS.md` covers only locale, timestamps, dictionaries and
+schemas. It was never blocked - the contract was in the code the whole time.
+*Lesson worth keeping:* when a dependency is marked blocked on another repo, check
+that repo's source, not only its docs.
+
+The new Telegram endpoint returns the **same** `AuthTokensResponseDto` as the OTP
+path, which is what lets the client's session handling, role-selection redirect and
+`isNewUser` routing carry over untouched.
+
 ### 2026-08-04 - A role switch must state its destination; the location is authoritative
 `SessionController.switchRole` changes state only. Navigation is paired with it in
 exactly one place, `switchRoleAndGo` in `core/router/role_navigation.dart`.

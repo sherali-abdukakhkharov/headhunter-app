@@ -4,7 +4,10 @@ import 'package:headhunter_app/src/core/auth/app_role.dart';
 import 'package:headhunter_app/src/core/auth/session_state.dart';
 import 'package:headhunter_app/src/core/auth/token_store.dart';
 import 'package:headhunter_app/src/core/config/app_flavor.dart';
+import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/core/storage/preferences_provider.dart';
+import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
+import 'package:headhunter_app/src/features/auth/data/telegram_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'session_controller.g.dart';
@@ -14,17 +17,21 @@ part 'session_controller.g.dart';
 /// Kept alive: the router redirects on it and every shell reads it, so it must
 /// survive a screen being disposed.
 ///
-/// ## What is real here and what is a seam
+/// ## What is real here and what is still a seam
 ///
 /// The **role model** is real - the granted set, the active choice, the
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is a seam. The backend's `docs/API_CONTRACTS.md`
-/// does not yet specify the auth endpoints, so [restore] cannot exchange a
-/// stored refresh token for a profile, and inventing that shape now would mean
-/// rewriting it in M1. Until then a session is established by
-/// [signInAsDevelopmentRole], which is gated on the flavor.
+/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
+/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
+/// from the response (docs/TELEGRAM_LOGIN.md).
+///
+/// Still a seam: [restore] cannot rebuild a session from a stored refresh token
+/// until the refresh call is wired through the repository, so a cold start with
+/// valid tokens currently lands on onboarding rather than the shell.
+/// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
+/// redirect chain is exercised without a network or a real bot.
 @Riverpod(keepAlive: true)
 class SessionController extends _$SessionController {
   /// Active role, as a wire tag. A tag rather than an enum index: reordering
@@ -78,6 +85,44 @@ class SessionController extends _$SessionController {
       developmentRoles.isEmpty
           ? const SessionUnauthenticated()
           : SessionActive(roles: developmentRoles, activeRole: activeRole),
+    );
+  }
+
+  /// Signs in with Telegram (§4.1, docs/TELEGRAM_LOGIN.md).
+  ///
+  /// Obtains a signed ID token from Telegram, exchanges it for a session, and
+  /// stores the token pair. **The app decides nothing about identity** — it
+  /// forwards Telegram's assertion, and the backend decides who this is after
+  /// verifying the signature against Telegram's JWKS.
+  ///
+  /// Order matters: tokens are persisted **before** the state moves to
+  /// [SessionActive]. The router redirects on that change and the shell it
+  /// lands on may fetch immediately, so flipping state ahead of the write would
+  /// race the first authenticated request against its own credentials.
+  ///
+  /// Rethrows so the calling screen can render the failure:
+  /// - [TelegramSignInCancelled] — the user backed out; show nothing.
+  /// - [TelegramSignInFailure] — Telegram or the SDK failed; the screen maps
+  ///   `kind` to localized copy.
+  /// - [ApiException] — the server refused, and its `message` is already
+  ///   localized. This is the path a login with no Telegram-verified phone
+  ///   number takes, because BR-01 admits no account without one.
+  Future<void> signInWithTelegram() async {
+    final idToken = await ref.read(telegramSignInProvider).obtainIdToken();
+    final session = await ref
+        .read(authRepositoryProvider)
+        .signInWithTelegram(idToken);
+
+    await ref.read(tokenStoreProvider).save(session.tokens);
+
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    final active = session.active;
+    if (active != null) {
+      await prefs.setString(_activeRoleKey, active.wire);
+    }
+
+    _set(
+      SessionActive(roles: session.grantedRoles, activeRole: active),
     );
   }
 

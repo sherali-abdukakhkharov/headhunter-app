@@ -121,4 +121,26 @@ class AppL10nRu extends AppL10n {
   @override
   String get blockedBody =>
       'Администратор заблокировал этот аккаунт. Вы не сможете пользоваться приложением, пока блокировка не снята.';
+
+  @override
+  String get authSignInTitle => 'Вход';
+
+  @override
+  String get authTelegramSignIn => 'Войти через Telegram';
+
+  @override
+  String get authTermsAgree =>
+      'Я принимаю Условия использования и Политику конфиденциальности';
+
+  @override
+  String get authSignInFailed =>
+      'Не удалось войти через Telegram. Попробуйте ещё раз.';
+
+  @override
+  String get authSignInNoConnection =>
+      'Нет связи с Telegram. Проверьте интернет и попробуйте снова.';
+
+  @override
+  String get authSignInUnavailable =>
+      'Вход через Telegram недоступен в этой сборке.';
 }

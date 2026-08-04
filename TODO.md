@@ -15,6 +15,12 @@ decision or on the backend.
       required UI states are now implemented under `lib/src/core/design/`; see
       the Design system section below for what is done and what the design does
       not yet answer.
+- [?] **Auth spec change needs client sign-off** — BR-01 and UAT-01 name "phone
+      and OTP"; the MVP signs in with Telegram, which satisfies the *intent* (a
+      verified phone) by another route. Both need re-wording in writing, or the
+      UAT-01 walk-through fails on a technicality.
+      See [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) §9 for the three
+      questions to put to them.
 - [?] **Dictionary contract** - backend M2 must publish the dictionary endpoints
       and version/ETag scheme. *Blocks every picker.*
 - [?] **Category field-schema contract** - the shape the server returns to drive
@@ -116,9 +122,9 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
 - [x] Verify no secrets are compiled in (§12.5) — `AppConfig` carries only
       hostnames and switches, and says why in a comment: `--dart-define` values
       are recoverable from an APK with `strings`
-- [ ] **iOS flavors** — needs Xcode schemes, which cannot be created on Windows.
-      The Dart half (`--dart-define=FLAVOR=`) already works; the scheme/xcconfig
-      half is deferred to whoever has a Mac (M11 at the latest)
+- [-] ~~**iOS flavors**~~ — **iOS is out of scope** (owner direction 2026-08-05).
+      Android only until asked otherwise; the iOS CI job is now
+      `workflow_dispatch`-only. See MEMORY.md.
 
 ### Auth plumbing
 - [x] `flutter_secure_storage` for tokens - **not** `shared_preferences`
@@ -130,12 +136,13 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
       tokens with reuse detection, so a double refresh logs the user out.
       — 8 tests in `test/core/network/auth_interceptor_test.dart`. The backend
       confirmed the server half: reuse revokes the **whole session family**.
-- [?] **Install `AuthInterceptor` into `dio_provider`** — blocked. It needs a
-      refresh callback, and the auth endpoints are not in the backend's
-      `docs/API_CONTRACTS.md` (that file covers locale, timestamps, dictionaries
-      and schemas only). Installing now means inventing a wire shape. Nothing
-      calls an authenticated endpoint yet, so this costs nothing today; it is one
-      `interceptors.add` once M1 publishes the contract.
+- [~] **Install `AuthInterceptor` into `dio_provider`** — **unblocked.** The
+      backend's `src/modules/auth` already implements `POST /auth/refresh` with
+      rotation and reuse detection, returning `AuthTokensResponseDto`. It was
+      never in `docs/API_CONTRACTS.md`, which is why this was recorded as blocked;
+      the code is the contract. Remaining work is the refresh callback plus
+      `interceptors.add`, and `SessionController.expire()` is already the
+      destination for `onAuthFailure`.
 - [x] Idempotency-key interceptor with **persisted** keys (regenerating per
       attempt provides no protection) — installed; header name
       `Idempotency-Key` still needs confirming with the backend before M3 ships
@@ -185,13 +192,36 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
 
 ## M1 - Onboarding and session
 
+**Sign-in is Telegram, not OTP** — client direction 2026-08-05. Research and the
+full implementation plan: [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md). OTP is
+**deferred, not dropped**: BR-01 requires a verified phone number, so OTP remains
+the fallback for a user who declines to share theirs with Telegram. The backend's
+OTP module stays as it is.
+
 Three of these landed early with the shell, because the redirect chain needed
 working destinations rather than dead ends.
 
 - [x] Language picker shown **before** registration — live on the onboarding
       screen, all four variants, persisted locally
-- [ ] Phone entry + terms/privacy acceptance
-- [ ] OTP screen: resend timer, attempt feedback from server config
+- [ ] Terms/privacy acceptance, shown **before** the login call — Telegram does
+      not collect consent for us
+- [ ] **Log in with Telegram** — OIDC via the official native SDKs; `phone` scope
+      returns a Telegram-verified number and so satisfies BR-01 with no SMS cost.
+      Three sub-decisions are called out in TELEGRAM_LOGIN.md §4.1, §4.2 and §9
+- [ ] Client half of `POST /auth/telegram` — returns the **existing**
+      `AuthTokensResponseDto`, so session handling and `isNewUser` routing need no
+      change
+- [-] ~~OTP screen: resend timer, attempt feedback from server config~~ —
+      **deferred** to the no-verified-phone fallback path. Backend endpoints exist
+      (`/auth/otp/send`, `/resend`, `/verify`); only the client screens are unbuilt
+- [?] **Telegram bot registration per flavor** — each of the three application
+      ids needs its own BotFather registration, with every signing SHA-256 we use
+      (debug, upload, Play App Signing). Separate bots per environment. Fails at
+      runtime in one environment only, so it is easy to miss —
+      TELEGRAM_LOGIN.md §7
+- [-] ~~iOS deployment target 13.0 → 15.0 for the Telegram iOS SDK~~ — moot,
+      **iOS is out of scope**. Recorded because it is the first thing that will
+      need doing if that reverses.
 - [~] Role selection (candidate / employer / both) → correct onboarding — the
       **mechanism** is done (grants the roles, router enters that shell;
       administrator deliberately not offered, since §10 grants it). The copy and

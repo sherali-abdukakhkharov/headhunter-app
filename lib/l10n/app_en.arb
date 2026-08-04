@@ -155,5 +155,30 @@
   "blockedBody": "An administrator has blocked this account. You cannot use the app until the block is lifted.",
   "@blockedBody": {
     "description": "BR-10. Shown only when the administrator supplied no reason; when they did, their reason is displayed verbatim instead and is never translated client-side (§2.4)."
+  },
+
+  "authSignInTitle": "Sign in",
+  "@authSignInTitle": {
+    "description": "Heading of the sign-in screen (§4.1)."
+  },
+  "authTelegramSignIn": "Log in with Telegram",
+  "@authTelegramSignIn": {
+    "description": "The primary sign-in action. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones."
+  },
+  "authTermsAgree": "I accept the Terms of Service and the Privacy Policy",
+  "@authTermsAgree": {
+    "description": "§4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked. Telegram does not collect this for us."
+  },
+  "authSignInFailed": "Could not sign in with Telegram. Please try again.",
+  "@authSignInFailed": {
+    "description": "Telegram or its SDK failed for a reason the user cannot act on beyond retrying. Deliberately does not expose the SDK's own English error text."
+  },
+  "authSignInNoConnection": "No connection to Telegram. Check your internet and try again.",
+  "@authSignInNoConnection": {
+    "description": "Network failure while contacting Telegram, as distinct from our own server being unreachable - the user can act on this one."
+  },
+  "authSignInUnavailable": "Telegram sign-in is not available in this build.",
+  "@authSignInUnavailable": {
+    "description": "This build's application id has no redirect URI registered with BotFather, so a login cannot start. Should never reach a real user; shown instead of failing silently."
   }
 }

@@ -123,6 +123,28 @@ class AppL10nUz extends AppL10n {
   @override
   String get blockedBody =>
       'Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.';
+
+  @override
+  String get authSignInTitle => 'Kirish';
+
+  @override
+  String get authTelegramSignIn => 'Telegram orqali kirish';
+
+  @override
+  String get authTermsAgree =>
+      'Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman';
+
+  @override
+  String get authSignInFailed =>
+      'Telegram orqali kirib bo\'lmadi. Qayta urinib ko\'ring.';
+
+  @override
+  String get authSignInNoConnection =>
+      'Telegram bilan aloqa yo\'q. Internetni tekshirib, qayta urinib ko\'ring.';
+
+  @override
+  String get authSignInUnavailable =>
+      'Bu versiyada Telegram orqali kirish mavjud emas.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -243,6 +265,28 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get blockedBody =>
       'Администратор бу ҳисобни блоклаган. Блок олиб ташланмагунча иловадан фойдалана олмайсиз.';
+
+  @override
+  String get authSignInTitle => 'Кириш';
+
+  @override
+  String get authTelegramSignIn => 'Telegram орқали кириш';
+
+  @override
+  String get authTermsAgree =>
+      'Фойдаланиш шартлари ва Махфийлик сиёсатини қабул қиламан';
+
+  @override
+  String get authSignInFailed =>
+      'Telegram орқали кириб бўлмади. Қайта уриниб кўринг.';
+
+  @override
+  String get authSignInNoConnection =>
+      'Telegram билан алоқа йўқ. Интернетни текшириб, қайта уриниб кўринг.';
+
+  @override
+  String get authSignInUnavailable =>
+      'Бу версияда Telegram орқали кириш мавжуд эмас.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -364,4 +408,26 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get blockedBody =>
       'Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.';
+
+  @override
+  String get authSignInTitle => 'Kirish';
+
+  @override
+  String get authTelegramSignIn => 'Telegram orqali kirish';
+
+  @override
+  String get authTermsAgree =>
+      'Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman';
+
+  @override
+  String get authSignInFailed =>
+      'Telegram orqali kirib bo\'lmadi. Qayta urinib ko\'ring.';
+
+  @override
+  String get authSignInNoConnection =>
+      'Telegram bilan aloqa yo\'q. Internetni tekshirib, qayta urinib ko\'ring.';
+
+  @override
+  String get authSignInUnavailable =>
+      'Bu versiyada Telegram orqali kirish mavjud emas.';
 }

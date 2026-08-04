@@ -19,6 +19,9 @@ enum AppFlavor {
     apiBaseUrl: 'http://10.0.2.2:3001',
     appIdSuffix: '.dev',
     displayName: 'HeadHunter Dev',
+    // Registered with BotFather 2026-08-05 against com.headhunter.app.dev and
+    // this machine's debug signing certificate.
+    telegramRedirectUri: 'https://app1562839855-login.tg.dev/tglogin',
   ),
 
   /// The shared environment used for UAT (§13).
@@ -36,6 +39,11 @@ enum AppFlavor {
     apiBaseUrl: 'https://api.staging.headhunter.uz',
     appIdSuffix: '.staging',
     displayName: 'HeadHunter Staging',
+    // Empty: com.headhunter.app.staging is not registered with BotFather yet,
+    // and cannot be until it has its own signing keystore. Empty makes
+    // `telegramSignInUnavailableReason` fail loudly at the button instead of
+    // sending the user into a login that Telegram will silently refuse.
+    telegramRedirectUri: '',
   ),
 
   /// The store build. No suffix, and the display name carries no environment
@@ -44,12 +52,18 @@ enum AppFlavor {
     apiBaseUrl: 'https://api.headhunter.uz',
     appIdSuffix: '',
     displayName: 'HeadHunter',
+    // Empty until com.headhunter.app is registered against the **Play App
+    // Signing** certificate, whose SHA-256 comes from the Play Console. The
+    // current debug-signed production build is not the one that ships, so
+    // registering its fingerprint would be registering a throwaway.
+    telegramRedirectUri: '',
   );
 
   const AppFlavor({
     required this.apiBaseUrl,
     required this.appIdSuffix,
     required this.displayName,
+    required this.telegramRedirectUri,
   });
 
   /// Default API base URL for this flavor. An explicit
@@ -63,6 +77,23 @@ enum AppFlavor {
   /// forbids translating proper names, and a user reporting a bug should be
   /// able to name their build whatever language they read the app in.
   final String displayName;
+
+  /// OIDC redirect URI for Telegram login, or empty when this flavor's
+  /// application id is not registered with BotFather.
+  ///
+  /// **Per flavor, not per app**, and that is the whole reason this lives here:
+  /// Telegram registers a redirect URI against one **application id plus one
+  /// signing certificate**, and M0.5 gave the three flavors three different
+  /// application ids. A single shared value would work in development and fail
+  /// in exactly the environment nobody tested. See docs/TELEGRAM_LOGIN.md §7.
+  ///
+  /// Must match what is registered in BotFather **byte for byte**, including
+  /// the `/tglogin` path - Telegram refuses to redirect anywhere else, and that
+  /// refusal is the login's security boundary.
+  final String telegramRedirectUri;
+
+  /// Whether Telegram sign-in can work in this build.
+  bool get isTelegramSignInAvailable => telegramRedirectUri.isNotEmpty;
 
   /// The flavor this binary was built as.
   ///

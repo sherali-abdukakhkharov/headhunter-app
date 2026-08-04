@@ -24,7 +24,12 @@ abstract final class Routes {
 
   // --- Pre-session ---------------------------------------------------------
 
-  /// Language choice, phone, OTP and terms (§4). M1.
+  /// Language choice, terms acceptance and sign-in (§4). M1.
+  ///
+  /// The MVP signs in **with Telegram**, not phone + OTP - client direction
+  /// 2026-08-05, see docs/TELEGRAM_LOGIN.md. OTP is deferred rather than
+  /// dropped: it remains the fallback when Telegram returns no verified phone
+  /// number, which BR-01 requires.
   static const onboarding = '/onboarding';
 
   /// Candidate / employer / both (§2.3). Reached when an account holds no role.

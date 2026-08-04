@@ -122,4 +122,26 @@ class AppL10nEn extends AppL10n {
   @override
   String get blockedBody =>
       'An administrator has blocked this account. You cannot use the app until the block is lifted.';
+
+  @override
+  String get authSignInTitle => 'Sign in';
+
+  @override
+  String get authTelegramSignIn => 'Log in with Telegram';
+
+  @override
+  String get authTermsAgree =>
+      'I accept the Terms of Service and the Privacy Policy';
+
+  @override
+  String get authSignInFailed =>
+      'Could not sign in with Telegram. Please try again.';
+
+  @override
+  String get authSignInNoConnection =>
+      'No connection to Telegram. Check your internet and try again.';
+
+  @override
+  String get authSignInUnavailable =>
+      'Telegram sign-in is not available in this build.';
 }
