@@ -16,12 +16,18 @@ That link always resolves to the newest release, so it never needs updating —
 GitHub resolves `latest` on its side. Push a tag and a signed production APK is
 built and attached:
 
-```sh
-git tag v1.0.1 && git push origin v1.0.1
+```powershell
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
 Setup, signing and the BotFather step Telegram login needs are in
 [docs/RELEASE.md](docs/RELEASE.md).
+
+> Commands in this repository are **PowerShell** — this is a Windows project. Note
+> that `&&` is a parser error in Windows PowerShell 5.1, `<` input redirection is
+> unsupported, and line continuation is a backtick `` ` ``, not `\`. Use `;` or
+> `if ($?)` to chain.
 
 ## Stack
 
@@ -52,7 +58,7 @@ Verify any time with `flutter doctor -v`. Expected non-issues on Windows: Xcode
 
 ## Run
 
-```sh
+```powershell
 # Start the backend first - see ../headhunter-backend/README.md
 flutter emulators --launch headhunter_pixel
 flutter run --flavor development
@@ -66,8 +72,14 @@ The default API base URL is `http://10.0.2.2:3001` — the Android emulator's
 alias for your host machine's loopback interface. `localhost` inside the
 emulator refers to the emulator itself. For a physical device:
 
-```sh
-flutter run --flavor development \
+```powershell
+flutter run --flavor development --dart-define=API_BASE_URL=http://<your-lan-ip>:3001
+```
+
+To wrap that across lines, the continuation character is a **backtick**, not `\`:
+
+```powershell
+flutter run --flavor development `
   --dart-define=API_BASE_URL=http://<your-lan-ip>:3001
 ```
 
@@ -83,7 +95,7 @@ silently replaces another and takes its data.
 | `staging` | `com.headhunter.app.staging` | HeadHunter Staging | `https://api.staging.headhunter.uz` |
 | `production` | `com.headhunter.app` | HeadHunter | `https://api.headhunter.uz` |
 
-```sh
+```powershell
 flutter run   --flavor development                                   # FLAVOR defaults to development
 flutter build apk --flavor staging    --dart-define=FLAVOR=staging
 flutter build apk --flavor production --dart-define=FLAVOR=production
@@ -125,7 +137,7 @@ the production flavor, so no deep link can reach them there.
 
 ## Commands
 
-```sh
+```powershell
 flutter analyze                  # lint; must be clean before committing
 flutter test                     # tests
 dart run build_runner build      # regenerate *.g.dart

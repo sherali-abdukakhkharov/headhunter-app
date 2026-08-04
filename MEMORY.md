@@ -482,6 +482,30 @@ account.
 
 ## Local environment
 
+### 2026-08-05 - Commands in this repository are PowerShell, not bash
+Owner direction: the machine and terminal are **Windows PowerShell**, so every
+command in chat, docs and comments is written as PowerShell, in ```powershell
+fences.
+
+It matters because bash snippets here *fail* rather than degrade. Windows
+PowerShell **5.1** specifically:
+
+- `&&` and `||` are **parser errors** - use `;` or `if ($?) { … }`;
+- **`<` input redirection is unsupported** - pipe instead;
+- line continuation is a backtick `` ` ``, not `\`;
+- no `base64`, `rm`, `cat`, `which`, `head`, `wc`. Base64 a file with
+  `[Convert]::ToBase64String([IO.File]::ReadAllBytes('path'))`.
+
+Caught after docs/RELEASE.md shipped `base64 -w0 … > f` followed by
+`gh secret set NAME < f` - three separate failures in two lines.
+
+**`gh` is not installed** either, so docs give the GitHub web UI first and `gh`
+only as an optional alternative. `Set-Clipboard` is usually the neatest way to
+hand over a long value with no temp file to clean up.
+
+**Exception:** the bash inside `.github/workflows/*.yml` is correct as bash - it
+runs on `ubuntu-latest` runners. Do not "fix" it.
+
 - Flutter 3.44.8 at `D:\Dev\sdk\flutter`; Android SDK platform 36 /
   build-tools 36.0.0; AVD `headhunter_pixel` with WHPX acceleration.
 - Gradle 9.1 + AGP 9.0.1 + Android Studio's bundled JBR (JDK 25) - this

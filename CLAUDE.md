@@ -81,7 +81,14 @@ These are not the defaults, and the reason matters:
 
 ## Running the whole thing
 
-```sh
+**This is a Windows project and every command here is PowerShell.** Three bash
+habits break in Windows PowerShell 5.1: `&&` is a **parser error** (use `;` or
+`if ($?)`), `<` input redirection is **unsupported** (pipe instead), and line
+continuation is a backtick `` ` ``, not `\`. `base64`, `rm`, `cat`, `which` and
+`head` are not commands. The bash inside `.github/workflows/` is correct as bash —
+that runs on Linux runners.
+
+```powershell
 # 1. Backend (from d:\Dev\tgbots\headhunter-backend)
 pnpm db:up              # Postgres 18 in Docker on 5435
 pnpm migrate:latest     # apply migrations
@@ -99,8 +106,8 @@ flutter run --flavor development    # defaults to http://10.0.2.2:3001
 `localhost` inside the emulator means the emulator itself, so it will never
 find the API. On a **physical device**, pass your machine's LAN IP:
 
-```sh
-flutter run --flavor development \
+```powershell
+flutter run --flavor development `
   --dart-define=API_BASE_URL=http://192.168.1.42:3001
 ```
 
@@ -146,7 +153,7 @@ undoes the switch.
 
 ## App commands
 
-```sh
+```powershell
 flutter analyze                     # lint (very_good_analysis + riverpod_lint)
 flutter test                        # unit/widget tests
 dart run build_runner build         # regenerate *.g.dart after editing providers/models
