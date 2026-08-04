@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:headhunter_app/src/core/design/components/hh_badge.dart';
+import 'package:headhunter_app/src/core/design/components/hh_category_band.dart';
 import 'package:headhunter_app/src/core/design/components/hh_chip.dart';
 import 'package:headhunter_app/src/core/design/components/hh_progress.dart';
 import 'package:headhunter_app/src/core/design/hh_colors.dart';
@@ -52,14 +53,21 @@ class HhCard extends StatelessWidget {
   }
 }
 
-/// Vacancy card as drawn in the design: optional category image, title,
-/// employer, pay, metadata chips, and a footer with the verification mark and
-/// publication age.
+/// Vacancy card as drawn in the design: category band, title, employer, pay,
+/// metadata chips, and a footer with the verification mark and publication age.
+///
+/// [category] and [categoryLabel] are **required** because the band always
+/// renders — with a photograph when one exists, otherwise with the category
+/// tint plus glyph and name. See [HhCategoryBand]: a card that drops its band
+/// changes height relative to its neighbours, and that is the one behaviour
+/// that breaks the rhythm of a scanned list.
 class HhVacancyCard extends StatelessWidget {
   const HhVacancyCard({
     required this.title,
     required this.employer,
     required this.pay,
+    required this.category,
+    required this.categoryLabel,
     super.key,
     this.metaChips = const [],
     this.verifiedLabel,
@@ -69,6 +77,11 @@ class HhVacancyCard extends StatelessWidget {
     this.onTap,
     this.image,
   });
+
+  final HhWorkCategory category;
+
+  /// Localized category name, shown when there is no photograph.
+  final String categoryLabel;
 
   final String title;
   final String employer;
@@ -90,8 +103,8 @@ class HhVacancyCard extends StatelessWidget {
   final VoidCallback? onToggleSave;
   final VoidCallback? onTap;
 
-  /// Category image. The design reserves an 86px band; when null the band is
-  /// omitted entirely rather than shown empty.
+  /// Category photograph. When null the band still renders, filled with the
+  /// category tint, glyph and name — see [HhCategoryBand].
   final Widget? image;
 
   @override
@@ -102,12 +115,12 @@ class HhVacancyCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (image != null)
-          SizedBox(
-            height: 86,
-            width: double.infinity,
-            child: ColoredBox(color: HhColors.sand300, child: image),
-          ),
+        // Always present — never conditional. See the class doc.
+        HhCategoryBand(
+          category: category,
+          categoryLabel: categoryLabel,
+          image: image,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
           child: Column(

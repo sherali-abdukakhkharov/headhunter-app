@@ -4,19 +4,46 @@ import 'package:headhunter_app/src/core/design/hh_colors.dart';
 import 'package:headhunter_app/src/core/design/hh_icons.dart';
 import 'package:headhunter_app/src/core/design/hh_typography.dart';
 
-/// The five semantic tones. One vocabulary, learned once, read everywhere.
+/// The five semantic tones.
+///
+/// The tone answers **"whose turn is it, and did it end well?"** — not "what
+/// kind of thing is this". Design round 1 gave the rule that generates every
+/// state in the product:
+///
+/// | Tone | Meaning |
+/// |---|---|
+/// | [info] | In motion. Progressing normally, nobody needs to do anything. |
+/// | [warning] | Waiting on a person. The word says who — you or a reviewer. |
+/// | [success] | Resolved well. Not reserved for verification. |
+/// | [error] | Resolved badly, for the person reading it. |
+/// | [neutral] | Out of motion. Nobody's turn, no outcome. |
 enum HhTone { success, warning, error, info, neutral }
 
 /// A status badge: **icon + word**, never colour alone.
 ///
-/// This is the single component behind vacancy status, application stage,
-/// employer verification, invitation state and complaint state. Using it
-/// everywhere is what lets a user learn the vocabulary once, so prefer a new
-/// named constructor here over a bespoke pill inside a feature.
+/// One component behind vacancy, application and verification state. Use a
+/// named constructor — they *are* the vocabulary, and inventing a badge inline
+/// is how the vocabulary stops being learnable.
 ///
-/// The icon is not decoration. A user who cannot distinguish the tones still
-/// reads the state from the glyph and the label, which is the accessibility
-/// requirement the design calls out explicitly.
+/// ## The glyph rule
+///
+/// Within one object type **no glyph ever repeats**, so tone never has to carry
+/// the distinction alone. Across object types **the same glyph always means the
+/// same thing**:
+///
+/// - **shield** — an identity was checked
+/// - **check-circle** — a person was accepted
+/// - **clock** — a reviewer holds it
+/// - **pencil** — you can still edit it
+/// - **lock** — the object is finished and read-only
+/// - **eye** — visible / has been seen
+/// - **x-circle** — negative outcome, reason always attached
+///
+/// That is why *hired* and *verified* can share green: one is a check-circle on
+/// a person, the other a shield on an organisation.
+///
+/// Labels are always passed in, never hardcoded — they come from the
+/// localization layer, and the same state reads in four interface variants.
 class HhBadge extends StatelessWidget {
   const HhBadge({
     required this.label,
@@ -25,45 +52,123 @@ class HhBadge extends StatelessWidget {
     super.key,
   });
 
-  /// Verified employer, approved vacancy, accepted offer.
-  const HhBadge.verified({required this.label, super.key})
-    : tone = HhTone.success,
-      iconPath = HhIconPath.checkCircle;
+  // --- Vacancy · Vakansiya (6 states) --------------------------------------
 
-  /// Under moderation, under review, pending verification.
-  const HhBadge.pending({required this.label, super.key})
+  /// Draft — yours, still editable.
+  ///
+  /// **Employer-list only.** A draft is never visible to a candidate, so this
+  /// badge must not appear on any candidate-facing surface.
+  const HhBadge.vacancyDraft({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.edit;
+
+  /// Under moderation — a moderator holds it.
+  const HhBadge.vacancyModeration({required this.label, super.key})
     : tone = HhTone.warning,
       iconPath = HhIconPath.clock;
 
-  /// Rejected vacancy, rejected application, declined invitation.
-  const HhBadge.rejected({required this.label, super.key})
-    : tone = HhTone.error,
-      iconPath = HhIconPath.xCircle;
+  /// Active — live and visible.
+  ///
+  /// Success-toned: green is **not** reserved for verification; the glyph
+  /// disambiguates. **Employer-list only** — for a candidate a live vacancy is
+  /// the default, and badging it adds noise to every card.
+  const HhBadge.vacancyActive({required this.label, super.key})
+    : tone = HhTone.success,
+      iconPath = HhIconPath.eye;
 
-  /// New application, new invitation, informational state.
-  const HhBadge.info({required this.label, super.key})
-    : tone = HhTone.info,
-      iconPath = HhIconPath.infoCircle;
-
-  /// Paused vacancy, closed conversation, withdrawn application.
-  const HhBadge.paused({required this.label, super.key})
+  /// Paused — *the employer* stopped it, and can restart it.
+  const HhBadge.vacancyPaused({required this.label, super.key})
     : tone = HhTone.neutral,
       iconPath = HhIconPath.pause;
 
-  /// Offer extended, awaiting the candidate's response.
+  /// Closed — finished, read-only.
+  const HhBadge.vacancyClosed({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.lock;
+
+  /// Rejected by moderation. A reason is always shown alongside.
+  const HhBadge.vacancyRejected({required this.label, super.key})
+    : tone = HhTone.error,
+      iconPath = HhIconPath.xCircle;
+
+  // --- Application · Ariza (9 states) --------------------------------------
+
+  /// Submitted — sent, not yet opened.
+  const HhBadge.applicationSubmitted({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.send;
+
+  /// Viewed by the employer.
+  const HhBadge.applicationViewed({required this.label, super.key})
+    : tone = HhTone.info,
+      iconPath = HhIconPath.eye;
+
+  /// Shortlisted.
+  const HhBadge.applicationShortlisted({required this.label, super.key})
+    : tone = HhTone.info,
+      iconPath = HhIconPath.bookmark;
+
+  /// Interview scheduled. The date lives in the card body, not the badge.
+  const HhBadge.applicationInterview({required this.label, super.key})
+    : tone = HhTone.info,
+      iconPath = HhIconPath.people;
+
+  /// Offer extended — **warning, because it waits on the candidate.**
   ///
-  /// **Warning, not success** — design round 1 changed this explicitly. Under
-  /// the tone rule, warning means "waiting on a person"; an offer is waiting on
-  /// the candidate to accept or decline. Reading it as success ("resolved
-  /// well") told the candidate the matter was settled when the deadline was in
-  /// fact theirs to meet.
-  const HhBadge.offer({required this.label, super.key})
+  /// Changed from success in design round 1: success ("resolved well") told the
+  /// candidate the matter was settled when the response deadline was in fact
+  /// theirs to meet.
+  const HhBadge.applicationOffer({required this.label, super.key})
     : tone = HhTone.warning,
       iconPath = HhIconPath.document;
 
-  /// Changes required — a warning tone with an edit glyph, because the user has
-  /// something to *do* rather than something to wait for.
-  const HhBadge.changesRequired({required this.label, super.key})
+  /// Hired — a **person** was accepted.
+  const HhBadge.applicationHired({required this.label, super.key})
+    : tone = HhTone.success,
+      iconPath = HhIconPath.checkCircle;
+
+  /// Rejected.
+  const HhBadge.applicationRejected({required this.label, super.key})
+    : tone = HhTone.error,
+      iconPath = HhIconPath.xCircle;
+
+  /// Withdrawn — **the candidate** stopped it.
+  const HhBadge.applicationWithdrawn({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.arrowLeft;
+
+  /// The vacancy closed underneath the application. Same lock as a closed
+  /// vacancy, because it is the same fact.
+  const HhBadge.applicationVacancyClosed({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.lock;
+
+  // --- Verification · Tasdiqlash (5 states) --------------------------------
+
+  /// Not submitted.
+  const HhBadge.verificationNotSubmitted({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.upload;
+
+  /// Under review — same clock as vacancy moderation, because it is the same
+  /// fact: a reviewer holds it.
+  const HhBadge.verificationUnderReview({required this.label, super.key})
+    : tone = HhTone.warning,
+      iconPath = HhIconPath.clock;
+
+  /// Verified — an **organisation** was checked.
+  const HhBadge.verificationVerified({required this.label, super.key})
+    : tone = HhTone.success,
+      iconPath = HhIconPath.shieldCheck;
+
+  /// Verification rejected.
+  const HhBadge.verificationRejected({required this.label, super.key})
+    : tone = HhTone.error,
+      iconPath = HhIconPath.xCircle;
+
+  /// Changes required — same pencil as draft, because it is the same fact:
+  /// yours to edit.
+  const HhBadge.verificationChangesRequired({required this.label, super.key})
     : tone = HhTone.warning,
       iconPath = HhIconPath.edit;
 
@@ -71,35 +176,47 @@ class HhBadge extends StatelessWidget {
   final HhTone tone;
   final String iconPath;
 
+  /// Background / foreground pair for a tone.
+  static (Color bg, Color fg) colorsFor(HhTone tone) => switch (tone) {
+    HhTone.success => (HhColors.successBg, HhColors.successFg),
+    HhTone.warning => (HhColors.warningBg, HhColors.warningFg),
+    HhTone.error => (HhColors.errorBg, HhColors.errorFg),
+    HhTone.info => (HhColors.infoBg, HhColors.infoFg),
+    HhTone.neutral => (HhColors.neutralBg, HhColors.neutralFg),
+  };
+
   @override
   Widget build(BuildContext context) {
-    final (bg, fg) = switch (tone) {
-      HhTone.success => (HhColors.successBg, HhColors.successFg),
-      HhTone.warning => (HhColors.warningBg, HhColors.warningFg),
-      HhTone.error => (HhColors.errorBg, HhColors.errorFg),
-      HhTone.info => (HhColors.infoBg, HhColors.infoFg),
-      HhTone.neutral => (HhColors.neutralBg, HhColors.neutralFg),
-    };
+    final (bg, fg) = colorsFor(tone);
 
     return Semantics(
       label: label,
       child: Container(
-        padding: const EdgeInsets.only(left: 9, right: 11, top: 6, bottom: 6),
+        // Geometry fixed by the design: 6/10/6/8 padding, radius 7, gap 5,
+        // icon 13 at stroke 2.2, label 600/12.
+        padding: const EdgeInsets.only(left: 8, right: 10, top: 6, bottom: 6),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(7),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HhIcon(iconPath, size: 14, color: fg, strokeWidth: 2.2),
+            Padding(
+              // Keeps the glyph on the first line's optical centre when the
+              // label wraps.
+              padding: const EdgeInsets.only(top: 1),
+              child: HhIcon(iconPath, size: 13, color: fg, strokeWidth: 2.2),
+            ),
             const SizedBox(width: 5),
             Flexible(
               child: Text(
                 label,
-                style: HhTypography.badge.copyWith(color: fg),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                style: HhTypography.badge.copyWith(fontSize: 12, color: fg),
+                // Wraps to two lines rather than truncating: icon and word
+                // never separate, and a clipped status word is unreadable.
+                maxLines: 2,
               ),
             ),
           ],
@@ -111,6 +228,8 @@ class HhBadge extends StatelessWidget {
 
 /// A borderless "verified employer" line, as it appears in a vacancy card
 /// footer: shield glyph plus words, in success green.
+///
+/// Same shield as [HhBadge.verificationVerified] — an identity was checked.
 class HhVerifiedMark extends StatelessWidget {
   const HhVerifiedMark({required this.label, super.key});
 
@@ -127,11 +246,13 @@ class HhVerifiedMark extends StatelessWidget {
         strokeWidth: 2.2,
       ),
       const SizedBox(width: 5),
-      Text(
-        label,
-        style: HhTypography.meta.copyWith(
-          color: HhColors.successFg,
-          fontWeight: FontWeight.w600,
+      Flexible(
+        child: Text(
+          label,
+          style: HhTypography.meta.copyWith(
+            color: HhColors.successFg,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     ],
@@ -139,7 +260,7 @@ class HhVerifiedMark extends StatelessWidget {
 }
 
 /// Match-percentage pill on a candidate card. Success-toned because a high
-/// match is good news; the number carries the meaning, so no icon is needed.
+/// match is good news; the number carries the meaning, so no glyph is needed.
 class HhMatchPill extends StatelessWidget {
   const HhMatchPill({required this.label, super.key});
 

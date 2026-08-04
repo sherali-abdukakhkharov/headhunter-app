@@ -61,6 +61,11 @@ abstract final class HhIconPath {
   static const more = 'M6 12h.1M12 12h.1M18 12h.1';
   static const pause = 'M9 5v14M15 5v14';
 
+  /// Withdrawal — "the candidate pulled out". Under the glyph rule this is what
+  /// separates a withdrawn application from a paused or closed one; all three
+  /// are neutral-toned, so the glyph carries the whole distinction.
+  static const arrowLeft = 'M19.5 12H5M11.5 18.5 5 12l6.5-6.5';
+
   // Attributes and metadata
   static const location =
       'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11zM12 12.5a2.5 2.5 0 1 0 '

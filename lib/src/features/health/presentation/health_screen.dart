@@ -117,9 +117,13 @@ class _HealthCard extends StatelessWidget {
                       : theme.colorScheme.error,
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  healthy ? 'Backend healthy' : 'Backend degraded',
-                  style: theme.textTheme.titleMedium,
+                // Flexible, or the row overflows at large text scales on a
+                // narrow screen — caught by the design's 320pt @ 2.0x QA case.
+                Flexible(
+                  child: Text(
+                    healthy ? 'Backend healthy' : 'Backend degraded',
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
@@ -198,25 +202,35 @@ class _Row extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final labelStyle = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    final valueStyle = theme.textTheme.bodyMedium;
+
+    // A fixed-width label column wraps mid-word once the text scale grows
+    // ("Databa / se"), so above 1.3x the pair stacks instead. Same reasoning as
+    // the design's control-height answer: at that scale the user has asked for
+    // bigger text, and a preserved two-column rhythm that splits a word is
+    // worse than a taller row.
+    final stacked = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 96,
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+      child: stacked
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: labelStyle),
+                Text(value, style: valueStyle),
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: 96, child: Text(label, style: labelStyle)),
+                Expanded(child: Text(value, style: valueStyle)),
+              ],
             ),
-          ),
-          Expanded(
-            child: Text(value, style: theme.textTheme.bodyMedium),
-          ),
-        ],
-      ),
     );
   }
 }

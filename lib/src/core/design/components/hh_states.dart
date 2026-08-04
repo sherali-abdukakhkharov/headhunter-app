@@ -45,6 +45,20 @@ class HhSkeletonBlock extends StatelessWidget {
 
 /// **State 01 — first load.** A skeleton shaped like the vacancy card, shown
 /// instead of a blank screen.
+///
+/// ## The rule for deriving a new skeleton
+///
+/// The design's instruction is to derive these rather than wait for drawings:
+///
+/// - one bar per text line, at that line's **real** height;
+/// - `5px` radius;
+/// - [HhColors.skeleton] for primary lines, [HhColors.skeletonLight] for
+///   secondary;
+/// - widths **40–60%** of the real string;
+/// - the **same padding and gaps as the live card**.
+///
+/// If it matches the live card's geometry it is right — which is the point:
+/// nothing should jump when the data lands.
 class HhVacancyCardSkeleton extends StatelessWidget {
   const HhVacancyCardSkeleton({super.key});
 
@@ -78,6 +92,104 @@ class HhVacancyCardSkeleton extends StatelessWidget {
             HhSkeletonBlock(width: 54, height: 22, light: true),
           ],
         ),
+      ],
+    ),
+  );
+}
+
+/// Skeleton for `HhCandidateCard`, derived by the rule above: 46px avatar
+/// circle, name line, headline line, and a row of three attribute chips, at the
+/// live card's padding and gaps.
+class HhCandidateCardSkeleton extends StatelessWidget {
+  const HhCandidateCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+    decoration: const BoxDecoration(
+      borderRadius: HhRadius.cardAll,
+      border: Border.fromBorderSide(HhBorders.faint),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 46,
+          height: 46,
+          decoration: const BoxDecoration(
+            color: HhColors.skeleton,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: HhSpace.md),
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  HhSkeletonBlock(width: 140, height: 15),
+                  Spacer(),
+                  HhSkeletonBlock(width: 54, height: 20, light: true),
+                ],
+              ),
+              SizedBox(height: 8),
+              HhSkeletonBlock(width: 170, light: true),
+              SizedBox(height: 9),
+              Row(
+                children: [
+                  HhSkeletonBlock(width: 62, height: 20, light: true),
+                  SizedBox(width: 5),
+                  HhSkeletonBlock(width: 52, height: 20, light: true),
+                  SizedBox(width: 5),
+                  HhSkeletonBlock(width: 58, height: 20, light: true),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Skeleton for `HhApplicationCard`: title, context line, stage badge, and the
+/// timeline's dot row at its real height.
+class HhApplicationCardSkeleton extends StatelessWidget {
+  const HhApplicationCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+    decoration: const BoxDecoration(
+      borderRadius: HhRadius.cardAll,
+      border: Border.fromBorderSide(HhBorders.faint),
+    ),
+    child: const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HhSkeletonBlock(width: 150, height: 15),
+                  SizedBox(height: 7),
+                  HhSkeletonBlock(width: 110, light: true),
+                ],
+              ),
+            ),
+            SizedBox(width: HhSpace.sm),
+            HhSkeletonBlock(width: 76, height: 25, light: true),
+          ],
+        ),
+        SizedBox(height: 13),
+        // The timeline's dot row, at its live height.
+        HhSkeletonBlock(height: 14, light: true),
+        SizedBox(height: 6),
+        HhSkeletonBlock(height: 11, light: true),
       ],
     ),
   );

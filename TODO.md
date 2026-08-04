@@ -53,10 +53,25 @@ emulator against the design document, with 18 tests pinning the rules.
 - [x] All 11 required UI states
 - [x] `DesignGalleryScreen` at `/_design`, reachable from a debug-only app-bar
       action on the health screen
-- [ ] Category illustrations and empty-state artwork - the design marks these as
-      image slots; real assets still needed from the client
-- [ ] App icon and launch screen
-- [ ] Re-check every component at large system font scale (M11)
+- [x] Design round-1 answers applied: the twenty-state vocabulary with its glyph
+      rule, always-on category band, conditional-field rail, two-line nav at a
+      constant 70pt, min-52 control height, 2.0x text-scale clamp, derived
+      skeletons
+- [x] Verified at the design's QA case — 320pt at 2.0x, no overflow anywhere
+- [ ] **Category photography** - five 3:2 masters (1620x1080), one per §2.1
+      category, subject inside the middle 60% vertically so one file survives
+      both the 4.15:1 card crop and the 2.6:1 hero crop. Stock, art-directed by
+      the designer. The tint fallback ships until then.
+- [ ] **Three empty-state illustrations** - two-colour line work, navy +
+      turquoise; the designer produces these
+- [ ] **App icon and launch screen** - spec is agreed (navy ground, mark at 56%,
+      Android adaptive at the 66% keyline, inverted plate on the launch screen)
+      but the mark itself is placeholder-grade and **blocked on the client logo**
+- [ ] Nav label at 320pt x 2.0x: `Bosh sahifa` cannot fit two lines across five
+      tabs. Per the design, the remedy is a shorter string or a soft hyphen
+      (`hhSoftHyphenate`), which is the designer's call - raised in
+      docs/design-feedback.md
+- [ ] Re-check every component at large system font scale as screens land (M11)
 
 ## M0.5 - App shell *(next)*
 

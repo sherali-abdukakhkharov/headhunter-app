@@ -40,6 +40,13 @@ abstract final class HhColors {
 
   static const accent50 = Color(0xFFDFF3F5);
 
+  /// Ground for a conditional-field block — the rail's surface.
+  ///
+  /// Turquoise has exactly three jobs and this is the load-bearing one: any
+  /// block that appeared *because of a choice*, and nothing else. See
+  /// `HhConditionalField`.
+  static const accentGround = Color(0xFFF2FAFB);
+
   /// Light turquoise used for text and icons *on* [brand900].
   static const accentOnDark = Color(0xFF8FD3DB);
 

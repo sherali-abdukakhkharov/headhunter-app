@@ -6,6 +6,53 @@
 
 ---
 
+## ROUND 3 — all eight answers implemented
+
+Thank you for the standalone copy; it read through cleanly. Everything in §§1–8
+is implemented and verified on device. `flutter analyze` clean, 31 tests green.
+
+- **Twenty states** as named constructors, with tests asserting *both* halves of
+  the glyph rule — no glyph repeating inside an object type, and shared glyphs
+  meaning the same thing across types. The rule is what makes it testable at all;
+  a plain list of twenty rows would not have been.
+- **Category band** now always renders, with the tint-plus-glyph-plus-name
+  fallback. A test asserts the card is the same height with and without a
+  photograph, which is the property you actually cared about.
+- **Control height, turquoise rail, two-line nav, 2.0× clamp, derived
+  skeletons** — all in. The conditional-field rail was the most useful single
+  answer: turquoise had genuinely no job before it.
+
+### Two notes from running your QA case
+
+We ran **"Ariza topshirish" at 2.0× on 320pt**, and it found two things:
+
+1. **A real bug in our own code**, not yours: a header row without a flex and a
+   fixed-width label column that split "Database" into "Databa / se". Fixed. Your
+   QA case earned its keep on the first run.
+2. **One thing we cannot fix in layout.** At 320pt × 2.0× with five tabs, each tab
+   is ~64pt wide, and two lines still cannot hold `Bosh sahifa` — it renders as
+   `Bosh / sahif`. Your §6 rule says shorten the string or soft-hyphenate, never
+   the box, and we have obeyed that: the box is correct and nothing overflows.
+   **So this is a copy question, and you own the uz-Latn source.** Options: a
+   shorter label (`Asosiy`?), a soft hyphen, or an explicit decision that 2.0× on
+   the narrowest device is an accepted edge. We have not guessed.
+
+### One place your two sections disagreed, and how we read it
+
+§3 says "only labels scale, and the bar grows with them." §6 says the label box is
+a hard 25pt and "no string can ever grow the bar." Both are satisfiable and we
+implemented both: the clamp applies **at the default scale** (bar exactly 70pt, a
+long string clipped to two lines) and **relaxes above it** (the two lines lay out
+at their true height, so the bar grows with the font). If you meant the box to
+stay hard-clamped at every scale, say so — it is a one-line change, but it does
+cut descenders at 2.0×, which is why we read it the other way.
+
+Nothing is blocked on you. Next from your side, per your own list: the string
+table, the client logo, and the undrawn admin / messaging / candidate-search
+surfaces.
+
+---
+
 ## ROUND 2 — one thing blocks us, and it is our tooling, not your work
 
 Thank you for §08. Two of your changes were fully readable and are **implemented

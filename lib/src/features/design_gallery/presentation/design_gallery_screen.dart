@@ -197,18 +197,50 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         ),
 
         // --- Badges -------------------------------------------------------
-        const _Section('Status badges'),
+        const _Section('Status vocabulary'),
+        const _StateLabel('Vakansiya · 6'),
         const Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            HhBadge.verified(label: 'Tasdiqlangan'),
-            HhBadge.pending(label: "Ko'rib chiqilmoqda"),
-            HhBadge.rejected(label: 'Rad etildi'),
-            HhBadge.info(label: 'Yangi'),
-            HhBadge.paused(label: "To'xtatilgan"),
-            HhBadge.changesRequired(label: "O'zgartirish talab qilinadi"),
-            HhBadge.offer(label: 'Taklif'),
+            HhBadge.vacancyDraft(label: 'Qoralama'),
+            HhBadge.vacancyModeration(label: 'Moderatsiyada'),
+            HhBadge.vacancyActive(label: 'Faol'),
+            HhBadge.vacancyPaused(label: "To'xtatilgan"),
+            HhBadge.vacancyClosed(label: 'Yopilgan'),
+            HhBadge.vacancyRejected(label: 'Rad etildi'),
+          ],
+        ),
+        const SizedBox(height: HhSpace.md),
+        const _StateLabel('Ariza · 9'),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            HhBadge.applicationSubmitted(label: 'Yuborildi'),
+            HhBadge.applicationViewed(label: "Ko'rildi"),
+            HhBadge.applicationShortlisted(label: "Qisqa ro'yxatda"),
+            HhBadge.applicationInterview(label: 'Suhbat'),
+            HhBadge.applicationOffer(label: 'Taklif'),
+            HhBadge.applicationHired(label: 'Ishga qabul qilindi'),
+            HhBadge.applicationRejected(label: 'Rad etildi'),
+            HhBadge.applicationWithdrawn(label: 'Qaytarib olindi'),
+            HhBadge.applicationVacancyClosed(label: 'Vakansiya yopildi'),
+          ],
+        ),
+        const SizedBox(height: HhSpace.md),
+        const _StateLabel('Tasdiqlash · 5'),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            HhBadge.verificationNotSubmitted(label: 'Yuborilmagan'),
+            HhBadge.verificationUnderReview(label: "Ko'rib chiqilmoqda"),
+            HhBadge.verificationVerified(label: 'Tasdiqlangan'),
+            HhBadge.verificationRejected(label: 'Rad etildi'),
+            HhBadge.verificationChangesRequired(
+              label: "O'zgartirish talab qilinadi",
+            ),
           ],
         ),
 
@@ -234,6 +266,8 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           title: 'Call-markaz operatori',
           employer: 'Anor Telecom',
           pay: "4 500 000 – 6 000 000 so'm",
+          category: HhWorkCategory.service,
+          categoryLabel: 'Xizmat va operatsiyalar',
           metaChips: hhVacancyMeta(
             location: 'Toshkent',
             schedule: 'Smenali',
@@ -261,7 +295,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         const HhApplicationCard(
           title: 'Sotuvchi-maslahatchi',
           subtitle: 'Nur Market · 12-avgust',
-          stageBadge: HhBadge.info(label: 'Suhbat'),
+          stageBadge: HhBadge.applicationInterview(label: 'Suhbat'),
           stages: [
             'Yuborildi',
             "Ko'rildi",
@@ -365,6 +399,45 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           ],
         ),
 
+        // --- Conditional fields (turquoise's load-bearing use) -------------
+        const _Section('Shartli maydonlar'),
+        HhConditionalField(
+          trigger: 'Mavsumiy ish tanlandi',
+          child: Column(
+            children: [
+              const HhTextField(
+                label: 'Ish boshlanish sanasi',
+                hintText: '01.09.2026',
+              ),
+              const SizedBox(height: HhSpace.md),
+              HhCheckboxRow(
+                label: 'Transport bilan ta\u2019minlanadi',
+                value: true,
+                onChanged: (_) {},
+              ),
+            ],
+          ),
+        ),
+
+        // --- Category bands ------------------------------------------------
+        const _Section('Kategoriya lentasi'),
+        const _StateLabel('Rasm yo\u2018q — lenta baribir chiziladi'),
+        const HhCategoryBand(
+          category: HhWorkCategory.seasonal,
+          categoryLabel: 'Mavsumiy va qishloq xo\u2018jaligi',
+        ),
+        const SizedBox(height: HhSpace.sm),
+        const HhCategoryBand(
+          category: HhWorkCategory.physical,
+          categoryLabel: 'Jismoniy va sanoat ishlari',
+        ),
+
+        // --- Derived skeletons ---------------------------------------------
+        const _Section('Skeletonlar'),
+        const HhCandidateCardSkeleton(),
+        const SizedBox(height: HhSpace.md),
+        const HhApplicationCardSkeleton(),
+
         // --- Icons --------------------------------------------------------
         const _Section('Ikonkalar'),
         const _IconGrid(),
@@ -446,6 +519,7 @@ class _IconGrid extends StatelessWidget {
     'info': HhIconPath.infoCircle,
     'alert': HhIconPath.alertTriangle,
     'wifi-off': HhIconPath.wifiOff,
+    'arrow-left': HhIconPath.arrowLeft,
   };
 
   @override

@@ -33,6 +33,51 @@ Not for: things the code already says, or the milestone checklist (that is
 
 ## Architectural decisions
 
+### 2026-08-04 - Design round 1 answered; the status vocabulary is fixed
+The designer answered the handoff questions in §08 of the design file (also
+committed as their standalone note). Everything below is *their* decision, not
+ours — do not "improve" any of it without going back to them.
+
+- **Twenty states, one table.** Vacancy 6, application 9, verification 5. Each is
+  a named constructor on `HhBadge`; the tone answers *whose turn is it and did it
+  end well*, and the **glyph rule** does the rest: no glyph repeats within an
+  object type, and the same glyph always means the same thing across types
+  (shield = identity checked, check-circle = person accepted, clock = a reviewer
+  holds it, pencil = yours to edit, lock = finished/read-only, eye =
+  visible/seen, x-circle = negative outcome with a reason). That is why *hired*
+  and *verified* can share green, and why *withdrawn / paused / closed* can all
+  be neutral without becoming indistinguishable. Tests assert both halves of the
+  rule.
+- **Green is not reserved for verification.** An active vacancy is success-toned.
+- **Two states never get a badge**: `Faol` is employer-list only (a live vacancy
+  is the candidate's default and badging it adds noise to every card), and
+  `Qoralama` is employer-only.
+- **The category band never disappears.** Five bands, one per §2.1 category — no
+  generic band, because the band is the fastest signal on a scanned list. With no
+  photograph it keeps its full height and fills with the category tint, glyph and
+  name. Omitting it is the single behaviour the design calls out as breaking list
+  rhythm, so `HhVacancyCard` *requires* a category and always renders
+  `HhCategoryBand`.
+- **Turquoise has exactly three jobs**, and the load-bearing one is the
+  **conditional-field rail** (`HhConditionalField`): a block that appeared
+  because of a choice, with a caption naming the trigger. The others are the brand
+  mark on navy, and progress/value on dark surfaces. Never a button fill, never a
+  selected state, never a status tone, never text on white — selection stays blue
+  so "selected" and "conditional" can never read as the same signal.
+- **Bottom nav reserves two label lines**, constant 70pt across roles and
+  languages, because a bar that changes height on role switch reads as a bug and
+  moves the safe-area inset. Box model:
+  `8 + 22 icon + 4 + 25 label + 10 + 1 hairline = 70`.
+- **Text scale is clamped at 2.0x** app-wide: beyond it a sticky action bar eats
+  the scroll area on a 320pt device.
+- **Skeletons are ours to derive**, by a stated rule: one bar per text line at
+  that line's real height, 5px radius, primary/secondary tints, widths 40-60% of
+  the real string, same padding and gaps as the live card.
+- Copy: the designer owns **uz-Latn + en**; **uz-Cyrl and ru need certified
+  translation from the client** — machine translation of recruitment and consent
+  strings is a liability. A string table with per-component longest-variant test
+  strings is the next deliverable from them.
+
 ### 2026-08-04 - Design system implemented from the client's shipped design
 The client shipped `Universal HeadHunter.dc.html` (Claude Design project
 `33eea5d6-85d6-459c-a4ca-ce3c1efb752d`). It is now implemented under
@@ -137,6 +182,23 @@ The client renders the score and its per-group breakdown; it does not compute th
 disagree with the server's ordering and pagination.
 
 ## Traps already paid for
+
+### 2026-08-04 - `Container.alignment` expands, twice over
+The same trap bit twice in one day, in two different shapes, so it is worth
+knowing as a rule: **a `Container` with an `alignment` grows to the largest size
+its constraints allow.**
+
+1. With a fixed `height`, it stretched auto-width buttons across the full width,
+   silently defeating `expand: false`.
+2. Once the fixed height became a `minHeight` (per the design's min-52 answer),
+   the same `alignment` stretched buttons to the **full 600pt viewport**.
+
+Fix in both cases: drop `alignment` and let the `Row` centre on both axes.
+
+### 2026-08-04 - `DecoratedBox` borders do not occupy space
+The nav bar measured 69pt instead of the specified 70. The design's box model
+counts the 1pt hairline, but a `DecoratedBox` *paints* a border without laying it
+out. `Container` insets its child by the border width; `DecoratedBox` does not.
 
 ### 2026-08-04 - Three UI bugs that `analyze` and unit tests both missed
 All three were found only by building the APK and looking at it on an emulator.
