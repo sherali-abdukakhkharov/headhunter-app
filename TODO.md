@@ -10,10 +10,11 @@ decision or on the backend.
 
 ## Blocked on someone else
 
-- [?] **Design files** - §13.2 lists final Figma source, components, prototypes,
-      icons and developer handoff as a deliverable. The design system in M0.5 is
-      guesswork until those arrive. Ask for them now; they gate visual work on
-      every screen.
+- [x] ~~**Design files**~~ - **shipped 2026-08-04** as a Claude Design project
+      (`Universal HeadHunter.dc.html`). Tokens, the component library and the 11
+      required UI states are now implemented under `lib/src/core/design/`; see
+      the Design system section below for what is done and what the design does
+      not yet answer.
 - [?] **Dictionary contract** - backend M2 must publish the dictionary endpoints
       and version/ETag scheme. *Blocks every picker.*
 - [?] **Category field-schema contract** - the shape the server returns to drive
@@ -32,6 +33,30 @@ decision or on the backend.
 - [x] `INTERNET` permission in the main manifest for release builds
 - [x] Health slice verified on an emulator against the live API
 - [x] CI: analyze + test + debug APK; iOS `--no-codesign` build
+
+## Design system *(done - implemented from the shipped design)*
+
+Lives in `lib/src/core/design/`; import the `design.dart` barrel. Verified on an
+emulator against the design document, with 18 tests pinning the rules.
+
+- [x] Tokens: `HhColors`, `HhTypography`, `HhSpace`/`HhRadius`/`HhSize`/
+      `HhElevation`/`HhDuration`/`HhBorders`
+- [x] Golos Text bundled (`assets/fonts/`, OFL included) - one family covering
+      latin, latin-ext, cyrillic and cyrillic-ext
+- [x] `HhTheme.light` - and deliberately **no dark theme**, see MEMORY.md
+- [x] Icon set: 36 glyphs transcribed as SVG paths, rendered via `flutter_svg`
+- [x] Buttons (5 variants + loading + disabled), text fields (5 states),
+      chips, segmented control, checkbox/radio/switch rows
+- [x] Badges (5 tones, icon + word), step indicator, completeness ring,
+      stage timeline
+- [x] Vacancy / candidate / application cards, bottom nav (3 role sets)
+- [x] All 11 required UI states
+- [x] `DesignGalleryScreen` at `/_design`, reachable from a debug-only app-bar
+      action on the health screen
+- [ ] Category illustrations and empty-state artwork - the design marks these as
+      image slots; real assets still needed from the client
+- [ ] App icon and launch screen
+- [ ] Re-check every component at large system font scale (M11)
 
 ## M0.5 - App shell *(next)*
 

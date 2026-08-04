@@ -10,24 +10,27 @@ part of 'app_router.dart';
 // ignore_for_file: type=lint, type=warning
 /// The app's router.
 ///
-/// When auth lands, add a `redirect` here that watches the auth provider and
-/// bounces unauthenticated users to the login route.
+/// When auth lands this gains the role-aware shell described in
+/// ARCHITECTURE.md: a `StatefulShellRoute` per role plus a `redirect` chain for
+/// unauthenticated / no-role-chosen / blocked / ungranted-role.
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
 
 /// The app's router.
 ///
-/// When auth lands, add a `redirect` here that watches the auth provider and
-/// bounces unauthenticated users to the login route.
+/// When auth lands this gains the role-aware shell described in
+/// ARCHITECTURE.md: a `StatefulShellRoute` per role plus a `redirect` chain for
+/// unauthenticated / no-role-chosen / blocked / ungranted-role.
 
 final class AppRouterProvider
     extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
     with $Provider<GoRouter> {
   /// The app's router.
   ///
-  /// When auth lands, add a `redirect` here that watches the auth provider and
-  /// bounces unauthenticated users to the login route.
+  /// When auth lands this gains the role-aware shell described in
+  /// ARCHITECTURE.md: a `StatefulShellRoute` per role plus a `redirect` chain for
+  /// unauthenticated / no-role-chosen / blocked / ungranted-role.
   AppRouterProvider._()
     : super(
         from: null,
@@ -61,4 +64,4 @@ final class AppRouterProvider
   }
 }
 
-String _$appRouterHash() => r'ad4230552d4804dd728fe4c327326eac6417fb3a';
+String _$appRouterHash() => r'f45abe1f452762060c1835d14efb6f82d2998fce';

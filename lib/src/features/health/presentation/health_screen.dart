@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:headhunter_app/src/core/config/app_config.dart';
+import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
+import 'package:headhunter_app/src/core/router/app_router.dart';
 import 'package:headhunter_app/src/features/health/data/health_repository.dart';
 import 'package:headhunter_app/src/features/health/domain/health_status.dart';
 
@@ -20,8 +24,22 @@ class HealthScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Backend health'),
         actions: [
+          // Debug-only entry point to the design-system catalogue. Never
+          // reachable in a release build, and never part of the product shell.
+          if (kDebugMode)
+            IconButton(
+              icon: const HhIcon(
+                HhIconPath.filters,
+                semanticLabel: 'Design system',
+              ),
+              tooltip: 'Design system',
+              onPressed: () => context.go(Routes.designGallery),
+            ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const HhIcon(
+              HhIconPath.refresh,
+              semanticLabel: 'Re-check',
+            ),
             tooltip: 'Re-check',
             onPressed: () => ref.invalidate(healthStatusProvider),
           ),

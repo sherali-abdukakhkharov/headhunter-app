@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/router/app_router.dart';
-import 'package:headhunter_app/src/core/theme/app_theme.dart';
 
-/// Root widget: wires the router and themes together.
+/// Root widget: wires the router and theme together.
 class HeadhunterApp extends ConsumerWidget {
   const HeadhunterApp({super.key});
 
@@ -14,8 +14,9 @@ class HeadhunterApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Headhunter',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: HhTheme.light,
+      // No darkTheme: the design specifies a single light scheme, so supplying
+      // a dark one would invent visual decisions the client has not approved.
       routerConfig: router,
     );
   }

@@ -33,6 +33,43 @@ Not for: things the code already says, or the milestone checklist (that is
 
 ## Architectural decisions
 
+### 2026-08-04 - Design system implemented from the client's shipped design
+The client shipped `Universal HeadHunter.dc.html` (Claude Design project
+`33eea5d6-85d6-459c-a4ca-ce3c1efb752d`). It is now implemented under
+`lib/src/core/design/`, and it — not our judgement — is the source of truth for
+colour, type, spacing and elevation.
+
+Three decisions the design says drive everything, restated because they erode one
+screen at a time:
+1. **Institutional trust, not startup energy** — Registan blue, one turquoise
+   accent, flat surfaces, a single elevation level.
+2. **One control size for everyone** — every control 52px with a persistent
+   label. No "simple mode" for manual workers; a welder and a frontend developer
+   use the same components and only the *fields* differ. Adding a second control
+   height re-opens a decision the client already made.
+3. **Status is never colour alone** — every badge is icon + word, and vacancy,
+   application, verification, invitation and complaint state all use `HhBadge`.
+
+Supporting decisions we made while implementing:
+
+- **Icons are transcribed SVG paths rendered by `flutter_svg`**, not Material
+  icons. The design ships a bespoke 24px/1.75-stroke outline family; Material
+  icons are filled, sit on a different optical grid and have square joins, so
+  mixing them in is immediately visible. `active: true` thickens the stroke to
+  2.2 per the design's outline-vs-active rule.
+- **Golos Text is bundled, not fetched at runtime.** The design chose it for
+  complete Uzbek Cyrillic coverage (ў, қ, ғ, ҳ) alongside Latin and Russian, so
+  one family renders all four interface variants with no vertical-rhythm drift.
+  It is a **variable** font (wght 400-900), and `fontWeight` alone is not
+  reliably applied to variable fonts — `HhTypography._style` also emits an
+  explicit `FontVariation('wght', …)`. Build styles through that helper or
+  weights silently collapse to Regular.
+- **No dark theme.** The design specifies a single light scheme; inventing a dark
+  one would be us making visual decisions the client has not approved. There is a
+  test asserting this.
+- **`accent500` (turquoise) is never a text colour on white** — surface/accent
+  only. It does not meet contrast as text.
+
 ### 2026-08-04 - Role-aware navigation shell, one shell per role
 `go_router` with a `StatefulShellRoute` selected by the active role, plus a
 redirect chain for unauthenticated / no-role / blocked / ungranted-role.
@@ -100,6 +137,22 @@ The client renders the score and its per-group breakdown; it does not compute th
 disagree with the server's ordering and pagination.
 
 ## Traps already paid for
+
+### 2026-08-04 - Three UI bugs that `analyze` and unit tests both missed
+All three were found only by building the APK and looking at it on an emulator.
+Worth remembering as a pattern: **a green analyze plus green tests says nothing
+about whether a widget actually paints.** Run the gallery on a device after
+touching the design system.
+
+1. **`Material` asserts if given both `shape` and `borderRadius`.** Every
+   bordered button variant crashed with a red error box. The button tests only
+   exercised `primary`, which has no border and therefore no `shape` — so the
+   suite was green. There is now a test that builds *every* variant.
+2. **`Container.alignment` forces maximum width**, which silently defeated
+   `expand: false` and stretched auto-width buttons full-bleed. `alignment` is now
+   only set when expanding.
+3. **A hand-rolled `Stack` progress bar laid out to zero height** and was
+   invisible on device. Replaced with a themed `LinearProgressIndicator`.
 
 ### 2026-08-04 - Riverpod 3 auto-retry produced an endless spinner
 Riverpod 3 retries a failing provider with exponential backoff, and **while

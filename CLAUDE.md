@@ -28,6 +28,26 @@ Before implementing anything from the spec, check ARCHITECTURE.md - several
 requirements have already been designed against, and the reasoning is not
 re-derivable from the spec text.
 
+## The design system
+
+The client's design is implemented under [lib/src/core/design/](lib/src/core/design/) —
+import the `design.dart` barrel and build screens from the `Hh*` components. Do
+not hand-roll a `Container` where a component exists, and do not introduce a
+colour, radius or elevation that is not a token.
+
+Three rules the components encode:
+
+- **One control size for everyone** — every control is 52px with a persistent
+  label. There is no dense/simple mode; only the *fields* differ by work category.
+- **Status is never colour alone** — always `HhBadge` (icon + word), for vacancy,
+  application, verification, invitation and complaint state alike.
+- **One elevation level.** `HhElevation.card` or `HhElevation.sheet`, nothing else.
+
+`/_design` renders the whole catalogue; reach it from the debug-only action in the
+health screen's app bar. **After changing anything in the design system, run the
+gallery on a device** — see MEMORY.md for three bugs that a green `flutter analyze`
+and a green test suite both missed.
+
 ## Domain rules that are easy to get wrong
 
 - **Four interface variants, three languages.** Uzbek ships in Latin *and*

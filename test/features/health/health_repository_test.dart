@@ -104,27 +104,29 @@ void main() {
       );
     });
 
-    test('converts a connection failure into a friendly ApiException',
-        () async {
-      final repo = HealthRepository(
-        _dioReturning(
-          (options) => throw DioException.connectionError(
-            requestOptions: options,
-            reason: 'refused',
+    test(
+      'converts a connection failure into a friendly ApiException',
+      () async {
+        final repo = HealthRepository(
+          _dioReturning(
+            (options) => throw DioException.connectionError(
+              requestOptions: options,
+              reason: 'refused',
+            ),
           ),
-        ),
-      );
+        );
 
-      await expectLater(
-        repo.fetchHealth(),
-        throwsA(
-          isA<ApiException>().having(
-            (e) => e.message,
-            'message',
-            contains('Cannot reach the server'),
+        await expectLater(
+          repo.fetchHealth(),
+          throwsA(
+            isA<ApiException>().having(
+              (e) => e.message,
+              'message',
+              contains('Cannot reach the server'),
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   });
 }
