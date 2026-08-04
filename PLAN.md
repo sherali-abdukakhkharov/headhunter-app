@@ -36,7 +36,7 @@ critical path.
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
 | M7 | Candidate search + invitations + shortlists (employer) | after M2 + M5 |
 | M8 | Chat + interviews | after M6 + M7 |
-| M9 | Notifications + push + deep links | after M6 |
+| M9 | Notifications + push | **last feature milestone** - after M10 |
 | M10 | Admin module | after M4 + M5 |
 | M11 | Hardening: performance, accessibility, offline, acceptance | last |
 
@@ -178,15 +178,28 @@ selected values (IDs) stay put - the client half of UAT-13.
 - Report and block; read-only history for closed interactions.
 - Interview scheduling display by type (phone / in-person / external link),
   instructions, and confirm / request-another-time.
+- **Deep links, including the role switch before navigating** (ARCHITECTURE.md
+  §3). Moved here from M9: routing infrastructure that chat and share-a-vacancy
+  both need, and it must not sit behind the deferred notifications milestone.
+  Notification taps reuse it later rather than introducing it.
 
 ## M9 - Notifications
 
-**Covers** §9.2
+**Covers** §9.2 · **deferred to last on client direction (2026-08-04)**
 
-- In-app list, unread badge, mark read.
-- Push registration and handling; **deep links that switch role first when needed**
-  (ARCHITECTURE.md §3).
+Ordering changed from "after M6" to the last feature milestone. No Firebase
+dependency is added to `pubspec.yaml` until this milestone opens, which keeps the
+load-bearing version pins untouched for the whole build.
+
+- In-app list, unread badge, mark read. *(No push dependency - this is an
+  API-backed list screen and can be pulled forward at any time at no cost if the
+  client wants notification history earlier.)*
+- Push registration and handling.
 - Preferences with security/account categories not disableable.
+
+**Deep links moved out of this milestone** - see M8. They are routing
+infrastructure, not a notification feature, and holding them to last would strand
+share-a-vacancy and chat entry points behind a deferred milestone.
 
 ## M10 - Admin module
 

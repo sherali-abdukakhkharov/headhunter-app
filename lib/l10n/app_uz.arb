@@ -1,0 +1,31 @@
+{
+  "@@locale": "uz",
+
+  "appTitle": "HeadHunter",
+
+  "commonRetry": "Qayta urinish",
+  "commonCancel": "Bekor qilish",
+  "commonSave": "Saqlash",
+  "commonNext": "Keyingi",
+  "commonBack": "Orqaga",
+  "commonClose": "Yopish",
+  "commonSearch": "Qidirish",
+
+  "stateLoading": "Yuklanmoqda…",
+  "stateEmptyTitle": "Hozircha bo'sh",
+  "stateEmptyBody": "Bu ekranda hozircha ko'rsatiladigan ma'lumot yo'q.",
+  "stateErrorTitle": "Nimadir xato ketdi",
+  "stateErrorBody": "So'rovni bajarib bo'lmadi. Qayta urinib ko'ring.",
+  "stateOfflineTitle": "Internet aloqasi yo'q",
+  "stateOfflineBody": "Aloqani tekshiring va qayta urinib ko'ring.",
+  "statePermissionDeniedTitle": "Ruxsat kerak",
+  "statePermissionDeniedBody": "Davom etish uchun Sozlamalarda ruxsat bering.",
+
+  "sessionExpired": "Sessiya muddati tugadi. Iltimos, qaytadan kiring.",
+
+  "settingsLanguage": "Til",
+
+  "roleCandidate": "Nomzod",
+  "roleEmployer": "Ish beruvchi",
+  "roleAdmin": "Administrator"
+}

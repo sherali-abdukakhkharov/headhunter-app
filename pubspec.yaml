@@ -37,8 +37,18 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # i18n. Ships with the SDK, so it is version-locked to Flutter 3.44.8 and
+  # carries its own `intl` constraint - see the note on `intl` below.
+  flutter_localizations:
+    sdk: flutter
+
   # State management + dependency injection.
   flutter_riverpod: ^3.0.0
+
+  # Token storage. Deliberately NOT shared_preferences: §12.5 requires secrets in
+  # platform-backed secure storage (Keystore / Keychain), and shared_preferences
+  # is world-readable on a rooted device.
+  flutter_secure_storage: ^9.2.4
 
   # Icons. The design ships a bespoke 24px/1.75-stroke outline set, so the
   # Material icon font cannot express it - paths are rendered as SVG instead.
@@ -48,12 +58,25 @@ dependencies:
   go_router: ^17.3.0
 
   # i18n / formatting.
-  intl: ^0.20.3
+  #
+  # Pinned exactly, and it is load-bearing like the analyzer chain above:
+  # flutter_localizations from the Flutter 3.44.8 SDK depends on intl *0.20.2
+  # exactly*, so any caret range that admits 0.20.3+ fails version solving
+  # outright. Moves only when Flutter moves.
+  intl: 0.20.2
 
   # JSON models.
   json_annotation: ^4.12.0
 
   riverpod_annotation: 4.0.3
+
+  # Non-secret local state: selected locale pre-auth, persisted idempotency keys.
+  # Secrets never go here - see flutter_secure_storage above.
+  shared_preferences: ^2.5.4
+
+  # Idempotency keys (BR-07). v4 random, generated once per logical action and
+  # persisted with it.
+  uuid: ^4.5.2
 
 dev_dependencies:
   # Codegen.
@@ -73,6 +96,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Required by gen-l10n. Without it `flutter gen-l10n` refuses to emit importable
+  # sources, and the failure message does not mention l10n.yaml at all.
+  generate: true
 
   fonts:
     # Golos Text is the design's single family for all four interface variants:

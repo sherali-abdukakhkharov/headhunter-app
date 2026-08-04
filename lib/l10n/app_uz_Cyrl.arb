@@ -1,0 +1,31 @@
+{
+  "@@locale": "uz_Cyrl",
+
+  "appTitle": "HeadHunter",
+
+  "commonRetry": "Қайта уриниш",
+  "commonCancel": "Бекор қилиш",
+  "commonSave": "Сақлаш",
+  "commonNext": "Кейинги",
+  "commonBack": "Орқага",
+  "commonClose": "Ёпиш",
+  "commonSearch": "Қидириш",
+
+  "stateLoading": "Юкланмоқда…",
+  "stateEmptyTitle": "Ҳозирча бўш",
+  "stateEmptyBody": "Бу экранда ҳозирча кўрсатиладиган маълумот йўқ.",
+  "stateErrorTitle": "Нимадир хато кетди",
+  "stateErrorBody": "Сўровни бажариб бўлмади. Қайта уриниб кўринг.",
+  "stateOfflineTitle": "Интернет алоқаси йўқ",
+  "stateOfflineBody": "Алоқани текширинг ва қайта уриниб кўринг.",
+  "statePermissionDeniedTitle": "Рухсат керак",
+  "statePermissionDeniedBody": "Давом этиш учун Созламаларда рухсат беринг.",
+
+  "sessionExpired": "Сессия муддати тугади. Илтимос, қайтадан киринг.",
+
+  "settingsLanguage": "Тил",
+
+  "roleCandidate": "Номзод",
+  "roleEmployer": "Иш берувчи",
+  "roleAdmin": "Администратор"
+}

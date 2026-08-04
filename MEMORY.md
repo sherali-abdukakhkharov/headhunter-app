@@ -181,7 +181,72 @@ The client renders the score and its per-group breakdown; it does not compute th
 *Why:* §7.3 defines ranking server-side. A client-side reimplementation would
 disagree with the server's ordering and pagination.
 
+### 2026-08-04 - Notifications deferred to last; deep links split out of M9
+Client direction: build the MVP first, notifications are the last thing to
+implement and test. M9 moved from "after M6" to after M10 in
+[PLAN.md](PLAN.md).
+*Why it matters beyond the reorder:* M9 also owned **deep links**, which are
+routing infrastructure rather than a notification feature - chat entry points and
+share-a-vacancy both need them. Leaving them bundled would have stranded them
+behind a deferred milestone, so they moved to M8. Notification taps reuse that
+routing later instead of introducing it.
+*Second consequence:* no Firebase package enters `pubspec.yaml` until M9 opens,
+so the load-bearing pin chain stays untouched for the whole build. The push
+provider decision (FCM-only) is recorded but not needed yet.
+The in-app notification list has no push dependency and can be pulled forward at
+no cost if the client wants notification history earlier.
+
 ## Traps already paid for
+
+### 2026-08-04 - `gen-l10n` drops the script code from `supportedLocales`
+It generates working `AppL10nUzLatn` and `AppL10nUzCyrl` classes and a
+`lookupAppL10n` that dispatches correctly on `scriptCode` - and then emits
+`supportedLocales = [Locale('en'), Locale('ru'), Locale('uz')]`.
+
+Hand that list to `MaterialApp` and `basicLocaleListResolution` collapses a
+`uz-Cyrl` preference onto plain `uz`, which resolves to Latin. **Cyrillic becomes
+unreachable through the UI and nothing fails.** This is exactly the §4.2 collapse
+the architecture warns about, delivered by the tooling itself.
+
+`AppLocale.supportedLocales` restores the script codes and is what `app.dart`
+passes. The delegate accepts them because its `isSupported` matches on
+`languageCode` alone. Pinned by `test/core/l10n/app_locale_test.dart`, which
+asserts the two scripts load *different* strings - the only assertion that
+actually catches a regression here.
+
+### 2026-08-04 - `gen-l10n` demands a base `app_uz.arb` it then never uses
+Script-coded ARB files are rejected unless a bare-language base file exists
+alongside them. So `app_uz.arb` duplicates the Latin content, and duplication
+with nothing enforcing it is a drift hazard.
+
+`test/core/l10n/arb_parity_test.dart` asserts `app_uz.arb` and `app_uz_Latn.arb`
+agree on every value. Do not "tidy up" the apparent redundancy by deleting either
+file.
+
+### 2026-08-04 - `flutter_localizations` pins `intl` to exactly 0.20.2
+The pubspec had `intl: ^0.20.3`; adding `flutter_localizations` failed version
+solving outright, because the SDK package depends on `intl` **0.20.2 exactly**.
+`intl` is now pinned exactly, and it belongs to the same load-bearing family as
+the analyzer chain: it moves only when Flutter moves.
+
+### 2026-08-04 - `DateTime.parse` discards the offset, and Tashkent hides it
+`DateTime.parse('2026-08-12T14:00:00+05:00')` returns a **UTC** `DateTime`
+(`isUtc: true`, `.hour == 9`). The offset is normalised away, not retained.
+`.toLocal()` then renders in the **device** zone.
+
+Verified on the repo toolchain. The trap: every machine on this project is on
+UTC+5, so `.toLocal()` prints the correct wall clock and the bug is invisible
+during development. A user who opens the app in Moscow sees an interview two
+hours early - the one bug in this feature that costs someone a job.
+
+The backend sends `scheduledAt` with the offset already resolved plus an explicit
+`timeZone` name (`Asia/Tashkent`), and the platform zone is single-zone by
+decision. So: **keep the wall-clock components from the string and label them
+with `timeZone`; never call `.toLocal()` on an API timestamp.** No `timezone`
+package and no ~1MB of tzdata - the server already did the zone resolution, and
+this stays correct if Uzbekistan ever reintroduces DST.
+Pin it with a test that fakes a non-UTC+5 device, because that is the only way
+this stays fixed.
 
 ### 2026-08-04 - `Container.alignment` expands, twice over
 The same trap bit twice in one day, in two different shapes, so it is worth
@@ -266,6 +331,9 @@ account.
 
 ## Open questions
 
-Tracked as `[?]` items at the top of [TODO.md](TODO.md). Summary: Figma design
-deliverable, the dictionary and category-field-schema contracts from the backend,
-push provider, time-zone policy for interviews, and app icons.
+Tracked as `[?]` items at the top of [TODO.md](TODO.md). Summary: the dictionary
+and category-field-schema contracts from the backend (shapes now proposed, six
+holes raised), the MVP milestone cut, and app icons.
+
+Closed since: the design deliverable shipped; time-zone policy is single-zone
+`Asia/Tashkent`; push provider is no longer blocking after the M9 deferral.

@@ -1,0 +1,31 @@
+{
+  "@@locale": "ru",
+
+  "appTitle": "HeadHunter",
+
+  "commonRetry": "Повторить",
+  "commonCancel": "Отмена",
+  "commonSave": "Сохранить",
+  "commonNext": "Далее",
+  "commonBack": "Назад",
+  "commonClose": "Закрыть",
+  "commonSearch": "Поиск",
+
+  "stateLoading": "Загрузка…",
+  "stateEmptyTitle": "Пока пусто",
+  "stateEmptyBody": "На этом экране пока нечего показать.",
+  "stateErrorTitle": "Что-то пошло не так",
+  "stateErrorBody": "Не удалось выполнить запрос. Попробуйте ещё раз.",
+  "stateOfflineTitle": "Нет подключения",
+  "stateOfflineBody": "Проверьте соединение и попробуйте снова.",
+  "statePermissionDeniedTitle": "Нужно разрешение",
+  "statePermissionDeniedBody": "Разрешите доступ в настройках, чтобы продолжить.",
+
+  "sessionExpired": "Сеанс истёк. Войдите снова.",
+
+  "settingsLanguage": "Язык",
+
+  "roleCandidate": "Соискатель",
+  "roleEmployer": "Работодатель",
+  "roleAdmin": "Администратор"
+}

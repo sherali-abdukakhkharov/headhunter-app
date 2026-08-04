@@ -19,8 +19,11 @@ decision or on the backend.
       and version/ETag scheme. *Blocks every picker.*
 - [?] **Category field-schema contract** - the shape the server returns to drive
       dynamic forms (ARCHITECTURE.md §6). Agree it with the backend before M3.
-- [?] **Push provider** (FCM vs FCM+APNs) - shared decision with the backend.
-      *Blocks M9.*
+- [-] ~~**Push provider** (FCM vs FCM+APNs)~~ - **no longer blocking.** Client
+      deferred notifications to the last feature milestone (2026-08-04), so this
+      decision is not needed until M9 opens. Backend recommends FCM-only with an
+      APNs key in Firebase; still needs an Apple Developer account when we get
+      there.
 - [?] **Time zone policy** for interview display (§8.3). *Blocks M8.*
 - [?] **App icons and launch screen** - still Flutter defaults.
 
@@ -75,16 +78,24 @@ emulator against the design document, with 18 tests pinning the rules.
 
 ## M0.5 - App shell *(next)*
 
-### Localization
-- [ ] Add `flutter_localizations` + `intl`; enable `gen-l10n` in `pubspec.yaml`
-- [ ] `l10n/app_uz_Latn.arb`, `app_uz_Cyrl.arb`, `app_ru.arb`, `app_en.arb`
-- [ ] `supportedLocales` using `Locale.fromSubtags` with `scriptCode` for Uzbek
-- [ ] **Never key on `locale.languageCode` alone** - it collapses the two Uzbek
+### Localization *(done)*
+- [x] Add `flutter_localizations` + `intl`; enable `gen-l10n` in `pubspec.yaml`
+      — note `intl` is now pinned to **exactly 0.20.2**, see the pubspec comment
+- [x] `lib/l10n/app_uz_Latn.arb`, `app_uz_Cyrl.arb`, `app_ru.arb`, `app_en.arb`
+      — **plus `app_uz.arb`**, which gen-l10n requires as a base whenever
+      script-coded locales exist. It mirrors Latin; a test pins them together.
+- [x] `supportedLocales` using `Locale.fromSubtags` with `scriptCode` for Uzbek
+      — in `AppLocale`, **not** the generated list, which drops script codes
+- [x] **Never key on `locale.languageCode` alone** - it collapses the two Uzbek
       scripts. Use the full tag for ARB lookup, `x-lang`, and cache keys.
-- [ ] Locale controller: local persistence pre-auth, server sync post-auth
-- [ ] `x-lang` dio interceptor
-- [ ] Fallback chain `uz-Cyrl → uz-Latn → en`; a missing key must never render
-- [ ] CI check: all four ARB files share exactly one key set
+- [~] Locale controller: local persistence pre-auth, server sync post-auth
+      — local half done; the server push is a marked seam in `select()` waiting
+      on the M1 profile endpoint
+- [x] `x-lang` dio interceptor — reads the locale per request, installed in
+      `dio_provider.dart`
+- [x] Fallback chain `uz-Cyrl → uz-Latn → en`; a missing key must never render
+- [x] CI check: all ARB files share exactly one key set —
+      `test/core/l10n/arb_parity_test.dart`
 
 ### Flavors and config
 - [ ] development / testing / production flavors
@@ -92,13 +103,25 @@ emulator against the design document, with 18 tests pinning the rules.
 - [ ] Verify no secrets are compiled in (§12.5)
 
 ### Auth plumbing
-- [ ] `flutter_secure_storage` for tokens - **not** `shared_preferences`
-- [ ] Auth interceptor attaching the access token
-- [ ] **Single-flight refresh**: concurrent 401s wait on one refresh, then replay.
+- [x] `flutter_secure_storage` for tokens - **not** `shared_preferences`
+      — `core/auth/token_store.dart`; iOS uses `first_unlock` accessibility so a
+      locked device can still refresh
+- [x] Auth interceptor attaching the access token
+- [x] **Single-flight refresh**: concurrent 401s wait on one refresh, then replay.
       Write the test - this is the classic bug, and the backend rotates refresh
       tokens with reuse detection, so a double refresh logs the user out.
-- [ ] Idempotency-key interceptor with **persisted** keys (regenerating per
-      attempt provides no protection)
+      — 8 tests in `test/core/network/auth_interceptor_test.dart`. The backend
+      confirmed the server half: reuse revokes the **whole session family**.
+- [?] **Install `AuthInterceptor` into `dio_provider`** — blocked. It needs a
+      refresh callback, and the auth endpoints are not in the backend's
+      `docs/API_CONTRACTS.md` (that file covers locale, timestamps, dictionaries
+      and schemas only). Installing now means inventing a wire shape. Nothing
+      calls an authenticated endpoint yet, so this costs nothing today; it is one
+      `interceptors.add` once M1 publishes the contract.
+- [x] Idempotency-key interceptor with **persisted** keys (regenerating per
+      attempt provides no protection) — installed; header name
+      `Idempotency-Key` still needs confirming with the backend before M3 ships
+      a write path
 
 ### Shell and design system
 - [ ] `StatefulShellRoute` skeleton, one shell per role
@@ -195,12 +218,17 @@ emulator against the design document, with 18 tests pinning the rules.
 - [ ] Report and block; read-only closed conversations
 - [ ] Interview display by type + confirm / request another time
 - [ ] Idempotency key on message send
+- [ ] **Deep links switch role before navigating** where required *(moved here
+      from M9 - routing infrastructure, not a notification feature)*
 
-## M9 - Notifications
+## M9 - Notifications *(deferred to last - client direction 2026-08-04)*
 
-- [ ] In-app list, unread badge, mark read
+Runs after M10, not after M6. No Firebase package enters `pubspec.yaml` before
+this opens. Deep links moved to M8.
+
+- [ ] In-app list, unread badge, mark read *(no push dependency; can be pulled
+      forward at no cost if the client wants notification history earlier)*
 - [ ] Push registration and foreground/background handling
-- [ ] **Deep links switch role before navigating** where required
 - [ ] Preferences; security/account categories not offered as disableable
 
 ## M10 - Admin module

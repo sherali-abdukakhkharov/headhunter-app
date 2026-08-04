@@ -1,0 +1,97 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "HeadHunter",
+  "@appTitle": {
+    "description": "Application name. Brand term - left untranslated in every locale."
+  },
+
+  "commonRetry": "Try again",
+  "@commonRetry": {
+    "description": "Action on an error state. Every error state must offer one."
+  },
+  "commonCancel": "Cancel",
+  "@commonCancel": {
+    "description": "Dismisses a dialog or sheet without applying changes."
+  },
+  "commonSave": "Save",
+  "@commonSave": {
+    "description": "Commits a form."
+  },
+  "commonNext": "Next",
+  "@commonNext": {
+    "description": "Advances a multi-step flow."
+  },
+  "commonBack": "Back",
+  "@commonBack": {
+    "description": "Returns to the previous step."
+  },
+  "commonClose": "Close",
+  "@commonClose": {
+    "description": "Closes a sheet or full-screen surface."
+  },
+  "commonSearch": "Search",
+  "@commonSearch": {
+    "description": "Placeholder for a search input."
+  },
+
+  "stateLoading": "Loading…",
+  "@stateLoading": {
+    "description": "Accessible label for a loading state. Read by screen readers where the spinner itself carries no text."
+  },
+  "stateEmptyTitle": "Nothing here yet",
+  "@stateEmptyTitle": {
+    "description": "Heading for an empty list, as distinct from an error."
+  },
+  "stateEmptyBody": "There is nothing to show on this screen yet.",
+  "@stateEmptyBody": {
+    "description": "Body for an empty list."
+  },
+  "stateErrorTitle": "Something went wrong",
+  "@stateErrorTitle": {
+    "description": "Heading for a failed request."
+  },
+  "stateErrorBody": "The request could not be completed. Please try again.",
+  "@stateErrorBody": {
+    "description": "Generic error body, used when the server sent no localized message of its own."
+  },
+  "stateOfflineTitle": "No connection",
+  "@stateOfflineTitle": {
+    "description": "Heading shown when the device is offline. Distinct from a server error - the user can act on this one."
+  },
+  "stateOfflineBody": "Check your connection and try again.",
+  "@stateOfflineBody": {
+    "description": "Body for the offline state."
+  },
+  "statePermissionDeniedTitle": "Permission needed",
+  "@statePermissionDeniedTitle": {
+    "description": "Heading when an OS permission was refused."
+  },
+  "statePermissionDeniedBody": "Grant permission in Settings to continue.",
+  "@statePermissionDeniedBody": {
+    "description": "Body when an OS permission was refused."
+  },
+
+  "sessionExpired": "Your session has expired. Please sign in again.",
+  "@sessionExpired": {
+    "description": "Shown when refresh fails and the user is returned to onboarding."
+  },
+
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Label for the interface-language setting."
+  },
+
+  "roleCandidate": "Candidate",
+  "@roleCandidate": {
+    "description": "Role name. Someone looking for work."
+  },
+  "roleEmployer": "Employer",
+  "@roleEmployer": {
+    "description": "Role name. Someone posting vacancies - a company or an individual."
+  },
+  "roleAdmin": "Administrator",
+  "@roleAdmin": {
+    "description": "Role name. Platform moderator."
+  }
+}
