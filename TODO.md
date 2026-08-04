@@ -339,8 +339,14 @@ this opens. Deep links moved to M8.
 - [ ] Cached primary screens open without blocking; loading states complete
 - [ ] Offline state explicit; retry safe; no duplicate writes
 - [ ] Crash reporting + structured logging, no sensitive data
-- [ ] **Android release signing config** (currently debug keys - must change
-      before any store upload)
+- [x] **Android release signing config** — `android/upload-keystore.jks` (RSA
+      2048, valid to 2053, gitignored) read via `android/key.properties`; falls
+      back to debug signing with a loud warning when absent, so a fresh clone
+      still builds. Verified: the release APK is signed with SHA-256 `7C:1C:…`,
+      not the debug key. See [docs/RELEASE.md](docs/RELEASE.md)
+- [?] **Register the release SHA-256 with BotFather** and fill
+      `AppFlavor.production.telegramRedirectUri` — until then Telegram login is
+      unavailable in a downloaded APK, by design. RELEASE.md §4
 - [ ] App icons and launch screen
 - [ ] Walk all 15 UAT scenarios and keep the evidence
 

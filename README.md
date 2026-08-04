@@ -1,9 +1,27 @@
 # headhunter-app
 
-Flutter mobile app (Android + iOS) for the Headhunter job search and
-recruitment platform.
+Flutter mobile app (**Android**) for the Headhunter job search and recruitment
+platform. iOS is out of scope — see [CLAUDE.md](CLAUDE.md).
 
 Companion backend: `headhunter-backend` — `d:\Dev\tgbots\headhunter-backend`.
+
+## Download the latest APK
+
+**[⬇ Download headhunter.apk](https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/headhunter.apk)**
+
+[![release-apk](https://github.com/sherali-abdukakhkharov/headhunter-app/actions/workflows/release-apk.yml/badge.svg)](https://github.com/sherali-abdukakhkharov/headhunter-app/actions/workflows/release-apk.yml)
+[![latest release](https://img.shields.io/github/v/release/sherali-abdukakhkharov/headhunter-app?label=latest)](https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest)
+
+That link always resolves to the newest release, so it never needs updating —
+GitHub resolves `latest` on its side. Push a tag and a signed production APK is
+built and attached:
+
+```sh
+git tag v1.0.1 && git push origin v1.0.1
+```
+
+Setup, signing and the BotFather step Telegram login needs are in
+[docs/RELEASE.md](docs/RELEASE.md).
 
 ## Stack
 

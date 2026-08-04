@@ -492,8 +492,17 @@ account.
   loopback; `localhost` inside the emulator is the emulator itself.
 - Physical device testing needs the machine's LAN IP via
   `--dart-define=API_BASE_URL=...`.
-- Release builds currently sign with the **debug keystore** - must be replaced
-  before any store upload.
+- Release builds sign with `android/upload-keystore.jks` (created 2026-08-05, RSA
+  2048, alias `upload`, valid to 2053), loaded from a gitignored
+  `android/key.properties`. **Neither file is in the repository** and the keystore
+  is not recoverable - see [docs/RELEASE.md](docs/RELEASE.md) for the backup
+  warning and the four CI secrets.
+  *Consequence that is easy to miss:* this is a **different signing certificate**
+  from the debug one, so Telegram login needs its SHA-256 registered with
+  BotFather separately, or login fails in downloaded APKs only.
+  When no `key.properties` exists the release build falls back to debug signing
+  and says so loudly in the log, so a fresh clone still builds - both paths are
+  verified.
 
 ## Open questions
 
