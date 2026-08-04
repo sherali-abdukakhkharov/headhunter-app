@@ -208,6 +208,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
             HhBadge.info(label: 'Yangi'),
             HhBadge.paused(label: "To'xtatilgan"),
             HhBadge.changesRequired(label: "O'zgartirish talab qilinadi"),
+            HhBadge.offer(label: 'Taklif'),
           ],
         ),
 

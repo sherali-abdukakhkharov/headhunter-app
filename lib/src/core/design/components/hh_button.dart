@@ -148,8 +148,9 @@ class HhButton extends StatelessWidget {
             label,
             style: HhTypography.bodyStrong.copyWith(color: style.foreground),
             textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            // Deliberately no maxLines/ellipsis: §08.2 says the box grows with
+            // the label and never clips it. Truncating a Cyrillic label — ~30%
+            // longer than its Latin equivalent — is the failure this prevents.
           ),
         ),
       ],
@@ -172,12 +173,19 @@ class HhButton extends StatelessWidget {
           borderRadius: HhRadius.buttonAll,
           focusColor: HhColors.brand600.withValues(alpha: 0.12),
           child: Container(
-            height: height,
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            // `alignment` is only set when expanding: setting it makes a
-            // Container take all available width, which would defeat
-            // `expand: false` and stretch an auto-width button.
-            alignment: expand ? Alignment.center : null,
+            // minHeight, not height: the design's §08.2 answer is that the box
+            // grows with the label and never clips it, so at large system font
+            // scales the control gets taller rather than truncating.
+            constraints: BoxConstraints(minHeight: height),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 18,
+              vertical: 6,
+            ),
+            // No `alignment` at all. A Container with an alignment expands to
+            // the largest size its constraints allow — which stretched an
+            // auto-width button horizontally, and once the fixed height became
+            // a minHeight, stretched it to the full viewport vertically too.
+            // The Row centres the label on both axes instead.
             child: child,
           ),
         ),
@@ -263,11 +271,14 @@ class _TextButtonBody extends StatelessWidget {
         onTap: onPressed,
         borderRadius: HhRadius.buttonAll,
         child: Container(
-          // 44 keeps the touch target legal even though there is no fill.
-          height: HhSize.minTarget,
+          // 44 keeps the touch target legal even though there is no fill, and
+          // stays a minimum so the label can grow with the text scale.
+          constraints: const BoxConstraints(minHeight: HhSize.minTarget),
           width: expand ? double.infinity : null,
-          padding: const EdgeInsets.symmetric(horizontal: HhSpace.md),
-          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(
+            horizontal: HhSpace.md,
+            vertical: 6,
+          ),
           child: Row(
             mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,

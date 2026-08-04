@@ -62,13 +62,20 @@ abstract final class HhSize {
   /// smaller than this, even when the visual glyph is smaller.
   static const minTarget = 44.0;
 
-  /// **The** control height. Buttons, text fields and selects are all this
-  /// tall.
+  /// **The** control height — a *minimum*, not a fixed height.
   ///
-  /// The design makes this a deliberate, load-bearing choice: rather than a
-  /// "simple mode" for manual workers and a dense mode for professionals,
-  /// every control is the same size for everyone and only the *fields* differ.
-  /// Introducing a second control height re-opens that decision.
+  /// The design makes the single size a deliberate, load-bearing choice: rather
+  /// than a "simple mode" for manual workers and a dense mode for
+  /// professionals, every control is the same size for everyone and only the
+  /// *fields* differ. Introducing a second control height re-opens that
+  /// decision.
+  ///
+  /// Design round 1, §08.2 resolved the tension with system font scaling
+  /// (§12.1) explicitly: **"control height min 52 — the box grows with the
+  /// label, it never clips it."** So always apply this as
+  /// `BoxConstraints(minHeight:)`, never as a fixed `height:`. At large
+  /// accessibility text scales the control grows; the label is never truncated
+  /// to preserve the 52.
   static const control = 52.0;
 
   /// Compact control height, for in-card actions only — never for a primary

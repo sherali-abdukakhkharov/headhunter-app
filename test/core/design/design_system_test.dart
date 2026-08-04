@@ -16,7 +16,9 @@ Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
 
 void main() {
   group('one control size for everyone', () {
-    testWidgets('buttons are 52px tall', (tester) async {
+    testWidgets('a button is 52px tall at the default text scale', (
+      tester,
+    ) async {
       await pump(tester, HhButton(label: 'Davom etish', onPressed: () {}));
 
       final box = tester.getSize(
@@ -28,11 +30,56 @@ void main() {
       expect(box.height, HhSize.control);
     });
 
-    testWidgets('a text field box is 52px tall', (tester) async {
+    testWidgets('a text field box is 52px tall at the default text scale', (
+      tester,
+    ) async {
       await pump(tester, const HhTextField(label: 'Ism va familiya'));
 
       final box = tester.getSize(find.byType(AnimatedContainer));
       expect(box.height, HhSize.control);
+    });
+
+    // Design round 1 §08.2: "control height min 52 — the box grows with the
+    // label, it never clips it." 52 is a floor, not a fixed height, so a large
+    // accessibility text scale must make the control taller rather than
+    // truncating a label (Cyrillic runs ~30% longer than Latin).
+    testWidgets('a control grows with the text scale instead of clipping', (
+      tester,
+    ) async {
+      Future<double> heightAt(double scale) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: HhTheme.light,
+            home: MediaQuery(
+              data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+              child: Scaffold(
+                body: Center(
+                  child: SizedBox(
+                    width: 200,
+                    child: HhButton(
+                      // Long enough that it must wrap when scaled up.
+                      label: 'Продолжить регистрацию',
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        return tester.getSize(find.byType(HhButton)).height;
+      }
+
+      final normal = await heightAt(1);
+      final large = await heightAt(2);
+
+      expect(normal, greaterThanOrEqualTo(HhSize.control));
+      expect(
+        large,
+        greaterThan(normal),
+        reason: 'the box must grow with the label rather than clip it',
+      );
     });
 
     // Regression: the bordered variants set Material.shape, and passing both
@@ -113,6 +160,7 @@ void main() {
         HhBadge.info(label: 'Yangi'),
         HhBadge.paused(label: "To'xtatilgan"),
         HhBadge.changesRequired(label: "O'zgartirish talab qilinadi"),
+        HhBadge.offer(label: 'Taklif'),
       ];
 
       for (final badge in badges) {
@@ -127,6 +175,17 @@ void main() {
         );
         expect(find.text(badge.label), findsOneWidget);
       }
+    });
+
+    // Design round 1 recategorised Offer from success to warning: under the
+    // tone rule warning means "waiting on a person", and an offer waits on the
+    // candidate. Success would tell them the matter was already settled.
+    testWidgets('an offer is warning-toned, not success', (tester) async {
+      await pump(tester, const HhBadge.offer(label: 'Taklif'));
+
+      final badge = tester.widget<HhBadge>(find.byType(HhBadge));
+      expect(badge.tone, HhTone.warning);
+      expect(badge.iconPath, HhIconPath.document);
     });
 
     testWidgets('a selected filter chip is marked with a check', (

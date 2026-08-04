@@ -50,6 +50,17 @@ class HhBadge extends StatelessWidget {
     : tone = HhTone.neutral,
       iconPath = HhIconPath.pause;
 
+  /// Offer extended, awaiting the candidate's response.
+  ///
+  /// **Warning, not success** — design round 1 changed this explicitly. Under
+  /// the tone rule, warning means "waiting on a person"; an offer is waiting on
+  /// the candidate to accept or decline. Reading it as success ("resolved
+  /// well") told the candidate the matter was settled when the deadline was in
+  /// fact theirs to meet.
+  const HhBadge.offer({required this.label, super.key})
+    : tone = HhTone.warning,
+      iconPath = HhIconPath.document;
+
   /// Changes required — a warning tone with an edit glyph, because the user has
   /// something to *do* rather than something to wait for.
   const HhBadge.changesRequired({required this.label, super.key})
