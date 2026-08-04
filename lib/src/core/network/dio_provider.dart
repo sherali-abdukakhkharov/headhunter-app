@@ -1,6 +1,5 @@
-import 'dart:developer' as developer;
-
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:headhunter_app/src/core/config/app_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,7 +16,8 @@ Dio dio(Ref ref) {
       baseUrl: AppConfig.apiBaseUrl,
       connectTimeout: AppConfig.requestTimeout,
       receiveTimeout: AppConfig.requestTimeout,
-      sendTimeout: AppConfig.requestTimeout,
+      // sendTimeout is deliberately not set: it only applies to requests with a
+      // body, and setting it on bodyless GETs is a known source of confusion.
       contentType: Headers.jsonContentType,
       // Let every non-2xx surface as a DioException so error handling has
       // exactly one path.
@@ -31,7 +31,10 @@ Dio dio(Ref ref) {
       LogInterceptor(
         requestBody: true,
         responseBody: true,
-        logPrint: (o) => developer.log('$o', name: 'dio'),
+        // debugPrint, not developer.log: developer.log writes only to the VM
+        // service, so it is invisible in `flutter run`, `flutter logs` and
+        // logcat - exactly where you look when a request misbehaves.
+        logPrint: (o) => debugPrint('[dio] $o'),
       ),
     );
   }

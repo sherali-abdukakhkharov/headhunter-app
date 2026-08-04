@@ -32,9 +32,15 @@ class HealthScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // Error is matched FIRST, and via hasError rather than the
+            // AsyncError subtype. Riverpod represents a retrying provider as
+            // AsyncLoading that carries the error, so matching AsyncLoading
+            // first would hide a real failure behind a spinner forever.
             switch (health) {
-              AsyncData(:final value) => _HealthCard(status: value),
-              AsyncError(:final error) => _ErrorCard(error: error),
+              AsyncValue(hasError: true, :final error?) => _ErrorCard(
+                error: error,
+              ),
+              AsyncValue(:final value?) => _HealthCard(status: value),
               _ => const _LoadingCard(),
             },
             const SizedBox(height: 16),

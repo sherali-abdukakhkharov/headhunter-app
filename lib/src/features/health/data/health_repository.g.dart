@@ -56,11 +56,19 @@ final class HealthRepositoryProvider
 String _$healthRepositoryHash() => r'5855b307f3e8f9622de67123627d11acb228ae32';
 
 /// Current backend health. Watch this to render status; refresh to re-check.
+///
+/// Throws [ApiException] when the backend is unreachable. Automatic retry is
+/// disabled app-wide in `main.dart`, so that error is a terminal state the UI
+/// renders rather than something that silently loops.
 
 @ProviderFor(healthStatus)
 final healthStatusProvider = HealthStatusProvider._();
 
 /// Current backend health. Watch this to render status; refresh to re-check.
+///
+/// Throws [ApiException] when the backend is unreachable. Automatic retry is
+/// disabled app-wide in `main.dart`, so that error is a terminal state the UI
+/// renders rather than something that silently loops.
 
 final class HealthStatusProvider
     extends
@@ -71,6 +79,10 @@ final class HealthStatusProvider
         >
     with $FutureModifier<HealthStatus>, $FutureProvider<HealthStatus> {
   /// Current backend health. Watch this to render status; refresh to re-check.
+  ///
+  /// Throws [ApiException] when the backend is unreachable. Automatic retry is
+  /// disabled app-wide in `main.dart`, so that error is a terminal state the UI
+  /// renders rather than something that silently loops.
   HealthStatusProvider._()
     : super(
         from: null,

@@ -39,6 +39,10 @@ HealthRepository healthRepository(Ref ref) =>
     HealthRepository(ref.watch(dioProvider));
 
 /// Current backend health. Watch this to render status; refresh to re-check.
+///
+/// Throws [ApiException] when the backend is unreachable. Automatic retry is
+/// disabled app-wide in `main.dart`, so that error is a terminal state the UI
+/// renders rather than something that silently loops.
 @riverpod
 Future<HealthStatus> healthStatus(Ref ref) {
   final cancelToken = CancelToken();

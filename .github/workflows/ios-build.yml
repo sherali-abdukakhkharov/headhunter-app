@@ -1,0 +1,38 @@
+# iOS cannot be built on the Windows dev machine (Xcode is macOS-only), so this
+# workflow is the only thing that compiles the iOS target. It builds without
+# code signing, which needs no certificates or provisioning profiles - enough to
+# catch iOS-specific compile and plugin breakage early.
+#
+# Producing an installable .ipa (signing, TestFlight) additionally requires an
+# Apple Developer account and signing secrets; that is a separate workflow.
+name: ios-build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.44.8
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Build iOS (no code signing)
+        run: flutter build ios --debug --no-codesign

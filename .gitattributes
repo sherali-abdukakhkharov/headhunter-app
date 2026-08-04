@@ -1,0 +1,21 @@
+# Normalise line endings: LF in the repo, native on checkout for Windows devs.
+* text=auto eol=lf
+
+# Windows-only tooling that must keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Gradle wrapper.
+gradlew text eol=lf
+gradlew.bat text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.keystore binary
+*.jks binary
+*.ttf binary
+*.otf binary
