@@ -1,0 +1,71 @@
+name: headhunter_app
+description: "Headhunter - job search and recruitment mobile app"
+# Prevents accidental publication to pub.dev.
+publish_to: 'none'
+
+# versionName / CFBundleShortVersionString + versionCode / CFBundleVersion.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+# NOTE: entries are kept alphabetical to satisfy the sort_pub_dependencies lint.
+#
+# Version pinning in this file is load-bearing. The chain:
+#
+#   flutter_test (Flutter 3.44.8) pins meta to exactly 1.18.0
+#     -> build_runner >=2.15.2 needs analyzer >=13.3, which needs meta ^1.18.3
+#     -> so build_runner must stay <2.15.2, which caps analyzer at 12.x
+#     -> so riverpod_generator must stay <4.0.6 (4.0.6+ requires analyzer ^13)
+#     -> so riverpod_annotation is 4.0.3 (riverpod_generator 4.0.4 requires it
+#        exactly), which holds flutter_riverpod at 3.3.2 rather than 3.4.2
+#     -> so riverpod_lint is pinned to 3.1.4 in analysis_options.yaml
+#
+# Everything therefore sits on analyzer 12.1.0. Revisit the whole block when a
+# Flutter release unpins meta; then all of these can move up together.
+#
+# freezed is deliberately absent for the same reason: no *stable* freezed
+# release supports analyzer 12 (3.2.5 caps at <11; the analyzer-12 build is
+# still the 3.2.6-dev.1 prerelease). Add it once a stable release supports
+# analyzer >=12 and migrate the models then.
+dependencies:
+  cupertino_icons: ^1.0.8
+
+  # Networking.
+  dio: ^5.11.0
+
+  flutter:
+    sdk: flutter
+
+  # State management + dependency injection.
+  flutter_riverpod: ^3.0.0
+
+  # Navigation.
+  go_router: ^17.3.0
+
+  # i18n / formatting.
+  intl: ^0.20.3
+
+  # JSON models.
+  json_annotation: ^4.12.0
+
+  riverpod_annotation: 4.0.3
+
+dev_dependencies:
+  # Codegen.
+  build_runner: ">=2.4.0 <2.15.2"
+
+  flutter_test:
+    sdk: flutter
+
+  json_serializable: ^6.13.0
+
+  riverpod_generator: ">=4.0.4 <4.0.6"
+
+  # Strict lint set; swap for flutter_lints if too noisy.
+  # riverpod_lint is NOT listed here: since v3 it uses the analyzer's native
+  # plugin system and is declared under `plugins:` in analysis_options.yaml.
+  very_good_analysis: ^10.3.0
+
+flutter:
+  uses-material-design: true

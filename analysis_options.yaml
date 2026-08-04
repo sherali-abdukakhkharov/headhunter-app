@@ -1,0 +1,24 @@
+# Configures the Dart analyzer. Run manually with `flutter analyze`.
+
+# Strict rule set. Swap for `package:flutter_lints/flutter.yaml` if too noisy.
+include: package:very_good_analysis/analysis_options.yaml
+
+# riverpod_lint uses the analyzer's native plugin system (analysis_server_plugin)
+# since v3, so it is declared here rather than in pubspec dev_dependencies.
+#
+# Pinned exactly, NOT with a caret: 3.1.4 is the release built against
+# analyzer ^12 / riverpod 3.3.2, which is what this project resolves to.
+# riverpod_lint >=3.1.6 requires analyzer ^13 and would not load.
+plugins:
+  riverpod_lint: 3.1.4
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
+linter:
+  rules:
+    # This is an app, not a published package - doc comments on every public
+    # member would be ceremony without a payoff.
+    public_member_api_docs: false
