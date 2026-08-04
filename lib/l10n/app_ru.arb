@@ -10,6 +10,7 @@
   "commonBack": "Назад",
   "commonClose": "Закрыть",
   "commonSearch": "Поиск",
+  "commonSignOut": "Выйти",
 
   "stateLoading": "Загрузка…",
   "stateEmptyTitle": "Пока пусто",
@@ -27,5 +28,21 @@
 
   "roleCandidate": "Соискатель",
   "roleEmployer": "Работодатель",
-  "roleAdmin": "Администратор"
+  "roleAdmin": "Администратор",
+
+  "navHome": "Главная",
+  "navVacancies": "Вакансии",
+  "navApplications": "Заявки",
+  "navMessages": "Сообщения",
+  "navProfile": "Профиль",
+  "navCandidates": "Кандидаты",
+  "navCompany": "Компания",
+  "navDashboard": "Обзор",
+  "navQueue": "Модерация",
+  "navComplaints": "Жалобы",
+  "navUsers": "Пользователи",
+  "navDictionaries": "Справочники",
+
+  "blockedTitle": "Аккаунт заблокирован",
+  "blockedBody": "Администратор заблокировал этот аккаунт. Вы не сможете пользоваться приложением, пока блокировка не снята."
 }

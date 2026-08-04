@@ -33,6 +33,9 @@ class AppL10nUz extends AppL10n {
   String get commonSearch => 'Qidirish';
 
   @override
+  String get commonSignOut => 'Chiqish';
+
+  @override
   String get stateLoading => 'Yuklanmoqda…';
 
   @override
@@ -77,6 +80,49 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get roleAdmin => 'Administrator';
+
+  @override
+  String get navHome => 'Bosh sahifa';
+
+  @override
+  String get navVacancies => 'Vakansiyalar';
+
+  @override
+  String get navApplications => 'Arizalar';
+
+  @override
+  String get navMessages => 'Xabarlar';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get navCandidates => 'Nomzodlar';
+
+  @override
+  String get navCompany => 'Kompaniya';
+
+  @override
+  String get navDashboard => 'Boshqaruv';
+
+  @override
+  String get navQueue => 'Moderatsiya';
+
+  @override
+  String get navComplaints => 'Shikoyatlar';
+
+  @override
+  String get navUsers => 'Foydalan­uvchilar';
+
+  @override
+  String get navDictionaries => 'Lug\'atlar';
+
+  @override
+  String get blockedTitle => 'Hisob bloklangan';
+
+  @override
+  String get blockedBody =>
+      'Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -106,6 +152,9 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get commonSearch => 'Қидириш';
+
+  @override
+  String get commonSignOut => 'Чиқиш';
 
   @override
   String get stateLoading => 'Юкланмоқда…';
@@ -151,6 +200,49 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get roleAdmin => 'Администратор';
+
+  @override
+  String get navHome => 'Бош саҳифа';
+
+  @override
+  String get navVacancies => 'Вакансиялар';
+
+  @override
+  String get navApplications => 'Аризалар';
+
+  @override
+  String get navMessages => 'Хабарлар';
+
+  @override
+  String get navProfile => 'Профил';
+
+  @override
+  String get navCandidates => 'Номзодлар';
+
+  @override
+  String get navCompany => 'Компания';
+
+  @override
+  String get navDashboard => 'Бошқарув';
+
+  @override
+  String get navQueue => 'Модерация';
+
+  @override
+  String get navComplaints => 'Шикоятлар';
+
+  @override
+  String get navUsers => 'Фойдалан­увчилар';
+
+  @override
+  String get navDictionaries => 'Луғатлар';
+
+  @override
+  String get blockedTitle => 'Ҳисоб блокланган';
+
+  @override
+  String get blockedBody =>
+      'Администратор бу ҳисобни блоклаган. Блок олиб ташланмагунча иловадан фойдалана олмайсиз.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -180,6 +272,9 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get commonSearch => 'Qidirish';
+
+  @override
+  String get commonSignOut => 'Chiqish';
 
   @override
   String get stateLoading => 'Yuklanmoqda…';
@@ -226,4 +321,47 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get roleAdmin => 'Administrator';
+
+  @override
+  String get navHome => 'Bosh sahifa';
+
+  @override
+  String get navVacancies => 'Vakansiyalar';
+
+  @override
+  String get navApplications => 'Arizalar';
+
+  @override
+  String get navMessages => 'Xabarlar';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get navCandidates => 'Nomzodlar';
+
+  @override
+  String get navCompany => 'Kompaniya';
+
+  @override
+  String get navDashboard => 'Boshqaruv';
+
+  @override
+  String get navQueue => 'Moderatsiya';
+
+  @override
+  String get navComplaints => 'Shikoyatlar';
+
+  @override
+  String get navUsers => 'Foydalan­uvchilar';
+
+  @override
+  String get navDictionaries => 'Lug\'atlar';
+
+  @override
+  String get blockedTitle => 'Hisob bloklangan';
+
+  @override
+  String get blockedBody =>
+      'Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.';
 }

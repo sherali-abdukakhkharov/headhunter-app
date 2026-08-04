@@ -100,30 +100,30 @@ abstract class _$LocaleController extends $AsyncNotifier<AppLocale> {
 
 /// The active locale as a plain value, for callers that cannot await.
 ///
-/// Falls back to [AppLocale.fallback] while preferences are still loading and on
-/// error. The `x-lang` interceptor uses this: a request must always carry a
-/// language, and blocking every request on a disk read to avoid one wrong header
-/// during the first frames is the worse trade.
+/// Falls back to [AppLocale.fallback] while preferences are still loading, and
+/// on error. The `x-lang` interceptor uses this: a request must always carry a
+/// language, and blocking every request on a disk read - to avoid one wrong
+/// header during the first frames - is the worse trade.
 
 @ProviderFor(activeLocale)
 final activeLocaleProvider = ActiveLocaleProvider._();
 
 /// The active locale as a plain value, for callers that cannot await.
 ///
-/// Falls back to [AppLocale.fallback] while preferences are still loading and on
-/// error. The `x-lang` interceptor uses this: a request must always carry a
-/// language, and blocking every request on a disk read to avoid one wrong header
-/// during the first frames is the worse trade.
+/// Falls back to [AppLocale.fallback] while preferences are still loading, and
+/// on error. The `x-lang` interceptor uses this: a request must always carry a
+/// language, and blocking every request on a disk read - to avoid one wrong
+/// header during the first frames - is the worse trade.
 
 final class ActiveLocaleProvider
     extends $FunctionalProvider<AppLocale, AppLocale, AppLocale>
     with $Provider<AppLocale> {
   /// The active locale as a plain value, for callers that cannot await.
   ///
-  /// Falls back to [AppLocale.fallback] while preferences are still loading and on
-  /// error. The `x-lang` interceptor uses this: a request must always carry a
-  /// language, and blocking every request on a disk read to avoid one wrong header
-  /// during the first frames is the worse trade.
+  /// Falls back to [AppLocale.fallback] while preferences are still loading, and
+  /// on error. The `x-lang` interceptor uses this: a request must always carry a
+  /// language, and blocking every request on a disk read - to avoid one wrong
+  /// header during the first frames - is the worse trade.
   ActiveLocaleProvider._()
     : super(
         from: null,
@@ -157,4 +157,4 @@ final class ActiveLocaleProvider
   }
 }
 
-String _$activeLocaleHash() => r'1523d225080ceb65df107f911d9403bd76a0689e';
+String _$activeLocaleHash() => r'6a46a261ec51d9977849f4d9832160d4c46439a1';

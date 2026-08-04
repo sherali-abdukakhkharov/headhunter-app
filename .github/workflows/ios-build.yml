@@ -34,5 +34,11 @@ jobs:
 
       - run: flutter pub get
 
+      # No --flavor here, deliberately: iOS flavors are Xcode schemes, and those
+      # cannot be created on the Windows development machine (see TODO.md M0.5).
+      # The Dart half works everywhere, so FLAVOR is passed on its own; this job
+      # exists to catch iOS-specific *compile* breakage, which it still does.
       - name: Build iOS (no code signing)
-        run: flutter build ios --debug --no-codesign
+        run: >
+          flutter build ios --debug --no-codesign
+          --dart-define=FLAVOR=development

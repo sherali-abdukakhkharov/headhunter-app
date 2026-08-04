@@ -54,8 +54,8 @@ emulator against the design document, with 18 tests pinning the rules.
       stage timeline
 - [x] Vacancy / candidate / application cards, bottom nav (3 role sets)
 - [x] All 11 required UI states
-- [x] `DesignGalleryScreen` at `/_design`, reachable from a debug-only app-bar
-      action on the health screen
+- [x] `DesignGalleryScreen` at `/_design`, reached from the developer-tools
+      screen at `/_dev`. Both are absent from production builds entirely
 - [x] Design round-1 answers applied: the twenty-state vocabulary with its glyph
       rule, always-on category band, conditional-field rail, two-line nav at a
       constant 70pt, min-52 control height, 2.0x text-scale clamp, derived
@@ -76,7 +76,12 @@ emulator against the design document, with 18 tests pinning the rules.
       docs/design-feedback.md
 - [ ] Re-check every component at large system font scale as screens land (M11)
 
-## M0.5 - App shell *(next)*
+## M0.5 - App shell *(done bar two carried items)*
+
+Everything below is implemented and verified on an emulator. Two items are
+carried forward and neither blocks M1: **bottom sheets** (design-system gap,
+first needed by the M2 pickers) and **iOS flavor schemes** (needs a Mac).
+Installing `AuthInterceptor` stays blocked on the backend's auth contract.
 
 ### Localization *(done)*
 - [x] Add `flutter_localizations` + `intl`; enable `gen-l10n` in `pubspec.yaml`
@@ -97,10 +102,23 @@ emulator against the design document, with 18 tests pinning the rules.
 - [x] CI check: all ARB files share exactly one key set —
       `test/core/l10n/arb_parity_test.dart`
 
-### Flavors and config
-- [ ] development / testing / production flavors
-- [ ] Per-flavor API base URL, app id suffix, display name
-- [ ] Verify no secrets are compiled in (§12.5)
+### Flavors and config *(done)*
+- [x] development / **staging** / production flavors — `core/config/app_flavor.dart`
+      plus `productFlavors` in `android/app/build.gradle.kts`. §12.1 calls the
+      middle one "testing"; AGP rejects any flavor name starting with `test`, so
+      both sides say `staging` — see MEMORY.md for that and two more Android
+      flavor traps
+- [x] Per-flavor API base URL, app id suffix, display name — all three install
+      side by side (`.dev` / `.staging` / no suffix). `app_flavor_test.dart` reads
+      the Gradle file and the manifest and asserts they agree with `AppFlavor`
+- [x] `--flavor` is now **required** on every run/build command; README and
+      CLAUDE.md updated
+- [x] Verify no secrets are compiled in (§12.5) — `AppConfig` carries only
+      hostnames and switches, and says why in a comment: `--dart-define` values
+      are recoverable from an APK with `strings`
+- [ ] **iOS flavors** — needs Xcode schemes, which cannot be created on Windows.
+      The Dart half (`--dart-define=FLAVOR=`) already works; the scheme/xcconfig
+      half is deferred to whoever has a Mac (M11 at the latest)
 
 ### Auth plumbing
 - [x] `flutter_secure_storage` for tokens - **not** `shared_preferences`
@@ -122,26 +140,70 @@ emulator against the design document, with 18 tests pinning the rules.
       attempt provides no protection) — installed; header name
       `Idempotency-Key` still needs confirming with the backend before M3 ships
       a write path
+- [x] Session state and controller — `core/auth/session_state.dart`,
+      `session_controller.dart`. The **role model is real** (granted set, active
+      choice, fallback when a role is revoked, persisted active role);
+      **acquiring** a session is the M1 seam, and until then
+      `signInAsDevelopmentRole` provides one, gated on the flavor
+- [x] `SessionController.expire()` is the destination for
+      `AuthInterceptor.onAuthFailure`, so that callback now has a home for when
+      the interceptor is installed
 
 ### Shell and design system
-- [ ] `StatefulShellRoute` skeleton, one shell per role
-- [ ] Redirect chain: unauthenticated → onboarding; no role → role selection;
-      blocked → notice screen; ungranted role → default shell
-- [ ] Route path constants in one place
-- [ ] Colours, typography, spacing; loading / empty / error state primitives
-- [ ] Buttons, text fields, chips, bottom sheets
-- [ ] Font-scale tolerance check on the primitives
+- [x] `StatefulShellRoute` skeleton, one shell per role — all three registered at
+      once, each owning a path namespace (`/candidate`, `/employer`, `/admin`), so
+      leaving one shell disposes its branch navigators and navigation state cannot
+      leak across a role switch
+- [x] Redirect chain: unrestored → splash; unauthenticated → onboarding; blocked →
+      notice (BR-10, **ahead of** role selection); no role → role selection;
+      ungranted role → own shell; granted-but-inactive role → **activate it**
+      (the deep-link rule of ARCHITECTURE.md §3)
+- [x] Route path constants in one place — `core/router/routes.dart`;
+      `routes_test.dart` asserts every shell path matches its role's prefix,
+      because the constants are literals and nothing else connects them
+- [x] Role switching — `switchRoleAndGo`. **`switchRole` alone does not
+      navigate**, and that is deliberate: see MEMORY.md, it was a real bug found
+      on a device with a green analyze and 129 passing tests
+- [x] Session state: granted roles, active role, account status
+      (active / restricted / blocked). `restricted` deliberately does **not**
+      redirect — it gates individual actions
+- [x] Blocked-account screen with the admin's reason shown verbatim (BR-10)
+- [x] Developer-tools screen at `/_dev` with sign-in scenarios for every branch of
+      the chain, the role switcher and live variant switching. Underscore routes
+      are absent entirely from production builds
+- [x] Colours, typography, spacing; loading / empty / error state primitives
+      *(shipped with the design system)*
+- [x] Buttons, text fields, chips *(shipped with the design system)*
+- [x] Font-scale tolerance check on the primitives *(design system, 2.0x clamp)*
+- [ ] **Bottom sheets** — the only design-system primitive still missing.
+      `HhRadius.sheetTop` and `HhElevation.sheet` exist and the theme styles
+      `BottomSheetTheme`, but there is no `HhSheet` component. First needed by the
+      M2 pickers and the M6 filter sheets
+- [ ] Verified on the emulator: onboarding → dev tools → all three shells, live
+      uz-Cyrl switch, BR-10 notice, session restored across a cold start, and
+      `Foydalanuvchilar` / `Фойдаланувчилар` wrapping at its soft hyphen without growing the 70pt bar
 
 ## M1 - Onboarding and session
 
-- [ ] Language picker shown **before** registration
+Three of these landed early with the shell, because the redirect chain needed
+working destinations rather than dead ends.
+
+- [x] Language picker shown **before** registration — live on the onboarding
+      screen, all four variants, persisted locally
 - [ ] Phone entry + terms/privacy acceptance
 - [ ] OTP screen: resend timer, attempt feedback from server config
-- [ ] Role selection (candidate / employer / both) → correct onboarding
-- [ ] Role switcher in the profile area
+- [~] Role selection (candidate / employer / both) → correct onboarding — the
+      **mechanism** is done (grants the roles, router enters that shell;
+      administrator deliberately not offered, since §10 grants it). The copy and
+      the per-role explanations are M1's
+- [~] Role switcher in the profile area — `switchRoleAndGo` is done and exercised
+      from `/_dev`; it needs its product entry point once the profile area exists
 - [ ] Sessions screen: list, sign out, terminate all
-- [ ] Blocked-account notice explaining the restriction (BR-10)
+- [x] Blocked-account notice explaining the restriction (BR-10) — reason shown
+      verbatim, sign-out available; verified on device
 - [ ] Account deletion request with confirmation
+- [ ] Real session acquisition, replacing `signInAsDevelopmentRole` *(blocked on
+      the backend's auth contract — see Auth plumbing above)*
 - [ ] Test: UAT-01 in each of the four variants; locale retained after registration
 
 ## M2 - Dictionary cache and pickers

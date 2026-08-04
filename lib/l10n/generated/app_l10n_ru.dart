@@ -33,6 +33,9 @@ class AppL10nRu extends AppL10n {
   String get commonSearch => 'Поиск';
 
   @override
+  String get commonSignOut => 'Выйти';
+
+  @override
   String get stateLoading => 'Загрузка…';
 
   @override
@@ -75,4 +78,47 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get roleAdmin => 'Администратор';
+
+  @override
+  String get navHome => 'Главная';
+
+  @override
+  String get navVacancies => 'Вакансии';
+
+  @override
+  String get navApplications => 'Заявки';
+
+  @override
+  String get navMessages => 'Сообщения';
+
+  @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get navCandidates => 'Кандидаты';
+
+  @override
+  String get navCompany => 'Компания';
+
+  @override
+  String get navDashboard => 'Обзор';
+
+  @override
+  String get navQueue => 'Модерация';
+
+  @override
+  String get navComplaints => 'Жалобы';
+
+  @override
+  String get navUsers => 'Пользователи';
+
+  @override
+  String get navDictionaries => 'Справочники';
+
+  @override
+  String get blockedTitle => 'Аккаунт заблокирован';
+
+  @override
+  String get blockedBody =>
+      'Администратор заблокировал этот аккаунт. Вы не сможете пользоваться приложением, пока блокировка не снята.';
 }

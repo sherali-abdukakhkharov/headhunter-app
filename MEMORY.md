@@ -33,6 +33,47 @@ Not for: things the code already says, or the milestone checklist (that is
 
 ## Architectural decisions
 
+### 2026-08-04 - A role switch must state its destination; the location is authoritative
+`SessionController.switchRole` changes state only. Navigation is paired with it in
+exactly one place, `switchRoleAndGo` in `core/router/role_navigation.dart`.
+
+*Why it cannot be state alone*, which is the opposite of what it looks like: the
+redirect chain implements ARCHITECTURE.md §3's deep-link rule - a granted role
+named by the **path** becomes the active one, so a notification can open an
+employer screen without the guard bouncing it. After `switchRole(employer)` the
+location is still `/candidate/home`, so that same rule reads the location and
+re-activates **candidate**, undoing the switch. Both rules are right and they pull
+opposite ways, because `(location, session)` cannot distinguish "the user asked
+for another role" from "the user opened a link belonging to another role".
+
+Fixing it inside the redirect needs a flag saying which of the two just happened -
+a mode bit in a guard, which is where routing bugs live. So the location stays
+authoritative and a switch names its destination. One rule, no ambiguity.
+
+*Found on a device*, with `flutter analyze` green and 129 tests passing: the
+switcher simply appeared to do nothing. Two tests now pin it, one asserting that
+`switchRole` alone does **not** move shells.
+
+### 2026-08-04 - Underscore-prefixed routes are development surfaces
+`/_dev`, `/_design`, `/_health`. They are exempt from the redirect chain, never
+linked from product UI, and **not registered at all** when
+`AppFlavor.allowsDevelopmentTools` is false.
+*Why exempt:* the tools have to work *because* the session is in an awkward
+state - that is when they are needed. Guarding them behind the chain they exist to
+debug locks the keys inside.
+*Why unregistered rather than hidden in production:* a hidden screen is still
+reachable by deep link; an absent route is not.
+*Consequence:* the health screen moved off `/` to `/_health`, so the product's
+entry point is the shell and nothing can link the M0 scaffolding into it by
+accident.
+
+### 2026-08-04 - Gate development surfaces on the flavor, not `kDebugMode`
+`AppFlavor.allowsDevelopmentTools`, i.e. "not production".
+*Why:* a **release** build of the development flavor is exactly what gets handed
+to the client for a look, and the role switcher has to work there. Conversely a
+*profile* build of production is still production, so `kDebugMode` is wrong in
+both directions. Network logging uses the same gate.
+
 ### 2026-08-04 - Design round 1 answered; the status vocabulary is fixed
 The designer answered the handoff questions in §08 of the design file (also
 committed as their standalone note). Everything below is *their* decision, not
@@ -197,6 +238,63 @@ The in-app notification list has no push dependency and can be pulled forward at
 no cost if the client wants notification history earlier.
 
 ## Traps already paid for
+
+### 2026-08-04 - Three Android flavor traps, in the order they fire
+Adding the three flavors of §12.1 hit three separate walls. All of them fail at
+Gradle *configuration* time, so none of them is visible from Dart.
+
+1. **`ProductFlavor names cannot start with 'test'.`** AGP reserves that prefix
+   because it collides with the `test` and `androidTest` source sets - so §12.1's
+   "testing" flavor cannot be called `testing`. It is `staging` on **both** sides
+   rather than `testing` in Dart and something else in Gradle, because two names
+   for one environment is a trap every time somebody pairs `--flavor` with
+   `--dart-define=FLAVOR=`. A test asserts no flavor name starts with `test`.
+2. **`Product Flavor development contains custom resource values, but the feature
+   is disabled.`** AGP 9 ships with `buildFeatures.resValues` **off**, so the
+   usual `resValue("string", "app_name", …)` per-flavor label fails outright. The
+   label goes through a `manifestPlaceholders["appName"]` instead, which needs no
+   feature flag - and the launcher name is deliberately never localized anyway
+   (§2.4).
+3. **`--flavor` becomes mandatory.** With product flavors defined there is no
+   plain `assembleDebug`, so a bare `flutter run` can no longer resolve one APK.
+   Every documented command now carries `--flavor`.
+
+`app_flavor_test.dart` reads `build.gradle.kts` and the manifest and asserts they
+agree with `AppFlavor` on the suffixes and display names. Nothing else connects
+the two halves, and a drift stays invisible until a device ends up with two builds
+claiming one application id - at which point installing one uninstalls the other
+and takes its data.
+
+### 2026-08-04 - Kotlin incremental compilation is broken on this toolchain
+Every build failed at `:shared_preferences_android:compileDebugKotlin` with
+`Could not close incremental caches … class-fq-name-to-source.tab` and, beneath
+it, `Storage for [...] is already registered`. The sequence: the Kotlin daemon
+compile fails, the Build Tools API falls back to in-process compilation, and the
+fallback re-registers the storages the failed attempt left behind.
+
+`android/gradle.properties` now sets **`kotlin.incremental=false`**, which fixes
+it. The cost is nil - the only Kotlin in this repo is `MainActivity.kt`.
+
+Worth recording what it is *not*, because each of these was tried:
+
+- **not the product flavors** - the failing task belongs to a plugin subproject
+  with no flavors, and the build fails identically with the pre-flavor `android/`
+  config (verified by stashing it);
+- **not stale state** - the cache directory is recreated from scratch each build
+  and still fails; it survives `flutter clean`, deleting `android/.gradle`,
+  `gradlew --stop`, and killing the Kotlin daemons;
+- **not a JDK downgrade** - Flutter is using Android Studio's JBR 25 as intended.
+
+Note that `gradlew --stop` does **not** stop Kotlin daemons; they are separate
+`java.exe` processes identified by `KotlinCompileDaemon` in their command line.
+Revisit when the Kotlin plugin or the bundled JBR moves.
+
+### 2026-08-04 - `pumpAndSettle` cannot be used on any route reaching the splash
+The splash screen carries a `CircularProgressIndicator`, which animates forever,
+so `pumpAndSettle` times out - and the timeout looks exactly like a stuck
+redirect. `test/core/router/app_router_test.dart` uses a bounded `_pumpRoute`
+helper (`pump()` plus two 400ms pumps) instead. Two long pumps, not one: a deep
+link into a non-active role converges over **two** redirect passes.
 
 ### 2026-08-04 - `gen-l10n` drops the script code from `supportedLocales`
 It generates working `AppL10nUzLatn` and `AppL10nUzCyrl` classes and a

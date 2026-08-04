@@ -149,6 +149,12 @@ abstract class AppL10n {
   /// **'Search'**
   String get commonSearch;
 
+  /// Ends the session at the user's request. Distinct from an expired session, which the user did not choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get commonSignOut;
+
   /// Accessible label for a loading state. Read by screen readers where the spinner itself carries no text.
   ///
   /// In en, this message translates to:
@@ -232,6 +238,90 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Administrator'**
   String get roleAdmin;
+
+  /// Bottom-nav tab. Candidate and employer home. LENGTH-CRITICAL: the bar reserves two label lines at a constant 70pt and clips beyond them - keep to two lines at 320pt and 2.0x text scale, or add a soft hyphen.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// Bottom-nav tab. The vacancy feed for a candidate, the employer's own vacancies for an employer. Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies'**
+  String get navVacancies;
+
+  /// Bottom-nav tab, candidate. The candidate's own applications and their stages (§8.1). Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications'**
+  String get navApplications;
+
+  /// Bottom-nav tab. Conversations (§9.1). Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get navMessages;
+
+  /// Bottom-nav tab, candidate. Their own profile (§5). Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get navProfile;
+
+  /// Bottom-nav tab, employer. Candidate search and saved candidates (§7). Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates'**
+  String get navCandidates;
+
+  /// Bottom-nav tab, employer. The employer's own profile and verification state (§6.1) - used for an individual employer too, so avoid wording that implies a legal entity.
+  ///
+  /// In en, this message translates to:
+  /// **'Company'**
+  String get navCompany;
+
+  /// Bottom-nav tab, administrator. The counters of §10.1. Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get navDashboard;
+
+  /// Bottom-nav tab, administrator. Covers both queues of §10.2 - employer verification and vacancy moderation - so it must not name only one of them. Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderation'**
+  String get navQueue;
+
+  /// Bottom-nav tab, administrator. The complaint review queue (§10.2). Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaints'**
+  String get navComplaints;
+
+  /// Bottom-nav tab, administrator. User search and warn/restrict/block (§10.2, UAT-14). Length-critical - the Uzbek and Russian words are far longer than the English and carry a soft hyphen.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get navUsers;
+
+  /// Bottom-nav tab, administrator. Dictionary management with all four localized labels (§10.3). Length-critical - see navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionaries'**
+  String get navDictionaries;
+
+  /// BR-10. Heading of the screen a blocked account is held on. The app must explain the restriction rather than fail mysteriously.
+  ///
+  /// In en, this message translates to:
+  /// **'Account blocked'**
+  String get blockedTitle;
+
+  /// BR-10. Shown only when the administrator supplied no reason; when they did, their reason is displayed verbatim instead and is never translated client-side (§2.4).
+  ///
+  /// In en, this message translates to:
+  /// **'An administrator has blocked this account. You cannot use the app until the block is lifted.'**
+  String get blockedBody;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

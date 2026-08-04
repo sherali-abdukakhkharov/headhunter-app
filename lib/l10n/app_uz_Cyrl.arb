@@ -10,6 +10,7 @@
   "commonBack": "Орқага",
   "commonClose": "Ёпиш",
   "commonSearch": "Қидириш",
+  "commonSignOut": "Чиқиш",
 
   "stateLoading": "Юкланмоқда…",
   "stateEmptyTitle": "Ҳозирча бўш",
@@ -27,5 +28,21 @@
 
   "roleCandidate": "Номзод",
   "roleEmployer": "Иш берувчи",
-  "roleAdmin": "Администратор"
+  "roleAdmin": "Администратор",
+
+  "navHome": "Бош саҳифа",
+  "navVacancies": "Вакансиялар",
+  "navApplications": "Аризалар",
+  "navMessages": "Хабарлар",
+  "navProfile": "Профил",
+  "navCandidates": "Номзодлар",
+  "navCompany": "Компания",
+  "navDashboard": "Бошқарув",
+  "navQueue": "Модерация",
+  "navComplaints": "Шикоятлар",
+  "navUsers": "Фойдалан\u00ADувчилар",
+  "navDictionaries": "Луғатлар",
+
+  "blockedTitle": "Ҳисоб блокланган",
+  "blockedBody": "Администратор бу ҳисобни блоклаган. Блок олиб ташланмагунча иловадан фойдалана олмайсиз."
 }

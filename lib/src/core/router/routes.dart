@@ -1,0 +1,90 @@
+import 'package:headhunter_app/src/core/auth/app_role.dart';
+
+/// Every route path in the app, in one place.
+///
+/// Never inline a path string at a call site: a typo in
+/// `context.go('/canidate')` is a silent no-op redirect, and the whole redirect
+/// chain becomes untestable once paths are scattered.
+///
+/// ## Two naming rules the router depends on
+///
+/// 1. **A shell route begins with its role's [AppRole.pathPrefix].** That is
+///    how [AppRole.fromLocation] decides which role a deep link needs, so a
+///    path that does not follow it becomes unreachable for a user in another
+///    role. `routes_test.dart` asserts the constants below against the enum,
+///    because these are string literals - `AppRole.candidate.pathPrefix` is an
+///    instance getter and cannot appear in a `const`.
+/// 2. **A leading underscore marks a development surface.** [isDevelopmentPath]
+///    paths sit outside the redirect chain entirely, are never linked from
+///    product UI, and are not registered at all in the production flavor.
+abstract final class Routes {
+  /// Cold start. Held here while the session is still being restored, so a
+  /// signed-in user never sees a frame of onboarding.
+  static const splash = '/';
+
+  // --- Pre-session ---------------------------------------------------------
+
+  /// Language choice, phone, OTP and terms (§4). M1.
+  static const onboarding = '/onboarding';
+
+  /// Candidate / employer / both (§2.3). Reached when an account holds no role.
+  static const roleSelection = '/role-selection';
+
+  /// BR-10: the account is blocked and the app must say so rather than fail
+  /// mysteriously.
+  static const blocked = '/blocked';
+
+  // --- Candidate shell -----------------------------------------------------
+
+  static const candidateHome = '/candidate/home';
+  static const candidateVacancies = '/candidate/vacancies';
+  static const candidateApplications = '/candidate/applications';
+  static const candidateMessages = '/candidate/messages';
+  static const candidateProfile = '/candidate/profile';
+
+  // --- Employer shell ------------------------------------------------------
+
+  static const employerHome = '/employer/home';
+  static const employerVacancies = '/employer/vacancies';
+  static const employerCandidates = '/employer/candidates';
+  static const employerMessages = '/employer/messages';
+  static const employerCompany = '/employer/company';
+
+  // --- Admin shell ---------------------------------------------------------
+
+  static const adminDashboard = '/admin/dashboard';
+  static const adminQueue = '/admin/queue';
+  static const adminComplaints = '/admin/complaints';
+  static const adminUsers = '/admin/users';
+  static const adminDictionaries = '/admin/dictionaries';
+
+  // --- Development surfaces ------------------------------------------------
+
+  /// Developer tools: the role switcher, the design catalogue, the health probe
+  /// and the active flavor. The only way into the others.
+  static const developerTools = '/_dev';
+
+  /// Design-system catalogue. Carries unlocalized sample copy.
+  static const designGallery = '/_design';
+
+  /// The M0 health probe. Scaffolding that proves app -> API -> Postgres; it is
+  /// to be replaced by the first real feature, not built on, which is why it
+  /// lives here rather than on a product route.
+  static const health = '/_health';
+
+  /// Whether [location] is a development surface, exempt from the redirect
+  /// chain.
+  ///
+  /// Exempt deliberately: the tools have to be reachable *because* the session
+  /// is in an awkward state - that is when you need them. Guarding them behind
+  /// the chain they exist to debug is a locked-keys-inside problem.
+  static bool isDevelopmentPath(String location) => location.startsWith('/_');
+
+  /// First tab of [role]'s shell - where a role switch or a bounced deep link
+  /// lands.
+  static String homeFor(AppRole role) => switch (role) {
+    AppRole.candidate => candidateHome,
+    AppRole.employer => employerHome,
+    AppRole.admin => adminDashboard,
+  };
+}

@@ -48,4 +48,4 @@ final class TokenStoreProvider
   }
 }
 
-String _$tokenStoreHash() => r'f506b2e867706717790e495e734b1545ccbf1c77';
+String _$tokenStoreHash() => r'c691e0af22d5212e4c668df725e904fff1822d7c';

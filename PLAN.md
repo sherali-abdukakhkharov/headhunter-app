@@ -27,8 +27,8 @@ critical path.
 | # | Milestone | State |
 |---|---|---|
 | M0 | Foundations: toolchain, health slice, error handling | **done** |
-| M0.5 | App shell: localization, flavors, design system, role shell skeleton | next |
-| M1 | Onboarding: language, phone + OTP, role selection, session | after M0.5 |
+| M0.5 | App shell: localization, flavors, design system, role shell skeleton | **done** - two items carried, see TODO.md |
+| M1 | Onboarding: language, phone + OTP, role selection, session | **next** - blocked on the auth contract for the session half |
 | M2 | Dictionary cache + reusable pickers | after M1 |
 | M3 | Candidate profile: dynamic forms, completeness, privacy, CV | after M2 |
 | M4 | Employer profile + verification status | after M1 |
@@ -70,6 +70,20 @@ which is the expensive way to learn this lesson.
 
 **Done when:** the app launches in all four variants, switches language live,
 builds in three flavors, and the role shell can be switched with a hardcoded role.
+
+**Met, verified on an emulator** (2026-08-04): onboarding → developer tools → all
+three role shells, live switch to Uzbek Cyrillic across the whole shell, the BR-10
+blocked notice with the admin's reason verbatim, session restored across a cold
+start, and the long admin label wrapping at its soft hyphen without growing the
+70pt bar. 132 tests; `flutter analyze` clean.
+
+Carried forward, neither blocking M1: **bottom sheets** (the last design-system
+primitive, first needed by the M2 pickers) and **iOS flavor schemes** (needs a
+Mac). Installing `AuthInterceptor` remains blocked on the backend's auth contract.
+
+Three M1 items landed here because the redirect chain needed real destinations
+rather than dead ends: the pre-registration language picker, the role-selection
+mechanism, and the blocked-account screen.
 
 ## M1 - Onboarding and session
 

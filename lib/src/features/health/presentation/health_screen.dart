@@ -1,18 +1,20 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:headhunter_app/src/core/config/app_config.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/router/app_router.dart';
+import 'package:headhunter_app/src/core/router/routes.dart';
 import 'package:headhunter_app/src/features/health/data/health_repository.dart';
 import 'package:headhunter_app/src/features/health/domain/health_status.dart';
 
 /// Proves the app -> backend -> Postgres chain works end to end.
 ///
 /// This is scaffolding, not a product screen: replace it with the real first
-/// feature once the backend exposes domain endpoints.
+/// feature once the backend exposes domain endpoints. It now lives on a
+/// development route (`/_health`, reached from `/_dev`) rather than at `/`, so
+/// the product's own entry point is the shell and this cannot be linked into it
+/// by accident.
 class HealthScreen extends ConsumerWidget {
   const HealthScreen({super.key});
 
@@ -24,17 +26,17 @@ class HealthScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Backend health'),
         actions: [
-          // Debug-only entry point to the design-system catalogue. Never
-          // reachable in a release build, and never part of the product shell.
-          if (kDebugMode)
-            IconButton(
-              icon: const HhIcon(
-                HhIconPath.filters,
-                semanticLabel: 'Design system',
-              ),
-              tooltip: 'Design system',
-              onPressed: () => context.go(Routes.designGallery),
+          // Back to the tools hub. No kDebugMode gate any more: the route
+          // itself is only registered when the flavor allows development
+          // surfaces, so the whole screen is unreachable in production.
+          IconButton(
+            icon: const HhIcon(
+              HhIconPath.filters,
+              semanticLabel: 'Developer tools',
             ),
+            tooltip: 'Developer tools',
+            onPressed: () => context.go(Routes.developerTools),
+          ),
           IconButton(
             icon: const HhIcon(
               HhIconPath.refresh,

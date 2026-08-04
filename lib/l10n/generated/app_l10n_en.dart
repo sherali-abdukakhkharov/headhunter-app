@@ -33,6 +33,9 @@ class AppL10nEn extends AppL10n {
   String get commonSearch => 'Search';
 
   @override
+  String get commonSignOut => 'Sign out';
+
+  @override
   String get stateLoading => 'Loading…';
 
   @override
@@ -76,4 +79,47 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get roleAdmin => 'Administrator';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navVacancies => 'Vacancies';
+
+  @override
+  String get navApplications => 'Applications';
+
+  @override
+  String get navMessages => 'Messages';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get navCandidates => 'Candidates';
+
+  @override
+  String get navCompany => 'Company';
+
+  @override
+  String get navDashboard => 'Dashboard';
+
+  @override
+  String get navQueue => 'Moderation';
+
+  @override
+  String get navComplaints => 'Complaints';
+
+  @override
+  String get navUsers => 'Users';
+
+  @override
+  String get navDictionaries => 'Dictionaries';
+
+  @override
+  String get blockedTitle => 'Account blocked';
+
+  @override
+  String get blockedBody =>
+      'An administrator has blocked this account. You cannot use the app until the block is lifted.';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:headhunter_app/l10n/generated/app_l10n.dart';
+import 'package:headhunter_app/src/core/config/app_config.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/l10n/app_locale.dart';
 import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
@@ -17,7 +18,11 @@ class HeadhunterApp extends ConsumerWidget {
     final locale = ref.watch(activeLocaleProvider);
 
     return MaterialApp.router(
-      title: 'Headhunter',
+      // From the flavor, so the Android task switcher names the build the same
+      // way the launcher does. Deliberately not localized - §2.4 forbids
+      // translating proper names, and someone reporting a bug should be able to
+      // say which build they are on whatever language they read the app in.
+      title: AppConfig.flavor.displayName,
       debugShowCheckedModeBanner: false,
       theme: HhTheme.light,
       locale: locale.locale,

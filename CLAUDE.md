@@ -83,16 +83,60 @@ pnpm start:dev          # API on http://localhost:3001
 
 # 2. App (from this repo)
 flutter emulators --launch headhunter_pixel
-flutter run             # defaults to http://10.0.2.2:3001
+flutter run --flavor development    # defaults to http://10.0.2.2:3001
 ```
+
+**`--flavor` is required.** With product flavors defined there is no plain
+`assembleDebug`, so a bare `flutter run` cannot resolve one APK.
 
 `10.0.2.2` is the Android emulator's alias for the host loopback interface.
 `localhost` inside the emulator means the emulator itself, so it will never
 find the API. On a **physical device**, pass your machine's LAN IP:
 
 ```sh
-flutter run --dart-define=API_BASE_URL=http://192.168.1.42:3001
+flutter run --flavor development \
+  --dart-define=API_BASE_URL=http://192.168.1.42:3001
 ```
+
+## Flavors
+
+Three targets (§12.1), each with its own application id so all three install side
+by side: `development` (`.dev`), `staging` (`.staging`), `production` (no suffix).
+
+`--flavor` picks the **Gradle** variant and `--dart-define=FLAVOR=` picks the
+**Dart** config - separate mechanisms that must name the same flavor.
+`AppFlavor.current` defaults to `development`, so only that one may omit the
+define.
+
+**`staging` is §12.1's "testing" environment.** AGP rejects any product flavor
+whose name starts with `test`, so both sides say `staging`. Two more Android
+flavor traps are recorded in MEMORY.md - read them before touching
+`android/app/build.gradle.kts`.
+
+Gate anything that must not ship on `AppFlavor.current.allowsDevelopmentTools`,
+**not `kDebugMode`**: a release build of the development flavor is what gets
+demonstrated to the client, and a profile build of production is still production.
+
+## Routes
+
+Paths are constants in [lib/src/core/router/routes.dart](lib/src/core/router/routes.dart) —
+never inline a path string. Two rules the router depends on:
+
+- **A shell route begins with its role's `AppRole.pathPrefix`** (`/candidate`,
+  `/employer`, `/admin`). That prefix is how a deep link says which role it needs.
+- **A leading underscore marks a development surface** (`/_dev`, `/_design`,
+  `/_health`). Those sit outside the redirect chain and are **not registered at
+  all** in production, so no deep link can reach them there.
+
+`/_dev` is the developer-tools screen: sign-in scenarios for every branch of the
+redirect chain, the role switcher, and live interface-variant switching. Reach it
+from the onboarding screen or the floating button in any role shell.
+
+**A role switch must name its destination** — call `switchRoleAndGo`, never
+`SessionController.switchRole` alone. The reason is not obvious and it is in
+MEMORY.md: the redirect chain's deep-link rule reads the *location*, so after a
+bare `switchRole` it re-activates the role that owns the current path and silently
+undoes the switch.
 
 ## App commands
 
@@ -101,7 +145,8 @@ flutter analyze                     # lint (very_good_analysis + riverpod_lint)
 flutter test                        # unit/widget tests
 dart run build_runner build         # regenerate *.g.dart after editing providers/models
 dart run build_runner watch         # continuous codegen while developing
-flutter build apk --debug           # verify the Android toolchain end to end
+flutter gen-l10n                    # regenerate localizations after editing an ARB
+flutter build apk --debug --flavor development   # verify the Android toolchain
 ```
 
 ## Structure
@@ -112,11 +157,20 @@ lib/
   src/
     app.dart                    MaterialApp.router wiring
     core/
+      auth/app_role.dart        the three roles; path prefix, wire value
+      auth/session_state.dart   sealed session states the redirect chain switches on
+      auth/session_controller.dart granted roles, active role, account status
+      auth/token_store.dart     flutter_secure_storage token pair
       config/app_config.dart    --dart-define config (API base URL, timeouts)
+      config/app_flavor.dart    development / staging / production
+      design/design.dart        the design system barrel - build screens from Hh*
+      l10n/app_locale.dart      the four interface variants; never languageCode alone
       network/dio_provider.dart the single Dio instance; add auth interceptor here
       network/api_exception.dart DioException -> user-presentable failure
-      router/app_router.dart    go_router routes; add auth redirect here
-      theme/app_theme.dart      Material 3 light/dark from one seed colour
+      router/routes.dart        every path, in one place
+      router/shell_tabs.dart    one table driving routes, nav bar and titles
+      router/app_router.dart    the three role shells + the redirect chain
+      router/role_navigation.dart switchRoleAndGo - read it before switching roles
     features/<feature>/
       data/                     repositories, API calls
       domain/                   models (json_serializable)
