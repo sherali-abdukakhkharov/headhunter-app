@@ -12,7 +12,7 @@ void main() {
   }) => OtpChallenge.fromJson({
     'expiresAt': expiresAt,
     'resendAvailableAt': resendAvailableAt,
-    if (devCode != null) 'devCode': devCode,
+    'devCode': ?devCode,
   }, receivedAt: receivedAt);
 
   test('parses the two deadlines and keeps their wall clock', () {
