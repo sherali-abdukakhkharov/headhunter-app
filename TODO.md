@@ -258,28 +258,66 @@ working destinations rather than dead ends.
 
 ## M2 - Dictionary cache and pickers
 
-- [ ] Versioned cache keyed by `(type, fullLocaleTag)`; refetch on version change
-- [ ] JSON file cache in app support dir (sqlite only if a screen needs to *query*)
-- [ ] Searchable single-select picker
-- [ ] Multi-select picker with match-all / match-any where §7.1 needs it
-- [ ] Cascading region → district picker
-- [ ] Dictionary + level picker (skills, languages with A1–C2 / native)
-- [ ] Resolve labels by ID so deactivated/historical items still render
-- [ ] Test: selection survives a locale switch (IDs stable, labels change)
+- [x] Versioned cache keyed by `(type, canonical locale)`, delta-aware, with
+      `If-None-Match` revalidation. Keyed on the locale the **server** echoed,
+      not the one requested — `uz` and `oz` both resolve to `uz-Latn`
+- [x] Cache in `shared_preferences` as JSON per key — not a file or sqlite.
+      Largest type is a few hundred items; the seam is `DictionaryCache`, so
+      moving it later changes nothing above
+- [x] Searchable single-select picker (`HhDictionaryPicker`)
+- [x] Multi-select picker (`HhDictionaryMultiPicker`)
+- [x] Cascading region → district
+- [x] Resolve labels by id, including retired and merged items (§10.3)
+- [x] Verified on device against the live API: labels switch uz-Latn → ru while
+      the bound ids stay byte-identical — the client half of UAT-13
+- [ ] **Match-all / match-any** on multi-select where §7.1 needs it — a search
+      concern, so it belongs with the search UI rather than the picker
+- [ ] **Level pickers** (skill × skill_level, language × language_level). The
+      two dictionaries exist and carry `rank`; what is missing is the paired
+      row widget that binds them together
+- [ ] Warm-up call site — `warmDictionaries` exists but nothing invokes it yet;
+      it wants to run once after sign-in
+- [ ] Widget test for the pickers. The two bugs found so far were both found by
+      running it, not by the suite — see MEMORY.md
 
 ## M3 - Candidate profile
 
-- [ ] Form engine: text, number, money range, date, date range, single/multi
-      dictionary select, dictionary+level, switch, file
-- [ ] Render required-ness from the server schema, never from the widget
-- [ ] Profile sections of §5.1
+The candidate Profile tab is a **real screen** now: it renders from
+`GET /schemas/candidate-profile`, writes through `PATCH /candidates/me/profile`,
+and shows the completeness the server computed. Verified on device against the
+live API — saving a name and a region moved it 0% → 10% and unlocked the
+district picker.
+
+- [x] Form engine: text, long text, int, decimal, url, phone, bool, date,
+      money range, dictionary single/multi. **An unknown `kind` is skipped and
+      logged, never thrown** — that is what lets the server add a field type
+      without a lockstep app release
+- [x] Required-ness comes from the schema, never from the widget — and it gates
+      *searchability* (BR-02), never the save
+- [x] The region → district cascade is declared by the schema's
+      `parentFieldCode`; the engine knows nothing about regions. Changing a
+      parent clears its children, so a district cannot be left in the wrong
+      province
+- [x] Completeness ring + blocking-field count (§5.3)
+- [x] 422s land on the fields that caused them, by code (§4.6)
+- [x] `POST /auth/active-role` — profile endpoints read the acting role from
+      the token, so this stopped being optional
+- [ ] **`dictionary_leveled`** (skills × level, languages × CEFR). Both
+      dictionaries and their ranks exist; the paired row widget does not, so
+      those two sections currently render a notice
+- [ ] **Bespoke sections**: work history and education own their own
+      sub-resources (`/candidates/me/experience`, `/education`) and their own
+      editors. Currently a notice
 - [ ] Simplified experience entry for informal/seasonal work
-- [ ] Completeness percentage + missing-field list with direct edit links
-- [ ] Privacy control: searchable / hidden / visible-after-apply (UAT-12)
+- [ ] Missing-field list with **direct edit links** — the codes are in the
+      response, the tap-to-focus is not built
+- [ ] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —
+      `setVisibility` exists on the controller, no UI yet
 - [ ] Last-meaningful-update display
 - [ ] CV upload with progress, cancel, failure reason, retry (UAT-03)
 - [ ] Optional certificates / work evidence
-- [ ] Test: form adapts by category and irrelevant fields are not mandatory
+- [ ] Test: form adapts by category and irrelevant fields are not mandatory —
+      needs a second category to compare against
 
 ## M4 - Employer profile
 

@@ -125,6 +125,69 @@ class AppL10nUz extends AppL10n {
       'Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.';
 
   @override
+  String get profileCompleteness => 'Profil toʻldirilganligi';
+
+  @override
+  String profileMissingRequired(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count ta majburiy maydon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSearchable => 'Qidiruvda koʻrinadi';
+
+  @override
+  String get profileNotSearchable => 'Hozircha qidiruvda emas';
+
+  @override
+  String get profileSaved => 'Profil saqlandi';
+
+  @override
+  String get profileSectionElsewhere =>
+      'Bu boʻlimning alohida tahrirlagichi bor, u keyinroq qoʻshiladi.';
+
+  @override
+  String get profileFieldNotEditableYet =>
+      'Bu maydonni ilovaning ushbu versiyasida oʻzgartirib boʻlmaydi.';
+
+  @override
+  String get profileChooseParentFirst => 'Avval yuqoridagi maydonni tanlang';
+
+  @override
+  String get profileDateHint => 'YYYY-OO-KK';
+
+  @override
+  String get profileSalaryFrom => 'Dan';
+
+  @override
+  String get profileSalaryTo => 'Gacha';
+
+  @override
+  String get profileSalaryNegotiable => 'Kelishuv asosida';
+
+  @override
+  String get pickerChoose => 'Tanlash';
+
+  @override
+  String get pickerAdd => 'Qo\'shish';
+
+  @override
+  String get pickerSearchHint => 'Qidirish uchun yozing';
+
+  @override
+  String get pickerNoMatches => 'Hech narsa topilmadi.';
+
+  @override
+  String get pickerNothingSelected => 'Hozircha tanlanmagan';
+
+  @override
+  String get pickerUnknownValue => 'Mavjud boʻlmagan qiymat';
+
+  @override
   String get authSignInTitle => 'Kirish';
 
   @override
@@ -310,6 +373,69 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get blockedBody =>
       'Администратор бу ҳисобни блоклаган. Блок олиб ташланмагунча иловадан фойдалана олмайсиз.';
+
+  @override
+  String get profileCompleteness => 'Профил тўлдирилганлиги';
+
+  @override
+  String profileMissingRequired(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Яна $count та мажбурий майдон',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSearchable => 'Қидирувда кўринади';
+
+  @override
+  String get profileNotSearchable => 'Ҳозирча қидирувда эмас';
+
+  @override
+  String get profileSaved => 'Профил сақланди';
+
+  @override
+  String get profileSectionElsewhere =>
+      'Бу бўлимнинг алоҳида таҳрирлагичи бор, у кейинроқ қўшилади.';
+
+  @override
+  String get profileFieldNotEditableYet =>
+      'Бу майдонни илованинг ушбу версиясида ўзгартириб бўлмайди.';
+
+  @override
+  String get profileChooseParentFirst => 'Аввал юқоридаги майдонни танланг';
+
+  @override
+  String get profileDateHint => 'ЙЙЙЙ-ОО-КК';
+
+  @override
+  String get profileSalaryFrom => 'Дан';
+
+  @override
+  String get profileSalaryTo => 'Гача';
+
+  @override
+  String get profileSalaryNegotiable => 'Келишув асосида';
+
+  @override
+  String get pickerChoose => 'Танлаш';
+
+  @override
+  String get pickerAdd => 'Қўшиш';
+
+  @override
+  String get pickerSearchHint => 'Қидириш учун ёзинг';
+
+  @override
+  String get pickerNoMatches => 'Ҳеч нарса топилмади.';
+
+  @override
+  String get pickerNothingSelected => 'Ҳозирча танланмаган';
+
+  @override
+  String get pickerUnknownValue => 'Мавжуд бўлмаган қиймат';
 
   @override
   String get authSignInTitle => 'Кириш';
@@ -498,6 +624,69 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get blockedBody =>
       'Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.';
+
+  @override
+  String get profileCompleteness => 'Profil toʻldirilganligi';
+
+  @override
+  String profileMissingRequired(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count ta majburiy maydon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSearchable => 'Qidiruvda koʻrinadi';
+
+  @override
+  String get profileNotSearchable => 'Hozircha qidiruvda emas';
+
+  @override
+  String get profileSaved => 'Profil saqlandi';
+
+  @override
+  String get profileSectionElsewhere =>
+      'Bu boʻlimning alohida tahrirlagichi bor, u keyinroq qoʻshiladi.';
+
+  @override
+  String get profileFieldNotEditableYet =>
+      'Bu maydonni ilovaning ushbu versiyasida oʻzgartirib boʻlmaydi.';
+
+  @override
+  String get profileChooseParentFirst => 'Avval yuqoridagi maydonni tanlang';
+
+  @override
+  String get profileDateHint => 'YYYY-OO-KK';
+
+  @override
+  String get profileSalaryFrom => 'Dan';
+
+  @override
+  String get profileSalaryTo => 'Gacha';
+
+  @override
+  String get profileSalaryNegotiable => 'Kelishuv asosida';
+
+  @override
+  String get pickerChoose => 'Tanlash';
+
+  @override
+  String get pickerAdd => 'Qo\'shish';
+
+  @override
+  String get pickerSearchHint => 'Qidirish uchun yozing';
+
+  @override
+  String get pickerNoMatches => 'Hech narsa topilmadi.';
+
+  @override
+  String get pickerNothingSelected => 'Hozircha tanlanmagan';
+
+  @override
+  String get pickerUnknownValue => 'Mavjud boʻlmagan qiymat';
 
   @override
   String get authSignInTitle => 'Kirish';

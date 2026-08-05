@@ -12,9 +12,11 @@ import 'package:headhunter_app/src/core/router/shell_tabs.dart';
 import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
+import 'package:headhunter_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
 import 'package:headhunter_app/src/features/health/presentation/health_screen.dart';
 import 'package:headhunter_app/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:headhunter_app/src/features/onboarding/presentation/role_selection_screen.dart';
+import 'package:headhunter_app/src/features/profile/presentation/candidate_profile_screen.dart';
 import 'package:headhunter_app/src/features/shell/presentation/blocked_account_screen.dart';
 import 'package:headhunter_app/src/features/shell/presentation/role_shell.dart';
 import 'package:headhunter_app/src/features/shell/presentation/shell_placeholder_screen.dart';
@@ -116,6 +118,11 @@ GoRouter appRouter(Ref ref) {
           name: 'health',
           builder: (context, state) => const HealthScreen(),
         ),
+        GoRoute(
+          path: Routes.dictionaryProbe,
+          name: 'dictionaryProbe',
+          builder: (context, state) => const DictionaryProbeScreen(),
+        ),
       ],
     ],
   );
@@ -136,7 +143,13 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
         routes: [
           GoRoute(
             path: tab.path,
-            builder: (context, state) => ShellPlaceholderScreen(tab: tab),
+            // Tabs are replaced by real screens one at a time as their
+            // milestone lands; the rest keep the placeholder, which names the
+            // milestone that owns them.
+            builder: (context, state) => switch (tab.path) {
+              Routes.candidateProfile => const CandidateProfileScreen(),
+              _ => ShellPlaceholderScreen(tab: tab),
+            },
           ),
         ],
       ),

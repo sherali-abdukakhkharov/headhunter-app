@@ -181,6 +181,38 @@ class AuthRepository {
     }
   }
 
+  /// `POST /auth/active-role` — tells the server which role the user is acting
+  /// as, and returns an access token that says so.
+  ///
+  /// **Not optional, and not merely bookkeeping.** Role-scoped endpoints read
+  /// the acting role from the token, not from a header or the granted set, so a
+  /// client that switches locally and never calls this gets a 403 from every
+  /// one of them — `role.none_active` even on an account that holds the role.
+  ///
+  /// Only the access token rotates; the refresh token is untouched, so this is
+  /// not a session change and must not disturb single-flight refresh.
+  ///
+  /// The grant is verified server-side against the database rather than against
+  /// the presented token's claims, so asking for a role the account does not
+  /// hold is refused rather than believed.
+  Future<String> switchActiveRole(AppRole role) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/auth/active-role',
+        data: {'role': role.wire},
+      );
+
+      final token = response.data?['accessToken'];
+      if (token is! String) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return token;
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   /// `POST /auth/telegram` — trades a Telegram OIDC ID token for a session.
   ///
   /// **Deprecated 2026-08-05**: the app signs in with phone + OTP (§4.1,
