@@ -189,26 +189,36 @@ produces a typed value map.
 
 ## 7. Networking, auth and offline safety
 
-### 7.0 Sign-in is Telegram; OTP is the fallback
+### 7.0 Sign-in is phone + OTP
 
-Client direction 2026-08-05. The MVP authenticates with **Log in with Telegram**
-(OIDC, official native SDKs), and the app sends the resulting **ID token** to
-`POST /auth/telegram`, which returns the same session payload the OTP path
-returns. Design, security requirements and open decisions:
-[docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+§4.1 and UAT-01, restored by client direction 2026-08-05 after a same-day
+excursion into Telegram login. Two screens under `/onboarding`: phone entry, then
+code entry. `POST /auth/otp/send` issues the code, `POST /auth/otp/verify` returns
+the session.
 
-Two rules that constrain everything downstream:
+Three rules that constrain everything downstream:
 
-- **The backend never trusts the client's claim of identity.** The only accepted
-  input is a JWT Telegram signed, validated against Telegram's JWKS with `iss`,
-  `aud` and `exp` checked. A `telegram_user_id` sent as a plain field would let
-  anyone impersonate anyone.
-- **BR-01 still requires a verified phone number.** Telegram's `phone` scope
-  normally supplies one, but the user may decline - so the client must handle an
-  authenticated account that cannot yet act, and route it into phone
-  verification. That is why the OTP flow is deferred rather than removed.
+- **BR-01 is satisfied by construction.** Verifying a code sent to a number *is*
+  verifying the number, so no account can reach a session without one. This is
+  the reason Telegram login was reversed: its `phone` scope can be declined,
+  which produces an authenticated account that cannot act — a state the client
+  would have to model, route around and explain.
+- **Registration and login are one call.** With a phone-only identity they are
+  the same act; `isNewUser` in the response is what routes into role selection.
+  Letting the client name the purpose would be a way to probe which numbers are
+  registered.
+- **The delay, TTL and attempt limits are server configuration** (§4.2). The
+  resend countdown is driven by `resendAvailableAt` from the send response, never
+  a constant in the app.
 
-The Client Secret stays server-side; the app holds only the `client_id`.
+**No SMS provider is connected yet.** `OTP_STATIC_CODE` makes the backend issue a
+fixed code, substituted where a random code would be generated and nowhere else,
+so every other property of the flow is the real one. Removing the backdoor is
+clearing one variable.
+
+Telegram login is deprecated and uncalled, but the code and endpoint remain —
+[docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) has the header explaining what
+is still true.
 
 - **Single `dio` instance** (already in `core/network/dio_provider.dart`) with
   interceptors: auth token, `x-lang`, idempotency key, error mapping, logging.

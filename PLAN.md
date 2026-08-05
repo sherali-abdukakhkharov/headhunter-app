@@ -89,19 +89,18 @@ mechanism, and the blocked-account screen.
 
 **Covers** §4, §2.3 · **BR-01, BR-10** · **UAT-01**
 
-**Sign-in is "Log in with Telegram"** (client direction 2026-08-05), not phone +
-OTP. Telegram's OIDC `phone` scope returns a number Telegram itself verified, so
-**BR-01 is satisfied with no SMS cost**. OTP is **deferred, not dropped**: it is
-the fallback when no verified phone comes back, since BR-01 admits no account
-without one. Research, wire contract, security requirements and the three client
-decisions: [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
+**Sign-in is phone + OTP**, as §4.1 and UAT-01 specify. Telegram login was tried
+and deprecated on 2026-08-05; **BR-01 and UAT-01 therefore need no re-wording,
+and the sign-off that was pending is moot.** Verifying a code makes the number
+verified, so BR-01 is satisfied by construction. Why the reversal, and what of
+the Telegram work survives: [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
 
-*Note UAT-01 and BR-01 are worded around OTP and need the client's written
-sign-off — tracked at the top of [TODO.md](TODO.md).*
+*No SMS provider is connected yet — the backend issues a fixed `OTP_STATIC_CODE`.
+Connecting a provider is a backend-only change, and* **M1 is not done until it is
+either connected or explicitly deferred by the client.**
 
 - Language selection **before** registration (§3.2).
-- Terms and privacy acceptance, then Telegram login; the no-verified-phone branch
-  falls back to the OTP screens.
+- Terms and privacy acceptance, then phone entry and code entry.
 - Role selection: candidate, employer, or both; route into the right onboarding.
 - Role switching from the profile area (§2.3).
 - Sessions screen: list devices, sign out, terminate all.

@@ -151,9 +151,23 @@ variable, then `AppFlavor.production`'s own default
 (`https://api.headhunter.uz`). If none is set the build still succeeds and logs a
 warning — worth knowing, because that host does not exist yet.
 
-### 4. Register the release fingerprint with BotFather
+### 4. Register the release fingerprint with BotFather — *not needed*
 
-**Telegram login will not work in a downloaded APK until this is done.** Telegram
+> **Skip this step.** Telegram login was deprecated on 2026-08-05 and the app
+> signs in with phone + OTP, which needs no BotFather registration and no
+> per-certificate binding. A downloaded APK signs in fine without any of the
+> below.
+>
+> Kept because the fingerprint and the mechanics are correct, and this is the
+> first thing to do if Telegram login is ever revived —
+> [TELEGRAM_LOGIN.md](TELEGRAM_LOGIN.md).
+>
+> **What a release *does* need instead: an SMS provider.** Until one is
+> connected the backend issues a fixed `OTP_STATIC_CODE`, and it refuses to boot
+> with that set when `NODE_ENV=production` — so a production deploy fails at
+> startup, loudly, rather than shipping a master key.
+
+Telegram
 binds a redirect URI to one application id *plus one signing certificate*, and the
 release keystore above is a different certificate from the debug one used so far.
 

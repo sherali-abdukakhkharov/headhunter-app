@@ -62,11 +62,16 @@ and a green test suite both missed.
 - **Forms are schema-driven** because the field set depends on work category and
   admins add categories at runtime (§5.2, §6.3, §10.3).
 - **Never show a candidate's phone on a search card** (BR-09, §11.1).
-- **Sign-in is Telegram, and BR-01 still needs a verified phone.** The MVP uses
-  Telegram OIDC; its `phone` scope supplies a Telegram-verified number, but the
-  user can decline, so an authenticated account may still be unable to act until
-  it verifies a phone. OTP is the deferred fallback, not dead code
-  ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
+- **Sign-in is phone + OTP** (§4.1, UAT-01), which satisfies BR-01 by
+  construction: verifying the code is what makes the number verified. Telegram
+  login was tried and **deprecated 2026-08-05** — the code is kept and still
+  works, but nothing calls it ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
+- **There is no SMS provider yet.** The backend issues a fixed code set by
+  `OTP_STATIC_CODE` (currently `666666`), substituted at the point a random code
+  would be generated and nowhere else — so TTL, resend delay, attempt limits and
+  single-use consumption all still apply. **Removing the backdoor is clearing one
+  environment variable**; do not add a second code path that would have to be
+  removed with it. Refused at boot when `NODE_ENV=production`.
 - **Idempotency keys are persisted, not regenerated per attempt** (§12.4, BR-07).
 - **User-entered content is never translated** (§2.4).
 
@@ -274,7 +279,23 @@ registered with BotFather (docs/TELEGRAM_LOGIN.md).
 
 ## Backend contract
 
-The app currently consumes one endpoint, `GET /health`:
+Auth (§4.1). All three are `@Public` and rate limited:
+
+| Call | Returns |
+|---|---|
+| `POST /auth/otp/send` `{phone}` | `{expiresAt, resendAvailableAt, devCode?}` |
+| `POST /auth/otp/resend` `{phone}` | same |
+| `POST /auth/otp/verify` `{phone, code, …device}` | `AuthTokensResponseDto` |
+
+`phone` is E.164 (`+998…`) — build it with `UzPhone.wire`, never by hand. The
+account's language comes from the `x-lang` header, not a body field. `devCode` is
+present only while `OTP_ECHO_IN_RESPONSE` is on, which the backend refuses in
+production.
+
+`POST /auth/telegram` returns the same `AuthTokensResponseDto` and still works,
+but is deprecated and uncalled.
+
+The app also consumes `GET /health`:
 
 ```json
 { "status": "ok", "database": "up", "version": "0.0.1", "timestamp": "2026-08-04T06:33:46.530Z" }

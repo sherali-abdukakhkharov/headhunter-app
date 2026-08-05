@@ -15,12 +15,17 @@ decision or on the backend.
       required UI states are now implemented under `lib/src/core/design/`; see
       the Design system section below for what is done and what the design does
       not yet answer.
-- [?] **Auth spec change needs client sign-off** — BR-01 and UAT-01 name "phone
-      and OTP"; the MVP signs in with Telegram, which satisfies the *intent* (a
-      verified phone) by another route. Both need re-wording in writing, or the
-      UAT-01 walk-through fails on a technicality.
-      See [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) §9 for the three
-      questions to put to them.
+- [x] ~~**Auth spec change needs client sign-off**~~ — **moot 2026-08-05.**
+      Telegram login was deprecated the same day it was adopted and sign-in is
+      phone + OTP again, which is what BR-01 and UAT-01 already say. Nothing to
+      re-word and nothing to sign.
+- [?] **SMS provider** — none is connected, so the backend issues a fixed
+      `OTP_STATIC_CODE=666666` and no message is actually sent. Needs a provider
+      (or Telegram Gateway at ~$0.01/code, see
+      [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) §2C) chosen and paid for.
+      *Blocks UAT-01 on a real device with a real number, and blocks any
+      production deploy — the backend refuses to boot with the static code set
+      when `NODE_ENV=production`.*
 - [?] **Dictionary contract** - backend M2 must publish the dictionary endpoints
       and version/ETag scheme. *Blocks every picker.*
 - [?] **Category field-schema contract** - the shape the server returns to drive
@@ -192,36 +197,33 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
 
 ## M1 - Onboarding and session
 
-**Sign-in is Telegram, not OTP** — client direction 2026-08-05. Research and the
-full implementation plan: [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md). OTP is
-**deferred, not dropped**: BR-01 requires a verified phone number, so OTP remains
-the fallback for a user who declines to share theirs with Telegram. The backend's
-OTP module stays as it is.
+**Sign-in is phone + OTP** (§4.1, UAT-01). Telegram login was adopted and then
+deprecated on 2026-08-05; [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) has the
+reversal note and what of it still exists. Verifying a code makes the number
+verified, so BR-01 needs no separate step.
 
 Three of these landed early with the shell, because the redirect chain needed
 working destinations rather than dead ends.
 
 - [x] Language picker shown **before** registration — live on the onboarding
       screen, all four variants, persisted locally
-- [ ] Terms/privacy acceptance, shown **before** the login call — Telegram does
-      not collect consent for us
-- [ ] **Log in with Telegram** — OIDC via the official native SDKs; `phone` scope
-      returns a Telegram-verified number and so satisfies BR-01 with no SMS cost.
-      Three sub-decisions are called out in TELEGRAM_LOGIN.md §4.1, §4.2 and §9
-- [ ] Client half of `POST /auth/telegram` — returns the **existing**
-      `AuthTokensResponseDto`, so session handling and `isNewUser` routing need no
-      change
-- [-] ~~OTP screen: resend timer, attempt feedback from server config~~ —
-      **deferred** to the no-verified-phone fallback path. Backend endpoints exist
-      (`/auth/otp/send`, `/resend`, `/verify`); only the client screens are unbuilt
-- [?] **Telegram bot registration per flavor** — each of the three application
-      ids needs its own BotFather registration, with every signing SHA-256 we use
-      (debug, upload, Play App Signing). Separate bots per environment. Fails at
-      runtime in one environment only, so it is easy to miss —
-      TELEGRAM_LOGIN.md §7
+- [x] Terms/privacy acceptance, shown **before** the send call — gates the
+      button rather than being collected afterwards
+- [x] **Phone entry** — `+998` prefix, nine digits, `UzPhone` owns the wire
+      format so one number cannot reach the API in two spellings
+- [x] **Code entry** — resend countdown driven by the server's
+      `resendAvailableAt`, change-number, single-use code, server's localized
+      refusal rendered directly
+- [x] Client half of `/auth/otp/send`, `/resend` and `/verify` — returns the
+      **existing** `AuthTokensResponseDto`, so session handling and `isNewUser`
+      routing needed no change
+- [ ] **Attempt feedback** — the server locks a code out after `OTP_MAX_ATTEMPTS`
+      and says so, but the screen does not count down remaining attempts. Needs
+      the count in the response before the client can show it
+- [-] ~~Telegram bot registration per flavor~~ — moot with Telegram login
+      deprecated. TELEGRAM_LOGIN.md §7 has it if that ever reverses.
 - [-] ~~iOS deployment target 13.0 → 15.0 for the Telegram iOS SDK~~ — moot,
-      **iOS is out of scope**. Recorded because it is the first thing that will
-      need doing if that reverses.
+      **iOS is out of scope** *and* Telegram login is deprecated.
 - [~] Role selection (candidate / employer / both) → correct onboarding — the
       **mechanism** is done (grants the roles, router enters that shell;
       administrator deliberately not offered, since §10 grants it). The copy and
