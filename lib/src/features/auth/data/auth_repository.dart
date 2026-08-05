@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:dio/dio.dart';
+import 'package:headhunter_app/src/core/auth/app_role.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/core/network/dio_provider.dart';
 import 'package:headhunter_app/src/core/network/interceptors/auth_interceptor.dart';
@@ -88,6 +89,93 @@ class AuthRepository {
       }
 
       return AuthSession.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /auth/refresh` — trades a refresh token for a whole new session.
+  ///
+  /// Used at cold start to rebuild the session, where the roles and account
+  /// status in the response are the point — `AuthInterceptor` has its own
+  /// narrower refresh that only needs the token pair.
+  ///
+  /// **Rotation is mandatory and reuse is detected at the session-family
+  /// level**, so presenting a token that has already been exchanged revokes
+  /// *every* session on the account. Never call this concurrently with itself;
+  /// the interceptor single-flights for the same reason.
+  ///
+  /// Throws [ApiException]. A **401** means the session is genuinely over
+  /// (expired, revoked, or reuse detected); anything else is a transport
+  /// failure and says nothing about whether the token is still good.
+  Future<AuthSession> refresh(String refreshToken) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/auth/refresh',
+        data: {'refreshToken': refreshToken, ..._deviceInfo()},
+        // A 401 here *is* the answer, not a hint to go and refresh.
+        options: Options(extra: {AuthInterceptor.skipAuthFlag: true}),
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return AuthSession.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /auth/logout` — revokes this device's session server-side.
+  ///
+  /// Public and idempotent on the server, deliberately: a client whose access
+  /// token has already expired must still be able to log out. That is why it is
+  /// flagged `skipAuth` here too.
+  ///
+  /// Throws [ApiException], but the caller should treat a failure as
+  /// non-blocking — see `SessionController.signOut`.
+  Future<void> logout(String refreshToken) async {
+    try {
+      await _dio.post<void>(
+        '/auth/logout',
+        data: {'refreshToken': refreshToken},
+        options: Options(extra: {AuthInterceptor.skipAuthFlag: true}),
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /auth/roles` — records the roles chosen at the end of registration
+  /// (§2.3).
+  ///
+  /// Authenticated, and **additive and idempotent** server-side, so a retry
+  /// after a timeout cannot remove a role or fail on the second attempt.
+  ///
+  /// Returns the account's full role set as the server now sees it — not the
+  /// set that was sent. Those differ whenever an administrator has already
+  /// granted something (§10), and trusting the request would silently drop it.
+  ///
+  /// `admin` is not self-assignable; the server rejects it.
+  Future<Set<AppRole>> selectRoles(Set<AppRole> roles) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/auth/roles',
+        data: {'roles': roles.map((r) => r.wire).toList()},
+      );
+
+      final wire = response.data?['roles'];
+      if (wire is! List) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return wire
+          .whereType<String>()
+          .map(AppRole.fromWire)
+          .nonNulls
+          .toSet();
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

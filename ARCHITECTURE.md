@@ -220,14 +220,28 @@ Telegram login is deprecated and uncalled, but the code and endpoint remain —
 [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) has the header explaining what
 is still true.
 
-- **Single `dio` instance** (already in `core/network/dio_provider.dart`) with
-  interceptors: auth token, `x-lang`, idempotency key, error mapping, logging.
+- **Two `dio` instances** (`core/network/dio_provider.dart`): the app-wide one
+  carrying `AuthInterceptor`, and a **bare** one for the two jobs that must not
+  re-enter it — the refresh call and the post-refresh replay. One client for
+  both means a 401 on the refresh endpoint triggering another refresh, forever.
+- **Log lines are redacted** (`core/network/log_redaction.dart`). `LogInterceptor`
+  prints headers and both bodies, which is the bearer token on every request and
+  the token pair on every sign-in. Note that a *request* body is logged as an
+  unquoted Dart `Map` and a *response* as JSON — a rule that handles only one
+  spelling silently misses half of them.
 - **Token storage** in `flutter_secure_storage` - never `shared_preferences`
   (§12.5: no secrets in the app, secure token storage).
-- **Refresh must be single-flight**: concurrent 401s wait on one refresh and then
+- **Refresh is single-flight**: concurrent 401s wait on one refresh and then
   replay, otherwise the rotating refresh token (backend side) trips its own reuse
-  detection and logs the user out. This is the classic bug in this design; write
-  the test.
+  detection and logs the user out. This is the classic bug in this design, and it
+  has a test.
+- **A refused refresh and an unreachable server are different things.** 401/403
+  means the session is over — clear the tokens. Anything else keeps them: the
+  session is probably fine, and clearing signs people out for losing signal.
+- **The session survives a cold start** by exchanging the stored refresh token,
+  never by trusting its presence: roles and account status must come from the
+  server, since a role may have been revoked or the account blocked (BR-10)
+  while the app was closed.
 - **Idempotency keys** are generated client-side, **persisted with the pending
   action**, and reused on retry (§12.4, BR-07). A key regenerated per attempt
   provides no protection at all.

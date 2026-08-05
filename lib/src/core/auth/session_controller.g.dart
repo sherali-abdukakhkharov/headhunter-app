@@ -19,9 +19,10 @@ part of 'session_controller.dart';
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
-/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
-/// from the response (docs/TELEGRAM_LOGIN.md).
+/// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
+/// number and the code sent to it, and takes the roles and tokens from the
+/// response.
+/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with
@@ -43,9 +44,10 @@ final sessionControllerProvider = SessionControllerProvider._();
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
-/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
-/// from the response (docs/TELEGRAM_LOGIN.md).
+/// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
+/// number and the code sent to it, and takes the roles and tokens from the
+/// response.
+/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with
@@ -65,9 +67,10 @@ final class SessionControllerProvider
   /// fallback when a role is revoked, and the persistence of the active choice.
   /// Those are decided by §2.3 and do not depend on the auth wire format.
   ///
-  /// **Acquiring** a session is now real too: [signInWithTelegram] posts a
-  /// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
-  /// from the response (docs/TELEGRAM_LOGIN.md).
+  /// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
+  /// number and the code sent to it, and takes the roles and tokens from the
+  /// response.
+  /// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
   ///
   /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
   /// until the refresh call is wired through the repository, so a cold start with
@@ -101,7 +104,7 @@ final class SessionControllerProvider
   }
 }
 
-String _$sessionControllerHash() => r'86e148b43eac3209167e26603150f441708ae3d8';
+String _$sessionControllerHash() => r'b863d17302507763de9b4270a383766ae3d36f2e';
 
 /// App-wide session and active-role state.
 ///
@@ -114,9 +117,10 @@ String _$sessionControllerHash() => r'86e148b43eac3209167e26603150f441708ae3d8';
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
-/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
-/// from the response (docs/TELEGRAM_LOGIN.md).
+/// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
+/// number and the code sent to it, and takes the roles and tokens from the
+/// response.
+/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with

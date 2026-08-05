@@ -224,18 +224,36 @@ working destinations rather than dead ends.
       deprecated. TELEGRAM_LOGIN.md §7 has it if that ever reverses.
 - [-] ~~iOS deployment target 13.0 → 15.0 for the Telegram iOS SDK~~ — moot,
       **iOS is out of scope** *and* Telegram login is deprecated.
-- [~] Role selection (candidate / employer / both) → correct onboarding — the
-      **mechanism** is done (grants the roles, router enters that shell;
-      administrator deliberately not offered, since §10 grants it). The copy and
-      the per-role explanations are M1's
+- [x] **Session survives a cold start** — `restore` exchanges the stored refresh
+      token for a real session, so roles and account status come from the server
+      rather than being guessed. Verified on device: force-stop, relaunch, land
+      in the shell
+- [x] **`AuthInterceptor` installed** — single-flight refresh on a 401, replay,
+      and a separate bare client so the refresh call cannot re-enter it
+- [x] Sign-out revokes the session server-side (`POST /auth/logout`),
+      best-effort so a failed call still ends the local session
+- [ ] **Offline cold start shows onboarding** — a refresh that cannot complete
+      keeps the tokens (correct) but there is no "we cannot reach the server,
+      retry" state, so the user sees sign-in and has no way to say *try again*.
+      Needs a `SessionState` case; §12.4 asks for explicit offline state
+- [ ] **Role switch does not tell the server** — `POST /auth/active-role`
+      returns an access token carrying the new role, and the app does not call
+      it. Harmless today because nothing is role-authorized yet; **it becomes a
+      403 the moment M2+ adds an endpoint that checks the acting role**
+- [~] Role selection (candidate / employer / both) → correct onboarding — now
+      calls `POST /auth/roles` and adopts the set the **server** returns, not
+      the one it sent (an administrator may have granted more, §10).
+      Administrator deliberately not offered, since §10 grants it. The copy and
+      the per-role explanations are still M1's
 - [~] Role switcher in the profile area — `switchRoleAndGo` is done and exercised
       from `/_dev`; it needs its product entry point once the profile area exists
 - [ ] Sessions screen: list, sign out, terminate all
 - [x] Blocked-account notice explaining the restriction (BR-10) — reason shown
       verbatim, sign-out available; verified on device
 - [ ] Account deletion request with confirmation
-- [ ] Real session acquisition, replacing `signInAsDevelopmentRole` *(blocked on
-      the backend's auth contract — see Auth plumbing above)*
+- [x] ~~Real session acquisition, replacing `signInAsDevelopmentRole`~~ — done.
+      `signInAsDevelopmentRole` stays, gated on the flavor: it is how the
+      redirect chain is exercised without a network
 - [ ] Test: UAT-01 in each of the four variants; locale retained after registration
 
 ## M2 - Dictionary cache and pickers
