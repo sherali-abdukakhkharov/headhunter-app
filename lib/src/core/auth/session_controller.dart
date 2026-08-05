@@ -5,6 +5,7 @@ import 'package:headhunter_app/src/core/auth/session_state.dart';
 import 'package:headhunter_app/src/core/auth/token_store.dart';
 import 'package:headhunter_app/src/core/config/app_flavor.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
+import 'package:headhunter_app/src/core/network/auth_events.dart';
 import 'package:headhunter_app/src/core/storage/preferences_provider.dart';
 import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
 import 'package:headhunter_app/src/features/auth/data/telegram_sign_in.dart';
@@ -54,6 +55,15 @@ class SessionController extends _$SessionController {
   @override
   SessionState build() {
     ref.onDispose(() => _disposed = true);
+
+    // The network layer cannot call this controller directly without closing a
+    // provider cycle, so a refused refresh arrives as an event. See AuthEvents.
+    final lost = ref
+        .read(authEventsProvider)
+        .sessionLost
+        .listen((_) => expire());
+    ref.onDispose(lost.cancel);
+
     // Deliberately fire-and-forget. Returning SessionUnknown synchronously lets
     // the router hold navigation for one frame instead of the whole tree
     // awaiting a keychain read - and SessionUnknown is precisely the state that
@@ -62,19 +72,48 @@ class SessionController extends _$SessionController {
     return const SessionUnknown();
   }
 
-  /// Re-establishes the session from local storage. Leaves [SessionUnknown]
-  /// only once it has an answer.
+  /// Re-establishes the session at cold start. Leaves [SessionUnknown] only
+  /// once it has an answer.
+  ///
+  /// **The refresh token is exchanged for a real session, not trusted on its
+  /// own.** Its presence says nothing about which roles the account holds or
+  /// whether an administrator has blocked it since (BR-10) — guessing
+  /// `{candidate}` would put a blocked employer into a working candidate shell.
+  /// So the server answers, and the answer includes roles and status.
+  ///
+  /// Three outcomes, and the middle one is the one worth being careful about:
+  ///
+  /// - **Refresh succeeds** → straight into the shell, no sign-in.
+  /// - **Refresh is refused** (401/403 → [ApiException] with that status) → the
+  ///   session is genuinely over. Clear the tokens and show onboarding.
+  /// - **Refresh fails to complete** (offline, DNS, a 500) → **keep the
+  ///   tokens.** The session is probably fine and the next launch on a network
+  ///   will restore it. The user sees onboarding this launch, which is honest:
+  ///   the app cannot know their roles, so it cannot show them a shell.
   Future<void> restore() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    final activeRole = AppRole.fromWire(prefs.getString(_activeRoleKey));
+    final storedRole = AppRole.fromWire(prefs.getString(_activeRoleKey));
 
-    // M1 seam. The real sequence is: read the refresh token, exchange it for a
-    // session, and take the granted roles and account status from the response.
-    // Presence of a refresh token alone cannot stand in for that - it says
-    // nothing about which roles the account holds or whether it has been
-    // blocked since (BR-10), and guessing `{candidate}` would put a blocked
-    // employer into a working candidate shell.
-    await ref.read(tokenStoreProvider).readRefreshToken();
+    final tokens = ref.read(tokenStoreProvider);
+    final refreshToken = await tokens.readRefreshToken();
+
+    if (refreshToken != null) {
+      try {
+        final session = await ref
+            .read(authRepositoryProvider)
+            .refresh(refreshToken);
+
+        await _adopt(session, fallbackRole: storedRole);
+        return;
+      } on ApiException catch (e) {
+        if (e.statusCode == 401 || e.statusCode == 403) {
+          await tokens.clear();
+          _set(const SessionUnauthenticated(expired: true));
+          return;
+        }
+        // Anything else: fall through with the tokens intact.
+      }
+    }
 
     final developmentRoles = AppFlavor.current.allowsDevelopmentTools
         ? (prefs.getStringList(_developmentRolesKey) ?? const [])
@@ -86,7 +125,7 @@ class SessionController extends _$SessionController {
     _set(
       developmentRoles.isEmpty
           ? const SessionUnauthenticated()
-          : SessionActive(roles: developmentRoles, activeRole: activeRole),
+          : SessionActive(roles: developmentRoles, activeRole: storedRole),
     );
   }
 
@@ -149,18 +188,26 @@ class SessionController extends _$SessionController {
   /// [SessionActive]. The router redirects on that change and the shell it
   /// lands on may fetch immediately, so flipping state ahead of the write would
   /// race the first authenticated request against its own credentials.
-  Future<void> _adopt(AuthSession session) async {
+  /// [fallbackRole] is used when the server names no active role — the choice
+  /// remembered from the last run, honoured only if the account still holds it.
+  /// A role revoked while the app was closed must not come back from local
+  /// storage.
+  Future<void> _adopt(AuthSession session, {AppRole? fallbackRole}) async {
     await ref.read(tokenStoreProvider).save(session.tokens);
 
+    final roles = session.grantedRoles;
+    final active =
+        session.active ??
+        (fallbackRole != null && roles.contains(fallbackRole)
+            ? fallbackRole
+            : null);
+
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    final active = session.active;
     if (active != null) {
       await prefs.setString(_activeRoleKey, active.wire);
     }
 
-    _set(
-      SessionActive(roles: session.grantedRoles, activeRole: active),
-    );
+    _set(SessionActive(roles: roles, activeRole: active));
   }
 
   /// Switches the active role (§2.3).
@@ -186,6 +233,21 @@ class SessionController extends _$SessionController {
 
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setString(_activeRoleKey, role.wire);
+  }
+
+  /// Submits the roles chosen at the end of registration (§2.3) and adopts the
+  /// set the **server** returns.
+  ///
+  /// Not the set that was sent: an administrator may already have granted
+  /// something (§10), and echoing the request back would silently drop it.
+  ///
+  /// Throws [ApiException] so the screen can keep the user on it and let them
+  /// retry. Recording the roles locally on a failed call would move them into a
+  /// shell the server does not agree they can use, and every request from it
+  /// would 403.
+  Future<void> selectRoles(Set<AppRole> roles) async {
+    final granted = await ref.read(authRepositoryProvider).selectRoles(roles);
+    setGrantedRoles(granted);
   }
 
   /// Records the roles the server granted, preserving the active choice where
@@ -216,8 +278,30 @@ class SessionController extends _$SessionController {
   void expire() => _set(const SessionUnauthenticated(expired: true));
 
   /// Signs out at the user's request. Unlike [expire] this owes no explanation.
+  ///
+  /// Revokes the session server-side first, then clears locally. **The server
+  /// call is best-effort and never blocks the sign-out**: a user tapping "sign
+  /// out" on a train has to end up signed out, and a device that keeps its
+  /// tokens because a request timed out is the worse failure — the session
+  /// stays live on the server *and* the app still looks signed in.
+  ///
+  /// The consequence is a refresh token that stays valid until it expires when
+  /// the call does not land. That is the accepted trade; `logout-all` on the
+  /// sessions screen (§4.2) is the remedy for a device genuinely out of the
+  /// user's hands.
   Future<void> signOut() async {
-    await ref.read(tokenStoreProvider).clear();
+    final tokens = ref.read(tokenStoreProvider);
+    final refreshToken = await tokens.readRefreshToken();
+
+    if (refreshToken != null) {
+      try {
+        await ref.read(authRepositoryProvider).logout(refreshToken);
+      } on ApiException {
+        // Deliberately swallowed - see above.
+      }
+    }
+
+    await tokens.clear();
 
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.remove(_activeRoleKey);

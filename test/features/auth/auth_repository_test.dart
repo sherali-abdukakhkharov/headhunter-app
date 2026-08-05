@@ -190,6 +190,107 @@ void main() {
     });
   });
 
+  group('refresh', () {
+    test('posts the refresh token and returns the whole session', () async {
+      // The whole session, not just the pair: cold-start restore needs the
+      // roles and the account status, which is what separates this from the
+      // interceptor's own narrower refresh.
+      final h = build(body: successBody);
+      final session = await h.repo.refresh('refresh-1');
+
+      expect(h.adapter.captured?.path, '/auth/refresh');
+      expect(
+        (h.adapter.captured?.data as Map?)?['refreshToken'],
+        'refresh-1',
+      );
+      expect(session.grantedRoles, {AppRole.candidate});
+    });
+
+    test('is flagged skipAuth: a 401 here is the answer', () async {
+      // Without the flag the interceptor would try to refresh a refresh.
+      final h = build(body: successBody);
+      await h.repo.refresh('refresh-1');
+
+      expect(h.adapter.captured?.extra[AuthInterceptor.skipAuthFlag], isTrue);
+    });
+
+    test('surfaces a dead session as a 401 ApiException', () async {
+      final h = build(statusCode: 401, body: '{"message":"Session expired"}');
+
+      await expectLater(
+        h.repo.refresh('refresh-1'),
+        throwsA(
+          isA<ApiException>().having((e) => e.statusCode, 'statusCode', 401),
+        ),
+      );
+    });
+  });
+
+  group('logout', () {
+    test('posts the refresh token to /auth/logout', () async {
+      final h = build(statusCode: 204);
+      await h.repo.logout('refresh-1');
+
+      expect(h.adapter.captured?.path, '/auth/logout');
+      expect(
+        (h.adapter.captured?.data as Map?)?['refreshToken'],
+        'refresh-1',
+      );
+    });
+
+    test('is flagged skipAuth, so an expired access token can still log out',
+        () async {
+      final h = build(statusCode: 204);
+      await h.repo.logout('refresh-1');
+
+      expect(h.adapter.captured?.extra[AuthInterceptor.skipAuthFlag], isTrue);
+    });
+  });
+
+  group('selectRoles', () {
+    test('sends wire values and returns what the server granted', () async {
+      // Not an echo of the request: an administrator may already have granted
+      // something (§10), and trusting the request would drop it.
+      final h = build(body: '{"roles":["candidate","employer"]}');
+
+      final granted = await h.repo.selectRoles({AppRole.candidate});
+
+      expect(h.adapter.captured?.path, '/auth/roles');
+      expect((h.adapter.captured?.data as Map?)?['roles'], ['candidate']);
+      expect(granted, {AppRole.candidate, AppRole.employer});
+    });
+
+    test('is NOT flagged skipAuth - it is an authenticated call', () async {
+      // A 401 here really does mean the access token expired, and the
+      // interceptor should refresh and replay rather than give up.
+      final h = build(body: '{"roles":["candidate"]}');
+      await h.repo.selectRoles({AppRole.candidate});
+
+      expect(
+        h.adapter.captured?.extra[AuthInterceptor.skipAuthFlag],
+        isNot(isTrue),
+      );
+    });
+
+    test('drops a role this client version does not know', () async {
+      final h = build(body: '{"roles":["candidate","moderator"]}');
+
+      expect(await h.repo.selectRoles({AppRole.candidate}), {
+        AppRole.candidate,
+      });
+    });
+
+    test('a body without roles is an ApiException', () async {
+      // The stub's default body is `{}` - a 200 carrying nothing usable.
+      final h = build();
+
+      await expectLater(
+        h.repo.selectRoles({AppRole.candidate}),
+        throwsA(isA<ApiException>()),
+      );
+    });
+  });
+
   // Deprecated 2026-08-05 but kept working; see docs/TELEGRAM_LOGIN.md. These
   // stay so the path cannot rot silently while nothing calls it.
   group('signInWithTelegram (deprecated)', () {

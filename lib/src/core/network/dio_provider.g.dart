@@ -12,14 +12,16 @@ part of 'dio_provider.dart';
 ///
 /// This is the single place HTTP behaviour is configured.
 ///
-/// `AuthInterceptor` is deliberately **not** installed yet. It is written and
-/// tested (`test/core/network/auth_interceptor_test.dart`), but it needs a
-/// refresh callback, and the auth endpoints are not in the backend's
-/// `docs/API_CONTRACTS.md` - that file covers locale, timestamps, dictionaries
-/// and schemas only. Installing it now would mean inventing a request and
-/// response shape and shipping the guess into the request path. Nothing in the
-/// app calls an authenticated endpoint yet, so waiting costs nothing; adding it
-/// is one `interceptors.add` once M1 publishes the contract.
+/// ## Two clients, and why
+///
+/// The returned client carries [AuthInterceptor]. A **second, bare** client is
+/// built alongside it for the two jobs that must not re-enter that interceptor:
+/// the refresh call itself, and replaying a request after a refresh. Sharing one
+/// client for both would mean a 401 on the refresh endpoint triggering another
+/// refresh, forever.
+///
+/// The bare client is otherwise identical — it still sends `x-lang`, so a
+/// refused refresh comes back in the user's language.
 
 @ProviderFor(dio)
 final dioProvider = DioProvider._();
@@ -28,14 +30,16 @@ final dioProvider = DioProvider._();
 ///
 /// This is the single place HTTP behaviour is configured.
 ///
-/// `AuthInterceptor` is deliberately **not** installed yet. It is written and
-/// tested (`test/core/network/auth_interceptor_test.dart`), but it needs a
-/// refresh callback, and the auth endpoints are not in the backend's
-/// `docs/API_CONTRACTS.md` - that file covers locale, timestamps, dictionaries
-/// and schemas only. Installing it now would mean inventing a request and
-/// response shape and shipping the guess into the request path. Nothing in the
-/// app calls an authenticated endpoint yet, so waiting costs nothing; adding it
-/// is one `interceptors.add` once M1 publishes the contract.
+/// ## Two clients, and why
+///
+/// The returned client carries [AuthInterceptor]. A **second, bare** client is
+/// built alongside it for the two jobs that must not re-enter that interceptor:
+/// the refresh call itself, and replaying a request after a refresh. Sharing one
+/// client for both would mean a 401 on the refresh endpoint triggering another
+/// refresh, forever.
+///
+/// The bare client is otherwise identical — it still sends `x-lang`, so a
+/// refused refresh comes back in the user's language.
 
 final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
     with $Provider<Dio> {
@@ -43,14 +47,16 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   ///
   /// This is the single place HTTP behaviour is configured.
   ///
-  /// `AuthInterceptor` is deliberately **not** installed yet. It is written and
-  /// tested (`test/core/network/auth_interceptor_test.dart`), but it needs a
-  /// refresh callback, and the auth endpoints are not in the backend's
-  /// `docs/API_CONTRACTS.md` - that file covers locale, timestamps, dictionaries
-  /// and schemas only. Installing it now would mean inventing a request and
-  /// response shape and shipping the guess into the request path. Nothing in the
-  /// app calls an authenticated endpoint yet, so waiting costs nothing; adding it
-  /// is one `interceptors.add` once M1 publishes the contract.
+  /// ## Two clients, and why
+  ///
+  /// The returned client carries [AuthInterceptor]. A **second, bare** client is
+  /// built alongside it for the two jobs that must not re-enter that interceptor:
+  /// the refresh call itself, and replaying a request after a refresh. Sharing one
+  /// client for both would mean a 401 on the refresh endpoint triggering another
+  /// refresh, forever.
+  ///
+  /// The bare client is otherwise identical — it still sends `x-lang`, so a
+  /// refused refresh comes back in the user's language.
   DioProvider._()
     : super(
         from: null,
@@ -84,4 +90,4 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioHash() => r'f321c7c88e1a374197268f57d11c0b5d6eef6085';
+String _$dioHash() => r'350634cc46634a6ee4ec12617a8b43cac4852db3';

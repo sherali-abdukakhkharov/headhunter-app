@@ -77,6 +77,50 @@ cheaper.**
 and `signInWithTelegram` all still work and are marked deprecated; the sign-in
 screen simply no longer offers the button. Reversing again is re-adding a button.
 
+### 2026-08-05 - A redactor written against JSON missed every outgoing secret
+The dio `LogInterceptor` prints a **response** body as raw JSON
+(`{"accessToken":"eyJ..."}`) but a **request** body by calling `toString()` on
+the Dart `Map` — so it comes out **unquoted**: `{phone: +998901234567, code:
+666666}`.
+
+`redactSensitive` was written against the JSON spelling, and its tests used the
+JSON spelling, so it passed while the one-time code and the full phone number
+went to logcat on every sign-in. Caught only by reading an actual device log
+after wiring it up.
+
+*Two lessons, and the second is the general one:* every rule now treats the
+quotes as optional on both key and value; and **a test written from the same
+mental model as the code cannot catch a wrong model.** The fixture has to come
+from the real output.
+
+Related: `"code"` is redacted only when its value is 4-8 digits, because `code`
+is also the backend's error-key field (`"code":"auth.otp_invalid"`) and that one
+is the most useful thing in the log when a call fails.
+
+### 2026-08-05 - Cold-start restore exchanges the token; it never trusts it
+`SessionController.restore` posts the stored refresh token to `/auth/refresh`
+and takes roles and account status from the response. The presence of a token
+cannot stand in for that: it says nothing about which roles the account holds or
+whether an administrator blocked it while the app was closed (BR-10), and
+guessing `{candidate}` would put a blocked employer into a working shell.
+
+*The distinction that matters* is between a refresh **refused** and a refresh
+that **could not complete**:
+
+- 401/403 → the session really is over. Clear the tokens.
+- offline, DNS, 500, timeout → **keep the tokens.** They are very probably fine
+  and the next launch on a network restores the session. Clearing here signs
+  people out for going through a tunnel, and they cannot get back in without
+  signal *and* their phone.
+
+Same rule inside `AuthInterceptor`'s refresh callback, for the same reason.
+
+*Provider cycle worth knowing about:* the interceptor cannot call
+`SessionController` to report a dead session, because the controller reads
+`AuthRepository`, which reads the `Dio` that owns the interceptor. Riverpod
+refuses the cycle. `AuthEvents` breaks it by depending on nothing — dio reports
+into it, the controller listens.
+
 ### 2026-08-05 - The static OTP code goes where the random one was, and nowhere else
 No SMS provider is connected, so `OTP_STATIC_CODE=666666` makes every issued code
 fixed. **It is substituted at the single line that calls `generateOtpCode`.**
