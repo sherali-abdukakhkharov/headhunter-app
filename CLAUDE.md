@@ -234,7 +234,13 @@ from a per-provider `retry` rather than re-enabling it globally.
   `LogInterceptor` uses `debugPrint` for this reason.
 - **Providers are generated.** Annotate with `@riverpod` and run build_runner;
   do not hand-write provider boilerplate.
-- **Generated files are committed** (`*.g.dart`), so CI needs no codegen step.
+- **Generated files are committed** (`*.g.dart`), and CI re-runs codegen and
+  fails on any diff. **Re-run `dart run build_runner build` as the *last* step
+  before committing**, after the final round of lint fixes — not before it.
+  riverpod_generator copies a provider's **doc comment** into the generated file
+  (three times), so merely re-wrapping a comment to satisfy the 80-column rule
+  makes `*.g.dart` stale. `flutter analyze` and `flutter test` both stay green
+  when this happens; only CI catches it.
 - Line length 80. `flutter analyze` must be clean before committing.
 
 ## Dependency pinning - read before upgrading
