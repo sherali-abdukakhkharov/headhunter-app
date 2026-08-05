@@ -77,6 +77,73 @@ cheaper.**
 and `signInWithTelegram` all still work and are marked deprecated; the sign-in
 screen simply no longer offers the button. Reversing again is re-adding a button.
 
+### 2026-08-05 - Role-scoped endpoints read the role from the *token*
+`POST /auth/roles` grants a role but does **not** reissue the access token — the
+backend says so plainly ("the new roles reach the token on the next refresh or
+role switch"). So an account can hold `candidate`, the app can show the
+candidate shell, and every candidate endpoint still answers **403
+`role.none_active`**.
+
+`POST /auth/active-role` is what closes it, and it is now called from two places:
+after role selection, and on every `switchRole`. Only the access token rotates —
+the refresh token is untouched, because this is not a new session and must not
+disturb single-flight refresh.
+
+Worth keeping because of *when* it surfaced: this was flagged as a harmless
+deferral while nothing was role-authorized, and it became a hard blocker the
+moment the first such endpoint was consumed. A gap in auth is invisible until a
+feature stands on it.
+
+### 2026-08-05 - The profile form is data; adding a field is a backend change
+`GET /schemas/candidate-profile?category=…` returns the sections, fields, kinds,
+requiredness, dictionary types and the parent/child cascade. The client renders
+it and writes back a map keyed by field code — **no field code appears in the
+Dart** except where a widget genuinely has to know one.
+
+Three properties of the contract that are easy to break:
+
+- **An unknown `kind` must be skipped and logged, not thrown.** It is what lets
+  the server add a field type without a lockstep release; a client that throws
+  turns a server-side addition into an outage for everyone who has not updated.
+- **`required` gates searchability (BR-02), never the save.** A candidate must be
+  able to clear a field they filled by mistake; the profile then simply stops
+  being complete.
+- **The profile's `fields` map is shaped exactly as `PATCH` accepts.** Read a
+  value, hand it to a widget, send back what comes out — no translation layer,
+  and therefore no place for the two directions to disagree.
+
+Completeness and the derived category are computed server-side in the write's own
+transaction, so the `PATCH` response is the only trustworthy source for both.
+Choosing a primary occupation changes the category, which changes which fields
+exist — so that save has to refetch the schema.
+
+### 2026-08-05 - One dictionary type holds every level of a hierarchy
+`region` contains regions **and** their districts, told apart only by
+`parentId`. So "the region picker" is not "the whole type" — it is "the items
+with no parent", and getting that wrong is invisible: the picker rendered all
+twelve Tashkent districts alongside the fourteen regions, each one a plausible
+option binding a real id.
+
+`parentId` alone cannot express the distinction, because null there already
+means "no parent chosen yet". Hence `parentScoped`, set on **both** halves of a
+cascade — the top one included. The doc comment on the picker had named this
+exact ambiguity before the code was written, and the code still got it wrong;
+naming a trap is not the same as handling it.
+
+Found in ten seconds on a device. Not findable in the test suite as written,
+because the fake data had no hierarchy in it.
+
+### 2026-08-05 - A Riverpod family keyed on a List refetches forever
+`resolvedLabelsProvider(type, [id])` builds a **new list on every rebuild**, and
+Dart lists have identity equality, so every rebuild is a different family member:
+a new fetch, a new cache entry, nothing ever collected. The screen renders
+correctly throughout, which is what makes it invisible.
+
+The key is now a sorted comma-joined `String` (`labelKey`), which also makes
+`[a, b]` and `[b, a]` the same provider. `riverpod_lint`'s `provider_parameters`
+catches this — worth heeding rather than silencing, because the symptom is a
+performance and memory problem, not a wrong pixel.
+
 ### 2026-08-05 - A redactor written against JSON missed every outgoing secret
 The dio `LogInterceptor` prints a **response** body as raw JSON
 (`{"accessToken":"eyJ..."}`) but a **request** body by calling `toString()` on

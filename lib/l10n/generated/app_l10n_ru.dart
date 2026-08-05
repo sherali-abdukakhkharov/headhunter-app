@@ -123,6 +123,72 @@ class AppL10nRu extends AppL10n {
       'Администратор заблокировал этот аккаунт. Вы не сможете пользоваться приложением, пока блокировка не снята.';
 
   @override
+  String get profileCompleteness => 'Заполненность профиля';
+
+  @override
+  String profileMissingRequired(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Осталось $count обязательных полей',
+      many: 'Осталось $count обязательных полей',
+      few: 'Осталось $count обязательных поля',
+      one: 'Осталось $count обязательное поле',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSearchable => 'Виден в поиске';
+
+  @override
+  String get profileNotSearchable => 'Пока не в поиске';
+
+  @override
+  String get profileSaved => 'Профиль сохранён';
+
+  @override
+  String get profileSectionElsewhere =>
+      'У этого раздела свой редактор, он появится позже.';
+
+  @override
+  String get profileFieldNotEditableYet =>
+      'Это поле пока нельзя изменить в приложении.';
+
+  @override
+  String get profileChooseParentFirst => 'Сначала заполните поле выше';
+
+  @override
+  String get profileDateHint => 'ГГГГ-ММ-ДД';
+
+  @override
+  String get profileSalaryFrom => 'От';
+
+  @override
+  String get profileSalaryTo => 'До';
+
+  @override
+  String get profileSalaryNegotiable => 'По договорённости';
+
+  @override
+  String get pickerChoose => 'Выбрать';
+
+  @override
+  String get pickerAdd => 'Добавить';
+
+  @override
+  String get pickerSearchHint => 'Начните вводить для поиска';
+
+  @override
+  String get pickerNoMatches => 'Ничего не найдено.';
+
+  @override
+  String get pickerNothingSelected => 'Пока ничего не выбрано';
+
+  @override
+  String get pickerUnknownValue => 'Недоступное значение';
+
+  @override
   String get authSignInTitle => 'Вход';
 
   @override

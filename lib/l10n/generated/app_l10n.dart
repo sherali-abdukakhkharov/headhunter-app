@@ -323,6 +323,114 @@ abstract class AppL10n {
   /// **'An administrator has blocked this account. You cannot use the app until the block is lifted.'**
   String get blockedBody;
 
+  /// §5.3. Heading of the completeness ring on the candidate profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile completeness'**
+  String get profileCompleteness;
+
+  /// How many fields still block searchability (BR-02). Counts only the blocking ones, not everything that would raise the percentage.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} required field left} other{{count} required fields left}}'**
+  String profileMissingRequired(int count);
+
+  /// BR-02 satisfied: employers can find this profile. Paired with an icon - status is never colour alone.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible in search'**
+  String get profileSearchable;
+
+  /// BR-02 not yet satisfied. Deliberately not phrased as an error: an incomplete profile is a normal state, not a failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet in search'**
+  String get profileNotSearchable;
+
+  /// Success toast after a profile write lands.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// A `bespoke` schema section (work history, education) owns its own sub-resource. Stated plainly rather than rendered as an empty section, which would read as finished.
+  ///
+  /// In en, this message translates to:
+  /// **'This section has its own editor and is not part of this build yet.'**
+  String get profileSectionElsewhere;
+
+  /// A field kind the app cannot draw yet. Shown rather than hidden, because a silently missing field makes the completeness percentage inexplicable.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is not editable in this version of the app.'**
+  String get profileFieldNotEditableYet;
+
+  /// A cascading picker whose parent is unset - a district before a region. The schema names the parent, so this wording stays generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the field above first'**
+  String get profileChooseParentFirst;
+
+  /// Placeholder in a date field. The stored value is always ISO; this is not a localized display format.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY-MM-DD'**
+  String get profileDateHint;
+
+  /// Lower bound of a money_range field (§4.3).
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get profileSalaryFrom;
+
+  /// Upper bound of a money_range field (§4.3).
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get profileSalaryTo;
+
+  /// money_range fields that allow it: the candidate would rather discuss than state a figure.
+  ///
+  /// In en, this message translates to:
+  /// **'Negotiable'**
+  String get profileSalaryNegotiable;
+
+  /// Placeholder in a dictionary-backed field before anything is selected (§3.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get pickerChoose;
+
+  /// Opens the list on a multi-select picker — skills, languages, employment types.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get pickerAdd;
+
+  /// Hint in a picker's search box. Search matches the displayed label, which is the one place matching on a label is correct - it is what the user is reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Start typing to filter'**
+  String get pickerSearchHint;
+
+  /// Shown inside a picker when the search filters everything out. Distinct from the dictionary being empty, which would be a server problem.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches that search.'**
+  String get pickerNoMatches;
+
+  /// Stands in for the chip row of a multi-select picker while it is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing selected yet'**
+  String get pickerNothingSelected;
+
+  /// A stored dictionary id the server could not resolve even through the resolve-by-id endpoint. Rare: retired and merged items still resolve forever (§10.3). Shown instead of a raw UUID.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable value'**
+  String get pickerUnknownValue;
+
   /// Heading of the sign-in screen (§4.1).
   ///
   /// In en, this message translates to:

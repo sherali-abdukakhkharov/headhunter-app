@@ -152,6 +152,12 @@ class DevToolsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: HhSpace.sm),
                   HhButton.secondary(
+                    label: 'Dictionaries and pickers',
+                    iconPath: HhIconPath.dictionary,
+                    onPressed: () => context.go(Routes.dictionaryProbe),
+                  ),
+                  const SizedBox(height: HhSpace.sm),
+                  HhButton.secondary(
                     label: 'Backend health probe',
                     iconPath: HhIconPath.refresh,
                     onPressed: () => context.go(Routes.health),

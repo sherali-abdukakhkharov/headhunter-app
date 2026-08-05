@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 import 'package:headhunter_app/src/core/auth/app_role.dart';
 import 'package:headhunter_app/src/core/auth/session_state.dart';
@@ -233,6 +234,45 @@ class SessionController extends _$SessionController {
 
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setString(_activeRoleKey, role.wire);
+
+    await _publishActiveRole(role);
+  }
+
+  /// Tells the server which role is being acted as, and stores the access token
+  /// it returns.
+  ///
+  /// **Role-scoped endpoints read the role from the token**, so a switch that
+  /// stays local produces `role.none_active` — a 403 from every one of them, on
+  /// an account that genuinely holds the role. Nothing noticed until the first
+  /// such endpoint existed - exactly the kind of gap found in a feature rather
+  /// than in auth.
+  ///
+  /// Best-effort and deliberately non-fatal: the local switch has already
+  /// happened and the shell has already moved. A failure here leaves the token
+  /// naming the previous role, and the next call that needs it gets a 403 whose
+  /// message says so. Blocking the switch on a network round trip would make
+  /// changing tabs fail offline.
+  ///
+  /// Only the access token rotates — [TokenPair] is rebuilt with the existing
+  /// refresh token, because this is not a new session and the refresh chain
+  /// must not be disturbed.
+  Future<void> _publishActiveRole(AppRole role) async {
+    final store = ref.read(tokenStoreProvider);
+
+    try {
+      final accessToken = await ref
+          .read(authRepositoryProvider)
+          .switchActiveRole(role);
+
+      final refreshToken = await store.readRefreshToken();
+      if (refreshToken == null) return;
+
+      await store.save(
+        TokenPair(accessToken: accessToken, refreshToken: refreshToken),
+      );
+    } on ApiException catch (e) {
+      debugPrint('[session] active role not published: ${e.message}');
+    }
   }
 
   /// Submits the roles chosen at the end of registration (§2.3) and adopts the
@@ -248,6 +288,21 @@ class SessionController extends _$SessionController {
   Future<void> selectRoles(Set<AppRole> roles) async {
     final granted = await ref.read(authRepositoryProvider).selectRoles(roles);
     setGrantedRoles(granted);
+
+    // The token minted at sign-in names no role, and `/auth/roles` does not
+    // reissue it — the backend says so explicitly ("the new roles reach the
+    // token on the next refresh or role switch"). Without this the very first
+    // screen after registration calls a role-scoped endpoint and gets a 403.
+    final current = state;
+    if (current is SessionActive) {
+      final active = current.effectiveRole;
+      if (active != null) {
+        final prefs = await ref.read(sharedPreferencesProvider.future);
+        await prefs.setString(_activeRoleKey, active.wire);
+        _set(current.copyWith(activeRole: active));
+        await _publishActiveRole(active);
+      }
+    }
   }
 
   /// Records the roles the server granted, preserving the active choice where

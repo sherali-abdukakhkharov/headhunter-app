@@ -124,6 +124,70 @@ class AppL10nEn extends AppL10n {
       'An administrator has blocked this account. You cannot use the app until the block is lifted.';
 
   @override
+  String get profileCompleteness => 'Profile completeness';
+
+  @override
+  String profileMissingRequired(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count required fields left',
+      one: '$count required field left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSearchable => 'Visible in search';
+
+  @override
+  String get profileNotSearchable => 'Not yet in search';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get profileSectionElsewhere =>
+      'This section has its own editor and is not part of this build yet.';
+
+  @override
+  String get profileFieldNotEditableYet =>
+      'This field is not editable in this version of the app.';
+
+  @override
+  String get profileChooseParentFirst => 'Choose the field above first';
+
+  @override
+  String get profileDateHint => 'YYYY-MM-DD';
+
+  @override
+  String get profileSalaryFrom => 'From';
+
+  @override
+  String get profileSalaryTo => 'To';
+
+  @override
+  String get profileSalaryNegotiable => 'Negotiable';
+
+  @override
+  String get pickerChoose => 'Choose';
+
+  @override
+  String get pickerAdd => 'Add';
+
+  @override
+  String get pickerSearchHint => 'Start typing to filter';
+
+  @override
+  String get pickerNoMatches => 'Nothing matches that search.';
+
+  @override
+  String get pickerNothingSelected => 'Nothing selected yet';
+
+  @override
+  String get pickerUnknownValue => 'Unavailable value';
+
+  @override
   String get authSignInTitle => 'Sign in';
 
   @override

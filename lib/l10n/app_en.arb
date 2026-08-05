@@ -157,6 +157,83 @@
     "description": "BR-10. Shown only when the administrator supplied no reason; when they did, their reason is displayed verbatim instead and is never translated client-side (§2.4)."
   },
 
+  "profileCompleteness": "Profile completeness",
+  "@profileCompleteness": {
+    "description": "§5.3. Heading of the completeness ring on the candidate profile."
+  },
+  "profileMissingRequired": "{count, plural, one{{count} required field left} other{{count} required fields left}}",
+  "@profileMissingRequired": {
+    "description": "How many fields still block searchability (BR-02). Counts only the blocking ones, not everything that would raise the percentage.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "profileSearchable": "Visible in search",
+  "@profileSearchable": {
+    "description": "BR-02 satisfied: employers can find this profile. Paired with an icon - status is never colour alone."
+  },
+  "profileNotSearchable": "Not yet in search",
+  "@profileNotSearchable": {
+    "description": "BR-02 not yet satisfied. Deliberately not phrased as an error: an incomplete profile is a normal state, not a failure."
+  },
+  "profileSaved": "Profile saved",
+  "@profileSaved": {
+    "description": "Success toast after a profile write lands."
+  },
+  "profileSectionElsewhere": "This section has its own editor and is not part of this build yet.",
+  "@profileSectionElsewhere": {
+    "description": "A `bespoke` schema section (work history, education) owns its own sub-resource. Stated plainly rather than rendered as an empty section, which would read as finished."
+  },
+  "profileFieldNotEditableYet": "This field is not editable in this version of the app.",
+  "@profileFieldNotEditableYet": {
+    "description": "A field kind the app cannot draw yet. Shown rather than hidden, because a silently missing field makes the completeness percentage inexplicable."
+  },
+  "profileChooseParentFirst": "Choose the field above first",
+  "@profileChooseParentFirst": {
+    "description": "A cascading picker whose parent is unset - a district before a region. The schema names the parent, so this wording stays generic."
+  },
+  "profileDateHint": "YYYY-MM-DD",
+  "@profileDateHint": {
+    "description": "Placeholder in a date field. The stored value is always ISO; this is not a localized display format."
+  },
+  "profileSalaryFrom": "From",
+  "@profileSalaryFrom": {
+    "description": "Lower bound of a money_range field (§4.3)."
+  },
+  "profileSalaryTo": "To",
+  "@profileSalaryTo": {
+    "description": "Upper bound of a money_range field (§4.3)."
+  },
+  "profileSalaryNegotiable": "Negotiable",
+  "@profileSalaryNegotiable": {
+    "description": "money_range fields that allow it: the candidate would rather discuss than state a figure."
+  },
+
+  "pickerChoose": "Choose",
+  "@pickerChoose": {
+    "description": "Placeholder in a dictionary-backed field before anything is selected (§3.3)."
+  },
+  "pickerAdd": "Add",
+  "@pickerAdd": {
+    "description": "Opens the list on a multi-select picker — skills, languages, employment types."
+  },
+  "pickerSearchHint": "Start typing to filter",
+  "@pickerSearchHint": {
+    "description": "Hint in a picker's search box. Search matches the displayed label, which is the one place matching on a label is correct - it is what the user is reading."
+  },
+  "pickerNoMatches": "Nothing matches that search.",
+  "@pickerNoMatches": {
+    "description": "Shown inside a picker when the search filters everything out. Distinct from the dictionary being empty, which would be a server problem."
+  },
+  "pickerNothingSelected": "Nothing selected yet",
+  "@pickerNothingSelected": {
+    "description": "Stands in for the chip row of a multi-select picker while it is empty."
+  },
+  "pickerUnknownValue": "Unavailable value",
+  "@pickerUnknownValue": {
+    "description": "A stored dictionary id the server could not resolve even through the resolve-by-id endpoint. Rare: retired and merged items still resolve forever (§10.3). Shown instead of a raw UUID."
+  },
+
   "authSignInTitle": "Sign in",
   "@authSignInTitle": {
     "description": "Heading of the sign-in screen (§4.1)."

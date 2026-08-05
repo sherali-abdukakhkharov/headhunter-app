@@ -66,6 +66,10 @@ abstract final class HhIconPath {
   /// are neutral-toned, so the glyph carries the whole distinction.
   static const arrowLeft = 'M19.5 12H5M11.5 18.5 5 12l6.5-6.5';
 
+  /// Disclosure on a field that opens a picker. Distinct from [arrowLeft],
+  /// which means withdrawal — this one is pure "there is a list behind this".
+  static const chevronDown = 'M6 9.5 12 15.5 18 9.5';
+
   // Attributes and metadata
   static const location =
       'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11zM12 12.5a2.5 2.5 0 1 0 '

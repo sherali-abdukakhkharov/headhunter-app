@@ -82,6 +82,12 @@ abstract final class Routes {
   /// Design-system catalogue. Carries unlocalized sample copy.
   static const designGallery = '/_design';
 
+  /// Dictionary probe: the §3.3 pickers against the real API, with a language
+  /// switcher beside the ids they bind. Exists because the product forms that
+  /// will carry these pickers are schema-driven and arrive in M3, so until then
+  /// there is nowhere else to watch one fail on a device.
+  static const dictionaryProbe = '/_dictionaries';
+
   /// The M0 health probe. Scaffolding that proves app -> API -> Postgres; it is
   /// to be replaced by the first real feature, not built on, which is why it
   /// lives here rather than on a product route.
