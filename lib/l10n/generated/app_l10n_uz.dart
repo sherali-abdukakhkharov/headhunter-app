@@ -128,6 +128,51 @@ class AppL10nUz extends AppL10n {
   String get authSignInTitle => 'Kirish';
 
   @override
+  String get authPhoneLabel => 'Telefon raqami';
+
+  @override
+  String get authPhoneHint => '90 123 45 67';
+
+  @override
+  String get authPhoneInvalid => '9 ta raqam kiriting, masalan 90 123 45 67.';
+
+  @override
+  String get authSendCode => 'Kod olish';
+
+  @override
+  String get authCodeTitle => 'Kodni kiriting';
+
+  @override
+  String authCodeSentTo(String phone) {
+    return '$phone raqamiga kod yubordik.';
+  }
+
+  @override
+  String get authCodeLabel => 'Kod';
+
+  @override
+  String authCodeInvalid(int length) {
+    return '$length xonali kodni kiriting.';
+  }
+
+  @override
+  String get authVerifyCode => 'Tasdiqlash';
+
+  @override
+  String get authChangePhone => 'Raqamni o\'zgartirish';
+
+  @override
+  String get authResendCode => 'Qayta yuborish';
+
+  @override
+  String authResendIn(int seconds) {
+    return '$seconds s dan keyin qayta yuborish';
+  }
+
+  @override
+  String get authCodeResent => 'Yangi kod yuborildi.';
+
+  @override
   String get authTelegramSignIn => 'Telegram orqali kirish';
 
   @override
@@ -268,6 +313,51 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get authSignInTitle => 'Кириш';
+
+  @override
+  String get authPhoneLabel => 'Телефон рақами';
+
+  @override
+  String get authPhoneHint => '90 123 45 67';
+
+  @override
+  String get authPhoneInvalid => '9 та рақам киритинг, масалан 90 123 45 67.';
+
+  @override
+  String get authSendCode => 'Код олиш';
+
+  @override
+  String get authCodeTitle => 'Кодни киритинг';
+
+  @override
+  String authCodeSentTo(String phone) {
+    return '$phone рақамига код юбордик.';
+  }
+
+  @override
+  String get authCodeLabel => 'Код';
+
+  @override
+  String authCodeInvalid(int length) {
+    return '$length хонали кодни киритинг.';
+  }
+
+  @override
+  String get authVerifyCode => 'Тасдиқлаш';
+
+  @override
+  String get authChangePhone => 'Рақамни ўзгартириш';
+
+  @override
+  String get authResendCode => 'Қайта юбориш';
+
+  @override
+  String authResendIn(int seconds) {
+    return '$seconds с дан кейин қайта юбориш';
+  }
+
+  @override
+  String get authCodeResent => 'Янги код юборилди.';
 
   @override
   String get authTelegramSignIn => 'Telegram орқали кириш';
@@ -411,6 +501,51 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get authSignInTitle => 'Kirish';
+
+  @override
+  String get authPhoneLabel => 'Telefon raqami';
+
+  @override
+  String get authPhoneHint => '90 123 45 67';
+
+  @override
+  String get authPhoneInvalid => '9 ta raqam kiriting, masalan 90 123 45 67.';
+
+  @override
+  String get authSendCode => 'Kod olish';
+
+  @override
+  String get authCodeTitle => 'Kodni kiriting';
+
+  @override
+  String authCodeSentTo(String phone) {
+    return '$phone raqamiga kod yubordik.';
+  }
+
+  @override
+  String get authCodeLabel => 'Kod';
+
+  @override
+  String authCodeInvalid(int length) {
+    return '$length xonali kodni kiriting.';
+  }
+
+  @override
+  String get authVerifyCode => 'Tasdiqlash';
+
+  @override
+  String get authChangePhone => 'Raqamni o\'zgartirish';
+
+  @override
+  String get authResendCode => 'Qayta yuborish';
+
+  @override
+  String authResendIn(int seconds) {
+    return '$seconds s dan keyin qayta yuborish';
+  }
+
+  @override
+  String get authCodeResent => 'Yangi kod yuborildi.';
 
   @override
   String get authTelegramSignIn => 'Telegram orqali kirish';

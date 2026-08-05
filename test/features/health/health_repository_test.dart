@@ -78,10 +78,14 @@ void main() {
     });
 
     test('converts a 500 into an ApiException carrying the status', () async {
+      // The server's own message wins over the generic text for the status.
+      // Safe for a 500 specifically: the backend's exception filter answers
+      // these with a translated `error.internal`, never the underlying fault.
       final repo = HealthRepository(
         _dioReturning(
           (options) => ResponseBody.fromString(
-            '{"message":"boom"}',
+            '{"statusCode":500,"code":"error.internal",'
+                '"message":"Kutilmagan xatolik yuz berdi."}',
             500,
             headers: {
               Headers.contentTypeHeader: [Headers.jsonContentType],
@@ -98,8 +102,35 @@ void main() {
               .having(
                 (e) => e.message,
                 'message',
-                contains('server ran into a problem'),
+                'Kutilmagan xatolik yuz berdi.',
               ),
+        ),
+      );
+    });
+
+    test('falls back to the status text when the body is not ours', () async {
+      // A 502 from a proxy in front of the API: an HTML page, not the
+      // backend's error envelope. None of that reaches the user.
+      final repo = HealthRepository(
+        _dioReturning(
+          (options) => ResponseBody.fromString(
+            '<html><body>502 Bad Gateway</body></html>',
+            502,
+            headers: {
+              Headers.contentTypeHeader: ['text/html'],
+            },
+          ),
+        ),
+      );
+
+      await expectLater(
+        repo.fetchHealth(),
+        throwsA(
+          isA<ApiException>().having(
+            (e) => e.message,
+            'message',
+            contains('server ran into a problem'),
+          ),
         ),
       );
     });

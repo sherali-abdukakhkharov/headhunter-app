@@ -1,7 +1,32 @@
-# Log in with Telegram — research and implementation plan
+# Log in with Telegram — research, and why it was deprecated
 
-**Status:** Android implementation in progress. Client direction 2026-08-05: the
-MVP signs in with Telegram; **phone + OTP is deferred, not deleted.**
+> ## Status: DEPRECATED, 2026-08-05. Do not build on this.
+>
+> **The MVP signs in with phone + OTP** — §4.1 and UAT-01, which is what they
+> always said. Telegram login was chosen earlier the same day and reversed by the
+> client; this document is kept as the record of what was built and what the
+> spike proved, not as a plan.
+>
+> **What is still true and still works:**
+>
+> - `POST /auth/telegram` on the backend, with JWKS verification and 22 passing
+>   integration tests. Marked `deprecated` in Swagger. Nothing calls it.
+> - `TelegramSignIn` / `PluginTelegramSignIn` and
+>   `SessionController.signInWithTelegram` in the app, with their tests. Nothing
+>   calls them, and the sign-in screen no longer offers the button.
+> - The `telegram_login` dependency and the BotFather registration in §7.
+>
+> **The open question in §7a — whether the `phone` scope actually returns a
+> number — was never settled, and is now moot.** It was also the reason to
+> reverse: BR-01 needs a verified phone, Telegram can decline to supply one, and
+> a login that may or may not produce an account that can act is worse than an
+> SMS. Verifying an OTP makes the number verified by construction.
+>
+> **If this is ever revived**, the research below is correct as of 2026-08-05,
+> and §7's per-flavor BotFather registration is the step most likely to be
+> missed. Start by answering §7a.
+
+The original document follows, unedited except for this header.
 
 > **iOS is out of scope** (owner direction, 2026-08-05) — Android only until asked
 > otherwise. The iOS notes below are kept because the research is correct and will

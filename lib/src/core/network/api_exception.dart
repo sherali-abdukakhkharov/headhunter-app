@@ -25,11 +25,39 @@ class ApiException implements Exception {
       DioExceptionType.cancel => 'The request was cancelled.',
       DioExceptionType.badCertificate =>
         'The server presented an invalid security certificate.',
-      DioExceptionType.badResponse => _messageForStatus(status),
+      DioExceptionType.badResponse =>
+        _serverMessage(e.response?.data) ?? _messageForStatus(status),
       DioExceptionType.unknown => 'An unexpected network error occurred.',
     };
 
     return ApiException(message, statusCode: status, cause: e);
+  }
+
+  /// The server's own message, when it sent one.
+  ///
+  /// **Preferred over [_messageForStatus] whenever it exists**, because the
+  /// status alone is usually the wrong thing to say. A 401 from
+  /// `/auth/otp/verify` means "that code is wrong" and the generic text for 401
+  /// is "your session has expired, please sign in again" — advice that is not
+  /// merely unhelpful during a sign-in, it is describing a different event.
+  ///
+  /// Safe to render directly. The backend's exception filter answers every
+  /// failure with `{statusCode, code, message}` where `message` is translated
+  /// into the caller's `x-lang` and is deliberately generic about internals —
+  /// never a stack trace, an SQL fragment or a driver message. That is a
+  /// contract with a test behind it on the other side.
+  ///
+  /// Falls through to the status text for anything not of that shape: a proxy's
+  /// HTML error page, a gateway timeout body, or a plain-string response are
+  /// all things that reach a mobile client, and none of them should be shown
+  /// to a user.
+  static String? _serverMessage(Object? data) {
+    if (data is! Map) return null;
+
+    final message = data['message'];
+    if (message is! String || message.trim().isEmpty) return null;
+
+    return message;
   }
 
   /// Message safe to render directly in the UI.
@@ -41,6 +69,9 @@ class ApiException implements Exception {
   /// The underlying error, kept for logging - never shown to users.
   final Object? cause;
 
+  /// Fallback copy, used only when the server sent no usable message.
+  ///
+  /// Necessarily vague: at this point all that is known is a number.
   static String _messageForStatus(int? status) => switch (status) {
     400 => 'The request was invalid.',
     401 => 'Your session has expired. Please sign in again.',

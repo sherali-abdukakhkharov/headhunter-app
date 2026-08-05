@@ -60,7 +60,59 @@ decision reverses.
 (the M0/M0.5 entries below, and the iOS-flavors item in TODO.md). iOS compile
 breakage is now **not** caught by anything.
 
+### 2026-08-05 (later the same day) - Telegram login deprecated; sign-in is phone + OTP
+Client direction, reversing the entry below after it had shipped. §4.1 and UAT-01
+always said phone + OTP; that is what ships.
+
+*The reason is the thing worth keeping.* Telegram's `phone` scope **can be
+declined**, and the spike never established whether it returns a number at all
+(TELEGRAM_LOGIN.md §7a was still open). BR-01 admits no account without a verified
+phone, so the Telegram design had to carry a branch for "authenticated but cannot
+act" — a state to model, route around and explain to a user who has just signed
+in. Verifying an OTP makes the number verified *by construction*, so that state
+cannot exist. **A cheaper login that sometimes produces an unusable account is not
+cheaper.**
+
+*Nothing was deleted.* `POST /auth/telegram` (22 integration tests), `TelegramSignIn`
+and `signInWithTelegram` all still work and are marked deprecated; the sign-in
+screen simply no longer offers the button. Reversing again is re-adding a button.
+
+### 2026-08-05 - The static OTP code goes where the random one was, and nowhere else
+No SMS provider is connected, so `OTP_STATIC_CODE=666666` makes every issued code
+fixed. **It is substituted at the single line that calls `generateOtpCode`.**
+
+The tempting alternative — a special case inside `verify` that accepts `666666`
+whatever the database says — is worse in a way that only shows up later: it is a
+*second code path*, so every property the real flow has (TTL, supersession, the
+resend delay, the attempt limit, single-use consumption) would be untested until
+the day the backdoor is removed, which is exactly the day nobody is looking. With
+the substitution where it is, **removing the backdoor is clearing one environment
+variable and no code path changes.**
+
+Boot refuses a non-empty value when `NODE_ENV=production`, and refuses one whose
+length disagrees with `OTP_LENGTH` — a mismatch is otherwise silent and baffling,
+since the client renders `OTP_LENGTH` boxes and the code that works does not fit.
+
+### 2026-08-05 - `ApiException` ignored the server's message, and said the wrong thing
+`ApiException.fromDioException` mapped **status code → hardcoded English**, never
+reading the `message` the backend sends. Every comment in both repos claimed
+"server messages arrive already localized thanks to `x-lang`"; none of them were
+true at the point it mattered.
+
+Found on the OTP screen: a wrong code is a 401, and the generic text for 401 is
+*"Your session has expired. Please sign in again."* — shown to somebody in the
+middle of signing in. Not merely unhelpful; it describes a different event.
+
+Now the server's `message` wins whenever the body is an object carrying a non-empty
+string one, falling back to the status text otherwise (a proxy's HTML error page
+must never reach a user). Safe because the backend's exception filter translates
+every message and is deliberately generic about internals. **This also fixed the
+localization silently: those hardcoded strings were English in all four variants.**
+
 ### 2026-08-05 - MVP signs in with Telegram; OTP is deferred, not deleted
+**Superseded the same day — see the entry above.** Kept because the research is
+still correct and would be needed if Telegram login is revived.
+
 Client direction. Full research, wire contract and open questions in
 [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md).
 
@@ -510,6 +562,24 @@ runs on `ubuntu-latest` runners. Do not "fix" it.
   build-tools 36.0.0; AVD `headhunter_pixel` with WHPX acceleration.
 - Gradle 9.1 + AGP 9.0.1 + Android Studio's bundled JBR (JDK 25) - this
   combination builds successfully; do not "helpfully" downgrade the JDK.
+- **Live backend: `https://hh.qitmir.uz`** (Cloudflare-fronted), wired in as
+  `AppFlavor.production.apiBaseUrl` on 2026-08-05. Verified that day: `/health`
+  200 over HTTPS, `POST /auth/telegram` **401 rather than 404** - so that
+  deployment carries the Telegram endpoint, unlike the local dev process, which
+  404s because it was started before that module landed. **Restart the local API
+  before blaming the client for a 404 on an auth route.**
+  Two things worth knowing about that host: it also answers **plaintext HTTP**
+  without redirecting to HTTPS, so a client misconfigured with `http://` would put
+  bearer tokens on the wire in clear - the app only ever uses the `https://`
+  constant; and `staging` deliberately points at a host that does not exist, so a
+  staging build cannot silently write production data.
+- **The long-running emulator cannot resolve `hh.qitmir.uz`** even though
+  `google.com` resolves inside it and three public resolvers answer for the name.
+  Chrome in the emulator fails on it too, so it is the emulator's DNS, not the
+  app - most likely a stale resolver in an instance that has been up for hours.
+  Relaunch with `flutter emulators --launch headhunter_pixel` (or
+  `emulator -avd headhunter_pixel -dns-server 8.8.8.8`) before concluding the app
+  cannot reach the API.
 - Backend API on **3001** (`sahih-bot` owns 3000) and its Postgres on **5435**
   (5432/5433/5434 are taken by sibling projects). The app's default base URL is
   `http://10.0.2.2:3001` - `10.0.2.2` is the emulator's alias for the host

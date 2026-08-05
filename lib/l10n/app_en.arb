@@ -161,24 +161,94 @@
   "@authSignInTitle": {
     "description": "Heading of the sign-in screen (§4.1)."
   },
+  "authPhoneLabel": "Phone number",
+  "@authPhoneLabel": {
+    "description": "Persistent label above the phone field (§4.1 step 3). The +998 country code is a static prefix inside the field, so this labels the national part only."
+  },
+  "authPhoneHint": "90 123 45 67",
+  "@authPhoneHint": {
+    "description": "Placeholder showing the nine-digit shape of an Uzbek subscriber number. Digits only - do not translate, and do not localize the grouping."
+  },
+  "authPhoneInvalid": "Enter a 9-digit number, for example 90 123 45 67.",
+  "@authPhoneInvalid": {
+    "description": "Client-side check before the send call: the national part is not nine digits. Checked here only to save the user a round trip; the server validates independently."
+  },
+  "authSendCode": "Get a code",
+  "@authSendCode": {
+    "description": "Primary action on the phone screen (§4.1). Deliberately not 'Sign in' or 'Register' - phone-only identity makes those the same act, and the user does not yet know which one this is."
+  },
+  "authCodeTitle": "Enter the code",
+  "@authCodeTitle": {
+    "description": "Heading of the code screen, the second step of sign-in (§4.1)."
+  },
+  "authCodeSentTo": "We sent a code to {phone}.",
+  "@authCodeSentTo": {
+    "description": "Confirms which number the code went to, so a mistyped digit is caught here rather than after the code fails to arrive.",
+    "placeholders": {
+      "phone": {
+        "type": "String",
+        "example": "+998 90 123 45 67"
+      }
+    }
+  },
+  "authCodeLabel": "Code",
+  "@authCodeLabel": {
+    "description": "Persistent label above the one-time code field."
+  },
+  "authCodeInvalid": "Enter the {length}-digit code.",
+  "@authCodeInvalid": {
+    "description": "Client-side check before the verify call: the field does not hold a complete code. Length is a placeholder because OTP_LENGTH is server configuration (§4.2) - never hardcode six.",
+    "placeholders": {
+      "length": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  },
+  "authVerifyCode": "Confirm",
+  "@authVerifyCode": {
+    "description": "Primary action on the code screen."
+  },
+  "authChangePhone": "Change number",
+  "@authChangePhone": {
+    "description": "Returns to the phone field. Present because the number is shown above it and a user who spots a typo needs somewhere to go that is not the back gesture."
+  },
+  "authResendCode": "Send again",
+  "@authResendCode": {
+    "description": "Requests a fresh code. Enabled only once the server's resend delay has passed (§4.2)."
+  },
+  "authResendIn": "Send again in {seconds} s",
+  "@authResendIn": {
+    "description": "The resend action while the delay is still running. Shows the remaining seconds so the user knows the button is waiting rather than broken.",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+  "authCodeResent": "A new code is on its way.",
+  "@authCodeResent": {
+    "description": "Confirmation after a successful resend. Needed because the visible result of a resend is otherwise only the countdown restarting."
+  },
   "authTelegramSignIn": "Log in with Telegram",
   "@authTelegramSignIn": {
-    "description": "The primary sign-in action. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones."
+    "description": "DEPRECATED 2026-08-05, kept with the Telegram sign-in code it labels; nothing renders it. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones."
   },
   "authTermsAgree": "I accept the Terms of Service and the Privacy Policy",
   "@authTermsAgree": {
-    "description": "§4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked. Telegram does not collect this for us."
+    "description": "§4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked."
   },
   "authSignInFailed": "Could not sign in with Telegram. Please try again.",
   "@authSignInFailed": {
-    "description": "Telegram or its SDK failed for a reason the user cannot act on beyond retrying. Deliberately does not expose the SDK's own English error text."
+    "description": "DEPRECATED with the Telegram flow. Telegram or its SDK failed for a reason the user cannot act on beyond retrying."
   },
   "authSignInNoConnection": "No connection to Telegram. Check your internet and try again.",
   "@authSignInNoConnection": {
-    "description": "Network failure while contacting Telegram, as distinct from our own server being unreachable - the user can act on this one."
+    "description": "DEPRECATED with the Telegram flow. Network failure while contacting Telegram, as distinct from our own server being unreachable."
   },
   "authSignInUnavailable": "Telegram sign-in is not available in this build.",
   "@authSignInUnavailable": {
-    "description": "This build's application id has no redirect URI registered with BotFather, so a login cannot start. Should never reach a real user; shown instead of failing silently."
+    "description": "DEPRECATED with the Telegram flow. This build's application id has no redirect URI registered with BotFather, so a login cannot start."
   }
 }

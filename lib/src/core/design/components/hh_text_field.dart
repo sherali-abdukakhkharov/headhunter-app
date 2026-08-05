@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:headhunter_app/src/core/design/hh_colors.dart';
 import 'package:headhunter_app/src/core/design/hh_icons.dart';
@@ -35,6 +36,7 @@ class HhTextField extends StatefulWidget {
     this.onTrailingTap,
     this.keyboardType,
     this.textInputAction,
+    this.inputFormatters,
     this.obscureText = false,
     this.maxLines = 1,
     this.maxLength,
@@ -74,6 +76,16 @@ class HhTextField extends StatefulWidget {
 
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+
+  /// Input restrictions, e.g. `FilteringTextInputFormatter.digitsOnly` for a
+  /// phone or a one-time code.
+  ///
+  /// [keyboardType] is a *hint* — it chooses which keyboard appears, and every
+  /// platform still lets a user paste. A phone field with `maxLength: 9` and no
+  /// formatter silently truncates a pasted `+998 90 123 45 67` to nine
+  /// characters of punctuation.
+  final List<TextInputFormatter>? inputFormatters;
+
   final bool obscureText;
   final int maxLines;
   final int? maxLength;
@@ -278,6 +290,7 @@ class _HhTextFieldState extends State<HhTextField> {
     focusNode: _node,
     keyboardType: widget.keyboardType,
     textInputAction: widget.textInputAction,
+    inputFormatters: widget.inputFormatters,
     obscureText: widget.obscureText,
     maxLines: widget.maxLines,
     maxLength: widget.maxLength,

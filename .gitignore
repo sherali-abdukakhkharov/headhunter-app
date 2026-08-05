@@ -33,6 +33,12 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Staging area for a release artifact built by hand, e.g. when Actions is
+# unavailable and the APK is uploaded to a GitHub Release manually. The CI
+# workflow uses the same path. A 52MB binary must never enter git history -
+# releases carry attachments, the repository does not.
+/dist/
+
 # Symbolication related
 app.*.symbols
 

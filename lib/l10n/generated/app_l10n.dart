@@ -329,31 +329,109 @@ abstract class AppL10n {
   /// **'Sign in'**
   String get authSignInTitle;
 
-  /// The primary sign-in action. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones.
+  /// Persistent label above the phone field (§4.1 step 3). The +998 country code is a static prefix inside the field, so this labels the national part only.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get authPhoneLabel;
+
+  /// Placeholder showing the nine-digit shape of an Uzbek subscriber number. Digits only - do not translate, and do not localize the grouping.
+  ///
+  /// In en, this message translates to:
+  /// **'90 123 45 67'**
+  String get authPhoneHint;
+
+  /// Client-side check before the send call: the national part is not nine digits. Checked here only to save the user a round trip; the server validates independently.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a 9-digit number, for example 90 123 45 67.'**
+  String get authPhoneInvalid;
+
+  /// Primary action on the phone screen (§4.1). Deliberately not 'Sign in' or 'Register' - phone-only identity makes those the same act, and the user does not yet know which one this is.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a code'**
+  String get authSendCode;
+
+  /// Heading of the code screen, the second step of sign-in (§4.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code'**
+  String get authCodeTitle;
+
+  /// Confirms which number the code went to, so a mistyped digit is caught here rather than after the code fails to arrive.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a code to {phone}.'**
+  String authCodeSentTo(String phone);
+
+  /// Persistent label above the one-time code field.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get authCodeLabel;
+
+  /// Client-side check before the verify call: the field does not hold a complete code. Length is a placeholder because OTP_LENGTH is server configuration (§4.2) - never hardcode six.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the {length}-digit code.'**
+  String authCodeInvalid(int length);
+
+  /// Primary action on the code screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get authVerifyCode;
+
+  /// Returns to the phone field. Present because the number is shown above it and a user who spots a typo needs somewhere to go that is not the back gesture.
+  ///
+  /// In en, this message translates to:
+  /// **'Change number'**
+  String get authChangePhone;
+
+  /// Requests a fresh code. Enabled only once the server's resend delay has passed (§4.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Send again'**
+  String get authResendCode;
+
+  /// The resend action while the delay is still running. Shows the remaining seconds so the user knows the button is waiting rather than broken.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again in {seconds} s'**
+  String authResendIn(int seconds);
+
+  /// Confirmation after a successful resend. Needed because the visible result of a resend is otherwise only the countdown restarting.
+  ///
+  /// In en, this message translates to:
+  /// **'A new code is on its way.'**
+  String get authCodeResent;
+
+  /// DEPRECATED 2026-08-05, kept with the Telegram sign-in code it labels; nothing renders it. 'Telegram' is a product name and stays untranslated in every locale, including the Cyrillic ones.
   ///
   /// In en, this message translates to:
   /// **'Log in with Telegram'**
   String get authTelegramSignIn;
 
-  /// §4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked. Telegram does not collect this for us.
+  /// §4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked.
   ///
   /// In en, this message translates to:
   /// **'I accept the Terms of Service and the Privacy Policy'**
   String get authTermsAgree;
 
-  /// Telegram or its SDK failed for a reason the user cannot act on beyond retrying. Deliberately does not expose the SDK's own English error text.
+  /// DEPRECATED with the Telegram flow. Telegram or its SDK failed for a reason the user cannot act on beyond retrying.
   ///
   /// In en, this message translates to:
   /// **'Could not sign in with Telegram. Please try again.'**
   String get authSignInFailed;
 
-  /// Network failure while contacting Telegram, as distinct from our own server being unreachable - the user can act on this one.
+  /// DEPRECATED with the Telegram flow. Network failure while contacting Telegram, as distinct from our own server being unreachable.
   ///
   /// In en, this message translates to:
   /// **'No connection to Telegram. Check your internet and try again.'**
   String get authSignInNoConnection;
 
-  /// This build's application id has no redirect URI registered with BotFather, so a login cannot start. Should never reach a real user; shown instead of failing silently.
+  /// DEPRECATED with the Telegram flow. This build's application id has no redirect URI registered with BotFather, so a login cannot start.
   ///
   /// In en, this message translates to:
   /// **'Telegram sign-in is not available in this build.'**

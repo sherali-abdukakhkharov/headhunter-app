@@ -24,13 +24,23 @@ abstract final class Routes {
 
   // --- Pre-session ---------------------------------------------------------
 
-  /// Language choice, terms acceptance and sign-in (§4). M1.
+  /// Language choice, terms acceptance and phone entry (§4.1). M1.
   ///
-  /// The MVP signs in **with Telegram**, not phone + OTP - client direction
-  /// 2026-08-05, see docs/TELEGRAM_LOGIN.md. OTP is deferred rather than
-  /// dropped: it remains the fallback when Telegram returns no verified phone
-  /// number, which BR-01 requires.
+  /// Sign-in is **phone + OTP**, as §4.1 and UAT-01 specify. Telegram login was
+  /// tried and deprecated on 2026-08-05; docs/TELEGRAM_LOGIN.md records why and
+  /// what remains.
   static const onboarding = '/onboarding';
+
+  /// Code entry, the second step of sign-in (§4.1).
+  ///
+  /// **A child of [onboarding], and that is load-bearing twice.** It gives the
+  /// user a real back gesture to the phone field for free, and it keeps the
+  /// whole pre-session flow under one prefix so the redirect chain can admit it
+  /// with `startsWith` rather than growing a list of exceptions.
+  ///
+  /// Not deep-linkable in any useful sense: it needs a phone number that only
+  /// the previous screen has, so reaching it cold bounces back to [onboarding].
+  static const otpVerification = '$onboarding/verify';
 
   /// Candidate / employer / both (§2.3). Reached when an account holds no role.
   static const roleSelection = '/role-selection';

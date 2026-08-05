@@ -11,6 +11,12 @@ Android only — iOS is out of scope (see [CLAUDE.md](../CLAUDE.md)).
 > The bash in `.github/workflows/release-apk.yml` is correct and must stay bash —
 > that runs on a `ubuntu-latest` GitHub runner, not on your machine.
 
+**Cost:** this repository is **public**, and GitHub Actions on standard runners is
+free with unmetered minutes for public repositories. So there is nothing to
+optimise here — if a run refuses to start, it is an account or billing block, not
+this workflow spending anything. See "Releasing by hand" below for the way round
+it, which needs no Actions at all.
+
 Push a version tag and GitHub builds a signed production APK and attaches it to a
 release. The download link never changes, so the README needs no edit per release:
 
@@ -117,13 +123,20 @@ to debug signing. That fallback would produce an APK that installs happily and
 then cannot complete a Telegram login, because its fingerprint is not the one
 registered with BotFather.
 
-### 3. The API base URL
+### 3. The API base URL — optional now
 
-A repository **variable**, not a secret — it is a hostname, and §12.5 keeps
+**You can skip this.** `AppFlavor.production` points at the live backend,
+`https://hh.qitmir.uz`, so a release build already talks to the right place.
+Verified 2026-08-05: `GET /health` answers 200 over HTTPS, `POST /auth/telegram`
+answers 401 for a bogus token rather than 404 (so that deployment carries the
+Telegram endpoint), and the name resolves on Google, Cloudflare and Quad9 DNS.
+
+Set the variable only to point a build somewhere else without editing code. It is
+a repository **variable**, not a secret — it is a hostname, and §12.5 keeps
 secrets out of the binary entirely.
 
 **Settings → Secrets and variables → Actions → Variables → New repository
-variable**, named `API_BASE_URL`, e.g. `https://api.staging.headhunter.uz`.
+variable**, named `API_BASE_URL`.
 
 Direct link: `https://github.com/sherali-abdukakhkharov/headhunter-app/settings/variables/actions`
 
@@ -138,9 +151,23 @@ variable, then `AppFlavor.production`'s own default
 (`https://api.headhunter.uz`). If none is set the build still succeeds and logs a
 warning — worth knowing, because that host does not exist yet.
 
-### 4. Register the release fingerprint with BotFather
+### 4. Register the release fingerprint with BotFather — *not needed*
 
-**Telegram login will not work in a downloaded APK until this is done.** Telegram
+> **Skip this step.** Telegram login was deprecated on 2026-08-05 and the app
+> signs in with phone + OTP, which needs no BotFather registration and no
+> per-certificate binding. A downloaded APK signs in fine without any of the
+> below.
+>
+> Kept because the fingerprint and the mechanics are correct, and this is the
+> first thing to do if Telegram login is ever revived —
+> [TELEGRAM_LOGIN.md](TELEGRAM_LOGIN.md).
+>
+> **What a release *does* need instead: an SMS provider.** Until one is
+> connected the backend issues a fixed `OTP_STATIC_CODE`, and it refuses to boot
+> with that set when `NODE_ENV=production` — so a production deploy fails at
+> startup, loudly, rather than shipping a master key.
+
+Telegram
 binds a redirect URI to one application id *plus one signing certificate*, and the
 release keystore above is a different certificate from the debug one used so far.
 
@@ -175,6 +202,42 @@ them all per variant:
 Push-Location android
 try { & ./gradlew.bat signingReport } finally { Pop-Location }
 ```
+
+---
+
+## Releasing by hand, when Actions cannot run
+
+A locked GitHub account, a billing block, or a spending limit disables Actions —
+but **not** Releases. Uploading the APK yourself produces the identical download
+URL, so the README link and anything already sharing it keep working.
+
+Build and stage it under the exact name the permanent link expects:
+
+```powershell
+flutter build apk --release --flavor production --dart-define=FLAVOR=production
+New-Item -ItemType Directory -Force dist | Out-Null
+Copy-Item build\app\outputs\flutter-apk\app-production-release.apk dist\headhunter.apk -Force
+```
+
+Confirm it carries the **release** key before uploading — see the next section.
+This matters more than it sounds: a release build silently falls back to debug
+signing when `android/key.properties` is missing, and Telegram login then fails
+only in the downloaded APK.
+
+```powershell
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+Then **Releases → Draft a new release**, pick that tag, and attach
+`dist\headhunter.apk`. The filename must be exactly `headhunter.apk` — the
+permanent URL is `latest/download/headhunter.apk`, so a different name breaks it.
+
+`dist/` is gitignored: a 52 MB binary belongs in a release attachment, never in
+git history, where it cannot be removed without a rewrite.
+
+When Actions is available again the tag-triggered workflow does all of this,
+including the SHA-256 in the release notes. Nothing needs undoing.
 
 ---
 

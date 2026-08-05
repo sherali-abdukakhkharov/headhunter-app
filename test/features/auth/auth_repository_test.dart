@@ -58,7 +58,141 @@ void main() {
 }
 ''';
 
-  group('signInWithTelegram', () {
+  const challengeBody = '''
+{
+  "expiresAt": "2026-08-05T12:05:00+05:00",
+  "resendAvailableAt": "2026-08-05T12:01:00+05:00",
+  "devCode": "666666"
+}
+''';
+
+  group('sendOtp', () {
+    test('posts the wire phone to /auth/otp/send', () async {
+      final h = build(body: challengeBody);
+      await h.repo.sendOtp('+998901234567');
+
+      expect(h.adapter.captured?.path, '/auth/otp/send');
+      expect(h.adapter.captured?.method, 'POST');
+      expect((h.adapter.captured?.data as Map?)?['phone'], '+998901234567');
+    });
+
+    test('sends no purpose, so the server decides what happened', () async {
+      // Registration and login are one flow for a phone-only identity (§4.1).
+      // Letting the client name the purpose would be a way to probe which
+      // numbers are already registered.
+      final h = build(body: challengeBody);
+      await h.repo.sendOtp('+998901234567');
+
+      expect((h.adapter.captured?.data as Map?)?.containsKey('purpose'), false);
+    });
+
+    test('parses both deadlines and the dev code', () async {
+      final h = build(body: challengeBody);
+      final challenge = await h.repo.sendOtp('+998901234567');
+
+      expect(challenge.expiresAt.wallClock.hour, 12);
+      expect(challenge.devCode, '666666');
+    });
+
+    test('is flagged skipAuth, so a 401 is not read as expiry', () async {
+      final h = build(body: challengeBody);
+      await h.repo.sendOtp('+998901234567');
+
+      expect(h.adapter.captured?.extra[AuthInterceptor.skipAuthFlag], isTrue);
+    });
+
+    test('surfaces a 429 as ApiException', () async {
+      // Expected traffic, not a bug: this is how §4.2's resend delay and the
+      // per-phone rate limit are enforced.
+      final h = build(statusCode: 429, body: '{"message":"Too soon"}');
+
+      await expectLater(
+        h.repo.sendOtp('+998901234567'),
+        throwsA(
+          isA<ApiException>().having((e) => e.statusCode, 'statusCode', 429),
+        ),
+      );
+    });
+
+    test('an empty body is an ApiException, not a null dereference', () async {
+      final h = build(body: '');
+
+      await expectLater(
+        h.repo.sendOtp('+998901234567'),
+        throwsA(isA<ApiException>()),
+      );
+    });
+  });
+
+  group('resendOtp', () {
+    test('hits the resend route, not send', () async {
+      // Separate routes are separate rate-limit subjects on the server.
+      final h = build(body: challengeBody);
+      await h.repo.resendOtp('+998901234567');
+
+      expect(h.adapter.captured?.path, '/auth/otp/resend');
+    });
+  });
+
+  group('verifyOtp', () {
+    test('posts the phone and code to /auth/otp/verify', () async {
+      final h = build(body: successBody);
+      await h.repo.verifyOtp(phone: '+998901234567', code: '666666');
+
+      expect(h.adapter.captured?.path, '/auth/otp/verify');
+      final data = h.adapter.captured?.data as Map?;
+      expect(data?['phone'], '+998901234567');
+      expect(data?['code'], '666666');
+    });
+
+    test('parses the same session shape the Telegram path returned', () async {
+      // Both paths return AuthTokensResponseDto, which is what lets the session
+      // model and the role-selection redirect be written once.
+      final h = build(body: successBody);
+      final session = await h.repo.verifyOtp(
+        phone: '+998901234567',
+        code: '666666',
+      );
+
+      expect(session.accessToken, 'access-1');
+      expect(session.grantedRoles, {AppRole.candidate});
+      expect(session.isNewUser, isTrue);
+    });
+
+    test('is flagged skipAuth, so a 401 is not read as expiry', () async {
+      // A 401 here means the code was wrong, expired or already used. Without
+      // the flag the interceptor would try to refresh a session that does not
+      // exist and report a spurious sign-out instead.
+      final h = build(body: successBody);
+      await h.repo.verifyOtp(phone: '+998901234567', code: '666666');
+
+      expect(h.adapter.captured?.extra[AuthInterceptor.skipAuthFlag], isTrue);
+    });
+
+    test('surfaces a wrong code as ApiException', () async {
+      final h = build(statusCode: 401, body: '{"message":"Invalid code"}');
+
+      await expectLater(
+        h.repo.verifyOtp(phone: '+998901234567', code: '000000'),
+        throwsA(
+          isA<ApiException>().having((e) => e.statusCode, 'statusCode', 401),
+        ),
+      );
+    });
+
+    test('an empty body is an ApiException, not a null dereference', () async {
+      final h = build(body: '');
+
+      await expectLater(
+        h.repo.verifyOtp(phone: '+998901234567', code: '666666'),
+        throwsA(isA<ApiException>()),
+      );
+    });
+  });
+
+  // Deprecated 2026-08-05 but kept working; see docs/TELEGRAM_LOGIN.md. These
+  // stay so the path cannot rot silently while nothing calls it.
+  group('signInWithTelegram (deprecated)', () {
     test('parses the session the backend returns', () async {
       final h = build(body: successBody);
 

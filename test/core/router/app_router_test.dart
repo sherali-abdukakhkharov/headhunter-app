@@ -12,6 +12,9 @@ import 'package:headhunter_app/src/core/l10n/app_locale.dart';
 import 'package:headhunter_app/src/core/router/app_router.dart';
 import 'package:headhunter_app/src/core/router/routes.dart';
 import 'package:headhunter_app/src/core/router/shell_tabs.dart';
+import 'package:headhunter_app/src/features/auth/domain/otp_challenge.dart';
+import 'package:headhunter_app/src/features/auth/domain/uz_phone.dart';
+import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A session controller that starts in a state chosen by the test.
@@ -148,6 +151,45 @@ void main() {
 
     testWidgets('no session goes to onboarding', (tester) async {
       final result = await settle(tester, const SessionUnauthenticated());
+      expect(result.location, Routes.onboarding);
+    });
+
+    testWidgets('no session stays on the code screen (§4.1 step 2)', (
+      tester,
+    ) async {
+      // Sign-in is two screens and the second is reached *while still
+      // unauthenticated*. A redirect rule written as `location == onboarding`
+      // would bounce the user off code entry the instant they arrived, making
+      // sign-in impossible - so this asserts the `startsWith` instead.
+      final result = await settle(tester, const SessionUnauthenticated());
+
+      result.router.go(
+        Routes.otpVerification,
+        extra: OtpVerificationArgs(
+          phone: UzPhone.parse('901234567'),
+          challenge: OtpChallenge.fromJson(const {
+            'expiresAt': '2026-08-05T12:05:00+05:00',
+            'resendAvailableAt': '2026-08-05T12:01:00+05:00',
+          }),
+        ),
+      );
+      await _pumpRoute(tester);
+
+      expect(locationOf(result.router), Routes.otpVerification);
+    });
+
+    testWidgets('the code screen bounces back when it has no phone', (
+      tester,
+    ) async {
+      // A hot restart on this screen, or a deep link into it, arrives with no
+      // `extra`. There is no code pending for a number the screen does not
+      // know, so the only honest destination is the start of the flow.
+      final result = await settle(
+        tester,
+        const SessionUnauthenticated(),
+        initialLocation: Routes.otpVerification,
+      );
+
       expect(result.location, Routes.onboarding);
     });
 
