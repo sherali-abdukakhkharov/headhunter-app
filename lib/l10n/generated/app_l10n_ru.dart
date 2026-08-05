@@ -126,6 +126,51 @@ class AppL10nRu extends AppL10n {
   String get authSignInTitle => 'Вход';
 
   @override
+  String get authPhoneLabel => 'Номер телефона';
+
+  @override
+  String get authPhoneHint => '90 123 45 67';
+
+  @override
+  String get authPhoneInvalid => 'Введите 9 цифр, например 90 123 45 67.';
+
+  @override
+  String get authSendCode => 'Получить код';
+
+  @override
+  String get authCodeTitle => 'Введите код';
+
+  @override
+  String authCodeSentTo(String phone) {
+    return 'Мы отправили код на номер $phone.';
+  }
+
+  @override
+  String get authCodeLabel => 'Код';
+
+  @override
+  String authCodeInvalid(int length) {
+    return 'Введите код из $length цифр.';
+  }
+
+  @override
+  String get authVerifyCode => 'Подтвердить';
+
+  @override
+  String get authChangePhone => 'Изменить номер';
+
+  @override
+  String get authResendCode => 'Отправить ещё раз';
+
+  @override
+  String authResendIn(int seconds) {
+    return 'Отправить ещё раз через $seconds с';
+  }
+
+  @override
+  String get authCodeResent => 'Новый код отправлен.';
+
+  @override
   String get authTelegramSignIn => 'Войти через Telegram';
 
   @override

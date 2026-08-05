@@ -8,6 +8,7 @@ import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/core/storage/preferences_provider.dart';
 import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
 import 'package:headhunter_app/src/features/auth/data/telegram_sign_in.dart';
+import 'package:headhunter_app/src/features/auth/domain/auth_session.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'session_controller.g.dart';
@@ -23,9 +24,10 @@ part 'session_controller.g.dart';
 /// fallback when a role is revoked, and the persistence of the active choice.
 /// Those are decided by §2.3 and do not depend on the auth wire format.
 ///
-/// **Acquiring** a session is now real too: [signInWithTelegram] posts a
-/// Telegram OIDC ID token to `/auth/telegram` and takes the roles and tokens
-/// from the response (docs/TELEGRAM_LOGIN.md).
+/// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
+/// number and the code sent to it, and takes the roles and tokens from the
+/// response.
+/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with
@@ -88,17 +90,42 @@ class SessionController extends _$SessionController {
     );
   }
 
-  /// Signs in with Telegram (§4.1, docs/TELEGRAM_LOGIN.md).
+  /// Signs in with a phone number and the one-time code sent to it (§4.1,
+  /// UAT-01).
+  ///
+  /// Registration and login are one call: with a phone-only identity they are
+  /// the same act, and the response's `isNewUser` is what routes a new account
+  /// into role selection. Verifying the code is also what makes the number
+  /// verified, so **BR-01 is satisfied by arriving here** — unlike the Telegram
+  /// path, which could produce an authenticated account with no usable phone.
+  ///
+  /// [phone] must be in wire form; build it with `UzPhone.wire`.
+  ///
+  /// Throws [ApiException] and nothing else. A 401 is a wrong, expired or
+  /// already-used code; the server will not say which, and its message is
+  /// already localized.
+  Future<void> signInWithOtp({
+    required String phone,
+    required String code,
+  }) async {
+    final session = await ref
+        .read(authRepositoryProvider)
+        .verifyOtp(phone: phone, code: code);
+
+    await _adopt(session);
+  }
+
+  /// Signs in with Telegram.
+  ///
+  /// **Deprecated 2026-08-05** in favour of [signInWithOtp] (§4.1, UAT-01).
+  /// Nothing calls this; it is kept with its tests because the flow is correct
+  /// and re-enabling it is cheaper than rebuilding it. See
+  /// docs/TELEGRAM_LOGIN.md.
   ///
   /// Obtains a signed ID token from Telegram, exchanges it for a session, and
   /// stores the token pair. **The app decides nothing about identity** — it
   /// forwards Telegram's assertion, and the backend decides who this is after
   /// verifying the signature against Telegram's JWKS.
-  ///
-  /// Order matters: tokens are persisted **before** the state moves to
-  /// [SessionActive]. The router redirects on that change and the shell it
-  /// lands on may fetch immediately, so flipping state ahead of the write would
-  /// race the first authenticated request against its own credentials.
   ///
   /// Rethrows so the calling screen can render the failure:
   /// - [TelegramSignInCancelled] — the user backed out; show nothing.
@@ -113,6 +140,16 @@ class SessionController extends _$SessionController {
         .read(authRepositoryProvider)
         .signInWithTelegram(idToken);
 
+    await _adopt(session);
+  }
+
+  /// Takes ownership of a freshly issued session, whichever call produced it.
+  ///
+  /// Order matters: the tokens are persisted **before** the state moves to
+  /// [SessionActive]. The router redirects on that change and the shell it
+  /// lands on may fetch immediately, so flipping state ahead of the write would
+  /// race the first authenticated request against its own credentials.
+  Future<void> _adopt(AuthSession session) async {
     await ref.read(tokenStoreProvider).save(session.tokens);
 
     final prefs = await ref.read(sharedPreferencesProvider.future);

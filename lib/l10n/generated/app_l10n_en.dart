@@ -127,6 +127,52 @@ class AppL10nEn extends AppL10n {
   String get authSignInTitle => 'Sign in';
 
   @override
+  String get authPhoneLabel => 'Phone number';
+
+  @override
+  String get authPhoneHint => '90 123 45 67';
+
+  @override
+  String get authPhoneInvalid =>
+      'Enter a 9-digit number, for example 90 123 45 67.';
+
+  @override
+  String get authSendCode => 'Get a code';
+
+  @override
+  String get authCodeTitle => 'Enter the code';
+
+  @override
+  String authCodeSentTo(String phone) {
+    return 'We sent a code to $phone.';
+  }
+
+  @override
+  String get authCodeLabel => 'Code';
+
+  @override
+  String authCodeInvalid(int length) {
+    return 'Enter the $length-digit code.';
+  }
+
+  @override
+  String get authVerifyCode => 'Confirm';
+
+  @override
+  String get authChangePhone => 'Change number';
+
+  @override
+  String get authResendCode => 'Send again';
+
+  @override
+  String authResendIn(int seconds) {
+    return 'Send again in $seconds s';
+  }
+
+  @override
+  String get authCodeResent => 'A new code is on its way.';
+
+  @override
   String get authTelegramSignIn => 'Log in with Telegram';
 
   @override

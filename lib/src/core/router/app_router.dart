@@ -9,6 +9,7 @@ import 'package:headhunter_app/src/core/auth/session_state.dart';
 import 'package:headhunter_app/src/core/config/app_flavor.dart';
 import 'package:headhunter_app/src/core/router/routes.dart';
 import 'package:headhunter_app/src/core/router/shell_tabs.dart';
+import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:headhunter_app/src/features/health/presentation/health_screen.dart';
@@ -65,6 +66,25 @@ GoRouter appRouter(Ref ref) {
         path: Routes.onboarding,
         name: 'onboarding',
         builder: (context, state) => const OnboardingScreen(),
+        routes: [
+          GoRoute(
+            // Nested, so `context.go` here *pushes* onto onboarding and the
+            // system back gesture returns to the phone field instead of leaving
+            // the flow.
+            path: 'verify',
+            name: 'otpVerification',
+            // The screen needs a phone number and the deadlines from the send
+            // response, and both live only in `extra`. Anything that arrives
+            // without them - a hot restart on this screen, a stray deep link -
+            // has no code pending and nothing to verify, so it starts over
+            // rather than rendering a form that cannot succeed.
+            redirect: (context, state) =>
+                state.extra is OtpVerificationArgs ? null : Routes.onboarding,
+            builder: (context, state) => OtpVerificationScreen(
+              args: state.extra! as OtpVerificationArgs,
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: Routes.roleSelection,
@@ -132,7 +152,8 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
 /// 2. **Session not yet restored → hold on the splash.** Never treat "unknown"
 ///    as "signed out": that is the cold-start flash where a signed-in user sees
 ///    onboarding for two frames.
-/// 3. **No session → onboarding.**
+/// 3. **No session → the sign-in flow**, which is every path under
+///    `/onboarding`: phone entry and then code entry (§4.1).
 /// 4. **Blocked → the notice (BR-10)**, ahead of role selection: a blocked
 ///    account must not be walked through choosing a role it cannot use.
 ///    `restricted` deliberately does *not* redirect - see [AccountStatus].
@@ -152,7 +173,12 @@ String? _redirect(Ref ref, GoRouterState state) {
       return location == Routes.splash ? null : Routes.splash;
 
     case SessionUnauthenticated():
-      return location == Routes.onboarding ? null : Routes.onboarding;
+      // `startsWith`, not equality: sign-in is two screens (§4.1 - phone, then
+      // the code), and the second is a child path. Equality here would bounce
+      // the user off the code screen the instant they reached it.
+      return location.startsWith(Routes.onboarding)
+          ? null
+          : Routes.onboarding;
 
     case SessionActive(status: AccountStatus.blocked):
       return location == Routes.blocked ? null : Routes.blocked;
