@@ -16,9 +16,9 @@ part of 'dio_provider.dart';
 ///
 /// The returned client carries [AuthInterceptor]. A **second, bare** client is
 /// built alongside it for the two jobs that must not re-enter that interceptor:
-/// the refresh call itself, and replaying a request after a refresh. Sharing one
-/// client for both would mean a 401 on the refresh endpoint triggering another
-/// refresh, forever.
+/// the refresh call itself, and replaying a request after a refresh. Sharing
+/// one client for both would mean a 401 on the refresh endpoint triggering
+/// another refresh, forever.
 ///
 /// The bare client is otherwise identical — it still sends `x-lang`, so a
 /// refused refresh comes back in the user's language.
@@ -34,9 +34,9 @@ final dioProvider = DioProvider._();
 ///
 /// The returned client carries [AuthInterceptor]. A **second, bare** client is
 /// built alongside it for the two jobs that must not re-enter that interceptor:
-/// the refresh call itself, and replaying a request after a refresh. Sharing one
-/// client for both would mean a 401 on the refresh endpoint triggering another
-/// refresh, forever.
+/// the refresh call itself, and replaying a request after a refresh. Sharing
+/// one client for both would mean a 401 on the refresh endpoint triggering
+/// another refresh, forever.
 ///
 /// The bare client is otherwise identical — it still sends `x-lang`, so a
 /// refused refresh comes back in the user's language.
@@ -51,9 +51,9 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   ///
   /// The returned client carries [AuthInterceptor]. A **second, bare** client is
   /// built alongside it for the two jobs that must not re-enter that interceptor:
-  /// the refresh call itself, and replaying a request after a refresh. Sharing one
-  /// client for both would mean a 401 on the refresh endpoint triggering another
-  /// refresh, forever.
+  /// the refresh call itself, and replaying a request after a refresh. Sharing
+  /// one client for both would mean a 401 on the refresh endpoint triggering
+  /// another refresh, forever.
   ///
   /// The bare client is otherwise identical — it still sends `x-lang`, so a
   /// refused refresh comes back in the user's language.
