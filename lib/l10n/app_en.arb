@@ -209,6 +209,11 @@
     "description": "money_range fields that allow it: the candidate would rather discuss than state a figure."
   },
 
+  "leveledChangeLevel": "Level",
+  "@leveledChangeLevel": {
+    "description": "Opens the proficiency picker on a dictionary_leveled row - a skill level or a CEFR grade (§4.4). Short because it sits inline on the row beside the value it changes."
+  },
+
   "pickerChoose": "Choose",
   "@pickerChoose": {
     "description": "Placeholder in a dictionary-backed field before anything is selected (§3.3)."

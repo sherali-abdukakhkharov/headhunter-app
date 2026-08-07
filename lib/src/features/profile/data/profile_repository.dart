@@ -27,9 +27,22 @@ class FieldValidationException extends ApiException {
 
   final List<FieldError> errors;
 
-  Map<String, String> get byCode => {
-    for (final e in errors) e.code: e.message ?? e.rule,
-  };
+  /// Errors keyed by the field they belong to.
+  ///
+  /// A composite field reports on its parts — `skills.levelId`, not `skills` —
+  /// so the prefix before the first dot is what maps a rejection back to the
+  /// widget that can fix it. Without this, a 422 on a leveled row attaches to
+  /// nothing and the form shows a banner with no indication of where to look.
+  Map<String, String> get byCode {
+    final byField = <String, String>{};
+    for (final e in errors) {
+      final field = e.code.split('.').first;
+      // First one wins: a composite field can report several parts, and one
+      // message under the field beats a last-write-wins scramble.
+      byField.putIfAbsent(field, () => e.message ?? e.rule);
+    }
+    return byField;
+  }
 }
 
 /// The candidate profile and the form that describes it (§5).

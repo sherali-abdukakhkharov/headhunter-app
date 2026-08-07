@@ -272,9 +272,10 @@ working destinations rather than dead ends.
       the bound ids stay byte-identical — the client half of UAT-13
 - [ ] **Match-all / match-any** on multi-select where §7.1 needs it — a search
       concern, so it belongs with the search UI rather than the picker
-- [ ] **Level pickers** (skill × skill_level, language × language_level). The
-      two dictionaries exist and carry `rank`; what is missing is the paired
-      row widget that binds them together
+- [x] **Level pickers** (skill × skill_level, language × language_level) —
+      `LeveledFieldEditor`, built as M3's `dictionary_leveled` field. It reuses
+      the picker sheet via `pickDictionaryItem` rather than growing a second
+      searchable list, so retired items and the empty state behave identically
 - [ ] Warm-up call site — `warmDictionaries` exists but nothing invokes it yet;
       it wants to run once after sign-in
 - [ ] Widget test for the pickers. The two bugs found so far were both found by
@@ -302,9 +303,11 @@ district picker.
 - [x] 422s land on the fields that caused them, by code (§4.6)
 - [x] `POST /auth/active-role` — profile endpoints read the acting role from
       the token, so this stopped being optional
-- [ ] **`dictionary_leveled`** (skills × level, languages × CEFR). Both
-      dictionaries and their ranks exist; the paired row widget does not, so
-      those two sections currently render a notice
+- [x] **`dictionary_leveled`** (skills × level, languages × CEFR) — a row per
+      item with its proficiency. **Adding an item opens the level picker
+      immediately**, so a row without a level is never created; the server
+      rejects one, and matching its invariant makes that 422 unreachable
+      rather than merely unlikely
 - [ ] **Bespoke sections**: work history and education own their own
       sub-resources (`/candidates/me/experience`, `/education`) and their own
       editors. Currently a notice

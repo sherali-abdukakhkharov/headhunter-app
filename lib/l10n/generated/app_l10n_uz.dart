@@ -170,6 +170,9 @@ class AppL10nUz extends AppL10n {
   String get profileSalaryNegotiable => 'Kelishuv asosida';
 
   @override
+  String get leveledChangeLevel => 'Daraja';
+
+  @override
   String get pickerChoose => 'Tanlash';
 
   @override
@@ -418,6 +421,9 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get profileSalaryNegotiable => 'Келишув асосида';
+
+  @override
+  String get leveledChangeLevel => 'Даража';
 
   @override
   String get pickerChoose => 'Танлаш';
@@ -669,6 +675,9 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get profileSalaryNegotiable => 'Kelishuv asosida';
+
+  @override
+  String get leveledChangeLevel => 'Daraja';
 
   @override
   String get pickerChoose => 'Tanlash';

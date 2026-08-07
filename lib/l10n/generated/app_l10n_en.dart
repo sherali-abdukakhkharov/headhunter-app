@@ -170,6 +170,9 @@ class AppL10nEn extends AppL10n {
   String get profileSalaryNegotiable => 'Negotiable';
 
   @override
+  String get leveledChangeLevel => 'Level';
+
+  @override
   String get pickerChoose => 'Choose';
 
   @override

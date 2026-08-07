@@ -4,6 +4,7 @@ import 'package:headhunter_app/l10n/generated/app_l10n.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_picker.dart';
 import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
+import 'package:headhunter_app/src/features/profile/presentation/leveled_field_editor.dart';
 
 /// Renders one schema field, chosen by [SchemaField.kind].
 ///
@@ -89,11 +90,21 @@ class SchemaFieldWidget extends StatelessWidget {
         onChanged: onChanged,
       ),
       FieldKind.moneyRange => _money(context),
+      FieldKind.dictionaryLeveled => LeveledFieldEditor(
+        field: field,
+        rows: [
+          for (final row in value as List<dynamic>? ?? const [])
+            Map<String, dynamic>.from(row as Map),
+        ],
+        errorText: errorText,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
 
-      // Not built in this pass. Rendered as an explicit notice rather than
-      // omitted, because a silently missing field looks like a complete form
-      // and the completeness percentage would then be inexplicable.
-      FieldKind.dictionaryLeveled ||
+      // `date_range` is declared by the contract but no candidate-profile field
+      // uses it yet - it arrives with M5. Rendered as an explicit notice rather
+      // than omitted, because a silently missing field looks like a complete
+      // form and the completeness percentage would then be inexplicable.
       FieldKind.dateRange => HhNotice.pending(
         title: field.label,
         message: l10n.profileFieldNotEditableYet,

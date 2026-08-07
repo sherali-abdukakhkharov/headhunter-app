@@ -171,6 +171,9 @@ class AppL10nRu extends AppL10n {
   String get profileSalaryNegotiable => 'По договорённости';
 
   @override
+  String get leveledChangeLevel => 'Уровень';
+
+  @override
   String get pickerChoose => 'Выбрать';
 
   @override

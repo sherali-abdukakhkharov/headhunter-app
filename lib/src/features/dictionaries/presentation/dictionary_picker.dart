@@ -261,6 +261,37 @@ class _PickResult {
   final List<String> ids;
 }
 
+/// Opens the searchable list on its own and returns the chosen **id**, or null
+/// if the user backed out.
+///
+/// For callers that are not a field — the leveled editor asks for an item and
+/// then a level from the same sheet, and a row without both is never created.
+/// Exposed rather than duplicated so search, empty state and the retired-item
+/// rules stay in one place.
+Future<String?> pickDictionaryItem(
+  BuildContext context, {
+  required String title,
+  required String type,
+  String? parentId,
+  bool parentScoped = false,
+}) async {
+  final chosen = await showModalBottomSheet<_PickResult>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _PickerSheet(
+      title: title,
+      type: type,
+      parentId: parentId,
+      parentScoped: parentScoped || parentId != null,
+      selected: const {},
+      multiple: false,
+    ),
+  );
+
+  return chosen?.ids.firstOrNull;
+}
+
 /// The searchable list both pickers open.
 ///
 /// Search filters on the **label**, which is the one place matching text

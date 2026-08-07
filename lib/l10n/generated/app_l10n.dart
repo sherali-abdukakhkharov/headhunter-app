@@ -395,6 +395,12 @@ abstract class AppL10n {
   /// **'Negotiable'**
   String get profileSalaryNegotiable;
 
+  /// Opens the proficiency picker on a dictionary_leveled row - a skill level or a CEFR grade (§4.4). Short because it sits inline on the row beside the value it changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get leveledChangeLevel;
+
   /// Placeholder in a dictionary-backed field before anything is selected (§3.3).
   ///
   /// In en, this message translates to:
