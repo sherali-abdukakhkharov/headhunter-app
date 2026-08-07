@@ -610,6 +610,32 @@ touching the design system.
 3. **A hand-rolled `Stack` progress bar laid out to zero height** and was
    invisible on device. Replaced with a themed `LinearProgressIndicator`.
 
+### 2026-08-07 - `google-services.json` was committed and tripped GitHub
+It reached `origin` and GitHub's secret scanner mailed an alert within a
+minute. Removed from history by collapsing the commit, force-pushed, and the
+file is now in `android/.gitignore` next to the keystore.
+
+**What made it a mistake was not the key's severity.** That key is an Android
+client key: it ships inside every APK, anyone can extract it, and Google's own
+documentation says it is not a secret. The mistake was ignoring this
+repository's existing convention — `key.properties`, `*.jks` and `*.keystore`
+are all ignored, so anything credential-shaped belongs with them. `git
+check-ignore` was actually run, answered "not ignored", and that answer was
+read as permission rather than as the warning it was.
+
+Two things worth carrying:
+
+- **A force-push is not the remedy.** GitHub can retain unreachable blobs and
+  a commit stays reachable by its SHA for a while, so rewriting history only
+  tidies the branch. The exposure closes when the key is **restricted** in the
+  Google Cloud console to the three package names plus the debug and upload
+  signing SHA-1s, or regenerated. That is an owner action, not a repo action.
+- **One `google-services.json` covers all three flavors.** All three uploaded
+  files were snapshots of the same project (`headhunter-app-b463f`); the
+  largest carries `com.headhunter.app`, `.dev` and `.staging`, and the Gradle
+  plugin selects the client matching the build's applicationId. There is no
+  per-flavor file to place.
+
 ### 2026-08-07 - Adding one plugin cost three toolchain fixes
 `file_picker` is the first plugin added since the toolchain moved to **AGP
 9.0.1**, and it failed three different ways before building. Recorded because
