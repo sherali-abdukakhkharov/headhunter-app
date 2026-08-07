@@ -610,6 +610,30 @@ touching the design system.
 3. **A hand-rolled `Stack` progress bar laid out to zero height** and was
    invisible on device. Replaced with a themed `LinearProgressIndicator`.
 
+### 2026-08-07 - A card asserted "Present" over a record that denied it
+Found by adding a work-experience record on a device, not by the suite.
+
+`ExperienceRecord` has both `isCurrent` and `endedOn`, and the obvious reading is
+that they are two ways of saying the same thing — so the first version of the
+card collapsed them:
+
+```dart
+final end = record.isCurrent ? l10n.experiencePresent
+                             : record.endedOn ?? l10n.experiencePresent;
+```
+
+The server accepts **three** combinations, not two. `isCurrent: false` with a
+null `endedOn` is legitimate — a role that ended on a date the candidate did not
+supply — and it is the combination the editor produces most easily, because
+leaving the end date blank and not ticking the box is the path of least effort.
+The card then printed "Present" over a record that explicitly says it is not
+current.
+
+The tests missed it because they covered `isCurrent: true` and
+`isCurrent: false` *with* an end date — the two cases that come to mind when you
+believe there are only two. **When two fields can express the same fact, count
+the combinations the server accepts rather than the ones the feature is about.**
+
 ### 2026-08-04 - Riverpod 3 auto-retry produced an endless spinner
 Riverpod 3 retries a failing provider with exponential backoff, and **while
 retrying the state is `AsyncLoading` that merely carries the error**. The health

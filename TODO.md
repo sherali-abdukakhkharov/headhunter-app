@@ -326,7 +326,10 @@ district picker.
       Every mutation refreshes two things: the list, and the profile's
       completeness (§5.3). The second is `ProfileEditor.refreshProfile`, not
       an invalidate — invalidating would refetch the schema *and* discard
-      unsaved form edits, so adding a job would silently eat a half-typed name
+      unsaved form edits, so adding a job would silently eat a half-typed name.
+      **Verified on an emulator against the live API**: add took completeness
+      5% → 10%, delete took it back, and the form's unsaved state survived
+      both. Running it found a bug the suite missed — see MEMORY.md
 - [x] Simplified experience entry for informal/seasonal work — satisfied by
       construction rather than by a second mode, which the design system
       forbids. Only `roleTitle` and `startedOn` are required, so a seasonal
