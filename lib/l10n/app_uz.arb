@@ -190,5 +190,18 @@
   "stageOffer": "Taklif",
   "stageHired": "Qabul qilingan",
   "stageRejected": "Tanlanmadi",
-  "stageWithdrawn": "Qaytarib olingan"
+  "stageWithdrawn": "Qaytarib olingan",
+  "vacancyApplicants": "Arizalar",
+  "vacancyApplicantsEmpty": "Hozircha arizalar yo'q",
+  "applicationsHired": "{required} tadan {hired} tasi qabul qilindi",
+  "applicationsHiredNoTarget": "{hired} tasi qabul qilindi",
+  "applicationMoveTo": "Bosqichga o'tkazish",
+  "applicationRejectReason": "Sabab (nomzod ko'radi)",
+  "candidatePhoneHidden": "Telefon mavjud emas",
+  "candidatePhoneHiddenWhy": "Nomzodning maxfiylik sozlamalari ish beruvchi uni qachon ko'rishini belgilaydi.",
+  "candidateFilesHidden": "Fayllar mavjud emas",
+  "candidateCompleteness": "Profil {percent}% to’ldirilgan",
+  "notesTitle": "Shaxsiy eslatmalar",
+  "notesHint": "Ularni faqat siz ko’rasiz",
+  "notesAdd": "Eslatma qo’shish"
 }

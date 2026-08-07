@@ -10,6 +10,7 @@ import 'package:headhunter_app/src/core/config/app_flavor.dart';
 import 'package:headhunter_app/src/core/router/routes.dart';
 import 'package:headhunter_app/src/core/router/shell_tabs.dart';
 import 'package:headhunter_app/src/features/applications/presentation/applications_screen.dart';
+import 'package:headhunter_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
 import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
@@ -170,6 +171,15 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                   builder: (context, state) => VacancyEditorScreen(
                     id: state.pathParameters['id']!,
                   ),
+                  routes: [
+                    GoRoute(
+                      path: 'applicants',
+                      name: 'vacancyApplicants',
+                      builder: (context, state) => VacancyApplicantsScreen(
+                        vacancyId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ],
                 ),
             ],
           ),

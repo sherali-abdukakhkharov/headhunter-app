@@ -633,4 +633,50 @@ class AppL10nEn extends AppL10n {
   @override
   String get authSignInUnavailable =>
       'Telegram sign-in is not available in this build.';
+
+  @override
+  String get vacancyApplicants => 'Applicants';
+
+  @override
+  String get vacancyApplicantsEmpty => 'No applications yet';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$hired of $required hired';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired hired';
+  }
+
+  @override
+  String get applicationMoveTo => 'Move to';
+
+  @override
+  String get applicationRejectReason => 'Reason (shown to the candidate)';
+
+  @override
+  String get candidatePhoneHidden => 'Phone not available';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'The candidate’s privacy settings decide when an employer can see it.';
+
+  @override
+  String get candidateFilesHidden => 'Files not available';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Profile $percent% complete';
+  }
+
+  @override
+  String get notesTitle => 'Private notes';
+
+  @override
+  String get notesHint => 'Only you can see these';
+
+  @override
+  String get notesAdd => 'Add note';
 }

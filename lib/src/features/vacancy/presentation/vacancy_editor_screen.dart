@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:headhunter_app/l10n/generated/app_l10n.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
+import 'package:headhunter_app/src/core/router/routes.dart';
 import 'package:headhunter_app/src/features/profile/presentation/schema_field_widget.dart';
 import 'package:headhunter_app/src/features/vacancy/data/vacancy_controller.dart';
 import 'package:headhunter_app/src/features/vacancy/presentation/vacancy_status.dart';
@@ -25,7 +27,22 @@ class VacancyEditorScreen extends ConsumerWidget {
     final editor = ref.watch(vacancyEditorProvider(id));
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.vacancyMine)),
+      appBar: AppBar(
+        title: Text(l10n.vacancyMine),
+        actions: [
+          // Only where there is something to look at: a draft has no
+          // applicants, and the endpoint would answer an empty list that
+          // reads as a dead end.
+          if (editor.value?.vacancy.status case final status?
+              when status != 'draft')
+            TextButton(
+              onPressed: () => context.go(
+                '${Routes.employerVacancies}/$id/applicants',
+              ),
+              child: Text(l10n.vacancyApplicants),
+            ),
+        ],
+      ),
       body: SafeArea(
         child: switch (editor) {
           AsyncValue(hasError: true, :final error?) => Padding(

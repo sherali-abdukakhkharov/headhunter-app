@@ -1246,6 +1246,84 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Telegram sign-in is not available in this build.'**
   String get authSignInUnavailable;
+
+  /// Heading of the employer view of one vacancy’s applications (§6.5).
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants'**
+  String get vacancyApplicants;
+
+  /// Empty state.
+  ///
+  /// In en, this message translates to:
+  /// **'No applications yet'**
+  String get vacancyApplicantsEmpty;
+
+  /// §6.5: hires counted against BR-05’s required worker count.
+  ///
+  /// In en, this message translates to:
+  /// **'{hired} of {required} hired'**
+  String applicationsHired(int hired, int required);
+
+  /// Used when the vacancy states no worker count.
+  ///
+  /// In en, this message translates to:
+  /// **'{hired} hired'**
+  String applicationsHiredNoTarget(int hired);
+
+  /// Opens the stage picker. §8.1 allows forward moves only, skipping permitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to'**
+  String get applicationMoveTo;
+
+  /// §8.1’s optional standard message on a rejection. Recorded in the BR-08 history whatever the stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (shown to the candidate)'**
+  String get applicationRejectReason;
+
+  /// BR-09: null is a normal answer, not an error, so the absence is stated rather than left blank.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone not available'**
+  String get candidatePhoneHidden;
+
+  /// Explains that the server decided, not the app.
+  ///
+  /// In en, this message translates to:
+  /// **'The candidate’s privacy settings decide when an employer can see it.'**
+  String get candidatePhoneHiddenWhy;
+
+  /// BR-09, §5.4: the server sends no files when the employer may not download them.
+  ///
+  /// In en, this message translates to:
+  /// **'Files not available'**
+  String get candidateFilesHidden;
+
+  /// How complete the candidate’s profile is.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile {percent}% complete'**
+  String candidateCompleteness(int percent);
+
+  /// §8.2: the employer’s private notes on an application.
+  ///
+  /// In en, this message translates to:
+  /// **'Private notes'**
+  String get notesTitle;
+
+  /// States that the candidate cannot see them.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see these'**
+  String get notesHint;
+
+  /// Adds a note.
+  ///
+  /// In en, this message translates to:
+  /// **'Add note'**
+  String get notesAdd;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

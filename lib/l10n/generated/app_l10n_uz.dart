@@ -633,6 +633,52 @@ class AppL10nUz extends AppL10n {
   @override
   String get authSignInUnavailable =>
       'Bu versiyada Telegram orqali kirish mavjud emas.';
+
+  @override
+  String get vacancyApplicants => 'Arizalar';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Hozircha arizalar yo\'q';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$required tadan $hired tasi qabul qilindi';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired tasi qabul qilindi';
+  }
+
+  @override
+  String get applicationMoveTo => 'Bosqichga o\'tkazish';
+
+  @override
+  String get applicationRejectReason => 'Sabab (nomzod ko\'radi)';
+
+  @override
+  String get candidatePhoneHidden => 'Telefon mavjud emas';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Nomzodning maxfiylik sozlamalari ish beruvchi uni qachon ko\'rishini belgilaydi.';
+
+  @override
+  String get candidateFilesHidden => 'Fayllar mavjud emas';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Profil $percent% to’ldirilgan';
+  }
+
+  @override
+  String get notesTitle => 'Shaxsiy eslatmalar';
+
+  @override
+  String get notesHint => 'Ularni faqat siz ko’rasiz';
+
+  @override
+  String get notesAdd => 'Eslatma qo’shish';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -1262,6 +1308,52 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get authSignInUnavailable =>
       'Бу версияда Telegram орқали кириш мавжуд эмас.';
+
+  @override
+  String get vacancyApplicants => 'Аризалар';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Ҳозирча аризалар йўқ';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$required тадан $hired таси қабул қилинди';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired таси қабул қилинди';
+  }
+
+  @override
+  String get applicationMoveTo => 'Босқичга ўтказиш';
+
+  @override
+  String get applicationRejectReason => 'Сабаб (номзод кўради)';
+
+  @override
+  String get candidatePhoneHidden => 'Телефон мавжуд эмас';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Номзоднинг махфийлик созламалари иш берувчи уни қачон кўришини белгилайди.';
+
+  @override
+  String get candidateFilesHidden => 'Файллар мавжуд эмас';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Профил $percent% тўлдирилган';
+  }
+
+  @override
+  String get notesTitle => 'Шахсий эслатмалар';
+
+  @override
+  String get notesHint => 'Уларни фақат сиз кўрасиз';
+
+  @override
+  String get notesAdd => 'Эслатма қўшиш';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -1893,4 +1985,50 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get authSignInUnavailable =>
       'Bu versiyada Telegram orqali kirish mavjud emas.';
+
+  @override
+  String get vacancyApplicants => 'Arizalar';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Hozircha arizalar yo\'q';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$required tadan $hired tasi qabul qilindi';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired tasi qabul qilindi';
+  }
+
+  @override
+  String get applicationMoveTo => 'Bosqichga o\'tkazish';
+
+  @override
+  String get applicationRejectReason => 'Sabab (nomzod ko\'radi)';
+
+  @override
+  String get candidatePhoneHidden => 'Telefon mavjud emas';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Nomzodning maxfiylik sozlamalari ish beruvchi uni qachon ko\'rishini belgilaydi.';
+
+  @override
+  String get candidateFilesHidden => 'Fayllar mavjud emas';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Profil $percent% to’ldirilgan';
+  }
+
+  @override
+  String get notesTitle => 'Shaxsiy eslatmalar';
+
+  @override
+  String get notesHint => 'Ularni faqat siz ko’rasiz';
+
+  @override
+  String get notesAdd => 'Eslatma qo’shish';
 }

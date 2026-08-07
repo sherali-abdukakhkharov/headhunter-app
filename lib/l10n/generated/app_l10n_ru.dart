@@ -636,4 +636,50 @@ class AppL10nRu extends AppL10n {
   @override
   String get authSignInUnavailable =>
       'Вход через Telegram недоступен в этой сборке.';
+
+  @override
+  String get vacancyApplicants => 'Отклики';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Откликов пока нет';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return 'Принято $hired из $required';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return 'Принято $hired';
+  }
+
+  @override
+  String get applicationMoveTo => 'Перевести в';
+
+  @override
+  String get applicationRejectReason => 'Причина (увидит кандидат)';
+
+  @override
+  String get candidatePhoneHidden => 'Телефон недоступен';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Настройки приватности кандидата решают, когда работодатель его видит.';
+
+  @override
+  String get candidateFilesHidden => 'Файлы недоступны';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Профиль заполнен на $percent%';
+  }
+
+  @override
+  String get notesTitle => 'Личные заметки';
+
+  @override
+  String get notesHint => 'Их видите только вы';
+
+  @override
+  String get notesAdd => 'Добавить заметку';
 }

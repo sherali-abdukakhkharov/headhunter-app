@@ -440,8 +440,17 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       is not
 - [ ] Vacancy filters per §5.5 — the repository takes them, no filter UI yet
 - [ ] Deadline-expired / closed vacancy rendering (UAT-15)
-- [ ] Employer: applications per vacancy, filters, stage moves, internal notes,
-      hired-vs-required counts — the whole employer half of M6
+- [x] Employer: applications per vacancy, stage moves and §6.5's
+      hired-vs-required counts. **Stage moves are forward only, skipping
+      allowed** (§8.1) — real hiring skips, and backwards is refused by the
+      server, so only the legal targets are rendered. `withdrawn` is never
+      offered: it is the candidate's alone
+- [x] **BR-09 on the applicant view** — the phone is whatever the server sent
+      and nothing reconstructs one it withheld. Null is a normal answer, so
+      the absence is stated rather than left blank, and `canViewFiles` false
+      means the server sent no files at all
+- [ ] Employer application filters, and the internal-notes UI — the repository
+      has `notes`/`addNote`, no screen yet
 
 ## M7 - Candidate search
 

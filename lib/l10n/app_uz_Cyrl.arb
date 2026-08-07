@@ -190,5 +190,18 @@
   "stageOffer": "Таклиф",
   "stageHired": "Қабул қилинган",
   "stageRejected": "Танланмади",
-  "stageWithdrawn": "Қайтариб олинган"
+  "stageWithdrawn": "Қайтариб олинган",
+  "vacancyApplicants": "Аризалар",
+  "vacancyApplicantsEmpty": "Ҳозирча аризалар йўқ",
+  "applicationsHired": "{required} тадан {hired} таси қабул қилинди",
+  "applicationsHiredNoTarget": "{hired} таси қабул қилинди",
+  "applicationMoveTo": "Босқичга ўтказиш",
+  "applicationRejectReason": "Сабаб (номзод кўради)",
+  "candidatePhoneHidden": "Телефон мавжуд эмас",
+  "candidatePhoneHiddenWhy": "Номзоднинг махфийлик созламалари иш берувчи уни қачон кўришини белгилайди.",
+  "candidateFilesHidden": "Файллар мавжуд эмас",
+  "candidateCompleteness": "Профил {percent}% тўлдирилган",
+  "notesTitle": "Шахсий эслатмалар",
+  "notesHint": "Уларни фақат сиз кўрасиз",
+  "notesAdd": "Эслатма қўшиш"
 }

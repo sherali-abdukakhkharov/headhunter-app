@@ -7,6 +7,22 @@ import 'package:headhunter_app/src/features/applications/data/application_reposi
 import 'package:headhunter_app/src/features/applications/domain/application.dart';
 import 'package:headhunter_app/src/features/discovery/data/discovery_repository.dart';
 
+/// The word for one of §8.1's eight application stages.
+///
+/// Separate from [stageBadge] because the employer view needs the label
+/// without the badge — in a stage-move button and in §6.5's per-stage counts —
+/// and two spellings of the same stage is how a vocabulary stops being one.
+String stageLabel(String status, AppL10n l10n) => switch (status) {
+  'viewed' => l10n.stageViewed,
+  'shortlisted' => l10n.stageShortlisted,
+  'interview' => l10n.stageInterview,
+  'offer' => l10n.stageOffer,
+  'hired' => l10n.stageHired,
+  'rejected' => l10n.stageRejected,
+  'withdrawn' => l10n.stageWithdrawn,
+  _ => l10n.stageSubmitted,
+};
+
 /// The badge for one of §8.1's eight application stages.
 ///
 /// One function, because the design system's named constructors *are* the

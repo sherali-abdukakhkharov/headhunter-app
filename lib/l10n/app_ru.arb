@@ -190,5 +190,18 @@
   "stageOffer": "Оффер",
   "stageHired": "Принят",
   "stageRejected": "Не выбран",
-  "stageWithdrawn": "Отозван"
+  "stageWithdrawn": "Отозван",
+  "vacancyApplicants": "Отклики",
+  "vacancyApplicantsEmpty": "Откликов пока нет",
+  "applicationsHired": "Принято {hired} из {required}",
+  "applicationsHiredNoTarget": "Принято {hired}",
+  "applicationMoveTo": "Перевести в",
+  "applicationRejectReason": "Причина (увидит кандидат)",
+  "candidatePhoneHidden": "Телефон недоступен",
+  "candidatePhoneHiddenWhy": "Настройки приватности кандидата решают, когда работодатель его видит.",
+  "candidateFilesHidden": "Файлы недоступны",
+  "candidateCompleteness": "Профиль заполнен на {percent}%",
+  "notesTitle": "Личные заметки",
+  "notesHint": "Их видите только вы",
+  "notesAdd": "Добавить заметку"
 }

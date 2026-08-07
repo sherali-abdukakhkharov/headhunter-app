@@ -1,11 +1,9 @@
 {
   "@@locale": "en",
-
   "appTitle": "HeadHunter",
   "@appTitle": {
     "description": "Application name. Brand term - left untranslated in every locale."
   },
-
   "commonRetry": "Try again",
   "@commonRetry": {
     "description": "Action on an error state. Every error state must offer one."
@@ -38,17 +36,14 @@
   "@commonEdit": {
     "description": "Opens an existing record for editing. Used on the repeating profile sections (§5.1)."
   },
-
   "commonDelete": "Delete",
   "@commonDelete": {
     "description": "Removes a record. Always behind a confirmation, because it cannot be undone."
   },
-
   "commonSignOut": "Sign out",
   "@commonSignOut": {
     "description": "Ends the session at the user's request. Distinct from an expired session, which the user did not choose."
   },
-
   "stateLoading": "Loading…",
   "@stateLoading": {
     "description": "Accessible label for a loading state. Read by screen readers where the spinner itself carries no text."
@@ -85,17 +80,14 @@
   "@statePermissionDeniedBody": {
     "description": "Body when an OS permission was refused."
   },
-
   "sessionExpired": "Your session has expired. Please sign in again.",
   "@sessionExpired": {
     "description": "Shown when refresh fails and the user is returned to onboarding."
   },
-
   "settingsLanguage": "Language",
   "@settingsLanguage": {
     "description": "Label for the interface-language setting."
   },
-
   "roleCandidate": "Candidate",
   "@roleCandidate": {
     "description": "Role name. Someone looking for work."
@@ -108,7 +100,6 @@
   "@roleAdmin": {
     "description": "Role name. Platform moderator."
   },
-
   "navHome": "Home",
   "@navHome": {
     "description": "Bottom-nav tab. Candidate and employer home. LENGTH-CRITICAL: the bar reserves two label lines at a constant 70pt and clips beyond them - keep to two lines at 320pt and 2.0x text scale, or add a soft hyphen."
@@ -157,7 +148,6 @@
   "@navDictionaries": {
     "description": "Bottom-nav tab, administrator. Dictionary management with all four localized labels (§10.3). Length-critical - see navHome."
   },
-
   "blockedTitle": "Account blocked",
   "@blockedTitle": {
     "description": "BR-10. Heading of the screen a blocked account is held on. The app must explain the restriction rather than fail mysteriously."
@@ -166,7 +156,6 @@
   "@blockedBody": {
     "description": "BR-10. Shown only when the administrator supplied no reason; when they did, their reason is displayed verbatim instead and is never translated client-side (§2.4)."
   },
-
   "profileCompleteness": "Profile completeness",
   "@profileCompleteness": {
     "description": "§5.3. Heading of the completeness ring on the candidate profile."
@@ -175,7 +164,9 @@
   "@profileMissingRequired": {
     "description": "How many fields still block searchability (BR-02). Counts only the blocking ones, not everything that would raise the percentage.",
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "profileSearchable": "Visible in search",
@@ -218,477 +209,496 @@
   "@profileSalaryNegotiable": {
     "description": "money_range fields that allow it: the candidate would rather discuss than state a figure."
   },
-
   "profileLastUpdated": "Last updated {date}",
   "@profileLastUpdated": {
     "description": "§5.3's last meaningful update. The date is ISO because §8.3's display policy is still open and the value is data, not prose.",
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
-
   "profileFixField": "Fill in",
   "@profileFixField": {
     "description": "Accessibility label on a missing-field chip that scrolls to the field it names."
   },
-
   "profileVisibilityTitle": "Who can find you",
   "@profileVisibilityTitle": {
     "description": "Heading of the search-visibility control (UAT-12, §5.5). Its own section because it is not a schema field."
   },
-
   "profileVisibilitySearchable": "Visible in search",
   "@profileVisibilitySearchable": {
     "description": "visibility=searchable. Note this is the setting, not the effect - BR-02 still requires a complete profile."
   },
-
   "profileVisibilitySearchableHint": "Employers can find you in candidate search.",
   "@profileVisibilitySearchableHint": {
     "description": "Explains the searchable option."
   },
-
   "profileVisibilityHidden": "Hidden from search",
   "@profileVisibilityHidden": {
     "description": "visibility=hidden."
   },
-
   "profileVisibilityHiddenHint": "You can still browse vacancies and apply. Employers cannot find you.",
   "@profileVisibilityHiddenHint": {
     "description": "Explains that hiding does not disable the account - the distinction UAT-12 turns on."
   },
-
   "profileVisibilityAfterApply": "Visible after I apply",
   "@profileVisibilityAfterApply": {
     "description": "visibility=visible_after_apply."
   },
-
   "profileVisibilityAfterApplyHint": "Only employers whose vacancy you applied to can see your profile.",
   "@profileVisibilityAfterApplyHint": {
     "description": "Explains the visible_after_apply option."
   },
-
   "feedRecommended": "Recommended",
-  "@feedRecommended": { "description": "Candidate home tab: vacancies matched to the profile (§5.6). Ranking is server-side." },
+  "@feedRecommended": {
+    "description": "Candidate home tab: vacancies matched to the profile (§5.6). Ranking is server-side."
+  },
   "feedRecent": "Recent",
-  "@feedRecent": { "description": "Candidate home tab: newest vacancies." },
+  "@feedRecent": {
+    "description": "Candidate home tab: newest vacancies."
+  },
   "feedSaved": "Saved",
-  "@feedSaved": { "description": "Candidate home tab: vacancies the candidate bookmarked." },
+  "@feedSaved": {
+    "description": "Candidate home tab: vacancies the candidate bookmarked."
+  },
   "feedEmpty": "No vacancies to show yet",
-  "@feedEmpty": { "description": "Empty state of a candidate feed." },
+  "@feedEmpty": {
+    "description": "Empty state of a candidate feed."
+  },
   "vacancyVerifiedEmployer": "Verified employer",
-  "@vacancyVerifiedEmployer": { "description": "§5.6 shows verification on the vacancy itself, so a candidate can weigh it without opening the employer." },
+  "@vacancyVerifiedEmployer": {
+    "description": "§5.6 shows verification on the vacancy itself, so a candidate can weigh it without opening the employer."
+  },
   "vacancyNegotiablePay": "Pay negotiable",
-  "@vacancyNegotiablePay": { "description": "Salary is open to discussion. A negotiable vacancy also passes a minimum-pay filter, because it has not said no to the figure." },
+  "@vacancyNegotiablePay": {
+    "description": "Salary is open to discussion. A negotiable vacancy also passes a minimum-pay filter, because it has not said no to the figure."
+  },
   "vacancyDeadline": "Apply by {date}",
   "@vacancyDeadline": {
     "description": "The application deadline. ISO, because §8.3's display policy is still open.",
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "vacancyApply": "Apply",
-  "@vacancyApply": { "description": "Submits an application (§5.6). Carries a persisted idempotency key, because BR-07 allows one active application per vacancy." },
+  "@vacancyApply": {
+    "description": "Submits an application (§5.6). Carries a persisted idempotency key, because BR-07 allows one active application per vacancy."
+  },
   "vacancyApplied": "Applied",
-  "@vacancyApplied": { "description": "Shown instead of Apply once the candidate has an application on this vacancy (BR-07)." },
+  "@vacancyApplied": {
+    "description": "Shown instead of Apply once the candidate has an application on this vacancy (BR-07)."
+  },
   "vacancyClosedToApplications": "Not accepting applications",
-  "@vacancyClosedToApplications": { "description": "UAT-15: the vacancy is closed, paused, or past its deadline. BR-06 is computed server-side and rendered as given." },
+  "@vacancyClosedToApplications": {
+    "description": "UAT-15: the vacancy is closed, paused, or past its deadline. BR-06 is computed server-side and rendered as given."
+  },
   "vacancySave": "Save",
-  "@vacancySave": { "description": "Bookmarks a vacancy." },
+  "@vacancySave": {
+    "description": "Bookmarks a vacancy."
+  },
   "vacancySaved": "Saved",
-  "@vacancySaved": { "description": "The vacancy is bookmarked; tapping removes it." },
+  "@vacancySaved": {
+    "description": "The vacancy is bookmarked; tapping removes it."
+  },
   "vacancyReport": "Report",
-  "@vacancyReport": { "description": "Reports a vacancy for review (§10.2)." },
+  "@vacancyReport": {
+    "description": "Reports a vacancy for review (§10.2)."
+  },
   "vacancyReportTitle": "Report this vacancy",
-  "@vacancyReportTitle": { "description": "Title of the report sheet." },
+  "@vacancyReportTitle": {
+    "description": "Title of the report sheet."
+  },
   "vacancyReportHint": "What is wrong with it?",
-  "@vacancyReportHint": { "description": "Free text: a candidate reporting a fake vacancy should not have to find their objection on a list." },
+  "@vacancyReportHint": {
+    "description": "Free text: a candidate reporting a fake vacancy should not have to find their objection on a list."
+  },
   "vacancyReported": "Thank you. A moderator will review it.",
-  "@vacancyReported": { "description": "Confirmation after reporting." },
+  "@vacancyReported": {
+    "description": "Confirmation after reporting."
+  },
   "applicationsMine": "Your applications",
-  "@applicationsMine": { "description": "Heading of the candidate application list (§8.1)." },
+  "@applicationsMine": {
+    "description": "Heading of the candidate application list (§8.1)."
+  },
   "applicationsEmpty": "You have not applied to anything yet",
-  "@applicationsEmpty": { "description": "Empty state of the application list." },
+  "@applicationsEmpty": {
+    "description": "Empty state of the application list."
+  },
   "applicationWithdraw": "Withdraw",
-  "@applicationWithdraw": { "description": "§8.1's candidate-only transition. Offered only while the application is live." },
+  "@applicationWithdraw": {
+    "description": "§8.1's candidate-only transition. Offered only while the application is live."
+  },
   "applicationWithdrawTitle": "Withdraw this application?",
-  "@applicationWithdrawTitle": { "description": "Confirmation before withdrawing." },
+  "@applicationWithdrawTitle": {
+    "description": "Confirmation before withdrawing."
+  },
   "stageSubmitted": "Submitted",
-  "@stageSubmitted": { "description": "application stage=submitted." },
+  "@stageSubmitted": {
+    "description": "application stage=submitted."
+  },
   "stageViewed": "Viewed",
-  "@stageViewed": { "description": "application stage=viewed." },
+  "@stageViewed": {
+    "description": "application stage=viewed."
+  },
   "stageShortlisted": "Shortlisted",
-  "@stageShortlisted": { "description": "application stage=shortlisted." },
+  "@stageShortlisted": {
+    "description": "application stage=shortlisted."
+  },
   "stageInterview": "Interview",
-  "@stageInterview": { "description": "application stage=interview." },
+  "@stageInterview": {
+    "description": "application stage=interview."
+  },
   "stageOffer": "Offer",
-  "@stageOffer": { "description": "application stage=offer." },
+  "@stageOffer": {
+    "description": "application stage=offer."
+  },
   "stageHired": "Hired",
-  "@stageHired": { "description": "application stage=hired." },
+  "@stageHired": {
+    "description": "application stage=hired."
+  },
   "stageRejected": "Not selected",
-  "@stageRejected": { "description": "application stage=rejected. Worded plainly rather than harshly - it is read by the person it happened to." },
+  "@stageRejected": {
+    "description": "application stage=rejected. Worded plainly rather than harshly - it is read by the person it happened to."
+  },
   "stageWithdrawn": "Withdrawn",
-  "@stageWithdrawn": { "description": "application stage=withdrawn, by the candidate." },
-
+  "@stageWithdrawn": {
+    "description": "application stage=withdrawn, by the candidate."
+  },
   "vacancyMine": "Your vacancies",
   "@vacancyMine": {
     "description": "Heading of the employer's own vacancy list (§6.2). Includes closed ones - BR-11 keeps them in history."
   },
-
   "vacancyNew": "New vacancy",
   "@vacancyNew": {
     "description": "Creates an empty draft. BR-03 is checked here, so an employer who cannot publish is told before filling in a form."
   },
-
   "vacancyNone": "No vacancies yet",
   "@vacancyNone": {
     "description": "Empty state of the employer vacancy list."
   },
-
   "vacancyUntitled": "Untitled vacancy",
   "@vacancyUntitled": {
     "description": "Stands in for a draft whose title has not been filled in yet."
   },
-
   "vacancyStatusDraft": "Draft",
-  "@vacancyStatusDraft": { "description": "vacancy status=draft." },
-
+  "@vacancyStatusDraft": {
+    "description": "vacancy status=draft."
+  },
   "vacancyStatusModeration": "Under review",
-  "@vacancyStatusModeration": { "description": "vacancy status=under_moderation." },
-
+  "@vacancyStatusModeration": {
+    "description": "vacancy status=under_moderation."
+  },
   "vacancyStatusActive": "Published",
-  "@vacancyStatusActive": { "description": "vacancy status=active." },
-
+  "@vacancyStatusActive": {
+    "description": "vacancy status=active."
+  },
   "vacancyStatusPaused": "Paused",
-  "@vacancyStatusPaused": { "description": "vacancy status=paused." },
-
+  "@vacancyStatusPaused": {
+    "description": "vacancy status=paused."
+  },
   "vacancyStatusClosed": "Closed",
-  "@vacancyStatusClosed": { "description": "vacancy status=closed. Terminal (BR-11)." },
-
+  "@vacancyStatusClosed": {
+    "description": "vacancy status=closed. Terminal (BR-11)."
+  },
   "vacancyStatusRejected": "Rejected",
-  "@vacancyStatusRejected": { "description": "vacancy status=rejected. Editing returns it to draft, which is §6.4's correction path." },
-
+  "@vacancyStatusRejected": {
+    "description": "vacancy status=rejected. Editing returns it to draft, which is §6.4's correction path."
+  },
   "vacancySubmit": "Submit for publication",
-  "@vacancySubmit": { "description": "Sends a draft to moderation (§6.4)." },
-
+  "@vacancySubmit": {
+    "description": "Sends a draft to moderation (§6.4)."
+  },
   "vacancyPause": "Pause",
-  "@vacancyPause": { "description": "Employer transition: active -> paused." },
-
+  "@vacancyPause": {
+    "description": "Employer transition: active -> paused."
+  },
   "vacancyResume": "Resume",
-  "@vacancyResume": { "description": "Employer transition: paused -> active." },
-
+  "@vacancyResume": {
+    "description": "Employer transition: paused -> active."
+  },
   "vacancyClose": "Close",
-  "@vacancyClose": { "description": "Employer transition to closed." },
-
+  "@vacancyClose": {
+    "description": "Employer transition to closed."
+  },
   "vacancyCloseTitle": "Close this vacancy?",
-  "@vacancyCloseTitle": { "description": "Confirmation before closing." },
-
+  "@vacancyCloseTitle": {
+    "description": "Confirmation before closing."
+  },
   "vacancyCloseMessage": "Closing is permanent. The vacancy leaves search and stays in your history.",
-  "@vacancyCloseMessage": { "description": "BR-11 stated before the fact, because closing cannot be undone." },
-
+  "@vacancyCloseMessage": {
+    "description": "BR-11 stated before the fact, because closing cannot be undone."
+  },
   "vacancyMissingForSubmit": "{count, plural, one{{count} field to fill before publishing} other{{count} fields to fill before publishing}}",
   "@vacancyMissingForSubmit": {
     "description": "Turns the server's missingForSubmit into a checklist shown before the refusal rather than after.",
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "vacancyNotEditable": "This vacancy cannot be edited right now.",
-  "@vacancyNotEditable": { "description": "Shown while a vacancy is under moderation or closed - the server refuses the write, so the form is read-only rather than accepting keystrokes it cannot save." },
-
+  "@vacancyNotEditable": {
+    "description": "Shown while a vacancy is under moderation or closed - the server refuses the write, so the form is read-only rather than accepting keystrokes it cannot save."
+  },
   "vacancyOpenForApplications": "Accepting applications",
-  "@vacancyOpenForApplications": { "description": "BR-06 satisfied: active, and no deadline or one that has not passed." },
-
+  "@vacancyOpenForApplications": {
+    "description": "BR-06 satisfied: active, and no deadline or one that has not passed."
+  },
   "vacancyRestrictionTitle": "Age and gender restrictions",
   "@vacancyRestrictionTitle": {
     "description": "Title of the BR-12 notice on the vacancy form."
   },
-
   "vacancyRestrictionWarning": "Age and gender restrictions need a justification and are always reviewed by a moderator.",
-  "@vacancyRestrictionWarning": { "description": "BR-12, stated on the form rather than discovered at submit." },
-
+  "@vacancyRestrictionWarning": {
+    "description": "BR-12, stated on the form rather than discovered at submit."
+  },
   "employerChooseType": "What kind of employer are you?",
   "@employerChooseType": {
     "description": "Asked before the form exists. §6.1's type decides which fields apply, so there is no neutral employer profile to render first."
   },
-
   "employerTypeCompany": "A company",
   "@employerTypeCompany": {
     "description": "employer type=company."
   },
-
   "employerTypeCompanyHint": "Registered business hiring under a company name.",
   "@employerTypeCompanyHint": {
     "description": "Explains the company option."
   },
-
   "employerTypeIndividual": "An individual",
   "@employerTypeIndividual": {
     "description": "employer type=individual — §6.1's private person hiring for their own work."
   },
-
   "employerTypeIndividualHint": "Hiring for your own household or private work.",
   "@employerTypeIndividualHint": {
     "description": "Explains the individual option."
   },
-
   "employerTypeFixed": "Chosen once and cannot be changed later.",
   "@employerTypeFixed": {
     "description": "Warning shown while the type is still choosable. The server refuses a later change, because it would strand the other type's answers and the evidence verification was granted against."
   },
-
   "employerDetails": "Employer details",
   "@employerDetails": {
     "description": "Heading of the employer form (§6.1)."
   },
-
   "employerLegalName": "Registered name",
   "@employerLegalName": {
     "description": "Companies: the name on the registration."
   },
-
   "employerPublicName": "Name shown to candidates",
   "@employerPublicName": {
     "description": "Companies: the name on a vacancy card, which often differs from the registered one."
   },
-
   "employerFullName": "Your full name",
   "@employerFullName": {
     "description": "Individual employers."
   },
-
   "employerIndustry": "Industry",
   "@employerIndustry": {
     "description": "Companies: binds an industry dictionary id."
   },
-
   "employerContactPerson": "Contact person",
   "@employerContactPerson": {
     "description": "Companies: §6.1's named contact."
   },
-
   "employerContactPhone": "Contact phone",
   "@employerContactPhone": {
     "description": "The number a candidate should call. Deliberately separate from the sign-in number, which BR-01 verified and which must not be overwritten by a business detail."
   },
-
   "employerRegion": "Region",
   "@employerRegion": {
     "description": "Employer location, top level of the region hierarchy (§5.1). Its own key rather than the candidate form's, which comes from the schema."
   },
-
   "employerDistrict": "District or city",
   "@employerDistrict": {
     "description": "Employer location, the child of the chosen region."
   },
-
   "employerAddress": "Address",
   "@employerAddress": {
     "description": "Free text address."
   },
-
   "employerDescription": "Description",
   "@employerDescription": {
     "description": "A company description, or for an individual employer §6.1's short description of the work being offered."
   },
-
   "employerVerification": "Verification",
   "@employerVerification": {
     "description": "Heading of the verification card (§6.1)."
   },
-
   "employerVerificationNotSubmitted": "Not submitted",
   "@employerVerificationNotSubmitted": {
     "description": "verification status=not_submitted."
   },
-
   "employerVerificationUnderReview": "Under review",
   "@employerVerificationUnderReview": {
     "description": "verification status=under_review."
   },
-
   "employerVerificationVerified": "Verified",
   "@employerVerificationVerified": {
     "description": "verification status=verified."
   },
-
   "employerVerificationRejected": "Rejected",
   "@employerVerificationRejected": {
     "description": "verification status=rejected."
   },
-
   "employerVerificationChangesRequired": "Changes required",
   "@employerVerificationChangesRequired": {
     "description": "verification status=changes_required — §6.1's correction path, distinct from a rejection because the employer can act on it."
   },
-
   "employerSubmitVerification": "Submit for verification",
   "@employerSubmitVerification": {
     "description": "Sends the collected evidence for review."
   },
-
   "employerEvidence": "Documents to provide",
   "@employerEvidence": {
     "description": "Heading of the required-evidence list. The list is served rather than hardcoded, because §6.1 leaves the policy open."
   },
-
   "employerEvidenceRequired": "Required",
   "@employerEvidenceRequired": {
     "description": "Marks a document a submission is refused without."
   },
-
   "employerEvidenceOptional": "Optional",
   "@employerEvidenceOptional": {
     "description": "Marks a document that may be supplied but is not demanded."
   },
-
   "employerCannotPublish": "Complete your profile and get verified before posting a vacancy or inviting a candidate.",
   "@employerCannotPublish": {
     "description": "BR-03 stated plainly. Both conditions, because the rule is the conjunction and an employer who meets only one needs to know which is missing."
   },
-
   "employerCanPublish": "You can post vacancies and invite candidates.",
   "@employerCanPublish": {
     "description": "BR-03 satisfied."
   },
-
   "employerSaveFirst": "Save your details before submitting for verification.",
   "@employerSaveFirst": {
     "description": "Shown when the form has unsaved changes: the server verifies what it has stored, not what is on screen."
   },
-
   "attachmentsTitle": "Documents",
   "@attachmentsTitle": {
     "description": "Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here."
   },
-
   "attachmentUpload": "Upload",
   "@attachmentUpload": {
     "description": "Adds a file to a slot that has room."
   },
-
   "attachmentReplace": "Replace",
   "@attachmentReplace": {
     "description": "Shown instead of Upload on a full single-file slot. §5.4's replace: the new file supersedes the old one, which the server does by retiring the oldest."
   },
-
   "attachmentUploading": "Uploading… {percent}%",
   "@attachmentUploading": {
     "description": "UAT-03 asks for progress. A percentage rather than a spinner, because a large CV on a slow connection is exactly where an indeterminate spinner reads as a hang.",
-    "placeholders": { "percent": { "type": "String" } }
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
   },
-
   "attachmentNone": "Nothing uploaded yet",
   "@attachmentNone": {
     "description": "Empty state of one file slot."
   },
-
   "attachmentTooLarge": "That file is larger than {limit} MB.",
   "@attachmentTooLarge": {
     "description": "Refused before sending. The server enforces the limit too, but bouncing it here saves uploading a file that cannot land.",
-    "placeholders": { "limit": { "type": "String" } }
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
   },
-
   "attachmentWrongType": "Choose a {types} file.",
   "@attachmentWrongType": {
     "description": "Refused before sending. The accepted extensions come from the schema's accept list, so they are never hardcoded.",
-    "placeholders": { "types": { "type": "String" } }
+    "placeholders": {
+      "types": {
+        "type": "String"
+      }
+    }
   },
-
   "attachmentDeleteTitle": "Delete this file?",
   "@attachmentDeleteTitle": {
     "description": "Confirmation before deleting an uploaded file."
   },
-
   "historyDeleteTitle": "Delete this entry?",
   "@historyDeleteTitle": {
     "description": "Confirmation before deleting a work-experience or education record (§5.1)."
   },
-
   "historyDeleteMessage": "It will be removed from your profile.",
   "@historyDeleteMessage": {
     "description": "Body of the delete confirmation. States the consequence rather than asking again."
   },
-
   "experienceEmpty": "No work experience yet",
   "@experienceEmpty": {
     "description": "Empty state of the work-experience section. Not an error - a first-time candidate has none."
   },
-
   "experienceAdd": "Add experience",
   "@experienceAdd": {
     "description": "Opens the editor for a new work-experience record."
   },
-
   "experienceEmployer": "Employer",
   "@experienceEmployer": {
     "description": "Optional: §5.1 asks for simplified entry for informal or seasonal work, where there is often no employer to name."
   },
-
   "experienceRole": "Position",
   "@experienceRole": {
     "description": "What the person did. The one field a work-experience record cannot omit."
   },
-
   "experienceOccupation": "Occupation",
   "@experienceOccupation": {
     "description": "Binds an occupation dictionary id, so §7.1's 'years in the selected occupation' is computed rather than guessed from the title text."
   },
-
   "experienceStarted": "Start date",
   "@experienceStarted": {
     "description": "Required. The other half of what makes a record countable."
   },
-
   "experienceEnded": "End date",
   "@experienceEnded": {
     "description": "Disabled while 'I work here now' is on - the server treats the two as mutually exclusive."
   },
-
   "experienceCurrent": "I work here now",
   "@experienceCurrent": {
     "description": "Marks the role as ongoing. Mutually exclusive with an end date."
   },
-
   "experienceResponsibilities": "Responsibilities",
   "@experienceResponsibilities": {
     "description": "Free text describing the role. Never translated (§2.4)."
   },
-
   "experiencePresent": "Present",
   "@experiencePresent": {
     "description": "Stands in for the end date on an ongoing role, in the date range shown on a record."
   },
-
   "educationEmpty": "No education yet",
   "@educationEmpty": {
     "description": "Empty state of the education section. Optional for the categories where §5.1 says it is not relevant."
   },
-
   "educationAdd": "Add education",
   "@educationAdd": {
     "description": "Opens the editor for a new education record."
   },
-
   "educationLevel": "Level of education",
   "@educationLevel": {
     "description": "Binds an education_level dictionary id. The one required field of an education record."
   },
-
   "educationInstitution": "Institution",
   "@educationInstitution": {
     "description": "Free text: the school or university. Never translated (§2.4)."
   },
-
   "educationSpecialization": "Specialization",
   "@educationSpecialization": {
     "description": "Free text: what was studied."
   },
-
   "educationYear": "Graduation year",
   "@educationYear": {
     "description": "A year, not a date. An expected graduation in the future is accepted."
   },
-
   "leveledChangeLevel": "Level",
   "@leveledChangeLevel": {
     "description": "Opens the proficiency picker on a dictionary_leveled row - a skill level or a CEFR grade (§4.4). Short because it sits inline on the row beside the value it changes."
   },
-
   "pickerChoose": "Choose",
   "@pickerChoose": {
     "description": "Placeholder in a dictionary-backed field before anything is selected (§3.3)."
@@ -713,7 +723,6 @@
   "@pickerUnknownValue": {
     "description": "A stored dictionary id the server could not resolve even through the resolve-by-id endpoint. Rare: retired and merged items still resolve forever (§10.3). Shown instead of a raw UUID."
   },
-
   "authSignInTitle": "Sign in",
   "@authSignInTitle": {
     "description": "Heading of the sign-in screen (§4.1)."
@@ -807,5 +816,75 @@
   "authSignInUnavailable": "Telegram sign-in is not available in this build.",
   "@authSignInUnavailable": {
     "description": "DEPRECATED with the Telegram flow. This build's application id has no redirect URI registered with BotFather, so a login cannot start."
+  },
+  "vacancyApplicants": "Applicants",
+  "@vacancyApplicants": {
+    "description": "Heading of the employer view of one vacancy’s applications (§6.5)."
+  },
+  "vacancyApplicantsEmpty": "No applications yet",
+  "@vacancyApplicantsEmpty": {
+    "description": "Empty state."
+  },
+  "applicationsHired": "{hired} of {required} hired",
+  "@applicationsHired": {
+    "description": "§6.5: hires counted against BR-05’s required worker count.",
+    "placeholders": {
+      "hired": {
+        "type": "int"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationsHiredNoTarget": "{hired} hired",
+  "@applicationsHiredNoTarget": {
+    "description": "Used when the vacancy states no worker count.",
+    "placeholders": {
+      "hired": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationMoveTo": "Move to",
+  "@applicationMoveTo": {
+    "description": "Opens the stage picker. §8.1 allows forward moves only, skipping permitted."
+  },
+  "applicationRejectReason": "Reason (shown to the candidate)",
+  "@applicationRejectReason": {
+    "description": "§8.1’s optional standard message on a rejection. Recorded in the BR-08 history whatever the stage."
+  },
+  "candidatePhoneHidden": "Phone not available",
+  "@candidatePhoneHidden": {
+    "description": "BR-09: null is a normal answer, not an error, so the absence is stated rather than left blank."
+  },
+  "candidatePhoneHiddenWhy": "The candidate’s privacy settings decide when an employer can see it.",
+  "@candidatePhoneHiddenWhy": {
+    "description": "Explains that the server decided, not the app."
+  },
+  "candidateFilesHidden": "Files not available",
+  "@candidateFilesHidden": {
+    "description": "BR-09, §5.4: the server sends no files when the employer may not download them."
+  },
+  "candidateCompleteness": "Profile {percent}% complete",
+  "@candidateCompleteness": {
+    "description": "How complete the candidate’s profile is.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notesTitle": "Private notes",
+  "@notesTitle": {
+    "description": "§8.2: the employer’s private notes on an application."
+  },
+  "notesHint": "Only you can see these",
+  "@notesHint": {
+    "description": "States that the candidate cannot see them."
+  },
+  "notesAdd": "Add note",
+  "@notesAdd": {
+    "description": "Adds a note."
   }
 }
