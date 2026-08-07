@@ -114,12 +114,9 @@ class HhDictionaryPicker extends ConsumerWidget {
       // A read-only field still shows a caret and an empty box, so the text is
       // supplied through the controller rather than by typing.
       controller: TextEditingController(
-        text: switch (resolved) {
-          null => '',
-          AsyncData(:final value) =>
-            value[selected]?.label ?? l10n.pickerUnknownValue,
-          _ => '…',
-        },
+        text: selected == null || resolved == null
+            ? ''
+            : resolveLabel(resolved, selected, l10n, where: type),
       ),
       onTap: enabled ? () => _open(context, ref) : null,
       onTrailingTap: enabled ? () => _open(context, ref) : null,
@@ -204,11 +201,7 @@ class HhDictionaryMultiPicker extends ConsumerWidget {
                 HhRemovableChip(
                   // Resolved through the same path as the single picker, so a
                   // retired skill on an old profile still reads as a word.
-                  label: switch (resolved) {
-                    AsyncData(:final value) =>
-                      value[id]?.label ?? l10n.pickerUnknownValue,
-                    _ => '…',
-                  },
+                  label: resolveLabel(resolved, id, l10n, where: type),
                   onRemove: enabled
                       ? () => onChanged([...values]..remove(id))
                       : null,
@@ -259,6 +252,67 @@ class HhDictionaryMultiPicker extends ConsumerWidget {
 class _PickResult {
   const _PickResult(this.ids);
   final List<String> ids;
+}
+
+/// Resolves one id to the text to display for it.
+///
+/// **Error is matched before loading, and separately from it.** Riverpod's
+/// retry is disabled app-wide (`main.dart`), so a failed resolution is a
+/// terminal state. Folding it into the loading arm renders an ellipsis that
+/// never resolves and is indistinguishable from a slow network, so the control
+/// simply never says what it holds.
+///
+/// Shared by both pickers and the leveled editor rather than written three
+/// times: it is one rule, and the third copy is where it gets forgotten.
+///
+/// [where] names the caller in the log — a label that will not resolve is a
+/// broken value on somebody's profile, and it has to be findable in a report.
+String resolveLabel(
+  AsyncValue<Map<String, DictionaryItem>> resolved,
+  String id,
+  AppL10n l10n, {
+  required String where,
+}) {
+  if (resolved case AsyncValue(hasError: true, :final error?)) {
+    debugPrint('[dictionary] $where: could not resolve $id — $error');
+    return l10n.pickerUnknownValue;
+  }
+
+  return switch (resolved) {
+    AsyncData(:final value) => value[id]?.label ?? l10n.pickerUnknownValue,
+    _ => '…',
+  };
+}
+
+/// Opens the searchable list on its own and returns the chosen **id**, or null
+/// if the user backed out.
+///
+/// For callers that are not a field — the leveled editor asks for an item and
+/// then a level from the same sheet, and a row without both is never created.
+/// Exposed rather than duplicated so search, empty state and the retired-item
+/// rules stay in one place.
+Future<String?> pickDictionaryItem(
+  BuildContext context, {
+  required String title,
+  required String type,
+  String? parentId,
+  bool parentScoped = false,
+}) async {
+  final chosen = await showModalBottomSheet<_PickResult>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _PickerSheet(
+      title: title,
+      type: type,
+      parentId: parentId,
+      parentScoped: parentScoped || parentId != null,
+      selected: const {},
+      multiple: false,
+    ),
+  );
+
+  return chosen?.ids.firstOrNull;
 }
 
 /// The searchable list both pickers open.

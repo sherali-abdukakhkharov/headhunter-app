@@ -272,13 +272,21 @@ working destinations rather than dead ends.
       the bound ids stay byte-identical — the client half of UAT-13
 - [ ] **Match-all / match-any** on multi-select where §7.1 needs it — a search
       concern, so it belongs with the search UI rather than the picker
-- [ ] **Level pickers** (skill × skill_level, language × language_level). The
-      two dictionaries exist and carry `rank`; what is missing is the paired
-      row widget that binds them together
+- [x] **Level pickers** (skill × skill_level, language × language_level) —
+      `LeveledFieldEditor`, built as M3's `dictionary_leveled` field. It reuses
+      the picker sheet via `pickDictionaryItem` rather than growing a second
+      searchable list, so retired items and the empty state behave identically
 - [ ] Warm-up call site — `warmDictionaries` exists but nothing invokes it yet;
       it wants to run once after sign-in
-- [ ] Widget test for the pickers. The two bugs found so far were both found by
-      running it, not by the suite — see MEMORY.md
+- [x] Widget test for the pickers — 17 cases in
+      `test/features/dictionaries/dictionary_picker_test.dart` covering BR-13
+      (label shown, id bound), §10.3 (retired and merged not offered but still
+      resolved), the §5.1 parent scoping, search, and the error-not-spinner
+      rule. Only `dictionaryProvider` is faked, so the selectable filter, the
+      cascade and label resolution all run for real.
+      **It immediately found a third bug**: both pickers fell through to the
+      loading arm on a resolution *failure*, and with retry disabled that
+      ellipsis is terminal. The rule now lives once, in `resolveLabel`
 
 ## M3 - Candidate profile
 
@@ -302,13 +310,27 @@ district picker.
 - [x] 422s land on the fields that caused them, by code (§4.6)
 - [x] `POST /auth/active-role` — profile endpoints read the acting role from
       the token, so this stopped being optional
-- [ ] **`dictionary_leveled`** (skills × level, languages × CEFR). Both
-      dictionaries and their ranks exist; the paired row widget does not, so
-      those two sections currently render a notice
-- [ ] **Bespoke sections**: work history and education own their own
-      sub-resources (`/candidates/me/experience`, `/education`) and their own
-      editors. Currently a notice
-- [ ] Simplified experience entry for informal/seasonal work
+- [x] **`dictionary_leveled`** (skills × level, languages × CEFR) — a row per
+      item with its proficiency. **Adding an item opens the level picker
+      immediately**, so a row without a level is never created; the server
+      rejects one, and matching its invariant makes that 422 unreachable
+      rather than merely unlikely. 9 widget tests drive the two sheets in
+      `test/features/profile/leveled_field_editor_test.dart`, and the 422
+      field-mapping split has 5 more in `field_validation_exception_test.dart`
+- [x] **Bespoke sections**: work history and education. Each renders its
+      records, adds, edits and deletes through its own sub-resource, and
+      **takes the path from the schema's `endpoint`** rather than hardcoding
+      it — that field is published precisely so a server-side move is not a
+      client release. An unrecognised bespoke section still renders the
+      notice, the same rule as an unknown field kind.
+      Every mutation refreshes two things: the list, and the profile's
+      completeness (§5.3). The second is `ProfileEditor.refreshProfile`, not
+      an invalidate — invalidating would refetch the schema *and* discard
+      unsaved form edits, so adding a job would silently eat a half-typed name
+- [x] Simplified experience entry for informal/seasonal work — satisfied by
+      construction rather than by a second mode, which the design system
+      forbids. Only `roleTitle` and `startedOn` are required, so a seasonal
+      worker with no employer to name can still file a complete record
 - [ ] Missing-field list with **direct edit links** — the codes are in the
       response, the tap-to-focus is not built
 - [ ] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —

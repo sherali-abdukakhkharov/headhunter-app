@@ -33,6 +33,12 @@ class AppL10nRu extends AppL10n {
   String get commonSearch => 'Поиск';
 
   @override
+  String get commonEdit => 'Изменить';
+
+  @override
+  String get commonDelete => 'Удалить';
+
+  @override
   String get commonSignOut => 'Выйти';
 
   @override
@@ -169,6 +175,63 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get profileSalaryNegotiable => 'По договорённости';
+
+  @override
+  String get historyDeleteTitle => 'Удалить запись?';
+
+  @override
+  String get historyDeleteMessage => 'Она будет удалена из вашего профиля.';
+
+  @override
+  String get experienceEmpty => 'Опыт работы не добавлен';
+
+  @override
+  String get experienceAdd => 'Добавить опыт';
+
+  @override
+  String get experienceEmployer => 'Работодатель';
+
+  @override
+  String get experienceRole => 'Должность';
+
+  @override
+  String get experienceOccupation => 'Профессия';
+
+  @override
+  String get experienceStarted => 'Дата начала';
+
+  @override
+  String get experienceEnded => 'Дата окончания';
+
+  @override
+  String get experienceCurrent => 'Работаю здесь сейчас';
+
+  @override
+  String get experienceResponsibilities => 'Обязанности';
+
+  @override
+  String get experiencePresent => 'По настоящее время';
+
+  @override
+  String get educationEmpty => 'Образование не добавлено';
+
+  @override
+  String get educationAdd => 'Добавить образование';
+
+  @override
+  String get educationLevel => 'Уровень образования';
+
+  @override
+  String get educationInstitution => 'Учебное заведение';
+
+  @override
+  String get educationSpecialization => 'Специальность';
+
+  @override
+  String get educationYear => 'Год окончания';
+
+  @override
+  String get leveledChangeLevel => 'Уровень';
 
   @override
   String get pickerChoose => 'Выбрать';

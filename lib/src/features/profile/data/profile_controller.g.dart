@@ -45,7 +45,7 @@ final class ProfileEditorProvider
   ProfileEditor create() => ProfileEditor();
 }
 
-String _$profileEditorHash() => r'39e26251a3ee21be81e96a302af4cfb9cb8c1b64';
+String _$profileEditorHash() => r'3a95b4d2b65f12fcd692256cb3ee4c48e7ef61f4';
 
 /// Loads the candidate profile and the form that describes it (§5).
 ///

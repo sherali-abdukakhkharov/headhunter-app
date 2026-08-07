@@ -5,6 +5,7 @@ import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/features/profile/data/profile_controller.dart';
 import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
+import 'package:headhunter_app/src/features/profile/presentation/history_section.dart';
 import 'package:headhunter_app/src/features/profile/presentation/schema_field_widget.dart';
 
 /// The candidate profile (§5), rendered from the server's field schema.
@@ -171,8 +172,6 @@ class _Section extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppL10n.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -181,12 +180,9 @@ class _Section extends ConsumerWidget {
 
         if (!section.isEngine)
           // A bespoke section owns its own sub-resource and its own editor
-          // (work history, education). Saying so beats rendering an empty box
-          // that reads as a finished, empty section.
-          HhNotice.pending(
-            title: section.label,
-            message: l10n.profileSectionElsewhere,
-          )
+          // (work history, education), so it is handed to one rather than run
+          // through the engine — ARCHITECTURE.md §6.
+          BespokeSection(section: section)
         else
           for (final field in section.renderableFields)
             Padding(

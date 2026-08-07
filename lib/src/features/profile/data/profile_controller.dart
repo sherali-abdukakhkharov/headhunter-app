@@ -166,6 +166,33 @@ class ProfileEditor extends _$ProfileEditor {
     }
   }
 
+  /// Re-reads the profile, leaving the form and any pending edits alone.
+  ///
+  /// A bespoke section (work history, education) writes through its own
+  /// sub-resource, and completeness is computed server-side (§5.3) — so the
+  /// ring is stale the moment a record is added there.
+  ///
+  /// **Not `invalidateSelf`.** That would refetch the schema too, and it would
+  /// throw away whatever the user has typed into this form and not yet saved:
+  /// adding a job would silently eat a half-filled name. Only the profile half
+  /// is replaced, because only the profile half can have changed.
+  ///
+  /// A failure is swallowed: the record itself did save, and turning a stale
+  /// percentage into an error over the successful write would misreport it.
+  Future<void> refreshProfile() async {
+    final current = state.value;
+    if (current == null) return;
+
+    try {
+      final profile = await ref.read(profileRepositoryProvider).fetchProfile();
+      // The screen may have gone while the request was in flight.
+      if (state.value == null) return;
+      state = AsyncData(current.copyWith(profile: profile));
+    } on Object catch (error) {
+      debugPrint('[profile] completeness not refreshed: $error');
+    }
+  }
+
   /// Sets search visibility (UAT-12). Applies immediately — it is a toggle, not
   /// part of the form's dirty set, and it deliberately does not refresh
   /// `lastMeaningfulUpdateAt`.
