@@ -13,6 +13,7 @@ import 'package:headhunter_app/src/features/auth/presentation/otp_verification_s
 import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
+import 'package:headhunter_app/src/features/employer/presentation/employer_profile_screen.dart';
 import 'package:headhunter_app/src/features/health/presentation/health_screen.dart';
 import 'package:headhunter_app/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:headhunter_app/src/features/onboarding/presentation/role_selection_screen.dart';
@@ -148,6 +149,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
             // milestone that owns them.
             builder: (context, state) => switch (tab.path) {
               Routes.candidateProfile => const CandidateProfileScreen(),
+              Routes.employerCompany => const EmployerProfileScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
           ),

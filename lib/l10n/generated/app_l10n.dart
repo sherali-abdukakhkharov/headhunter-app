@@ -461,6 +461,186 @@ abstract class AppL10n {
   /// **'Only employers whose vacancy you applied to can see your profile.'**
   String get profileVisibilityAfterApplyHint;
 
+  /// Asked before the form exists. §6.1's type decides which fields apply, so there is no neutral employer profile to render first.
+  ///
+  /// In en, this message translates to:
+  /// **'What kind of employer are you?'**
+  String get employerChooseType;
+
+  /// employer type=company.
+  ///
+  /// In en, this message translates to:
+  /// **'A company'**
+  String get employerTypeCompany;
+
+  /// Explains the company option.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered business hiring under a company name.'**
+  String get employerTypeCompanyHint;
+
+  /// employer type=individual — §6.1's private person hiring for their own work.
+  ///
+  /// In en, this message translates to:
+  /// **'An individual'**
+  String get employerTypeIndividual;
+
+  /// Explains the individual option.
+  ///
+  /// In en, this message translates to:
+  /// **'Hiring for your own household or private work.'**
+  String get employerTypeIndividualHint;
+
+  /// Warning shown while the type is still choosable. The server refuses a later change, because it would strand the other type's answers and the evidence verification was granted against.
+  ///
+  /// In en, this message translates to:
+  /// **'Chosen once and cannot be changed later.'**
+  String get employerTypeFixed;
+
+  /// Heading of the employer form (§6.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Employer details'**
+  String get employerDetails;
+
+  /// Companies: the name on the registration.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered name'**
+  String get employerLegalName;
+
+  /// Companies: the name on a vacancy card, which often differs from the registered one.
+  ///
+  /// In en, this message translates to:
+  /// **'Name shown to candidates'**
+  String get employerPublicName;
+
+  /// Individual employers.
+  ///
+  /// In en, this message translates to:
+  /// **'Your full name'**
+  String get employerFullName;
+
+  /// Companies: binds an industry dictionary id.
+  ///
+  /// In en, this message translates to:
+  /// **'Industry'**
+  String get employerIndustry;
+
+  /// Companies: §6.1's named contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact person'**
+  String get employerContactPerson;
+
+  /// The number a candidate should call. Deliberately separate from the sign-in number, which BR-01 verified and which must not be overwritten by a business detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact phone'**
+  String get employerContactPhone;
+
+  /// Employer location, top level of the region hierarchy (§5.1). Its own key rather than the candidate form's, which comes from the schema.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get employerRegion;
+
+  /// Employer location, the child of the chosen region.
+  ///
+  /// In en, this message translates to:
+  /// **'District or city'**
+  String get employerDistrict;
+
+  /// Free text address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get employerAddress;
+
+  /// A company description, or for an individual employer §6.1's short description of the work being offered.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get employerDescription;
+
+  /// Heading of the verification card (§6.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get employerVerification;
+
+  /// verification status=not_submitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Not submitted'**
+  String get employerVerificationNotSubmitted;
+
+  /// verification status=under_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Under review'**
+  String get employerVerificationUnderReview;
+
+  /// verification status=verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get employerVerificationVerified;
+
+  /// verification status=rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get employerVerificationRejected;
+
+  /// verification status=changes_required — §6.1's correction path, distinct from a rejection because the employer can act on it.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes required'**
+  String get employerVerificationChangesRequired;
+
+  /// Sends the collected evidence for review.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for verification'**
+  String get employerSubmitVerification;
+
+  /// Heading of the required-evidence list. The list is served rather than hardcoded, because §6.1 leaves the policy open.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents to provide'**
+  String get employerEvidence;
+
+  /// Marks a document a submission is refused without.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get employerEvidenceRequired;
+
+  /// Marks a document that may be supplied but is not demanded.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get employerEvidenceOptional;
+
+  /// BR-03 stated plainly. Both conditions, because the rule is the conjunction and an employer who meets only one needs to know which is missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your profile and get verified before posting a vacancy or inviting a candidate.'**
+  String get employerCannotPublish;
+
+  /// BR-03 satisfied.
+  ///
+  /// In en, this message translates to:
+  /// **'You can post vacancies and invite candidates.'**
+  String get employerCanPublish;
+
+  /// Shown when the form has unsaved changes: the server verifies what it has stored, not what is on screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your details before submitting for verification.'**
+  String get employerSaveFirst;
+
   /// Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here.
   ///
   /// In en, this message translates to:

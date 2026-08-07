@@ -208,6 +208,101 @@ class AppL10nEn extends AppL10n {
       'Only employers whose vacancy you applied to can see your profile.';
 
   @override
+  String get employerChooseType => 'What kind of employer are you?';
+
+  @override
+  String get employerTypeCompany => 'A company';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Registered business hiring under a company name.';
+
+  @override
+  String get employerTypeIndividual => 'An individual';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Hiring for your own household or private work.';
+
+  @override
+  String get employerTypeFixed => 'Chosen once and cannot be changed later.';
+
+  @override
+  String get employerDetails => 'Employer details';
+
+  @override
+  String get employerLegalName => 'Registered name';
+
+  @override
+  String get employerPublicName => 'Name shown to candidates';
+
+  @override
+  String get employerFullName => 'Your full name';
+
+  @override
+  String get employerIndustry => 'Industry';
+
+  @override
+  String get employerContactPerson => 'Contact person';
+
+  @override
+  String get employerContactPhone => 'Contact phone';
+
+  @override
+  String get employerRegion => 'Region';
+
+  @override
+  String get employerDistrict => 'District or city';
+
+  @override
+  String get employerAddress => 'Address';
+
+  @override
+  String get employerDescription => 'Description';
+
+  @override
+  String get employerVerification => 'Verification';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Not submitted';
+
+  @override
+  String get employerVerificationUnderReview => 'Under review';
+
+  @override
+  String get employerVerificationVerified => 'Verified';
+
+  @override
+  String get employerVerificationRejected => 'Rejected';
+
+  @override
+  String get employerVerificationChangesRequired => 'Changes required';
+
+  @override
+  String get employerSubmitVerification => 'Submit for verification';
+
+  @override
+  String get employerEvidence => 'Documents to provide';
+
+  @override
+  String get employerEvidenceRequired => 'Required';
+
+  @override
+  String get employerEvidenceOptional => 'Optional';
+
+  @override
+  String get employerCannotPublish =>
+      'Complete your profile and get verified before posting a vacancy or inviting a candidate.';
+
+  @override
+  String get employerCanPublish =>
+      'You can post vacancies and invite candidates.';
+
+  @override
+  String get employerSaveFirst =>
+      'Save your details before submitting for verification.';
+
+  @override
   String get attachmentsTitle => 'Documents';
 
   @override

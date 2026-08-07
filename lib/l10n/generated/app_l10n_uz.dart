@@ -209,6 +209,102 @@ class AppL10nUz extends AppL10n {
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
 
   @override
+  String get employerChooseType => 'Siz qanday ish beruvchisiz?';
+
+  @override
+  String get employerTypeCompany => 'Tashkilot';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Tashkilot nomidan ishga oluvchi ro\'yxatdan o\'tgan biznes.';
+
+  @override
+  String get employerTypeIndividual => 'Jismoniy shaxs';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Uy yoki shaxsiy ish uchun odam yollaysiz.';
+
+  @override
+  String get employerTypeFixed =>
+      'Bir marta tanlanadi va keyin o\'zgartirib bo\'lmaydi.';
+
+  @override
+  String get employerDetails => 'Ish beruvchi ma\'lumotlari';
+
+  @override
+  String get employerLegalName => 'Rasmiy nomi';
+
+  @override
+  String get employerPublicName => 'Nomzodlarga ko\'rinadigan nom';
+
+  @override
+  String get employerFullName => 'To\'liq ismingiz';
+
+  @override
+  String get employerIndustry => 'Soha';
+
+  @override
+  String get employerContactPerson => 'Aloqa uchun shaxs';
+
+  @override
+  String get employerContactPhone => 'Aloqa telefoni';
+
+  @override
+  String get employerRegion => 'Viloyat';
+
+  @override
+  String get employerDistrict => 'Tuman yoki shahar';
+
+  @override
+  String get employerAddress => 'Manzil';
+
+  @override
+  String get employerDescription => 'Tavsif';
+
+  @override
+  String get employerVerification => 'Tasdiqlash';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Yuborilmagan';
+
+  @override
+  String get employerVerificationUnderReview => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get employerVerificationVerified => 'Tasdiqlangan';
+
+  @override
+  String get employerVerificationRejected => 'Rad etilgan';
+
+  @override
+  String get employerVerificationChangesRequired => 'Tuzatish talab qilinadi';
+
+  @override
+  String get employerSubmitVerification => 'Tasdiqlashga yuborish';
+
+  @override
+  String get employerEvidence => 'Kerakli hujjatlar';
+
+  @override
+  String get employerEvidenceRequired => 'Majburiy';
+
+  @override
+  String get employerEvidenceOptional => 'Ixtiyoriy';
+
+  @override
+  String get employerCannotPublish =>
+      'Vakansiya joylash va nomzod taklif qilish uchun profilni to\'ldiring va tasdiqdan o\'ting.';
+
+  @override
+  String get employerCanPublish =>
+      'Siz vakansiya joylashingiz va nomzodlarni taklif qilishingiz mumkin.';
+
+  @override
+  String get employerSaveFirst =>
+      'Tasdiqlashga yuborishdan oldin ma\'lumotlarni saqlang.';
+
+  @override
   String get attachmentsTitle => 'Hujjatlar';
 
   @override
@@ -582,6 +678,102 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.';
+
+  @override
+  String get employerChooseType => 'Сиз қандай иш берувчисиз?';
+
+  @override
+  String get employerTypeCompany => 'Ташкилот';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Ташкилот номидан ишга олувчи рўйхатдан ўтган бизнес.';
+
+  @override
+  String get employerTypeIndividual => 'Жисмоний шахс';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Уй ёки шахсий иш учун одам ёллайсиз.';
+
+  @override
+  String get employerTypeFixed =>
+      'Бир марта танланади ва кейин ўзгартириб бўлмайди.';
+
+  @override
+  String get employerDetails => 'Иш берувчи маълумотлари';
+
+  @override
+  String get employerLegalName => 'Расмий номи';
+
+  @override
+  String get employerPublicName => 'Номзодларга кўринадиган ном';
+
+  @override
+  String get employerFullName => 'Тўлиқ исмингиз';
+
+  @override
+  String get employerIndustry => 'Соҳа';
+
+  @override
+  String get employerContactPerson => 'Алоқа учун шахс';
+
+  @override
+  String get employerContactPhone => 'Алоқа телефони';
+
+  @override
+  String get employerRegion => 'Вилоят';
+
+  @override
+  String get employerDistrict => 'Туман ёки шаҳар';
+
+  @override
+  String get employerAddress => 'Манзил';
+
+  @override
+  String get employerDescription => 'Тавсиф';
+
+  @override
+  String get employerVerification => 'Тасдиқлаш';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Юборилмаган';
+
+  @override
+  String get employerVerificationUnderReview => 'Кўриб чиқилмоқда';
+
+  @override
+  String get employerVerificationVerified => 'Тасдиқланган';
+
+  @override
+  String get employerVerificationRejected => 'Рад этилган';
+
+  @override
+  String get employerVerificationChangesRequired => 'Тузатиш талаб қилинади';
+
+  @override
+  String get employerSubmitVerification => 'Тасдиқлашга юбориш';
+
+  @override
+  String get employerEvidence => 'Керакли ҳужжатлар';
+
+  @override
+  String get employerEvidenceRequired => 'Мажбурий';
+
+  @override
+  String get employerEvidenceOptional => 'Ихтиёрий';
+
+  @override
+  String get employerCannotPublish =>
+      'Вакансия жойлаш ва номзод таклиф қилиш учун профилни тўлдиринг ва тасдиқдан ўтинг.';
+
+  @override
+  String get employerCanPublish =>
+      'Сиз вакансия жойлашингиз ва номзодларни таклиф қилишингиз мумкин.';
+
+  @override
+  String get employerSaveFirst =>
+      'Тасдиқлашга юборишдан олдин маълумотларни сақланг.';
 
   @override
   String get attachmentsTitle => 'Ҳужжатлар';
@@ -959,6 +1151,102 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
+  String get employerChooseType => 'Siz qanday ish beruvchisiz?';
+
+  @override
+  String get employerTypeCompany => 'Tashkilot';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Tashkilot nomidan ishga oluvchi ro\'yxatdan o\'tgan biznes.';
+
+  @override
+  String get employerTypeIndividual => 'Jismoniy shaxs';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Uy yoki shaxsiy ish uchun odam yollaysiz.';
+
+  @override
+  String get employerTypeFixed =>
+      'Bir marta tanlanadi va keyin o\'zgartirib bo\'lmaydi.';
+
+  @override
+  String get employerDetails => 'Ish beruvchi ma\'lumotlari';
+
+  @override
+  String get employerLegalName => 'Rasmiy nomi';
+
+  @override
+  String get employerPublicName => 'Nomzodlarga ko\'rinadigan nom';
+
+  @override
+  String get employerFullName => 'To\'liq ismingiz';
+
+  @override
+  String get employerIndustry => 'Soha';
+
+  @override
+  String get employerContactPerson => 'Aloqa uchun shaxs';
+
+  @override
+  String get employerContactPhone => 'Aloqa telefoni';
+
+  @override
+  String get employerRegion => 'Viloyat';
+
+  @override
+  String get employerDistrict => 'Tuman yoki shahar';
+
+  @override
+  String get employerAddress => 'Manzil';
+
+  @override
+  String get employerDescription => 'Tavsif';
+
+  @override
+  String get employerVerification => 'Tasdiqlash';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Yuborilmagan';
+
+  @override
+  String get employerVerificationUnderReview => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get employerVerificationVerified => 'Tasdiqlangan';
+
+  @override
+  String get employerVerificationRejected => 'Rad etilgan';
+
+  @override
+  String get employerVerificationChangesRequired => 'Tuzatish talab qilinadi';
+
+  @override
+  String get employerSubmitVerification => 'Tasdiqlashga yuborish';
+
+  @override
+  String get employerEvidence => 'Kerakli hujjatlar';
+
+  @override
+  String get employerEvidenceRequired => 'Majburiy';
+
+  @override
+  String get employerEvidenceOptional => 'Ixtiyoriy';
+
+  @override
+  String get employerCannotPublish =>
+      'Vakansiya joylash va nomzod taklif qilish uchun profilni to\'ldiring va tasdiqdan o\'ting.';
+
+  @override
+  String get employerCanPublish =>
+      'Siz vakansiya joylashingiz va nomzodlarni taklif qilishingiz mumkin.';
+
+  @override
+  String get employerSaveFirst =>
+      'Tasdiqlashga yuborishdan oldin ma\'lumotlarni saqlang.';
 
   @override
   String get attachmentsTitle => 'Hujjatlar';

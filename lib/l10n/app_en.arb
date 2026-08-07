@@ -265,6 +265,156 @@
     "description": "Explains the visible_after_apply option."
   },
 
+  "employerChooseType": "What kind of employer are you?",
+  "@employerChooseType": {
+    "description": "Asked before the form exists. §6.1's type decides which fields apply, so there is no neutral employer profile to render first."
+  },
+
+  "employerTypeCompany": "A company",
+  "@employerTypeCompany": {
+    "description": "employer type=company."
+  },
+
+  "employerTypeCompanyHint": "Registered business hiring under a company name.",
+  "@employerTypeCompanyHint": {
+    "description": "Explains the company option."
+  },
+
+  "employerTypeIndividual": "An individual",
+  "@employerTypeIndividual": {
+    "description": "employer type=individual — §6.1's private person hiring for their own work."
+  },
+
+  "employerTypeIndividualHint": "Hiring for your own household or private work.",
+  "@employerTypeIndividualHint": {
+    "description": "Explains the individual option."
+  },
+
+  "employerTypeFixed": "Chosen once and cannot be changed later.",
+  "@employerTypeFixed": {
+    "description": "Warning shown while the type is still choosable. The server refuses a later change, because it would strand the other type's answers and the evidence verification was granted against."
+  },
+
+  "employerDetails": "Employer details",
+  "@employerDetails": {
+    "description": "Heading of the employer form (§6.1)."
+  },
+
+  "employerLegalName": "Registered name",
+  "@employerLegalName": {
+    "description": "Companies: the name on the registration."
+  },
+
+  "employerPublicName": "Name shown to candidates",
+  "@employerPublicName": {
+    "description": "Companies: the name on a vacancy card, which often differs from the registered one."
+  },
+
+  "employerFullName": "Your full name",
+  "@employerFullName": {
+    "description": "Individual employers."
+  },
+
+  "employerIndustry": "Industry",
+  "@employerIndustry": {
+    "description": "Companies: binds an industry dictionary id."
+  },
+
+  "employerContactPerson": "Contact person",
+  "@employerContactPerson": {
+    "description": "Companies: §6.1's named contact."
+  },
+
+  "employerContactPhone": "Contact phone",
+  "@employerContactPhone": {
+    "description": "The number a candidate should call. Deliberately separate from the sign-in number, which BR-01 verified and which must not be overwritten by a business detail."
+  },
+
+  "employerRegion": "Region",
+  "@employerRegion": {
+    "description": "Employer location, top level of the region hierarchy (§5.1). Its own key rather than the candidate form's, which comes from the schema."
+  },
+
+  "employerDistrict": "District or city",
+  "@employerDistrict": {
+    "description": "Employer location, the child of the chosen region."
+  },
+
+  "employerAddress": "Address",
+  "@employerAddress": {
+    "description": "Free text address."
+  },
+
+  "employerDescription": "Description",
+  "@employerDescription": {
+    "description": "A company description, or for an individual employer §6.1's short description of the work being offered."
+  },
+
+  "employerVerification": "Verification",
+  "@employerVerification": {
+    "description": "Heading of the verification card (§6.1)."
+  },
+
+  "employerVerificationNotSubmitted": "Not submitted",
+  "@employerVerificationNotSubmitted": {
+    "description": "verification status=not_submitted."
+  },
+
+  "employerVerificationUnderReview": "Under review",
+  "@employerVerificationUnderReview": {
+    "description": "verification status=under_review."
+  },
+
+  "employerVerificationVerified": "Verified",
+  "@employerVerificationVerified": {
+    "description": "verification status=verified."
+  },
+
+  "employerVerificationRejected": "Rejected",
+  "@employerVerificationRejected": {
+    "description": "verification status=rejected."
+  },
+
+  "employerVerificationChangesRequired": "Changes required",
+  "@employerVerificationChangesRequired": {
+    "description": "verification status=changes_required — §6.1's correction path, distinct from a rejection because the employer can act on it."
+  },
+
+  "employerSubmitVerification": "Submit for verification",
+  "@employerSubmitVerification": {
+    "description": "Sends the collected evidence for review."
+  },
+
+  "employerEvidence": "Documents to provide",
+  "@employerEvidence": {
+    "description": "Heading of the required-evidence list. The list is served rather than hardcoded, because §6.1 leaves the policy open."
+  },
+
+  "employerEvidenceRequired": "Required",
+  "@employerEvidenceRequired": {
+    "description": "Marks a document a submission is refused without."
+  },
+
+  "employerEvidenceOptional": "Optional",
+  "@employerEvidenceOptional": {
+    "description": "Marks a document that may be supplied but is not demanded."
+  },
+
+  "employerCannotPublish": "Complete your profile and get verified before posting a vacancy or inviting a candidate.",
+  "@employerCannotPublish": {
+    "description": "BR-03 stated plainly. Both conditions, because the rule is the conjunction and an employer who meets only one needs to know which is missing."
+  },
+
+  "employerCanPublish": "You can post vacancies and invite candidates.",
+  "@employerCanPublish": {
+    "description": "BR-03 satisfied."
+  },
+
+  "employerSaveFirst": "Save your details before submitting for verification.",
+  "@employerSaveFirst": {
+    "description": "Shown when the form has unsaved changes: the server verifies what it has stored, not what is on screen."
+  },
+
   "attachmentsTitle": "Documents",
   "@attachmentsTitle": {
     "description": "Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here."

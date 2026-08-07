@@ -209,6 +209,102 @@ class AppL10nRu extends AppL10n {
       'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
 
   @override
+  String get employerChooseType => 'Кто вы как работодатель?';
+
+  @override
+  String get employerTypeCompany => 'Компания';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Зарегистрированный бизнес, нанимающий от имени компании.';
+
+  @override
+  String get employerTypeIndividual => 'Частное лицо';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Нанимаете для дома или частной работы.';
+
+  @override
+  String get employerTypeFixed =>
+      'Выбирается один раз и не может быть изменено.';
+
+  @override
+  String get employerDetails => 'Данные работодателя';
+
+  @override
+  String get employerLegalName => 'Юридическое название';
+
+  @override
+  String get employerPublicName => 'Название для кандидатов';
+
+  @override
+  String get employerFullName => 'Ваше полное имя';
+
+  @override
+  String get employerIndustry => 'Отрасль';
+
+  @override
+  String get employerContactPerson => 'Контактное лицо';
+
+  @override
+  String get employerContactPhone => 'Контактный телефон';
+
+  @override
+  String get employerRegion => 'Регион';
+
+  @override
+  String get employerDistrict => 'Район или город';
+
+  @override
+  String get employerAddress => 'Адрес';
+
+  @override
+  String get employerDescription => 'Описание';
+
+  @override
+  String get employerVerification => 'Верификация';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Не отправлено';
+
+  @override
+  String get employerVerificationUnderReview => 'На проверке';
+
+  @override
+  String get employerVerificationVerified => 'Подтверждено';
+
+  @override
+  String get employerVerificationRejected => 'Отклонено';
+
+  @override
+  String get employerVerificationChangesRequired => 'Требуются исправления';
+
+  @override
+  String get employerSubmitVerification => 'Отправить на проверку';
+
+  @override
+  String get employerEvidence => 'Необходимые документы';
+
+  @override
+  String get employerEvidenceRequired => 'Обязательно';
+
+  @override
+  String get employerEvidenceOptional => 'Необязательно';
+
+  @override
+  String get employerCannotPublish =>
+      'Заполните профиль и пройдите верификацию, чтобы публиковать вакансии и приглашать кандидатов.';
+
+  @override
+  String get employerCanPublish =>
+      'Вы можете публиковать вакансии и приглашать кандидатов.';
+
+  @override
+  String get employerSaveFirst =>
+      'Сохраните данные перед отправкой на проверку.';
+
+  @override
   String get attachmentsTitle => 'Документы';
 
   @override

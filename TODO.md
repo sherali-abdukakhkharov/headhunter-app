@@ -368,12 +368,31 @@ category to compare against.
 - [ ] Test: form adapts by category and irrelevant fields are not mandatory —
       needs a second category to compare against
 
-## M4 - Employer profile
+## M4 - Employer profile *(done bar evidence upload)*
 
-- [ ] Company and individual employer forms
-- [ ] Verification submission + evidence upload
-- [ ] Status display with admin reason and changes-required path
-- [ ] BR-03: explain what blocks invitations / vacancy submission
+The employer Company tab is a real screen. Walked end to end on an emulator
+against the live API on 2026-08-07 with a freshly registered employer account.
+
+- [x] Company and individual employer forms — one screen, and **`type` decides
+      which fields exist**. There is no neutral empty employer, so a 404 before
+      the first write is "not created yet" and renders the type question, not
+      an error. The type is fixed after creation (`employer.type_immutable`),
+      so the chooser disappears rather than offering a control that always
+      fails, and the `PUT` carries only the chosen type's fields
+- [~] Verification submission + evidence upload — state, the served
+      `requiredEvidence` list and submission are wired; **the evidence files
+      are not.** They go through `POST /files` and want the attachments widget
+      generalised, which is the next slice. The server refuses a submission
+      that lacks a required document and says so, so the gap is visible rather
+      than silent
+- [x] Status display with admin reason and changes-required path — the five
+      §6.1 states through the design system's own badge constructors, and the
+      administrator's reason shown **verbatim** (§2.4). An unrecognised status
+      falls back rather than throwing, the same rule as an unknown field kind
+- [x] BR-03: explain what blocks invitations / vacancy submission — `canPublish`
+      is computed server-side and rendered as given; the sentence names both
+      conditions, because an employer who is complete but unverified needs to
+      know which half is missing
 
 ## M5 - Vacancy management
 
