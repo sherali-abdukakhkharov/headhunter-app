@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:headhunter_app/l10n/generated/app_l10n.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/features/profile/data/profile_controller.dart';
+import 'package:headhunter_app/src/features/profile/domain/candidate_profile.dart';
 import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
 import 'package:headhunter_app/src/features/profile/presentation/history_section.dart';
 import 'package:headhunter_app/src/features/profile/presentation/schema_field_widget.dart';
+import 'package:headhunter_app/src/features/profile/presentation/visibility_section.dart';
 
 /// The candidate profile (§5), rendered from the server's field schema.
 ///
@@ -53,32 +57,89 @@ class CandidateProfileScreen extends ConsumerWidget {
   }
 }
 
-class _Form extends ConsumerWidget {
+class _Form extends ConsumerStatefulWidget {
   const _Form({required this.state});
 
   final ProfileEditorState state;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_Form> createState() => _FormState();
+}
+
+class _FormState extends ConsumerState<_Form> {
+  /// One key per field code, so a missing-field chip can scroll to the widget
+  /// that fixes it.
+  ///
+  /// Held in state and reused across rebuilds: a key rebuilt each frame points
+  /// at a context that has just been discarded, and `ensureVisible` then either
+  /// throws or scrolls nowhere.
+  final _fieldKeys = <String, GlobalKey>{};
+
+  GlobalKey _keyFor(String code) =>
+      _fieldKeys.putIfAbsent(code, GlobalKey.new);
+
+  /// Scrolls the named field into view.
+  ///
+  /// Silently does nothing when the code has no widget mounted — a field can be
+  /// missing *and* unrenderable, because an unknown `kind` is skipped by
+  /// design. Throwing here would turn a server-side field addition into a crash
+  /// on the completeness card.
+  ///
+  /// **This is why the form is a `SingleChildScrollView`, not a `ListView`.**
+  /// A lazy list only mounts children near the viewport, so every field below
+  /// the fold has a null `currentContext` and this method quietly did nothing —
+  /// which is every field the user actually needs to be taken to. Found by
+  /// tapping a chip on a device; the silent branch made it look like a dead
+  /// button rather than a bug.
+  void _revealField(String code) {
+    final target = _fieldKeys[code]?.currentContext;
+    if (target == null) return;
+
+    unawaited(
+      Scrollable.ensureVisible(
+        target,
+        duration: HhDuration.normal,
+        // A little above centre, so the field is not tucked under the app bar
+        // or hidden behind the save bar.
+        alignment: 0.2,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    final state = widget.state;
 
     return Column(
       children: [
         Expanded(
-          child: ListView(
+          // Eager, not lazy — see _revealField. The field set is bounded by the
+          // category's schema (tens of fields, all cheap), so building them all
+          // costs little and is what makes every one of them a valid scroll
+          // target.
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(HhSpace.gutter),
-            children: [
-              _Completeness(state: state),
-              const SizedBox(height: HhSpace.sectionGap),
-
-              for (final section in state.schema.sections) ...[
-                _Section(section: section, state: state),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _Completeness(state: state, onFix: _revealField),
                 const SizedBox(height: HhSpace.sectionGap),
-              ],
 
-              // Room for the save bar, which floats over the list.
-              const SizedBox(height: HhSpace.xxl),
-            ],
+                for (final section in state.schema.sections) ...[
+                  _Section(section: section, state: state, keyFor: _keyFor),
+                  const SizedBox(height: HhSpace.sectionGap),
+                ],
+
+                // Not a schema field, and deliberately outside the save bar's
+                // dirty set - see VisibilitySection.
+                VisibilitySection(current: state.profile.visibility),
+                const SizedBox(height: HhSpace.sectionGap),
+
+                // Room for the save bar, which floats over the list.
+                const SizedBox(height: HhSpace.xxl),
+              ],
+            ),
           ),
         ),
 
@@ -123,9 +184,12 @@ class _Form extends ConsumerWidget {
 /// §5.3: a completeness percentage and the list of what is missing, each entry
 /// naming a field the user can go and fill.
 class _Completeness extends StatelessWidget {
-  const _Completeness({required this.state});
+  const _Completeness({required this.state, required this.onFix});
 
   final ProfileEditorState state;
+
+  /// Scrolls to the field with this code.
+  final void Function(String code) onFix;
 
   @override
   Widget build(BuildContext context) {
@@ -158,17 +222,80 @@ class _Completeness extends StatelessWidget {
                 ? HhIconPath.checkCircle
                 : HhIconPath.eye,
           ),
+
+          // §5.3 asks for the missing fields to be listed, not merely counted.
+          // Each one is a chip that scrolls to the field, because a list of
+          // names the user then has to hunt for is a list that gets ignored.
+          if (blocking.isNotEmpty) ...[
+            const SizedBox(height: HhSpace.md),
+            Wrap(
+              spacing: HhSpace.sm,
+              runSpacing: HhSpace.sm,
+              children: [
+                for (final field in blocking)
+                  HhFilterChip(
+                    label: _labelFor(field, l10n),
+                    selected: false,
+                    onTap: () => onFix(field.code),
+                  ),
+              ],
+            ),
+          ],
+
+          if (profile.lastMeaningfulUpdateAt case final at?) ...[
+            const SizedBox(height: HhSpace.md),
+            Text(
+              l10n.profileLastUpdated(_isoDate(at.wallClock)),
+              style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+            ),
+          ],
         ],
       ),
     );
   }
+
+  /// The schema's label for a missing code.
+  ///
+  /// The server sends the code and leaves the wording to the client, and the
+  /// schema already carries a label resolved for the request locale — so
+  /// looking it up there keeps one translation of each field name rather than
+  /// two. A code with no field falls back to itself, which is ugly but
+  /// truthful, and only reachable if the two responses disagree.
+  String _labelFor(MissingField field, AppL10n l10n) {
+    if (field.label case final label?) return label;
+
+    for (final section in state.schema.sections) {
+      for (final candidate in section.fields) {
+        if (candidate.code == field.code) return candidate.label;
+      }
+    }
+
+    return field.code;
+  }
+
+  /// `yyyy-MM-dd`, matching every other date this app prints.
+  ///
+  /// §8.3's display policy is still open; a written month invented here would
+  /// have to be undone, and ISO reads the same in all four variants.
+  static String _isoDate(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
 }
 
 class _Section extends ConsumerWidget {
-  const _Section({required this.section, required this.state});
+  const _Section({
+    required this.section,
+    required this.state,
+    required this.keyFor,
+  });
 
   final SchemaSection section;
   final ProfileEditorState state;
+
+  /// The stable key for a field code, so the completeness card can scroll
+  /// to it.
+  final GlobalKey Function(String code) keyFor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -186,6 +313,7 @@ class _Section extends ConsumerWidget {
         else
           for (final field in section.renderableFields)
             Padding(
+              key: keyFor(field.code),
               padding: const EdgeInsets.only(bottom: HhSpace.lg),
               child: SchemaFieldWidget(
                 field: field,

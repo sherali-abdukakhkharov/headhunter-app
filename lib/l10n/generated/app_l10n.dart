@@ -407,6 +407,60 @@ abstract class AppL10n {
   /// **'Negotiable'**
   String get profileSalaryNegotiable;
 
+  /// §5.3's last meaningful update. The date is ISO because §8.3's display policy is still open and the value is data, not prose.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated {date}'**
+  String profileLastUpdated(String date);
+
+  /// Accessibility label on a missing-field chip that scrolls to the field it names.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in'**
+  String get profileFixField;
+
+  /// Heading of the search-visibility control (UAT-12, §5.5). Its own section because it is not a schema field.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can find you'**
+  String get profileVisibilityTitle;
+
+  /// visibility=searchable. Note this is the setting, not the effect - BR-02 still requires a complete profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible in search'**
+  String get profileVisibilitySearchable;
+
+  /// Explains the searchable option.
+  ///
+  /// In en, this message translates to:
+  /// **'Employers can find you in candidate search.'**
+  String get profileVisibilitySearchableHint;
+
+  /// visibility=hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden from search'**
+  String get profileVisibilityHidden;
+
+  /// Explains that hiding does not disable the account - the distinction UAT-12 turns on.
+  ///
+  /// In en, this message translates to:
+  /// **'You can still browse vacancies and apply. Employers cannot find you.'**
+  String get profileVisibilityHiddenHint;
+
+  /// visibility=visible_after_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible after I apply'**
+  String get profileVisibilityAfterApply;
+
+  /// Explains the visible_after_apply option.
+  ///
+  /// In en, this message translates to:
+  /// **'Only employers whose vacancy you applied to can see your profile.'**
+  String get profileVisibilityAfterApplyHint;
+
   /// Confirmation before deleting a work-experience or education record (§5.1).
   ///
   /// In en, this message translates to:

@@ -176,6 +176,39 @@ class AppL10nUz extends AppL10n {
   String get profileSalaryNegotiable => 'Kelishuv asosida';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Yangilangan $date';
+  }
+
+  @override
+  String get profileFixField => 'To\'ldirish';
+
+  @override
+  String get profileVisibilityTitle => 'Sizni kim topa oladi';
+
+  @override
+  String get profileVisibilitySearchable => 'Qidiruvda ko\'rinadi';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Ish beruvchilar sizni nomzodlar qidiruvida topa oladi.';
+
+  @override
+  String get profileVisibilityHidden => 'Qidiruvdan yashirilgan';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Siz vakansiyalarni ko\'rishingiz va ariza yuborishingiz mumkin. Ish beruvchilar sizni topa olmaydi.';
+
+  @override
+  String get profileVisibilityAfterApply =>
+      'Ariza yuborgandan keyin ko\'rinadi';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
   String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
 
   @override
@@ -487,6 +520,38 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get profileSalaryNegotiable => 'Келишув асосида';
+
+  @override
+  String profileLastUpdated(String date) {
+    return 'Янгиланган $date';
+  }
+
+  @override
+  String get profileFixField => 'Тўлдириш';
+
+  @override
+  String get profileVisibilityTitle => 'Сизни ким топа олади';
+
+  @override
+  String get profileVisibilitySearchable => 'Қидирувда кўринади';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Иш берувчилар сизни номзодлар қидирувида топа олади.';
+
+  @override
+  String get profileVisibilityHidden => 'Қидирувдан яширилган';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Сиз вакансияларни кўришингиз ва ариза юборишингиз мумкин. Иш берувчилар сизни топа олмайди.';
+
+  @override
+  String get profileVisibilityAfterApply => 'Ариза юборгандан кейин кўринади';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.';
 
   @override
   String get historyDeleteTitle => 'Ёзув ўчирилсинми?';
@@ -801,6 +866,39 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get profileSalaryNegotiable => 'Kelishuv asosida';
+
+  @override
+  String profileLastUpdated(String date) {
+    return 'Yangilangan $date';
+  }
+
+  @override
+  String get profileFixField => 'To\'ldirish';
+
+  @override
+  String get profileVisibilityTitle => 'Sizni kim topa oladi';
+
+  @override
+  String get profileVisibilitySearchable => 'Qidiruvda ko\'rinadi';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Ish beruvchilar sizni nomzodlar qidiruvida topa oladi.';
+
+  @override
+  String get profileVisibilityHidden => 'Qidiruvdan yashirilgan';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Siz vakansiyalarni ko\'rishingiz va ariza yuborishingiz mumkin. Ish beruvchilar sizni topa olmaydi.';
+
+  @override
+  String get profileVisibilityAfterApply =>
+      'Ariza yuborgandan keyin ko\'rinadi';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
 
   @override
   String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';

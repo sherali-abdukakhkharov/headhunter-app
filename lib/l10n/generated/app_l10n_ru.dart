@@ -177,6 +177,38 @@ class AppL10nRu extends AppL10n {
   String get profileSalaryNegotiable => 'По договорённости';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Обновлено $date';
+  }
+
+  @override
+  String get profileFixField => 'Заполнить';
+
+  @override
+  String get profileVisibilityTitle => 'Кто может вас найти';
+
+  @override
+  String get profileVisibilitySearchable => 'Виден в поиске';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Работодатели могут найти вас в поиске кандидатов.';
+
+  @override
+  String get profileVisibilityHidden => 'Скрыт из поиска';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Вы по-прежнему можете смотреть вакансии и откликаться. Работодатели вас не найдут.';
+
+  @override
+  String get profileVisibilityAfterApply => 'Виден после отклика';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
+
+  @override
   String get historyDeleteTitle => 'Удалить запись?';
 
   @override

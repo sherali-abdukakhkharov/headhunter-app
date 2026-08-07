@@ -219,6 +219,52 @@
     "description": "money_range fields that allow it: the candidate would rather discuss than state a figure."
   },
 
+  "profileLastUpdated": "Last updated {date}",
+  "@profileLastUpdated": {
+    "description": "§5.3's last meaningful update. The date is ISO because §8.3's display policy is still open and the value is data, not prose.",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "profileFixField": "Fill in",
+  "@profileFixField": {
+    "description": "Accessibility label on a missing-field chip that scrolls to the field it names."
+  },
+
+  "profileVisibilityTitle": "Who can find you",
+  "@profileVisibilityTitle": {
+    "description": "Heading of the search-visibility control (UAT-12, §5.5). Its own section because it is not a schema field."
+  },
+
+  "profileVisibilitySearchable": "Visible in search",
+  "@profileVisibilitySearchable": {
+    "description": "visibility=searchable. Note this is the setting, not the effect - BR-02 still requires a complete profile."
+  },
+
+  "profileVisibilitySearchableHint": "Employers can find you in candidate search.",
+  "@profileVisibilitySearchableHint": {
+    "description": "Explains the searchable option."
+  },
+
+  "profileVisibilityHidden": "Hidden from search",
+  "@profileVisibilityHidden": {
+    "description": "visibility=hidden."
+  },
+
+  "profileVisibilityHiddenHint": "You can still browse vacancies and apply. Employers cannot find you.",
+  "@profileVisibilityHiddenHint": {
+    "description": "Explains that hiding does not disable the account - the distinction UAT-12 turns on."
+  },
+
+  "profileVisibilityAfterApply": "Visible after I apply",
+  "@profileVisibilityAfterApply": {
+    "description": "visibility=visible_after_apply."
+  },
+
+  "profileVisibilityAfterApplyHint": "Only employers whose vacancy you applied to can see your profile.",
+  "@profileVisibilityAfterApplyHint": {
+    "description": "Explains the visible_after_apply option."
+  },
+
   "historyDeleteTitle": "Delete this entry?",
   "@historyDeleteTitle": {
     "description": "Confirmation before deleting a work-experience or education record (§5.1)."

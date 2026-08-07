@@ -176,6 +176,38 @@ class AppL10nEn extends AppL10n {
   String get profileSalaryNegotiable => 'Negotiable';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Last updated $date';
+  }
+
+  @override
+  String get profileFixField => 'Fill in';
+
+  @override
+  String get profileVisibilityTitle => 'Who can find you';
+
+  @override
+  String get profileVisibilitySearchable => 'Visible in search';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Employers can find you in candidate search.';
+
+  @override
+  String get profileVisibilityHidden => 'Hidden from search';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'You can still browse vacancies and apply. Employers cannot find you.';
+
+  @override
+  String get profileVisibilityAfterApply => 'Visible after I apply';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Only employers whose vacancy you applied to can see your profile.';
+
+  @override
   String get historyDeleteTitle => 'Delete this entry?';
 
   @override

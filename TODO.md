@@ -334,11 +334,20 @@ district picker.
       construction rather than by a second mode, which the design system
       forbids. Only `roleTitle` and `startedOn` are required, so a seasonal
       worker with no employer to name can still file a complete record
-- [ ] Missing-field list with **direct edit links** — the codes are in the
-      response, the tap-to-focus is not built
-- [ ] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —
-      `setVisibility` exists on the controller, no UI yet
-- [ ] Last-meaningful-update display
+- [x] Missing-field list with **direct edit links** — each blocking field is a
+      chip that scrolls to the widget that fixes it. The label comes from the
+      schema, so a field name is translated once rather than twice.
+      **This is why the form is a `SingleChildScrollView`, not a `ListView`**:
+      a lazy list never mounts the fields below the fold, so every key the
+      chips needed was null and the feature silently did nothing
+- [x] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —
+      `VisibilitySection`, applied immediately rather than through the save
+      bar, and deliberately not a schema field: §4.2 has no `enum` kind and
+      this is the one write that must not refresh `lastMeaningfulUpdateAt`.
+      Verified on device: the setting changes while `isSearchable` stays false
+      on an incomplete profile, which is BR-02 computed server-side
+- [x] Last-meaningful-update display — in the completeness card, ISO because
+      §8.3's display policy is still open
 - [ ] CV upload with progress, cancel, failure reason, retry (UAT-03)
 - [ ] Optional certificates / work evidence
 - [ ] Test: form adapts by category and irrelevant fields are not mandatory —

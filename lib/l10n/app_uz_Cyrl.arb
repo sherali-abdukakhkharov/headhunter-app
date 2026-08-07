@@ -61,6 +61,16 @@
   "profileSalaryTo": "Гача",
   "profileSalaryNegotiable": "Келишув асосида",
 
+  "profileLastUpdated": "Янгиланган {date}",
+  "profileFixField": "Тўлдириш",
+  "profileVisibilityTitle": "Сизни ким топа олади",
+  "profileVisibilitySearchable": "Қидирувда кўринади",
+  "profileVisibilitySearchableHint": "Иш берувчилар сизни номзодлар қидирувида топа олади.",
+  "profileVisibilityHidden": "Қидирувдан яширилган",
+  "profileVisibilityHiddenHint": "Сиз вакансияларни кўришингиз ва ариза юборишингиз мумкин. Иш берувчилар сизни топа олмайди.",
+  "profileVisibilityAfterApply": "Ариза юборгандан кейин кўринади",
+  "profileVisibilityAfterApplyHint": "Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.",
+
   "historyDeleteTitle": "Ёзув ўчирилсинми?",
   "historyDeleteMessage": "У профилингиздан ўчирилади.",
   "experienceEmpty": "Иш тажрибаси қўшилмаган",

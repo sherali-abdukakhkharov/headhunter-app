@@ -61,6 +61,16 @@
   "profileSalaryTo": "Gacha",
   "profileSalaryNegotiable": "Kelishuv asosida",
 
+  "profileLastUpdated": "Yangilangan {date}",
+  "profileFixField": "To'ldirish",
+  "profileVisibilityTitle": "Sizni kim topa oladi",
+  "profileVisibilitySearchable": "Qidiruvda ko'rinadi",
+  "profileVisibilitySearchableHint": "Ish beruvchilar sizni nomzodlar qidiruvida topa oladi.",
+  "profileVisibilityHidden": "Qidiruvdan yashirilgan",
+  "profileVisibilityHiddenHint": "Siz vakansiyalarni ko'rishingiz va ariza yuborishingiz mumkin. Ish beruvchilar sizni topa olmaydi.",
+  "profileVisibilityAfterApply": "Ariza yuborgandan keyin ko'rinadi",
+  "profileVisibilityAfterApplyHint": "Profilingizni faqat siz ariza yuborgan vakansiya egalari ko'radi.",
+
   "historyDeleteTitle": "Yozuv o'chirilsinmi?",
   "historyDeleteMessage": "U profilingizdan o'chiriladi.",
   "experienceEmpty": "Ish tajribasi qo'shilmagan",
