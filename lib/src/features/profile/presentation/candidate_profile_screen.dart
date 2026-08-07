@@ -8,6 +8,7 @@ import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/features/profile/data/profile_controller.dart';
 import 'package:headhunter_app/src/features/profile/domain/candidate_profile.dart';
 import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
+import 'package:headhunter_app/src/features/profile/presentation/attachments_section.dart';
 import 'package:headhunter_app/src/features/profile/presentation/history_section.dart';
 import 'package:headhunter_app/src/features/profile/presentation/schema_field_widget.dart';
 import 'package:headhunter_app/src/features/profile/presentation/visibility_section.dart';
@@ -130,6 +131,11 @@ class _FormState extends ConsumerState<_Form> {
                   _Section(section: section, state: state, keyFor: _keyFor),
                   const SizedBox(height: HhSpace.sectionGap),
                 ],
+
+                // Files are declared by the schema's own block, outside the
+                // field union entirely (§4.5).
+                AttachmentsSection(slots: state.schema.attachments),
+                const SizedBox(height: HhSpace.sectionGap),
 
                 // Not a schema field, and deliberately outside the save bar's
                 // dirty set - see VisibilitySection.

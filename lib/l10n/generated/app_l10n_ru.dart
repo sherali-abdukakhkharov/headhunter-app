@@ -209,6 +209,36 @@ class AppL10nRu extends AppL10n {
       'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
 
   @override
+  String get attachmentsTitle => 'Документы';
+
+  @override
+  String get attachmentUpload => 'Загрузить';
+
+  @override
+  String get attachmentReplace => 'Заменить';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Загрузка… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Ничего не загружено';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Файл больше $limit МБ.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return 'Выберите файл в формате $types.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Удалить файл?';
+
+  @override
   String get historyDeleteTitle => 'Удалить запись?';
 
   @override

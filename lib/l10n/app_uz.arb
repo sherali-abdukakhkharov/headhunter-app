@@ -71,6 +71,15 @@
   "profileVisibilityAfterApply": "Ariza yuborgandan keyin ko'rinadi",
   "profileVisibilityAfterApplyHint": "Profilingizni faqat siz ariza yuborgan vakansiya egalari ko'radi.",
 
+  "attachmentsTitle": "Hujjatlar",
+  "attachmentUpload": "Yuklash",
+  "attachmentReplace": "Almashtirish",
+  "attachmentUploading": "Yuklanmoqda… {percent}%",
+  "attachmentNone": "Hech narsa yuklanmagan",
+  "attachmentTooLarge": "Fayl {limit} MB dan katta.",
+  "attachmentWrongType": "{types} formatidagi faylni tanlang.",
+  "attachmentDeleteTitle": "Fayl o'chirilsinmi?",
+
   "historyDeleteTitle": "Yozuv o'chirilsinmi?",
   "historyDeleteMessage": "U profilingizdan o'chiriladi.",
   "experienceEmpty": "Ish tajribasi qo'shilmagan",

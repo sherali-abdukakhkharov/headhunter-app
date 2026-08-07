@@ -610,6 +610,54 @@ touching the design system.
 3. **A hand-rolled `Stack` progress bar laid out to zero height** and was
    invisible on device. Replaced with a themed `LinearProgressIndicator`.
 
+### 2026-08-07 - Adding one plugin cost three toolchain fixes
+`file_picker` is the first plugin added since the toolchain moved to **AGP
+9.0.1**, and it failed three different ways before building. Recorded because
+the next plugin will hit the same wall.
+
+1. **`file_picker` 11 does not compile its Kotlin under AGP 9.** Its
+   `android/build.gradle` skips applying KGP when
+   `isAgp9OrAbove`, expecting AGP's *built-in* Kotlin — but
+   `android/gradle.properties` sets `android.builtInKotlin=false`. Neither
+   compiler runs, the plugin class is never produced, and the failure surfaces
+   as `GeneratedPluginRegistrant.java: cannot find symbol FilePickerPlugin`,
+   which reads like a stale generated file. It is not; `flutter clean` does
+   nothing.
+2. **`android.builtInKotlin=true` is not the escape.** It makes
+   `telegram_login` — which applies `kotlin-android` unconditionally — fail
+   with "This results in a build failure when applying the kotlin-android
+   plugin". So the flag cannot move while that dependency is present, and
+   CLAUDE.md says to keep it.
+   The resolution was **`file_picker` 10.3.3**, which applies KGP
+   unconditionally and therefore matches how `telegram_login` already builds.
+3. **Then the JVM targets disagreed**: the plugin declares Kotlin `1.8` while
+   AGP compiles its Java at `11`, and Kotlin 2.x refuses the mismatch. Fixed in
+   `android/build.gradle.kts` with a `subprojects` block pinning **both** sides
+   to 17. Raising only Kotlin just flips the error to "11 vs 17", and setting
+   `tasks.withType<JavaCompile>` does nothing because AGP configures javac from
+   its own `compileOptions` extension — it has to be set there.
+
+The pins in `pubspec.yaml` were unaffected: the lockfile diff was four added
+packages and no version changes. That was checked, not assumed.
+
+### 2026-08-07 - `HhButton` in a `Row` collapses the section to zero height
+`expand` defaults to **true**, which sets `width: double.infinity`. A `Row`
+gives its children unbounded width, and the combination throws
+`RenderFlex children have non-zero flex but incoming width constraints are
+unbounded` — but only into the layout phase. On the device nothing crashed:
+the whole attachments section painted its heading, its label and its empty
+state on top of each other at one offset, with the button missing entirely.
+
+`HhButton.text` already defaults to `expand: false`; the other constructors do
+not. **Pass `expand: false` on any `HhButton` inside a `Row`** — the button's
+own doc comment says so, and this is the second time the design system's
+expand-by-default has produced an invisible layout rather than an error
+(see the `Container.alignment` entry above).
+
+Worth noting how it was found: a widget test reproduced it in seconds with the
+real exception, after two rounds of guessing from screenshots. A screenshot
+shows that layout is wrong; only the test says why.
+
 ### 2026-08-07 - A card asserted "Present" over a record that denied it
 Found by adding a work-experience record on a device, not by the suite.
 

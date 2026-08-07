@@ -71,6 +71,15 @@
   "profileVisibilityAfterApply": "Ариза юборгандан кейин кўринади",
   "profileVisibilityAfterApplyHint": "Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.",
 
+  "attachmentsTitle": "Ҳужжатлар",
+  "attachmentUpload": "Юклаш",
+  "attachmentReplace": "Алмаштириш",
+  "attachmentUploading": "Юкланмоқда… {percent}%",
+  "attachmentNone": "Ҳеч нарса юкланмаган",
+  "attachmentTooLarge": "Файл {limit} МБ дан катта.",
+  "attachmentWrongType": "{types} форматидаги файлни танланг.",
+  "attachmentDeleteTitle": "Файл ўчирилсинми?",
+
   "historyDeleteTitle": "Ёзув ўчирилсинми?",
   "historyDeleteMessage": "У профилингиздан ўчирилади.",
   "experienceEmpty": "Иш тажрибаси қўшилмаган",

@@ -71,6 +71,15 @@
   "profileVisibilityAfterApply": "Виден после отклика",
   "profileVisibilityAfterApplyHint": "Профиль увидят только работодатели, на вакансию которых вы откликнулись.",
 
+  "attachmentsTitle": "Документы",
+  "attachmentUpload": "Загрузить",
+  "attachmentReplace": "Заменить",
+  "attachmentUploading": "Загрузка… {percent}%",
+  "attachmentNone": "Ничего не загружено",
+  "attachmentTooLarge": "Файл больше {limit} МБ.",
+  "attachmentWrongType": "Выберите файл в формате {types}.",
+  "attachmentDeleteTitle": "Удалить файл?",
+
   "historyDeleteTitle": "Удалить запись?",
   "historyDeleteMessage": "Она будет удалена из вашего профиля.",
   "experienceEmpty": "Опыт работы не добавлен",

@@ -461,6 +461,54 @@ abstract class AppL10n {
   /// **'Only employers whose vacancy you applied to can see your profile.'**
   String get profileVisibilityAfterApplyHint;
 
+  /// Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get attachmentsTitle;
+
+  /// Adds a file to a slot that has room.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get attachmentUpload;
+
+  /// Shown instead of Upload on a full single-file slot. §5.4's replace: the new file supersedes the old one, which the server does by retiring the oldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get attachmentReplace;
+
+  /// UAT-03 asks for progress. A percentage rather than a spinner, because a large CV on a slow connection is exactly where an indeterminate spinner reads as a hang.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading… {percent}%'**
+  String attachmentUploading(String percent);
+
+  /// Empty state of one file slot.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing uploaded yet'**
+  String get attachmentNone;
+
+  /// Refused before sending. The server enforces the limit too, but bouncing it here saves uploading a file that cannot land.
+  ///
+  /// In en, this message translates to:
+  /// **'That file is larger than {limit} MB.'**
+  String attachmentTooLarge(String limit);
+
+  /// Refused before sending. The accepted extensions come from the schema's accept list, so they are never hardcoded.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a {types} file.'**
+  String attachmentWrongType(String types);
+
+  /// Confirmation before deleting an uploaded file.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this file?'**
+  String get attachmentDeleteTitle;
+
   /// Confirmation before deleting a work-experience or education record (§5.1).
   ///
   /// In en, this message translates to:

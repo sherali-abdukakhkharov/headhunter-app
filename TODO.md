@@ -288,13 +288,19 @@ working destinations rather than dead ends.
       loading arm on a resolution *failure*, and with retry disabled that
       ellipsis is terminal. The rule now lives once, in `resolveLabel`
 
-## M3 - Candidate profile
+## M3 - Candidate profile *(done bar one test)*
 
-The candidate Profile tab is a **real screen** now: it renders from
+The candidate Profile tab is a **real screen**: it renders from
 `GET /schemas/candidate-profile`, writes through `PATCH /candidates/me/profile`,
-and shows the completeness the server computed. Verified on device against the
-live API — saving a name and a region moved it 0% → 10% and unlocked the
-district picker.
+and shows the completeness the server computed.
+
+Walked end to end on an emulator against the live API on 2026-08-07 — the form,
+the leveled skill rows, work history, education, the file slots and the privacy
+control, all against real endpoints. Running it found four bugs the suite had
+not: see MEMORY.md. Every one now has a test.
+
+The only item left is the second-category comparison test, which needs a second
+category to compare against.
 
 - [x] Form engine: text, long text, int, decimal, url, phone, bool, date,
       money range, dictionary single/multi. **An unknown `kind` is skipped and
@@ -348,8 +354,17 @@ district picker.
       on an incomplete profile, which is BR-02 computed server-side
 - [x] Last-meaningful-update display — in the completeness card, ISO because
       §8.3's display policy is still open
-- [ ] CV upload with progress, cancel, failure reason, retry (UAT-03)
-- [ ] Optional certificates / work evidence
+- [x] CV upload with progress, cancel, failure reason, retry (UAT-03) —
+      `AttachmentsSection`, with the slots taken from the schema's own
+      `attachments` block rather than listed here, so CV, photo, certificates
+      and supporting documents all arrive at once and a fifth purpose would
+      need no client change. Verified on device: a PDF uploaded (201), the
+      button flipped to Replace on the full one-file slot, and completeness
+      refreshed. **Adding `file_picker` cost three toolchain fixes** — AGP 9,
+      built-in Kotlin and JVM targets; all three are in MEMORY.md
+- [x] Optional certificates / work evidence — the same schema-driven slots.
+      `certificate` carries `maxCount: 10`, so it accumulates rather than
+      replacing, which the one shared widget already handles
 - [ ] Test: form adapts by category and irrelevant fields are not mandatory —
       needs a second category to compare against
 

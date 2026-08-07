@@ -208,6 +208,36 @@ class AppL10nEn extends AppL10n {
       'Only employers whose vacancy you applied to can see your profile.';
 
   @override
+  String get attachmentsTitle => 'Documents';
+
+  @override
+  String get attachmentUpload => 'Upload';
+
+  @override
+  String get attachmentReplace => 'Replace';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Uploading… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Nothing uploaded yet';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'That file is larger than $limit MB.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return 'Choose a $types file.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Delete this file?';
+
+  @override
   String get historyDeleteTitle => 'Delete this entry?';
 
   @override

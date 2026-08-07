@@ -265,6 +265,49 @@
     "description": "Explains the visible_after_apply option."
   },
 
+  "attachmentsTitle": "Documents",
+  "@attachmentsTitle": {
+    "description": "Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here."
+  },
+
+  "attachmentUpload": "Upload",
+  "@attachmentUpload": {
+    "description": "Adds a file to a slot that has room."
+  },
+
+  "attachmentReplace": "Replace",
+  "@attachmentReplace": {
+    "description": "Shown instead of Upload on a full single-file slot. §5.4's replace: the new file supersedes the old one, which the server does by retiring the oldest."
+  },
+
+  "attachmentUploading": "Uploading… {percent}%",
+  "@attachmentUploading": {
+    "description": "UAT-03 asks for progress. A percentage rather than a spinner, because a large CV on a slow connection is exactly where an indeterminate spinner reads as a hang.",
+    "placeholders": { "percent": { "type": "String" } }
+  },
+
+  "attachmentNone": "Nothing uploaded yet",
+  "@attachmentNone": {
+    "description": "Empty state of one file slot."
+  },
+
+  "attachmentTooLarge": "That file is larger than {limit} MB.",
+  "@attachmentTooLarge": {
+    "description": "Refused before sending. The server enforces the limit too, but bouncing it here saves uploading a file that cannot land.",
+    "placeholders": { "limit": { "type": "String" } }
+  },
+
+  "attachmentWrongType": "Choose a {types} file.",
+  "@attachmentWrongType": {
+    "description": "Refused before sending. The accepted extensions come from the schema's accept list, so they are never hardcoded.",
+    "placeholders": { "types": { "type": "String" } }
+  },
+
+  "attachmentDeleteTitle": "Delete this file?",
+  "@attachmentDeleteTitle": {
+    "description": "Confirmation before deleting an uploaded file."
+  },
+
   "historyDeleteTitle": "Delete this entry?",
   "@historyDeleteTitle": {
     "description": "Confirmation before deleting a work-experience or education record (§5.1)."

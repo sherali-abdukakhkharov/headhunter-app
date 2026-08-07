@@ -209,6 +209,36 @@ class AppL10nUz extends AppL10n {
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
 
   @override
+  String get attachmentsTitle => 'Hujjatlar';
+
+  @override
+  String get attachmentUpload => 'Yuklash';
+
+  @override
+  String get attachmentReplace => 'Almashtirish';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Yuklanmoqda… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Hech narsa yuklanmagan';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Fayl $limit MB dan katta.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return '$types formatidagi faylni tanlang.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Fayl o\'chirilsinmi?';
+
+  @override
   String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
 
   @override
@@ -552,6 +582,36 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.';
+
+  @override
+  String get attachmentsTitle => 'Ҳужжатлар';
+
+  @override
+  String get attachmentUpload => 'Юклаш';
+
+  @override
+  String get attachmentReplace => 'Алмаштириш';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Юкланмоқда… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Ҳеч нарса юкланмаган';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Файл $limit МБ дан катта.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return '$types форматидаги файлни танланг.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Файл ўчирилсинми?';
 
   @override
   String get historyDeleteTitle => 'Ёзув ўчирилсинми?';
@@ -899,6 +959,36 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
+  String get attachmentsTitle => 'Hujjatlar';
+
+  @override
+  String get attachmentUpload => 'Yuklash';
+
+  @override
+  String get attachmentReplace => 'Almashtirish';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Yuklanmoqda… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Hech narsa yuklanmagan';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Fayl $limit MB dan katta.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return '$types formatidagi faylni tanlang.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Fayl o\'chirilsinmi?';
 
   @override
   String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
