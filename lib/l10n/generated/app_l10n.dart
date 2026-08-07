@@ -461,6 +461,174 @@ abstract class AppL10n {
   /// **'Only employers whose vacancy you applied to can see your profile.'**
   String get profileVisibilityAfterApplyHint;
 
+  /// Candidate home tab: vacancies matched to the profile (§5.6). Ranking is server-side.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get feedRecommended;
+
+  /// Candidate home tab: newest vacancies.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get feedRecent;
+
+  /// Candidate home tab: vacancies the candidate bookmarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get feedSaved;
+
+  /// Empty state of a candidate feed.
+  ///
+  /// In en, this message translates to:
+  /// **'No vacancies to show yet'**
+  String get feedEmpty;
+
+  /// §5.6 shows verification on the vacancy itself, so a candidate can weigh it without opening the employer.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified employer'**
+  String get vacancyVerifiedEmployer;
+
+  /// Salary is open to discussion. A negotiable vacancy also passes a minimum-pay filter, because it has not said no to the figure.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay negotiable'**
+  String get vacancyNegotiablePay;
+
+  /// The application deadline. ISO, because §8.3's display policy is still open.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply by {date}'**
+  String vacancyDeadline(String date);
+
+  /// Submits an application (§5.6). Carries a persisted idempotency key, because BR-07 allows one active application per vacancy.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get vacancyApply;
+
+  /// Shown instead of Apply once the candidate has an application on this vacancy (BR-07).
+  ///
+  /// In en, this message translates to:
+  /// **'Applied'**
+  String get vacancyApplied;
+
+  /// UAT-15: the vacancy is closed, paused, or past its deadline. BR-06 is computed server-side and rendered as given.
+  ///
+  /// In en, this message translates to:
+  /// **'Not accepting applications'**
+  String get vacancyClosedToApplications;
+
+  /// Bookmarks a vacancy.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get vacancySave;
+
+  /// The vacancy is bookmarked; tapping removes it.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get vacancySaved;
+
+  /// Reports a vacancy for review (§10.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get vacancyReport;
+
+  /// Title of the report sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this vacancy'**
+  String get vacancyReportTitle;
+
+  /// Free text: a candidate reporting a fake vacancy should not have to find their objection on a list.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong with it?'**
+  String get vacancyReportHint;
+
+  /// Confirmation after reporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. A moderator will review it.'**
+  String get vacancyReported;
+
+  /// Heading of the candidate application list (§8.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Your applications'**
+  String get applicationsMine;
+
+  /// Empty state of the application list.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not applied to anything yet'**
+  String get applicationsEmpty;
+
+  /// §8.1's candidate-only transition. Offered only while the application is live.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get applicationWithdraw;
+
+  /// Confirmation before withdrawing.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw this application?'**
+  String get applicationWithdrawTitle;
+
+  /// application stage=submitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get stageSubmitted;
+
+  /// application stage=viewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewed'**
+  String get stageViewed;
+
+  /// application stage=shortlisted.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortlisted'**
+  String get stageShortlisted;
+
+  /// application stage=interview.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview'**
+  String get stageInterview;
+
+  /// application stage=offer.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer'**
+  String get stageOffer;
+
+  /// application stage=hired.
+  ///
+  /// In en, this message translates to:
+  /// **'Hired'**
+  String get stageHired;
+
+  /// application stage=rejected. Worded plainly rather than harshly - it is read by the person it happened to.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected'**
+  String get stageRejected;
+
+  /// application stage=withdrawn, by the candidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn'**
+  String get stageWithdrawn;
+
   /// Heading of the employer's own vacancy list (§6.2). Includes closed ones - BR-11 keeps them in history.
   ///
   /// In en, this message translates to:

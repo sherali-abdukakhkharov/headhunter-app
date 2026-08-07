@@ -420,17 +420,28 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Seasonal/agricultural flow (UAT-10) — needs a seasonal category to walk
 - [ ] Employer dashboard widgets (§6.2) — the Home tab is still a placeholder
 
-## M6 - Discovery and applications
+## M6 - Discovery and applications *(candidate half done)*
 
-- [ ] Candidate home: recommended, recent, saved, completion prompt
-- [ ] Vacancy filters per §5.5
-- [ ] Vacancy details + verification badge; Apply / Save / Share / Report
-- [ ] Apply button reflects BR-07 (one active application per vacancy)
-- [ ] Application list with all §8.1 stages; withdraw where permitted
+- [x] Candidate feeds: recommended, recent, saved — three tabs over one list,
+      because they differ only in endpoint. Ranking stays server-side
+- [x] Vacancy card with the employer's **public** name and the §5.6
+      verification badge. Verified on device against the live API
+- [x] Apply button reflects BR-07 — the card carries `applicationStatus`, the
+      caller's own stage, so Apply is offered exactly when there is no live
+      application and no second request is needed to decide
+- [x] **Idempotency key on apply, persisted** — written against the vacancy id
+      before the request and cleared only once the server answers. A key minted
+      per attempt gives no protection: the retry looks new and the server
+      creates a second application (§12.4)
+- [x] Application list with all §8.1 stages; withdraw offered only while the
+      application is live
+- [ ] Vacancy **detail** screen — the feed card is built, the full
+      `GET /discovery/vacancies/:id` view with requirements, Share and Report
+      is not
+- [ ] Vacancy filters per §5.5 — the repository takes them, no filter UI yet
 - [ ] Deadline-expired / closed vacancy rendering (UAT-15)
 - [ ] Employer: applications per vacancy, filters, stage moves, internal notes,
-      hired-vs-required counts
-- [ ] Idempotency key on apply
+      hired-vs-required counts — the whole employer half of M6
 
 ## M7 - Candidate search
 
@@ -461,7 +472,13 @@ this opens. Deep links moved to M8.
 
 - [ ] In-app list, unread badge, mark read *(no push dependency; can be pulled
       forward at no cost if the client wants notification history earlier)*
-- [ ] Push registration and foreground/background handling
+- [~] Push registration and foreground/background handling — **config in place**
+      2026-08-07: `android/app/google-services.json` holds the Firebase project
+      `headhunter-app-b463f` with all three package names, so one file covers
+      every flavor. **No Firebase package is in `pubspec.yaml` and no Gradle
+      plugin is applied** — the file is inert until this milestone opens, which
+      is the owner's explicit ordering (wire it last). The backend side is
+      ready as of 2026-08-07
 - [ ] Preferences; security/account categories not offered as disableable
 
 ## M10 - Admin module

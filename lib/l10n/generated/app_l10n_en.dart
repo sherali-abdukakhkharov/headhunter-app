@@ -208,6 +208,92 @@ class AppL10nEn extends AppL10n {
       'Only employers whose vacancy you applied to can see your profile.';
 
   @override
+  String get feedRecommended => 'Recommended';
+
+  @override
+  String get feedRecent => 'Recent';
+
+  @override
+  String get feedSaved => 'Saved';
+
+  @override
+  String get feedEmpty => 'No vacancies to show yet';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Verified employer';
+
+  @override
+  String get vacancyNegotiablePay => 'Pay negotiable';
+
+  @override
+  String vacancyDeadline(String date) {
+    return 'Apply by $date';
+  }
+
+  @override
+  String get vacancyApply => 'Apply';
+
+  @override
+  String get vacancyApplied => 'Applied';
+
+  @override
+  String get vacancyClosedToApplications => 'Not accepting applications';
+
+  @override
+  String get vacancySave => 'Save';
+
+  @override
+  String get vacancySaved => 'Saved';
+
+  @override
+  String get vacancyReport => 'Report';
+
+  @override
+  String get vacancyReportTitle => 'Report this vacancy';
+
+  @override
+  String get vacancyReportHint => 'What is wrong with it?';
+
+  @override
+  String get vacancyReported => 'Thank you. A moderator will review it.';
+
+  @override
+  String get applicationsMine => 'Your applications';
+
+  @override
+  String get applicationsEmpty => 'You have not applied to anything yet';
+
+  @override
+  String get applicationWithdraw => 'Withdraw';
+
+  @override
+  String get applicationWithdrawTitle => 'Withdraw this application?';
+
+  @override
+  String get stageSubmitted => 'Submitted';
+
+  @override
+  String get stageViewed => 'Viewed';
+
+  @override
+  String get stageShortlisted => 'Shortlisted';
+
+  @override
+  String get stageInterview => 'Interview';
+
+  @override
+  String get stageOffer => 'Offer';
+
+  @override
+  String get stageHired => 'Hired';
+
+  @override
+  String get stageRejected => 'Not selected';
+
+  @override
+  String get stageWithdrawn => 'Withdrawn';
+
+  @override
   String get vacancyMine => 'Your vacancies';
 
   @override

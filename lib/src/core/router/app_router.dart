@@ -9,10 +9,12 @@ import 'package:headhunter_app/src/core/auth/session_state.dart';
 import 'package:headhunter_app/src/core/config/app_flavor.dart';
 import 'package:headhunter_app/src/core/router/routes.dart';
 import 'package:headhunter_app/src/core/router/shell_tabs.dart';
+import 'package:headhunter_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
+import 'package:headhunter_app/src/features/discovery/presentation/vacancy_feed_screen.dart';
 import 'package:headhunter_app/src/features/employer/presentation/employer_profile_screen.dart';
 import 'package:headhunter_app/src/features/health/presentation/health_screen.dart';
 import 'package:headhunter_app/src/features/onboarding/presentation/onboarding_screen.dart';
@@ -151,6 +153,8 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
             // milestone that owns them.
             builder: (context, state) => switch (tab.path) {
               Routes.candidateProfile => const CandidateProfileScreen(),
+              Routes.candidateVacancies => const VacancyFeedScreen(),
+              Routes.candidateApplications => const ApplicationsScreen(),
               Routes.employerCompany => const EmployerProfileScreen(),
               Routes.employerVacancies => const VacancyListScreen(),
               _ => ShellPlaceholderScreen(tab: tab),

@@ -209,6 +209,92 @@ class AppL10nRu extends AppL10n {
       'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
 
   @override
+  String get feedRecommended => 'Рекомендуемые';
+
+  @override
+  String get feedRecent => 'Новые';
+
+  @override
+  String get feedSaved => 'Сохранённые';
+
+  @override
+  String get feedEmpty => 'Пока нечего показать';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Проверенный работодатель';
+
+  @override
+  String get vacancyNegotiablePay => 'Оплата договорная';
+
+  @override
+  String vacancyDeadline(String date) {
+    return 'Отклик до $date';
+  }
+
+  @override
+  String get vacancyApply => 'Откликнуться';
+
+  @override
+  String get vacancyApplied => 'Вы откликнулись';
+
+  @override
+  String get vacancyClosedToApplications => 'Отклики не принимаются';
+
+  @override
+  String get vacancySave => 'Сохранить';
+
+  @override
+  String get vacancySaved => 'Сохранено';
+
+  @override
+  String get vacancyReport => 'Пожаловаться';
+
+  @override
+  String get vacancyReportTitle => 'Пожаловаться на вакансию';
+
+  @override
+  String get vacancyReportHint => 'Что с ней не так?';
+
+  @override
+  String get vacancyReported => 'Спасибо. Модератор рассмотрит жалобу.';
+
+  @override
+  String get applicationsMine => 'Ваши отклики';
+
+  @override
+  String get applicationsEmpty => 'Вы ещё никуда не откликались';
+
+  @override
+  String get applicationWithdraw => 'Отозвать';
+
+  @override
+  String get applicationWithdrawTitle => 'Отозвать отклик?';
+
+  @override
+  String get stageSubmitted => 'Отправлен';
+
+  @override
+  String get stageViewed => 'Просмотрен';
+
+  @override
+  String get stageShortlisted => 'В шорт-листе';
+
+  @override
+  String get stageInterview => 'Собеседование';
+
+  @override
+  String get stageOffer => 'Оффер';
+
+  @override
+  String get stageHired => 'Принят';
+
+  @override
+  String get stageRejected => 'Не выбран';
+
+  @override
+  String get stageWithdrawn => 'Отозван';
+
+  @override
   String get vacancyMine => 'Ваши вакансии';
 
   @override

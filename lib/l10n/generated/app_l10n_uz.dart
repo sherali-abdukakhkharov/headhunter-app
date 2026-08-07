@@ -209,6 +209,92 @@ class AppL10nUz extends AppL10n {
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
 
   @override
+  String get feedRecommended => 'Tavsiya etilgan';
+
+  @override
+  String get feedRecent => 'Yangi';
+
+  @override
+  String get feedSaved => 'Saqlangan';
+
+  @override
+  String get feedEmpty => 'Hozircha ko\'rsatadigan narsa yo\'q';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Tasdiqlangan ish beruvchi';
+
+  @override
+  String get vacancyNegotiablePay => 'To\'lov kelishiladi';
+
+  @override
+  String vacancyDeadline(String date) {
+    return '$date gacha ariza';
+  }
+
+  @override
+  String get vacancyApply => 'Ariza yuborish';
+
+  @override
+  String get vacancyApplied => 'Ariza yuborilgan';
+
+  @override
+  String get vacancyClosedToApplications => 'Arizalar qabul qilinmaydi';
+
+  @override
+  String get vacancySave => 'Saqlash';
+
+  @override
+  String get vacancySaved => 'Saqlangan';
+
+  @override
+  String get vacancyReport => 'Shikoyat';
+
+  @override
+  String get vacancyReportTitle => 'Vakansiya ustidan shikoyat';
+
+  @override
+  String get vacancyReportHint => 'Unda nima noto\'g\'ri?';
+
+  @override
+  String get vacancyReported => 'Rahmat. Moderator ko\'rib chiqadi.';
+
+  @override
+  String get applicationsMine => 'Sizning arizalaringiz';
+
+  @override
+  String get applicationsEmpty => 'Siz hali ariza yubormagansiz';
+
+  @override
+  String get applicationWithdraw => 'Qaytarib olish';
+
+  @override
+  String get applicationWithdrawTitle => 'Ariza qaytarib olinsinmi?';
+
+  @override
+  String get stageSubmitted => 'Yuborilgan';
+
+  @override
+  String get stageViewed => 'Ko\'rilgan';
+
+  @override
+  String get stageShortlisted => 'Short-listda';
+
+  @override
+  String get stageInterview => 'Suhbat';
+
+  @override
+  String get stageOffer => 'Taklif';
+
+  @override
+  String get stageHired => 'Qabul qilingan';
+
+  @override
+  String get stageRejected => 'Tanlanmadi';
+
+  @override
+  String get stageWithdrawn => 'Qaytarib olingan';
+
+  @override
   String get vacancyMine => 'Sizning vakansiyalaringiz';
 
   @override
@@ -750,6 +836,92 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.';
+
+  @override
+  String get feedRecommended => 'Тавсия этилган';
+
+  @override
+  String get feedRecent => 'Янги';
+
+  @override
+  String get feedSaved => 'Сақланган';
+
+  @override
+  String get feedEmpty => 'Ҳозирча кўрсатадиган нарса йўқ';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Тасдиқланган иш берувчи';
+
+  @override
+  String get vacancyNegotiablePay => 'Тўлов келишилади';
+
+  @override
+  String vacancyDeadline(String date) {
+    return '$date гача ариза';
+  }
+
+  @override
+  String get vacancyApply => 'Ариза юбориш';
+
+  @override
+  String get vacancyApplied => 'Ариза юборилган';
+
+  @override
+  String get vacancyClosedToApplications => 'Аризалар қабул қилинмайди';
+
+  @override
+  String get vacancySave => 'Сақлаш';
+
+  @override
+  String get vacancySaved => 'Сақланган';
+
+  @override
+  String get vacancyReport => 'Шикоят';
+
+  @override
+  String get vacancyReportTitle => 'Вакансия устидан шикоят';
+
+  @override
+  String get vacancyReportHint => 'Унда нима нотўғри?';
+
+  @override
+  String get vacancyReported => 'Раҳмат. Модератор кўриб чиқади.';
+
+  @override
+  String get applicationsMine => 'Сизнинг аризаларингиз';
+
+  @override
+  String get applicationsEmpty => 'Сиз ҳали ариза юбормагансиз';
+
+  @override
+  String get applicationWithdraw => 'Қайтариб олиш';
+
+  @override
+  String get applicationWithdrawTitle => 'Ариза қайтариб олинсинми?';
+
+  @override
+  String get stageSubmitted => 'Юборилган';
+
+  @override
+  String get stageViewed => 'Кўрилган';
+
+  @override
+  String get stageShortlisted => 'Шорт-листда';
+
+  @override
+  String get stageInterview => 'Суҳбат';
+
+  @override
+  String get stageOffer => 'Таклиф';
+
+  @override
+  String get stageHired => 'Қабул қилинган';
+
+  @override
+  String get stageRejected => 'Танланмади';
+
+  @override
+  String get stageWithdrawn => 'Қайтариб олинган';
 
   @override
   String get vacancyMine => 'Сизнинг вакансияларингиз';
@@ -1295,6 +1467,92 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
+  String get feedRecommended => 'Tavsiya etilgan';
+
+  @override
+  String get feedRecent => 'Yangi';
+
+  @override
+  String get feedSaved => 'Saqlangan';
+
+  @override
+  String get feedEmpty => 'Hozircha ko\'rsatadigan narsa yo\'q';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Tasdiqlangan ish beruvchi';
+
+  @override
+  String get vacancyNegotiablePay => 'To\'lov kelishiladi';
+
+  @override
+  String vacancyDeadline(String date) {
+    return '$date gacha ariza';
+  }
+
+  @override
+  String get vacancyApply => 'Ariza yuborish';
+
+  @override
+  String get vacancyApplied => 'Ariza yuborilgan';
+
+  @override
+  String get vacancyClosedToApplications => 'Arizalar qabul qilinmaydi';
+
+  @override
+  String get vacancySave => 'Saqlash';
+
+  @override
+  String get vacancySaved => 'Saqlangan';
+
+  @override
+  String get vacancyReport => 'Shikoyat';
+
+  @override
+  String get vacancyReportTitle => 'Vakansiya ustidan shikoyat';
+
+  @override
+  String get vacancyReportHint => 'Unda nima noto\'g\'ri?';
+
+  @override
+  String get vacancyReported => 'Rahmat. Moderator ko\'rib chiqadi.';
+
+  @override
+  String get applicationsMine => 'Sizning arizalaringiz';
+
+  @override
+  String get applicationsEmpty => 'Siz hali ariza yubormagansiz';
+
+  @override
+  String get applicationWithdraw => 'Qaytarib olish';
+
+  @override
+  String get applicationWithdrawTitle => 'Ariza qaytarib olinsinmi?';
+
+  @override
+  String get stageSubmitted => 'Yuborilgan';
+
+  @override
+  String get stageViewed => 'Ko\'rilgan';
+
+  @override
+  String get stageShortlisted => 'Short-listda';
+
+  @override
+  String get stageInterview => 'Suhbat';
+
+  @override
+  String get stageOffer => 'Taklif';
+
+  @override
+  String get stageHired => 'Qabul qilingan';
+
+  @override
+  String get stageRejected => 'Tanlanmadi';
+
+  @override
+  String get stageWithdrawn => 'Qaytarib olingan';
 
   @override
   String get vacancyMine => 'Sizning vakansiyalaringiz';

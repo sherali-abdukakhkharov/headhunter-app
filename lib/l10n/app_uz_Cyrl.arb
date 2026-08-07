@@ -1,8 +1,6 @@
 {
   "@@locale": "uz_Cyrl",
-
   "appTitle": "HeadHunter",
-
   "commonRetry": "Қайта уриниш",
   "commonCancel": "Бекор қилиш",
   "commonSave": "Сақлаш",
@@ -13,7 +11,6 @@
   "commonEdit": "Таҳрирлаш",
   "commonDelete": "Ўчириш",
   "commonSignOut": "Чиқиш",
-
   "stateLoading": "Юкланмоқда…",
   "stateEmptyTitle": "Ҳозирча бўш",
   "stateEmptyBody": "Бу экранда ҳозирча кўрсатиладиган маълумот йўқ.",
@@ -23,15 +20,11 @@
   "stateOfflineBody": "Алоқани текширинг ва қайта уриниб кўринг.",
   "statePermissionDeniedTitle": "Рухсат керак",
   "statePermissionDeniedBody": "Давом этиш учун Созламаларда рухсат беринг.",
-
   "sessionExpired": "Сессия муддати тугади. Илтимос, қайтадан киринг.",
-
   "settingsLanguage": "Тил",
-
   "roleCandidate": "Номзод",
   "roleEmployer": "Иш берувчи",
   "roleAdmin": "Администратор",
-
   "navHome": "Бош саҳифа",
   "navVacancies": "Вакансиялар",
   "navApplications": "Аризалар",
@@ -42,12 +35,10 @@
   "navDashboard": "Бошқарув",
   "navQueue": "Модерация",
   "navComplaints": "Шикоятлар",
-  "navUsers": "Фойдалан\u00ADувчилар",
+  "navUsers": "Фойдалан­увчилар",
   "navDictionaries": "Луғатлар",
-
   "blockedTitle": "Ҳисоб блокланган",
   "blockedBody": "Администратор бу ҳисобни блоклаган. Блок олиб ташланмагунча иловадан фойдалана олмайсиз.",
-
   "profileCompleteness": "Профил тўлдирилганлиги",
   "profileMissingRequired": "{count, plural, other{Яна {count} та мажбурий майдон}}",
   "profileSearchable": "Қидирувда кўринади",
@@ -60,7 +51,6 @@
   "profileSalaryFrom": "Дан",
   "profileSalaryTo": "Гача",
   "profileSalaryNegotiable": "Келишув асосида",
-
   "profileLastUpdated": "Янгиланган {date}",
   "profileFixField": "Тўлдириш",
   "profileVisibilityTitle": "Сизни ким топа олади",
@@ -70,7 +60,6 @@
   "profileVisibilityHiddenHint": "Сиз вакансияларни кўришингиз ва ариза юборишингиз мумкин. Иш берувчилар сизни топа олмайди.",
   "profileVisibilityAfterApply": "Ариза юборгандан кейин кўринади",
   "profileVisibilityAfterApplyHint": "Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.",
-
   "vacancyMine": "Сизнинг вакансияларингиз",
   "vacancyNew": "Янги вакансия",
   "vacancyNone": "Ҳозирча вакансиялар йўқ",
@@ -92,7 +81,6 @@
   "vacancyOpenForApplications": "Аризалар қабул қилинмоқда",
   "vacancyRestrictionTitle": "Ёш ва жинс бўйича чеклашлар",
   "vacancyRestrictionWarning": "Ёш ва жинс бўйича чеклашлар асослашни талаб қилади ва ҳар доим модератор томонидан текширилади.",
-
   "employerChooseType": "Сиз қандай иш берувчисиз?",
   "employerTypeCompany": "Ташкилот",
   "employerTypeCompanyHint": "Ташкилот номидан ишга олувчи рўйхатдан ўтган бизнес.",
@@ -123,7 +111,6 @@
   "employerCannotPublish": "Вакансия жойлаш ва номзод таклиф қилиш учун профилни тўлдиринг ва тасдиқдан ўтинг.",
   "employerCanPublish": "Сиз вакансия жойлашингиз ва номзодларни таклиф қилишингиз мумкин.",
   "employerSaveFirst": "Тасдиқлашга юборишдан олдин маълумотларни сақланг.",
-
   "attachmentsTitle": "Ҳужжатлар",
   "attachmentUpload": "Юклаш",
   "attachmentReplace": "Алмаштириш",
@@ -132,7 +119,6 @@
   "attachmentTooLarge": "Файл {limit} МБ дан катта.",
   "attachmentWrongType": "{types} форматидаги файлни танланг.",
   "attachmentDeleteTitle": "Файл ўчирилсинми?",
-
   "historyDeleteTitle": "Ёзув ўчирилсинми?",
   "historyDeleteMessage": "У профилингиздан ўчирилади.",
   "experienceEmpty": "Иш тажрибаси қўшилмаган",
@@ -151,7 +137,6 @@
   "educationInstitution": "Ўқув муассасаси",
   "educationSpecialization": "Мутахассислик",
   "educationYear": "Тугатган йили",
-
   "leveledChangeLevel": "Даража",
   "pickerChoose": "Танлаш",
   "pickerAdd": "Қўшиш",
@@ -159,7 +144,6 @@
   "pickerNoMatches": "Ҳеч нарса топилмади.",
   "pickerNothingSelected": "Ҳозирча танланмаган",
   "pickerUnknownValue": "Мавжуд бўлмаган қиймат",
-
   "authSignInTitle": "Кириш",
   "authPhoneLabel": "Телефон рақами",
   "authPhoneHint": "90 123 45 67",
@@ -178,5 +162,33 @@
   "authTermsAgree": "Фойдаланиш шартлари ва Махфийлик сиёсатини қабул қиламан",
   "authSignInFailed": "Telegram орқали кириб бўлмади. Қайта уриниб кўринг.",
   "authSignInNoConnection": "Telegram билан алоқа йўқ. Интернетни текшириб, қайта уриниб кўринг.",
-  "authSignInUnavailable": "Бу версияда Telegram орқали кириш мавжуд эмас."
+  "authSignInUnavailable": "Бу версияда Telegram орқали кириш мавжуд эмас.",
+  "feedRecommended": "Тавсия этилган",
+  "feedRecent": "Янги",
+  "feedSaved": "Сақланган",
+  "feedEmpty": "Ҳозирча кўрсатадиган нарса йўқ",
+  "vacancyVerifiedEmployer": "Тасдиқланган иш берувчи",
+  "vacancyNegotiablePay": "Тўлов келишилади",
+  "vacancyDeadline": "{date} гача ариза",
+  "vacancyApply": "Ариза юбориш",
+  "vacancyApplied": "Ариза юборилган",
+  "vacancyClosedToApplications": "Аризалар қабул қилинмайди",
+  "vacancySave": "Сақлаш",
+  "vacancySaved": "Сақланган",
+  "vacancyReport": "Шикоят",
+  "vacancyReportTitle": "Вакансия устидан шикоят",
+  "vacancyReportHint": "Унда нима нотўғри?",
+  "vacancyReported": "Раҳмат. Модератор кўриб чиқади.",
+  "applicationsMine": "Сизнинг аризаларингиз",
+  "applicationsEmpty": "Сиз ҳали ариза юбормагансиз",
+  "applicationWithdraw": "Қайтариб олиш",
+  "applicationWithdrawTitle": "Ариза қайтариб олинсинми?",
+  "stageSubmitted": "Юборилган",
+  "stageViewed": "Кўрилган",
+  "stageShortlisted": "Шорт-листда",
+  "stageInterview": "Суҳбат",
+  "stageOffer": "Таклиф",
+  "stageHired": "Қабул қилинган",
+  "stageRejected": "Танланмади",
+  "stageWithdrawn": "Қайтариб олинган"
 }

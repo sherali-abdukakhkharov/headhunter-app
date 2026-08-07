@@ -1,8 +1,6 @@
 {
   "@@locale": "uz",
-
   "appTitle": "HeadHunter",
-
   "commonRetry": "Qayta urinish",
   "commonCancel": "Bekor qilish",
   "commonSave": "Saqlash",
@@ -13,7 +11,6 @@
   "commonEdit": "Tahrirlash",
   "commonDelete": "O'chirish",
   "commonSignOut": "Chiqish",
-
   "stateLoading": "Yuklanmoqda…",
   "stateEmptyTitle": "Hozircha bo'sh",
   "stateEmptyBody": "Bu ekranda hozircha ko'rsatiladigan ma'lumot yo'q.",
@@ -23,15 +20,11 @@
   "stateOfflineBody": "Aloqani tekshiring va qayta urinib ko'ring.",
   "statePermissionDeniedTitle": "Ruxsat kerak",
   "statePermissionDeniedBody": "Davom etish uchun Sozlamalarda ruxsat bering.",
-
   "sessionExpired": "Sessiya muddati tugadi. Iltimos, qaytadan kiring.",
-
   "settingsLanguage": "Til",
-
   "roleCandidate": "Nomzod",
   "roleEmployer": "Ish beruvchi",
   "roleAdmin": "Administrator",
-
   "navHome": "Bosh sahifa",
   "navVacancies": "Vakansiyalar",
   "navApplications": "Arizalar",
@@ -42,12 +35,10 @@
   "navDashboard": "Boshqaruv",
   "navQueue": "Moderatsiya",
   "navComplaints": "Shikoyatlar",
-  "navUsers": "Foydalan\u00ADuvchilar",
+  "navUsers": "Foydalan­uvchilar",
   "navDictionaries": "Lug'atlar",
-
   "blockedTitle": "Hisob bloklangan",
   "blockedBody": "Administrator bu hisobni bloklagan. Blok olib tashlanmaguncha ilovadan foydalana olmaysiz.",
-
   "profileCompleteness": "Profil toʻldirilganligi",
   "profileMissingRequired": "{count, plural, other{Yana {count} ta majburiy maydon}}",
   "profileSearchable": "Qidiruvda koʻrinadi",
@@ -60,7 +51,6 @@
   "profileSalaryFrom": "Dan",
   "profileSalaryTo": "Gacha",
   "profileSalaryNegotiable": "Kelishuv asosida",
-
   "profileLastUpdated": "Yangilangan {date}",
   "profileFixField": "To'ldirish",
   "profileVisibilityTitle": "Sizni kim topa oladi",
@@ -70,7 +60,6 @@
   "profileVisibilityHiddenHint": "Siz vakansiyalarni ko'rishingiz va ariza yuborishingiz mumkin. Ish beruvchilar sizni topa olmaydi.",
   "profileVisibilityAfterApply": "Ariza yuborgandan keyin ko'rinadi",
   "profileVisibilityAfterApplyHint": "Profilingizni faqat siz ariza yuborgan vakansiya egalari ko'radi.",
-
   "vacancyMine": "Sizning vakansiyalaringiz",
   "vacancyNew": "Yangi vakansiya",
   "vacancyNone": "Hozircha vakansiyalar yo'q",
@@ -92,7 +81,6 @@
   "vacancyOpenForApplications": "Arizalar qabul qilinmoqda",
   "vacancyRestrictionTitle": "Yosh va jins bo'yicha cheklashlar",
   "vacancyRestrictionWarning": "Yosh va jins bo'yicha cheklashlar asoslashni talab qiladi va har doim moderator tomonidan tekshiriladi.",
-
   "employerChooseType": "Siz qanday ish beruvchisiz?",
   "employerTypeCompany": "Tashkilot",
   "employerTypeCompanyHint": "Tashkilot nomidan ishga oluvchi ro'yxatdan o'tgan biznes.",
@@ -123,7 +111,6 @@
   "employerCannotPublish": "Vakansiya joylash va nomzod taklif qilish uchun profilni to'ldiring va tasdiqdan o'ting.",
   "employerCanPublish": "Siz vakansiya joylashingiz va nomzodlarni taklif qilishingiz mumkin.",
   "employerSaveFirst": "Tasdiqlashga yuborishdan oldin ma'lumotlarni saqlang.",
-
   "attachmentsTitle": "Hujjatlar",
   "attachmentUpload": "Yuklash",
   "attachmentReplace": "Almashtirish",
@@ -132,7 +119,6 @@
   "attachmentTooLarge": "Fayl {limit} MB dan katta.",
   "attachmentWrongType": "{types} formatidagi faylni tanlang.",
   "attachmentDeleteTitle": "Fayl o'chirilsinmi?",
-
   "historyDeleteTitle": "Yozuv o'chirilsinmi?",
   "historyDeleteMessage": "U profilingizdan o'chiriladi.",
   "experienceEmpty": "Ish tajribasi qo'shilmagan",
@@ -151,7 +137,6 @@
   "educationInstitution": "O'quv muassasasi",
   "educationSpecialization": "Mutaxassislik",
   "educationYear": "Tugatgan yili",
-
   "leveledChangeLevel": "Daraja",
   "pickerChoose": "Tanlash",
   "pickerAdd": "Qo'shish",
@@ -159,7 +144,6 @@
   "pickerNoMatches": "Hech narsa topilmadi.",
   "pickerNothingSelected": "Hozircha tanlanmagan",
   "pickerUnknownValue": "Mavjud boʻlmagan qiymat",
-
   "authSignInTitle": "Kirish",
   "authPhoneLabel": "Telefon raqami",
   "authPhoneHint": "90 123 45 67",
@@ -178,5 +162,33 @@
   "authTermsAgree": "Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman",
   "authSignInFailed": "Telegram orqali kirib bo'lmadi. Qayta urinib ko'ring.",
   "authSignInNoConnection": "Telegram bilan aloqa yo'q. Internetni tekshirib, qayta urinib ko'ring.",
-  "authSignInUnavailable": "Bu versiyada Telegram orqali kirish mavjud emas."
+  "authSignInUnavailable": "Bu versiyada Telegram orqali kirish mavjud emas.",
+  "feedRecommended": "Tavsiya etilgan",
+  "feedRecent": "Yangi",
+  "feedSaved": "Saqlangan",
+  "feedEmpty": "Hozircha ko'rsatadigan narsa yo'q",
+  "vacancyVerifiedEmployer": "Tasdiqlangan ish beruvchi",
+  "vacancyNegotiablePay": "To'lov kelishiladi",
+  "vacancyDeadline": "{date} gacha ariza",
+  "vacancyApply": "Ariza yuborish",
+  "vacancyApplied": "Ariza yuborilgan",
+  "vacancyClosedToApplications": "Arizalar qabul qilinmaydi",
+  "vacancySave": "Saqlash",
+  "vacancySaved": "Saqlangan",
+  "vacancyReport": "Shikoyat",
+  "vacancyReportTitle": "Vakansiya ustidan shikoyat",
+  "vacancyReportHint": "Unda nima noto'g'ri?",
+  "vacancyReported": "Rahmat. Moderator ko'rib chiqadi.",
+  "applicationsMine": "Sizning arizalaringiz",
+  "applicationsEmpty": "Siz hali ariza yubormagansiz",
+  "applicationWithdraw": "Qaytarib olish",
+  "applicationWithdrawTitle": "Ariza qaytarib olinsinmi?",
+  "stageSubmitted": "Yuborilgan",
+  "stageViewed": "Ko'rilgan",
+  "stageShortlisted": "Short-listda",
+  "stageInterview": "Suhbat",
+  "stageOffer": "Taklif",
+  "stageHired": "Qabul qilingan",
+  "stageRejected": "Tanlanmadi",
+  "stageWithdrawn": "Qaytarib olingan"
 }
