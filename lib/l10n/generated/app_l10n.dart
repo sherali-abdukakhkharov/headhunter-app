@@ -149,6 +149,18 @@ abstract class AppL10n {
   /// **'Search'**
   String get commonSearch;
 
+  /// Opens an existing record for editing. Used on the repeating profile sections (§5.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commonEdit;
+
+  /// Removes a record. Always behind a confirmation, because it cannot be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commonDelete;
+
   /// Ends the session at the user's request. Distinct from an expired session, which the user did not choose.
   ///
   /// In en, this message translates to:
@@ -394,6 +406,114 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Negotiable'**
   String get profileSalaryNegotiable;
+
+  /// Confirmation before deleting a work-experience or education record (§5.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this entry?'**
+  String get historyDeleteTitle;
+
+  /// Body of the delete confirmation. States the consequence rather than asking again.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed from your profile.'**
+  String get historyDeleteMessage;
+
+  /// Empty state of the work-experience section. Not an error - a first-time candidate has none.
+  ///
+  /// In en, this message translates to:
+  /// **'No work experience yet'**
+  String get experienceEmpty;
+
+  /// Opens the editor for a new work-experience record.
+  ///
+  /// In en, this message translates to:
+  /// **'Add experience'**
+  String get experienceAdd;
+
+  /// Optional: §5.1 asks for simplified entry for informal or seasonal work, where there is often no employer to name.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer'**
+  String get experienceEmployer;
+
+  /// What the person did. The one field a work-experience record cannot omit.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get experienceRole;
+
+  /// Binds an occupation dictionary id, so §7.1's 'years in the selected occupation' is computed rather than guessed from the title text.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation'**
+  String get experienceOccupation;
+
+  /// Required. The other half of what makes a record countable.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get experienceStarted;
+
+  /// Disabled while 'I work here now' is on - the server treats the two as mutually exclusive.
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get experienceEnded;
+
+  /// Marks the role as ongoing. Mutually exclusive with an end date.
+  ///
+  /// In en, this message translates to:
+  /// **'I work here now'**
+  String get experienceCurrent;
+
+  /// Free text describing the role. Never translated (§2.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Responsibilities'**
+  String get experienceResponsibilities;
+
+  /// Stands in for the end date on an ongoing role, in the date range shown on a record.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get experiencePresent;
+
+  /// Empty state of the education section. Optional for the categories where §5.1 says it is not relevant.
+  ///
+  /// In en, this message translates to:
+  /// **'No education yet'**
+  String get educationEmpty;
+
+  /// Opens the editor for a new education record.
+  ///
+  /// In en, this message translates to:
+  /// **'Add education'**
+  String get educationAdd;
+
+  /// Binds an education_level dictionary id. The one required field of an education record.
+  ///
+  /// In en, this message translates to:
+  /// **'Level of education'**
+  String get educationLevel;
+
+  /// Free text: the school or university. Never translated (§2.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Institution'**
+  String get educationInstitution;
+
+  /// Free text: what was studied.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialization'**
+  String get educationSpecialization;
+
+  /// A year, not a date. An expected graduation in the future is accepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Graduation year'**
+  String get educationYear;
 
   /// Opens the proficiency picker on a dictionary_leveled row - a skill level or a CEFR grade (§4.4). Short because it sits inline on the row beside the value it changes.
   ///

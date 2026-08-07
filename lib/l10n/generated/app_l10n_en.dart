@@ -33,6 +33,12 @@ class AppL10nEn extends AppL10n {
   String get commonSearch => 'Search';
 
   @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
   String get commonSignOut => 'Sign out';
 
   @override
@@ -168,6 +174,60 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get profileSalaryNegotiable => 'Negotiable';
+
+  @override
+  String get historyDeleteTitle => 'Delete this entry?';
+
+  @override
+  String get historyDeleteMessage => 'It will be removed from your profile.';
+
+  @override
+  String get experienceEmpty => 'No work experience yet';
+
+  @override
+  String get experienceAdd => 'Add experience';
+
+  @override
+  String get experienceEmployer => 'Employer';
+
+  @override
+  String get experienceRole => 'Position';
+
+  @override
+  String get experienceOccupation => 'Occupation';
+
+  @override
+  String get experienceStarted => 'Start date';
+
+  @override
+  String get experienceEnded => 'End date';
+
+  @override
+  String get experienceCurrent => 'I work here now';
+
+  @override
+  String get experienceResponsibilities => 'Responsibilities';
+
+  @override
+  String get experiencePresent => 'Present';
+
+  @override
+  String get educationEmpty => 'No education yet';
+
+  @override
+  String get educationAdd => 'Add education';
+
+  @override
+  String get educationLevel => 'Level of education';
+
+  @override
+  String get educationInstitution => 'Institution';
+
+  @override
+  String get educationSpecialization => 'Specialization';
+
+  @override
+  String get educationYear => 'Graduation year';
 
   @override
   String get leveledChangeLevel => 'Level';

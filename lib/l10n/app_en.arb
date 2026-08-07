@@ -34,6 +34,16 @@
   "@commonSearch": {
     "description": "Placeholder for a search input."
   },
+  "commonEdit": "Edit",
+  "@commonEdit": {
+    "description": "Opens an existing record for editing. Used on the repeating profile sections (§5.1)."
+  },
+
+  "commonDelete": "Delete",
+  "@commonDelete": {
+    "description": "Removes a record. Always behind a confirmation, because it cannot be undone."
+  },
+
   "commonSignOut": "Sign out",
   "@commonSignOut": {
     "description": "Ends the session at the user's request. Distinct from an expired session, which the user did not choose."
@@ -207,6 +217,96 @@
   "profileSalaryNegotiable": "Negotiable",
   "@profileSalaryNegotiable": {
     "description": "money_range fields that allow it: the candidate would rather discuss than state a figure."
+  },
+
+  "historyDeleteTitle": "Delete this entry?",
+  "@historyDeleteTitle": {
+    "description": "Confirmation before deleting a work-experience or education record (§5.1)."
+  },
+
+  "historyDeleteMessage": "It will be removed from your profile.",
+  "@historyDeleteMessage": {
+    "description": "Body of the delete confirmation. States the consequence rather than asking again."
+  },
+
+  "experienceEmpty": "No work experience yet",
+  "@experienceEmpty": {
+    "description": "Empty state of the work-experience section. Not an error - a first-time candidate has none."
+  },
+
+  "experienceAdd": "Add experience",
+  "@experienceAdd": {
+    "description": "Opens the editor for a new work-experience record."
+  },
+
+  "experienceEmployer": "Employer",
+  "@experienceEmployer": {
+    "description": "Optional: §5.1 asks for simplified entry for informal or seasonal work, where there is often no employer to name."
+  },
+
+  "experienceRole": "Position",
+  "@experienceRole": {
+    "description": "What the person did. The one field a work-experience record cannot omit."
+  },
+
+  "experienceOccupation": "Occupation",
+  "@experienceOccupation": {
+    "description": "Binds an occupation dictionary id, so §7.1's 'years in the selected occupation' is computed rather than guessed from the title text."
+  },
+
+  "experienceStarted": "Start date",
+  "@experienceStarted": {
+    "description": "Required. The other half of what makes a record countable."
+  },
+
+  "experienceEnded": "End date",
+  "@experienceEnded": {
+    "description": "Disabled while 'I work here now' is on - the server treats the two as mutually exclusive."
+  },
+
+  "experienceCurrent": "I work here now",
+  "@experienceCurrent": {
+    "description": "Marks the role as ongoing. Mutually exclusive with an end date."
+  },
+
+  "experienceResponsibilities": "Responsibilities",
+  "@experienceResponsibilities": {
+    "description": "Free text describing the role. Never translated (§2.4)."
+  },
+
+  "experiencePresent": "Present",
+  "@experiencePresent": {
+    "description": "Stands in for the end date on an ongoing role, in the date range shown on a record."
+  },
+
+  "educationEmpty": "No education yet",
+  "@educationEmpty": {
+    "description": "Empty state of the education section. Optional for the categories where §5.1 says it is not relevant."
+  },
+
+  "educationAdd": "Add education",
+  "@educationAdd": {
+    "description": "Opens the editor for a new education record."
+  },
+
+  "educationLevel": "Level of education",
+  "@educationLevel": {
+    "description": "Binds an education_level dictionary id. The one required field of an education record."
+  },
+
+  "educationInstitution": "Institution",
+  "@educationInstitution": {
+    "description": "Free text: the school or university. Never translated (§2.4)."
+  },
+
+  "educationSpecialization": "Specialization",
+  "@educationSpecialization": {
+    "description": "Free text: what was studied."
+  },
+
+  "educationYear": "Graduation year",
+  "@educationYear": {
+    "description": "A year, not a date. An expected graduation in the future is accepted."
   },
 
   "leveledChangeLevel": "Level",

@@ -33,6 +33,12 @@ class AppL10nUz extends AppL10n {
   String get commonSearch => 'Qidirish';
 
   @override
+  String get commonEdit => 'Tahrirlash';
+
+  @override
+  String get commonDelete => 'O\'chirish';
+
+  @override
   String get commonSignOut => 'Chiqish';
 
   @override
@@ -170,6 +176,60 @@ class AppL10nUz extends AppL10n {
   String get profileSalaryNegotiable => 'Kelishuv asosida';
 
   @override
+  String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
+
+  @override
+  String get historyDeleteMessage => 'U profilingizdan o\'chiriladi.';
+
+  @override
+  String get experienceEmpty => 'Ish tajribasi qo\'shilmagan';
+
+  @override
+  String get experienceAdd => 'Tajriba qo\'shish';
+
+  @override
+  String get experienceEmployer => 'Ish beruvchi';
+
+  @override
+  String get experienceRole => 'Lavozim';
+
+  @override
+  String get experienceOccupation => 'Kasb';
+
+  @override
+  String get experienceStarted => 'Boshlangan sana';
+
+  @override
+  String get experienceEnded => 'Tugagan sana';
+
+  @override
+  String get experienceCurrent => 'Hozir shu yerda ishlayman';
+
+  @override
+  String get experienceResponsibilities => 'Vazifalar';
+
+  @override
+  String get experiencePresent => 'Hozirgacha';
+
+  @override
+  String get educationEmpty => 'Ta\'lim qo\'shilmagan';
+
+  @override
+  String get educationAdd => 'Ta\'lim qo\'shish';
+
+  @override
+  String get educationLevel => 'Ta\'lim darajasi';
+
+  @override
+  String get educationInstitution => 'O\'quv muassasasi';
+
+  @override
+  String get educationSpecialization => 'Mutaxassislik';
+
+  @override
+  String get educationYear => 'Tugatgan yili';
+
+  @override
   String get leveledChangeLevel => 'Daraja';
 
   @override
@@ -285,6 +345,12 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get commonSearch => 'Қидириш';
+
+  @override
+  String get commonEdit => 'Таҳрирлаш';
+
+  @override
+  String get commonDelete => 'Ўчириш';
 
   @override
   String get commonSignOut => 'Чиқиш';
@@ -423,6 +489,60 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get profileSalaryNegotiable => 'Келишув асосида';
 
   @override
+  String get historyDeleteTitle => 'Ёзув ўчирилсинми?';
+
+  @override
+  String get historyDeleteMessage => 'У профилингиздан ўчирилади.';
+
+  @override
+  String get experienceEmpty => 'Иш тажрибаси қўшилмаган';
+
+  @override
+  String get experienceAdd => 'Тажриба қўшиш';
+
+  @override
+  String get experienceEmployer => 'Иш берувчи';
+
+  @override
+  String get experienceRole => 'Лавозим';
+
+  @override
+  String get experienceOccupation => 'Касб';
+
+  @override
+  String get experienceStarted => 'Бошланган сана';
+
+  @override
+  String get experienceEnded => 'Тугаган сана';
+
+  @override
+  String get experienceCurrent => 'Ҳозир шу ерда ишлайман';
+
+  @override
+  String get experienceResponsibilities => 'Вазифалар';
+
+  @override
+  String get experiencePresent => 'Ҳозиргача';
+
+  @override
+  String get educationEmpty => 'Таълим қўшилмаган';
+
+  @override
+  String get educationAdd => 'Таълим қўшиш';
+
+  @override
+  String get educationLevel => 'Таълим даражаси';
+
+  @override
+  String get educationInstitution => 'Ўқув муассасаси';
+
+  @override
+  String get educationSpecialization => 'Мутахассислик';
+
+  @override
+  String get educationYear => 'Тугатган йили';
+
+  @override
   String get leveledChangeLevel => 'Даража';
 
   @override
@@ -538,6 +658,12 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get commonSearch => 'Qidirish';
+
+  @override
+  String get commonEdit => 'Tahrirlash';
+
+  @override
+  String get commonDelete => 'O\'chirish';
 
   @override
   String get commonSignOut => 'Chiqish';
@@ -675,6 +801,60 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get profileSalaryNegotiable => 'Kelishuv asosida';
+
+  @override
+  String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
+
+  @override
+  String get historyDeleteMessage => 'U profilingizdan o\'chiriladi.';
+
+  @override
+  String get experienceEmpty => 'Ish tajribasi qo\'shilmagan';
+
+  @override
+  String get experienceAdd => 'Tajriba qo\'shish';
+
+  @override
+  String get experienceEmployer => 'Ish beruvchi';
+
+  @override
+  String get experienceRole => 'Lavozim';
+
+  @override
+  String get experienceOccupation => 'Kasb';
+
+  @override
+  String get experienceStarted => 'Boshlangan sana';
+
+  @override
+  String get experienceEnded => 'Tugagan sana';
+
+  @override
+  String get experienceCurrent => 'Hozir shu yerda ishlayman';
+
+  @override
+  String get experienceResponsibilities => 'Vazifalar';
+
+  @override
+  String get experiencePresent => 'Hozirgacha';
+
+  @override
+  String get educationEmpty => 'Ta\'lim qo\'shilmagan';
+
+  @override
+  String get educationAdd => 'Ta\'lim qo\'shish';
+
+  @override
+  String get educationLevel => 'Ta\'lim darajasi';
+
+  @override
+  String get educationInstitution => 'O\'quv muassasasi';
+
+  @override
+  String get educationSpecialization => 'Mutaxassislik';
+
+  @override
+  String get educationYear => 'Tugatgan yili';
 
   @override
   String get leveledChangeLevel => 'Daraja';

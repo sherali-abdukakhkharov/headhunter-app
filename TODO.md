@@ -317,10 +317,20 @@ district picker.
       rather than merely unlikely. 9 widget tests drive the two sheets in
       `test/features/profile/leveled_field_editor_test.dart`, and the 422
       field-mapping split has 5 more in `field_validation_exception_test.dart`
-- [ ] **Bespoke sections**: work history and education own their own
-      sub-resources (`/candidates/me/experience`, `/education`) and their own
-      editors. Currently a notice
-- [ ] Simplified experience entry for informal/seasonal work
+- [x] **Bespoke sections**: work history and education. Each renders its
+      records, adds, edits and deletes through its own sub-resource, and
+      **takes the path from the schema's `endpoint`** rather than hardcoding
+      it — that field is published precisely so a server-side move is not a
+      client release. An unrecognised bespoke section still renders the
+      notice, the same rule as an unknown field kind.
+      Every mutation refreshes two things: the list, and the profile's
+      completeness (§5.3). The second is `ProfileEditor.refreshProfile`, not
+      an invalidate — invalidating would refetch the schema *and* discard
+      unsaved form edits, so adding a job would silently eat a half-typed name
+- [x] Simplified experience entry for informal/seasonal work — satisfied by
+      construction rather than by a second mode, which the design system
+      forbids. Only `roleTitle` and `startedOn` are required, so a seasonal
+      worker with no employer to name can still file a complete record
 - [ ] Missing-field list with **direct edit links** — the codes are in the
       response, the tap-to-focus is not built
 - [ ] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —
