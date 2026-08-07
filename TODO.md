@@ -394,16 +394,31 @@ against the live API on 2026-08-07 with a freshly registered employer account.
       conditions, because an employer who is complete but unverified needs to
       know which half is missing
 
-## M5 - Vacancy management
+## M5 - Vacancy management *(core done)*
 
-- [ ] Vacancy create/edit across all six §6.3 categories via the form engine
-- [ ] Structured requirements incl. mandatory-vs-preferred languages
-- [ ] Status display + employer-available transitions (§6.4)
-- [ ] Moderation rejection reason shown to the employer
-- [ ] Worker count `>= 1` (BR-05)
-- [ ] Age/gender fields warn about justification + moderation (BR-12)
-- [ ] Seasonal/agricultural flow (UAT-10)
-- [ ] Employer dashboard widgets (§6.2)
+The employer Vacancies tab lists the employer's own vacancies and opens a
+schema-driven editor. Walked on an emulator against the live API 2026-08-07.
+
+- [x] Vacancy create/edit across all six §6.3 categories via the form engine —
+      `GET /schemas/vacancy` returns the **same `FieldSchema`** the candidate
+      profile renders, so `SchemaFieldWidget` draws it unchanged and a sixth
+      category costs no client work. Adding a vacancy field is a backend change
+- [x] Structured requirements incl. mandatory-vs-preferred languages — carried
+      by the schema, not written here, for the same reason
+- [x] Status display + employer-available transitions (§6.4) — the six statuses
+      through the design system's own badge constructors; only the transitions
+      the current status allows are offered, and **closing is terminal (BR-11)**
+      so nothing is ever offered from closed. Closing is confirmed first
+- [x] Moderation rejection reason shown to the employer — verbatim (§2.4)
+- [x] Age/gender fields warn about justification + moderation (BR-12) — said on
+      the form rather than discovered at submit
+- [x] `missingForSubmit` shown as a count **before** the refusal, turning one
+      422-per-field into a checklist. Verified on device: submitting an empty
+      draft outlined all eight required fields with their messages
+- [ ] Worker count `>= 1` (BR-05) — the server enforces it; the schema's
+      `validation.min` is not yet applied client-side, so it costs a round trip
+- [ ] Seasonal/agricultural flow (UAT-10) — needs a seasonal category to walk
+- [ ] Employer dashboard widgets (§6.2) — the Home tab is still a placeholder
 
 ## M6 - Discovery and applications
 

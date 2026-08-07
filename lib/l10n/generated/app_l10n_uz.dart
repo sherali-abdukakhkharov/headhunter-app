@@ -209,6 +209,78 @@ class AppL10nUz extends AppL10n {
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
 
   @override
+  String get vacancyMine => 'Sizning vakansiyalaringiz';
+
+  @override
+  String get vacancyNew => 'Yangi vakansiya';
+
+  @override
+  String get vacancyNone => 'Hozircha vakansiyalar yo\'q';
+
+  @override
+  String get vacancyUntitled => 'Nomsiz vakansiya';
+
+  @override
+  String get vacancyStatusDraft => 'Qoralama';
+
+  @override
+  String get vacancyStatusModeration => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get vacancyStatusActive => 'E\'lon qilingan';
+
+  @override
+  String get vacancyStatusPaused => 'To\'xtatilgan';
+
+  @override
+  String get vacancyStatusClosed => 'Yopilgan';
+
+  @override
+  String get vacancyStatusRejected => 'Rad etilgan';
+
+  @override
+  String get vacancySubmit => 'E\'lon qilishga yuborish';
+
+  @override
+  String get vacancyPause => 'To\'xtatish';
+
+  @override
+  String get vacancyResume => 'Davom ettirish';
+
+  @override
+  String get vacancyClose => 'Yopish';
+
+  @override
+  String get vacancyCloseTitle => 'Vakansiya yopilsinmi?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Yopish qaytarilmaydi. Vakansiya qidiruvdan chiqadi va tarixda qoladi.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count ta maydonni to\'ldiring',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Bu vakansiyani hozir tahrirlab bo\'lmaydi.';
+
+  @override
+  String get vacancyOpenForApplications => 'Arizalar qabul qilinmoqda';
+
+  @override
+  String get vacancyRestrictionTitle => 'Yosh va jins bo\'yicha cheklashlar';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Yosh va jins bo\'yicha cheklashlar asoslashni talab qiladi va har doim moderator tomonidan tekshiriladi.';
+
+  @override
   String get employerChooseType => 'Siz qanday ish beruvchisiz?';
 
   @override
@@ -678,6 +750,78 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.';
+
+  @override
+  String get vacancyMine => 'Сизнинг вакансияларингиз';
+
+  @override
+  String get vacancyNew => 'Янги вакансия';
+
+  @override
+  String get vacancyNone => 'Ҳозирча вакансиялар йўқ';
+
+  @override
+  String get vacancyUntitled => 'Номсиз вакансия';
+
+  @override
+  String get vacancyStatusDraft => 'Қоралама';
+
+  @override
+  String get vacancyStatusModeration => 'Кўриб чиқилмоқда';
+
+  @override
+  String get vacancyStatusActive => 'Эълон қилинган';
+
+  @override
+  String get vacancyStatusPaused => 'Тўхтатилган';
+
+  @override
+  String get vacancyStatusClosed => 'Ёпилган';
+
+  @override
+  String get vacancyStatusRejected => 'Рад этилган';
+
+  @override
+  String get vacancySubmit => 'Эълон қилишга юбориш';
+
+  @override
+  String get vacancyPause => 'Тўхтатиш';
+
+  @override
+  String get vacancyResume => 'Давом эттириш';
+
+  @override
+  String get vacancyClose => 'Ёпиш';
+
+  @override
+  String get vacancyCloseTitle => 'Вакансия ёпилсинми?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Ёпиш қайтарилмайди. Вакансия қидирувдан чиқади ва тарихда қолади.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Яна $count та майдонни тўлдиринг',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Бу вакансияни ҳозир таҳрирлаб бўлмайди.';
+
+  @override
+  String get vacancyOpenForApplications => 'Аризалар қабул қилинмоқда';
+
+  @override
+  String get vacancyRestrictionTitle => 'Ёш ва жинс бўйича чеклашлар';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Ёш ва жинс бўйича чеклашлар асослашни талаб қилади ва ҳар доим модератор томонидан текширилади.';
 
   @override
   String get employerChooseType => 'Сиз қандай иш берувчисиз?';
@@ -1151,6 +1295,78 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get profileVisibilityAfterApplyHint =>
       'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
+  String get vacancyMine => 'Sizning vakansiyalaringiz';
+
+  @override
+  String get vacancyNew => 'Yangi vakansiya';
+
+  @override
+  String get vacancyNone => 'Hozircha vakansiyalar yo\'q';
+
+  @override
+  String get vacancyUntitled => 'Nomsiz vakansiya';
+
+  @override
+  String get vacancyStatusDraft => 'Qoralama';
+
+  @override
+  String get vacancyStatusModeration => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get vacancyStatusActive => 'E\'lon qilingan';
+
+  @override
+  String get vacancyStatusPaused => 'To\'xtatilgan';
+
+  @override
+  String get vacancyStatusClosed => 'Yopilgan';
+
+  @override
+  String get vacancyStatusRejected => 'Rad etilgan';
+
+  @override
+  String get vacancySubmit => 'E\'lon qilishga yuborish';
+
+  @override
+  String get vacancyPause => 'To\'xtatish';
+
+  @override
+  String get vacancyResume => 'Davom ettirish';
+
+  @override
+  String get vacancyClose => 'Yopish';
+
+  @override
+  String get vacancyCloseTitle => 'Vakansiya yopilsinmi?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Yopish qaytarilmaydi. Vakansiya qidiruvdan chiqadi va tarixda qoladi.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count ta maydonni to\'ldiring',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Bu vakansiyani hozir tahrirlab bo\'lmaydi.';
+
+  @override
+  String get vacancyOpenForApplications => 'Arizalar qabul qilinmoqda';
+
+  @override
+  String get vacancyRestrictionTitle => 'Yosh va jins bo\'yicha cheklashlar';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Yosh va jins bo\'yicha cheklashlar asoslashni talab qiladi va har doim moderator tomonidan tekshiriladi.';
 
   @override
   String get employerChooseType => 'Siz qanday ish beruvchisiz?';

@@ -209,6 +209,81 @@ class AppL10nRu extends AppL10n {
       'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
 
   @override
+  String get vacancyMine => 'Ваши вакансии';
+
+  @override
+  String get vacancyNew => 'Новая вакансия';
+
+  @override
+  String get vacancyNone => 'Вакансий пока нет';
+
+  @override
+  String get vacancyUntitled => 'Вакансия без названия';
+
+  @override
+  String get vacancyStatusDraft => 'Черновик';
+
+  @override
+  String get vacancyStatusModeration => 'На проверке';
+
+  @override
+  String get vacancyStatusActive => 'Опубликована';
+
+  @override
+  String get vacancyStatusPaused => 'Приостановлена';
+
+  @override
+  String get vacancyStatusClosed => 'Закрыта';
+
+  @override
+  String get vacancyStatusRejected => 'Отклонена';
+
+  @override
+  String get vacancySubmit => 'Отправить на публикацию';
+
+  @override
+  String get vacancyPause => 'Приостановить';
+
+  @override
+  String get vacancyResume => 'Возобновить';
+
+  @override
+  String get vacancyClose => 'Закрыть';
+
+  @override
+  String get vacancyCloseTitle => 'Закрыть вакансию?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Закрытие необратимо. Вакансия исчезнет из поиска и останется в истории.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Осталось заполнить $count полей',
+      many: 'Осталось заполнить $count полей',
+      few: 'Осталось заполнить $count поля',
+      one: 'Осталось заполнить $count поле',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Эту вакансию сейчас нельзя редактировать.';
+
+  @override
+  String get vacancyOpenForApplications => 'Принимает отклики';
+
+  @override
+  String get vacancyRestrictionTitle => 'Ограничения по возрасту и полу';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Ограничения по возрасту и полу требуют обоснования и всегда проходят проверку модератора.';
+
+  @override
   String get employerChooseType => 'Кто вы как работодатель?';
 
   @override

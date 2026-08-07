@@ -36,6 +36,10 @@ class _FakeProfileRepository implements ProfileRepository {
       });
 
   @override
+  Future<FieldSchema> fetchVacancySchema(String category) async =>
+      fetchSchema(category);
+
+  @override
   Future<CandidateProfile> patchProfile(Map<String, dynamic> fields) async =>
       fetchProfile();
 

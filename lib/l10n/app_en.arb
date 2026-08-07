@@ -265,6 +265,82 @@
     "description": "Explains the visible_after_apply option."
   },
 
+  "vacancyMine": "Your vacancies",
+  "@vacancyMine": {
+    "description": "Heading of the employer's own vacancy list (§6.2). Includes closed ones - BR-11 keeps them in history."
+  },
+
+  "vacancyNew": "New vacancy",
+  "@vacancyNew": {
+    "description": "Creates an empty draft. BR-03 is checked here, so an employer who cannot publish is told before filling in a form."
+  },
+
+  "vacancyNone": "No vacancies yet",
+  "@vacancyNone": {
+    "description": "Empty state of the employer vacancy list."
+  },
+
+  "vacancyUntitled": "Untitled vacancy",
+  "@vacancyUntitled": {
+    "description": "Stands in for a draft whose title has not been filled in yet."
+  },
+
+  "vacancyStatusDraft": "Draft",
+  "@vacancyStatusDraft": { "description": "vacancy status=draft." },
+
+  "vacancyStatusModeration": "Under review",
+  "@vacancyStatusModeration": { "description": "vacancy status=under_moderation." },
+
+  "vacancyStatusActive": "Published",
+  "@vacancyStatusActive": { "description": "vacancy status=active." },
+
+  "vacancyStatusPaused": "Paused",
+  "@vacancyStatusPaused": { "description": "vacancy status=paused." },
+
+  "vacancyStatusClosed": "Closed",
+  "@vacancyStatusClosed": { "description": "vacancy status=closed. Terminal (BR-11)." },
+
+  "vacancyStatusRejected": "Rejected",
+  "@vacancyStatusRejected": { "description": "vacancy status=rejected. Editing returns it to draft, which is §6.4's correction path." },
+
+  "vacancySubmit": "Submit for publication",
+  "@vacancySubmit": { "description": "Sends a draft to moderation (§6.4)." },
+
+  "vacancyPause": "Pause",
+  "@vacancyPause": { "description": "Employer transition: active -> paused." },
+
+  "vacancyResume": "Resume",
+  "@vacancyResume": { "description": "Employer transition: paused -> active." },
+
+  "vacancyClose": "Close",
+  "@vacancyClose": { "description": "Employer transition to closed." },
+
+  "vacancyCloseTitle": "Close this vacancy?",
+  "@vacancyCloseTitle": { "description": "Confirmation before closing." },
+
+  "vacancyCloseMessage": "Closing is permanent. The vacancy leaves search and stays in your history.",
+  "@vacancyCloseMessage": { "description": "BR-11 stated before the fact, because closing cannot be undone." },
+
+  "vacancyMissingForSubmit": "{count, plural, one{{count} field to fill before publishing} other{{count} fields to fill before publishing}}",
+  "@vacancyMissingForSubmit": {
+    "description": "Turns the server's missingForSubmit into a checklist shown before the refusal rather than after.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "vacancyNotEditable": "This vacancy cannot be edited right now.",
+  "@vacancyNotEditable": { "description": "Shown while a vacancy is under moderation or closed - the server refuses the write, so the form is read-only rather than accepting keystrokes it cannot save." },
+
+  "vacancyOpenForApplications": "Accepting applications",
+  "@vacancyOpenForApplications": { "description": "BR-06 satisfied: active, and no deadline or one that has not passed." },
+
+  "vacancyRestrictionTitle": "Age and gender restrictions",
+  "@vacancyRestrictionTitle": {
+    "description": "Title of the BR-12 notice on the vacancy form."
+  },
+
+  "vacancyRestrictionWarning": "Age and gender restrictions need a justification and are always reviewed by a moderator.",
+  "@vacancyRestrictionWarning": { "description": "BR-12, stated on the form rather than discovered at submit." },
+
   "employerChooseType": "What kind of employer are you?",
   "@employerChooseType": {
     "description": "Asked before the form exists. §6.1's type decides which fields apply, so there is no neutral employer profile to render first."

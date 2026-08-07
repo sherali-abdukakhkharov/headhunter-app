@@ -22,6 +22,8 @@ import 'package:headhunter_app/src/features/shell/presentation/blocked_account_s
 import 'package:headhunter_app/src/features/shell/presentation/role_shell.dart';
 import 'package:headhunter_app/src/features/shell/presentation/shell_placeholder_screen.dart';
 import 'package:headhunter_app/src/features/shell/presentation/splash_screen.dart';
+import 'package:headhunter_app/src/features/vacancy/presentation/vacancy_editor_screen.dart';
+import 'package:headhunter_app/src/features/vacancy/presentation/vacancy_list_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -150,8 +152,22 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
             builder: (context, state) => switch (tab.path) {
               Routes.candidateProfile => const CandidateProfileScreen(),
               Routes.employerCompany => const EmployerProfileScreen(),
+              Routes.employerVacancies => const VacancyListScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
+            routes: [
+              // Nested inside the tab, so the vacancy editor keeps the shell's
+              // nav bar and the system back gesture returns to the list rather
+              // than leaving the branch.
+              if (tab.path == Routes.employerVacancies)
+                GoRoute(
+                  path: ':id',
+                  name: 'employerVacancy',
+                  builder: (context, state) => VacancyEditorScreen(
+                    id: state.pathParameters['id']!,
+                  ),
+                ),
+            ],
           ),
         ],
       ),

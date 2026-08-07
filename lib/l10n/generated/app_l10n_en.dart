@@ -208,6 +208,79 @@ class AppL10nEn extends AppL10n {
       'Only employers whose vacancy you applied to can see your profile.';
 
   @override
+  String get vacancyMine => 'Your vacancies';
+
+  @override
+  String get vacancyNew => 'New vacancy';
+
+  @override
+  String get vacancyNone => 'No vacancies yet';
+
+  @override
+  String get vacancyUntitled => 'Untitled vacancy';
+
+  @override
+  String get vacancyStatusDraft => 'Draft';
+
+  @override
+  String get vacancyStatusModeration => 'Under review';
+
+  @override
+  String get vacancyStatusActive => 'Published';
+
+  @override
+  String get vacancyStatusPaused => 'Paused';
+
+  @override
+  String get vacancyStatusClosed => 'Closed';
+
+  @override
+  String get vacancyStatusRejected => 'Rejected';
+
+  @override
+  String get vacancySubmit => 'Submit for publication';
+
+  @override
+  String get vacancyPause => 'Pause';
+
+  @override
+  String get vacancyResume => 'Resume';
+
+  @override
+  String get vacancyClose => 'Close';
+
+  @override
+  String get vacancyCloseTitle => 'Close this vacancy?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Closing is permanent. The vacancy leaves search and stays in your history.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fields to fill before publishing',
+      one: '$count field to fill before publishing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'This vacancy cannot be edited right now.';
+
+  @override
+  String get vacancyOpenForApplications => 'Accepting applications';
+
+  @override
+  String get vacancyRestrictionTitle => 'Age and gender restrictions';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Age and gender restrictions need a justification and are always reviewed by a moderator.';
+
+  @override
   String get employerChooseType => 'What kind of employer are you?';
 
   @override

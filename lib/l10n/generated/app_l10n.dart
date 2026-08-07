@@ -461,6 +461,132 @@ abstract class AppL10n {
   /// **'Only employers whose vacancy you applied to can see your profile.'**
   String get profileVisibilityAfterApplyHint;
 
+  /// Heading of the employer's own vacancy list (§6.2). Includes closed ones - BR-11 keeps them in history.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vacancies'**
+  String get vacancyMine;
+
+  /// Creates an empty draft. BR-03 is checked here, so an employer who cannot publish is told before filling in a form.
+  ///
+  /// In en, this message translates to:
+  /// **'New vacancy'**
+  String get vacancyNew;
+
+  /// Empty state of the employer vacancy list.
+  ///
+  /// In en, this message translates to:
+  /// **'No vacancies yet'**
+  String get vacancyNone;
+
+  /// Stands in for a draft whose title has not been filled in yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled vacancy'**
+  String get vacancyUntitled;
+
+  /// vacancy status=draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get vacancyStatusDraft;
+
+  /// vacancy status=under_moderation.
+  ///
+  /// In en, this message translates to:
+  /// **'Under review'**
+  String get vacancyStatusModeration;
+
+  /// vacancy status=active.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get vacancyStatusActive;
+
+  /// vacancy status=paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get vacancyStatusPaused;
+
+  /// vacancy status=closed. Terminal (BR-11).
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get vacancyStatusClosed;
+
+  /// vacancy status=rejected. Editing returns it to draft, which is §6.4's correction path.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get vacancyStatusRejected;
+
+  /// Sends a draft to moderation (§6.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for publication'**
+  String get vacancySubmit;
+
+  /// Employer transition: active -> paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get vacancyPause;
+
+  /// Employer transition: paused -> active.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get vacancyResume;
+
+  /// Employer transition to closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get vacancyClose;
+
+  /// Confirmation before closing.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this vacancy?'**
+  String get vacancyCloseTitle;
+
+  /// BR-11 stated before the fact, because closing cannot be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing is permanent. The vacancy leaves search and stays in your history.'**
+  String get vacancyCloseMessage;
+
+  /// Turns the server's missingForSubmit into a checklist shown before the refusal rather than after.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} field to fill before publishing} other{{count} fields to fill before publishing}}'**
+  String vacancyMissingForSubmit(int count);
+
+  /// Shown while a vacancy is under moderation or closed - the server refuses the write, so the form is read-only rather than accepting keystrokes it cannot save.
+  ///
+  /// In en, this message translates to:
+  /// **'This vacancy cannot be edited right now.'**
+  String get vacancyNotEditable;
+
+  /// BR-06 satisfied: active, and no deadline or one that has not passed.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepting applications'**
+  String get vacancyOpenForApplications;
+
+  /// Title of the BR-12 notice on the vacancy form.
+  ///
+  /// In en, this message translates to:
+  /// **'Age and gender restrictions'**
+  String get vacancyRestrictionTitle;
+
+  /// BR-12, stated on the form rather than discovered at submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Age and gender restrictions need a justification and are always reviewed by a moderator.'**
+  String get vacancyRestrictionWarning;
+
   /// Asked before the form exists. §6.1's type decides which fields apply, so there is no neutral employer profile to render first.
   ///
   /// In en, this message translates to:
