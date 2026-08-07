@@ -203,5 +203,15 @@
   "candidateCompleteness": "Профиль заполнен на {percent}%",
   "notesTitle": "Личные заметки",
   "notesHint": "Их видите только вы",
-  "notesAdd": "Добавить заметку"
+  "notesAdd": "Добавить заметку",
+  "searchCandidates": "Поиск кандидатов",
+  "searchRun": "Найти",
+  "searchCountExact": "{count, plural, one{{count} кандидат} few{{count} кандидата} many{{count} кандидатов} other{{count} кандидатов}}",
+  "searchCountCapped": "{count}+ кандидатов",
+  "searchNoResults": "По этим фильтрам никого нет",
+  "searchSaved": "Сохранённые кандидаты",
+  "searchMatch": "Совпадение {percent}%",
+  "searchExperienceYears": "{years, plural, one{{years} год опыта} few{{years} года опыта} many{{years} лет опыта} other{{years} лет опыта}}",
+  "searchShortlist": "В шорт-лист",
+  "searchShortlisted": "В шорт-листе"
 }

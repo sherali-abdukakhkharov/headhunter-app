@@ -1324,6 +1324,66 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Add note'**
   String get notesAdd;
+
+  /// Heading of employer candidate search (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Find candidates'**
+  String get searchCandidates;
+
+  /// Runs the search after the count has been seen.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchRun;
+
+  /// §7.2: how many candidates match, shown before the results.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} candidate} other{{count} candidates}}'**
+  String searchCountExact(int count);
+
+  /// §7.2: the server capped the count, so it is rendered as "200+". The cap comes from isExact, never from comparing the number.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}+ candidates'**
+  String searchCountCapped(int count);
+
+  /// Empty result set - not an error.
+  ///
+  /// In en, this message translates to:
+  /// **'No candidates match these filters'**
+  String get searchNoResults;
+
+  /// §7.3: candidates this employer bookmarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved candidates'**
+  String get searchSaved;
+
+  /// §7.3’s weighted requirement match.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% match'**
+  String searchMatch(int percent);
+
+  /// Total years summed from the experience rows.
+  ///
+  /// In en, this message translates to:
+  /// **'{years, plural, one{{years} year of experience} other{{years} years of experience}}'**
+  String searchExperienceYears(int years);
+
+  /// Adds the candidate to a vacancy’s shortlist (§7.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Shortlist'**
+  String get searchShortlist;
+
+  /// Already on the shortlist; tapping removes.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortlisted'**
+  String get searchShortlisted;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

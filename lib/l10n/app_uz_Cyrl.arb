@@ -203,5 +203,15 @@
   "candidateCompleteness": "Профил {percent}% тўлдирилган",
   "notesTitle": "Шахсий эслатмалар",
   "notesHint": "Уларни фақат сиз кўрасиз",
-  "notesAdd": "Эслатма қўшиш"
+  "notesAdd": "Эслатма қўшиш",
+  "searchCandidates": "Номзодлар қидируви",
+  "searchRun": "Қидириш",
+  "searchCountExact": "{count, plural, other{{count} та номзод}}",
+  "searchCountCapped": "{count}+ номзод",
+  "searchNoResults": "Бу фильтрлар бўйича ҳеч ким топилмади",
+  "searchSaved": "Сақланган номзодлар",
+  "searchMatch": "Мослик {percent}%",
+  "searchExperienceYears": "{years, plural, other{{years} йил тажриба}}",
+  "searchShortlist": "Шорт-листга",
+  "searchShortlisted": "Шорт-листда"
 }

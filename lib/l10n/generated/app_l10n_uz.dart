@@ -679,6 +679,54 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get notesAdd => 'Eslatma qo’shish';
+
+  @override
+  String get searchCandidates => 'Nomzodlar qidiruvi';
+
+  @override
+  String get searchRun => 'Qidirish';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta nomzod',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ nomzod';
+  }
+
+  @override
+  String get searchNoResults => 'Bu filtrlar bo’yicha hech kim topilmadi';
+
+  @override
+  String get searchSaved => 'Saqlangan nomzodlar';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Moslik $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years yil tajriba',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Short-listga';
+
+  @override
+  String get searchShortlisted => 'Short-listda';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -1354,6 +1402,54 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get notesAdd => 'Эслатма қўшиш';
+
+  @override
+  String get searchCandidates => 'Номзодлар қидируви';
+
+  @override
+  String get searchRun => 'Қидириш';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та номзод',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ номзод';
+  }
+
+  @override
+  String get searchNoResults => 'Бу фильтрлар бўйича ҳеч ким топилмади';
+
+  @override
+  String get searchSaved => 'Сақланган номзодлар';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Мослик $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years йил тажриба',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Шорт-листга';
+
+  @override
+  String get searchShortlisted => 'Шорт-листда';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -2031,4 +2127,52 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get notesAdd => 'Eslatma qo’shish';
+
+  @override
+  String get searchCandidates => 'Nomzodlar qidiruvi';
+
+  @override
+  String get searchRun => 'Qidirish';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta nomzod',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ nomzod';
+  }
+
+  @override
+  String get searchNoResults => 'Bu filtrlar bo’yicha hech kim topilmadi';
+
+  @override
+  String get searchSaved => 'Saqlangan nomzodlar';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Moslik $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years yil tajriba',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Short-listga';
+
+  @override
+  String get searchShortlisted => 'Short-listda';
 }

@@ -886,5 +886,65 @@
   "notesAdd": "Add note",
   "@notesAdd": {
     "description": "Adds a note."
+  },
+  "searchCandidates": "Find candidates",
+  "@searchCandidates": {
+    "description": "Heading of employer candidate search (§7.1)."
+  },
+  "searchRun": "Search",
+  "@searchRun": {
+    "description": "Runs the search after the count has been seen."
+  },
+  "searchCountExact": "{count, plural, one{{count} candidate} other{{count} candidates}}",
+  "@searchCountExact": {
+    "description": "§7.2: how many candidates match, shown before the results.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchCountCapped": "{count}+ candidates",
+  "@searchCountCapped": {
+    "description": "§7.2: the server capped the count, so it is rendered as \"200+\". The cap comes from isExact, never from comparing the number.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchNoResults": "No candidates match these filters",
+  "@searchNoResults": {
+    "description": "Empty result set - not an error."
+  },
+  "searchSaved": "Saved candidates",
+  "@searchSaved": {
+    "description": "§7.3: candidates this employer bookmarked."
+  },
+  "searchMatch": "{percent}% match",
+  "@searchMatch": {
+    "description": "§7.3’s weighted requirement match.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "searchExperienceYears": "{years, plural, one{{years} year of experience} other{{years} years of experience}}",
+  "@searchExperienceYears": {
+    "description": "Total years summed from the experience rows.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "searchShortlist": "Shortlist",
+  "@searchShortlist": {
+    "description": "Adds the candidate to a vacancy’s shortlist (§7.3)."
+  },
+  "searchShortlisted": "Shortlisted",
+  "@searchShortlisted": {
+    "description": "Already on the shortlist; tapping removes."
   }
 }

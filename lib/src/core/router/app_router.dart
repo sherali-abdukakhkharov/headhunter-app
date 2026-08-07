@@ -12,6 +12,7 @@ import 'package:headhunter_app/src/core/router/shell_tabs.dart';
 import 'package:headhunter_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:headhunter_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
 import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
+import 'package:headhunter_app/src/features/candidate_search/presentation/candidate_search_screen.dart';
 import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:headhunter_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
@@ -158,6 +159,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               Routes.candidateApplications => const ApplicationsScreen(),
               Routes.employerCompany => const EmployerProfileScreen(),
               Routes.employerVacancies => const VacancyListScreen(),
+              Routes.employerCandidates => const CandidateSearchScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [

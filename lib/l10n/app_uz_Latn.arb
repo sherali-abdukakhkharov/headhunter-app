@@ -203,5 +203,15 @@
   "candidateCompleteness": "Profil {percent}% to’ldirilgan",
   "notesTitle": "Shaxsiy eslatmalar",
   "notesHint": "Ularni faqat siz ko’rasiz",
-  "notesAdd": "Eslatma qo’shish"
+  "notesAdd": "Eslatma qo’shish",
+  "searchCandidates": "Nomzodlar qidiruvi",
+  "searchRun": "Qidirish",
+  "searchCountExact": "{count, plural, other{{count} ta nomzod}}",
+  "searchCountCapped": "{count}+ nomzod",
+  "searchNoResults": "Bu filtrlar bo’yicha hech kim topilmadi",
+  "searchSaved": "Saqlangan nomzodlar",
+  "searchMatch": "Moslik {percent}%",
+  "searchExperienceYears": "{years, plural, other{{years} yil tajriba}}",
+  "searchShortlist": "Short-listga",
+  "searchShortlisted": "Short-listda"
 }

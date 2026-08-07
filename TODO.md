@@ -452,15 +452,24 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Employer application filters, and the internal-notes UI — the repository
       has `notes`/`addNote`, no screen yet
 
-## M7 - Candidate search
+## M7 - Candidate search *(core done)*
 
-- [ ] Filter builder for all §7.1 groups
-- [ ] Count before results; render "200+" when inexact
+- [x] **No phone numbers on candidate cards** (BR-09, §11.1) — **asserted in a
+      test**, and verified to fail against a card that renders one. The
+      guarantee is structural on both sides: the server's DTO has no phone
+      field and neither does `CandidateCard`, so there is nowhere to put one.
+      The test also pins that §7.3's private note stays off the card
+- [x] Count before results; **"200+" comes from `isExact`**, never from
+      comparing the number — reading `count == 200` as capped would be wrong
+      the day the server raises the cap, and wrong today for a search that
+      genuinely returns two hundred
+- [x] Result list with §7.3 candidate cards and the match score
+- [x] Save candidates — the repository also covers shortlists, private notes
+      and UAT-06's prefill-from-vacancy
+- [ ] Filter builder for all §7.1 groups — the repository takes filters, there
+      is no builder UI, so every search is currently unfiltered
 - [ ] Removable filter chips; reset all; edit one
-- [ ] Result list with §7.3 sorts and candidate cards
-- [ ] **No phone numbers on candidate cards** (BR-09, §11.1) - assert in a test
-- [ ] Prefill from vacancy, still editable (UAT-06)
-- [ ] Save candidates, shortlists, private notes
+- [ ] §7.3 sorts
 - [ ] Invitations + response tracking (UAT-07); general invitations
 - [ ] Persist last search configuration locally
 

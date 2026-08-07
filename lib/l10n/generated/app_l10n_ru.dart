@@ -682,4 +682,58 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get notesAdd => 'Добавить заметку';
+
+  @override
+  String get searchCandidates => 'Поиск кандидатов';
+
+  @override
+  String get searchRun => 'Найти';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count кандидатов',
+      many: '$count кандидатов',
+      few: '$count кандидата',
+      one: '$count кандидат',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ кандидатов';
+  }
+
+  @override
+  String get searchNoResults => 'По этим фильтрам никого нет';
+
+  @override
+  String get searchSaved => 'Сохранённые кандидаты';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Совпадение $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years лет опыта',
+      many: '$years лет опыта',
+      few: '$years года опыта',
+      one: '$years год опыта',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'В шорт-лист';
+
+  @override
+  String get searchShortlisted => 'В шорт-листе';
 }

@@ -679,4 +679,54 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get notesAdd => 'Add note';
+
+  @override
+  String get searchCandidates => 'Find candidates';
+
+  @override
+  String get searchRun => 'Search';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count candidates',
+      one: '$count candidate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ candidates';
+  }
+
+  @override
+  String get searchNoResults => 'No candidates match these filters';
+
+  @override
+  String get searchSaved => 'Saved candidates';
+
+  @override
+  String searchMatch(int percent) {
+    return '$percent% match';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years years of experience',
+      one: '$years year of experience',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Shortlist';
+
+  @override
+  String get searchShortlisted => 'Shortlisted';
 }
