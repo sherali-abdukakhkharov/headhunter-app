@@ -148,30 +148,16 @@ class LeveledFieldEditor extends ConsumerWidget {
     );
   }
 
-  /// Resolves one id to a label.
+  /// Resolves one id to a label, via the rule both pickers use.
   ///
-  /// **Error is matched before loading, and separately from it.** Riverpod's
-  /// retry is disabled app-wide, so a failure is terminal — folding it into the
-  /// loading arm renders a permanent ellipsis that is indistinguishable from a
-  /// slow network, and the row simply never says what it holds. That is exactly
-  /// what happened the first time this shipped.
+  /// The error-before-loading ordering that [resolveLabel] encodes is the whole
+  /// point here: a row that cannot name its skill is worse than one that names
+  /// it as unavailable.
   String _labelOf(
     AsyncValue<Map<String, DictionaryItem>> resolved,
     String id,
     AppL10n l10n,
-  ) {
-    if (resolved case AsyncValue(hasError: true, :final error?)) {
-      // Logged rather than swallowed: a label that cannot resolve is a broken
-      // row on somebody's profile, and it has to be findable in a bug report.
-      debugPrint('[leveled] ${field.code}: could not resolve $id — $error');
-      return l10n.pickerUnknownValue;
-    }
-
-    return switch (resolved) {
-      AsyncData(:final value) => value[id]?.label ?? l10n.pickerUnknownValue,
-      _ => '…',
-    };
-  }
+  ) => resolveLabel(resolved, id, l10n, where: field.code);
 
   Future<void> _add(BuildContext context) async {
     // Read before the first await: the two sheets open back to back and the

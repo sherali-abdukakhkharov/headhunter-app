@@ -278,8 +278,15 @@ working destinations rather than dead ends.
       searchable list, so retired items and the empty state behave identically
 - [ ] Warm-up call site — `warmDictionaries` exists but nothing invokes it yet;
       it wants to run once after sign-in
-- [ ] Widget test for the pickers. The two bugs found so far were both found by
-      running it, not by the suite — see MEMORY.md
+- [x] Widget test for the pickers — 17 cases in
+      `test/features/dictionaries/dictionary_picker_test.dart` covering BR-13
+      (label shown, id bound), §10.3 (retired and merged not offered but still
+      resolved), the §5.1 parent scoping, search, and the error-not-spinner
+      rule. Only `dictionaryProvider` is faked, so the selectable filter, the
+      cascade and label resolution all run for real.
+      **It immediately found a third bug**: both pickers fell through to the
+      loading arm on a resolution *failure*, and with retry disabled that
+      ellipsis is terminal. The rule now lives once, in `resolveLabel`
 
 ## M3 - Candidate profile
 
@@ -307,7 +314,9 @@ district picker.
       item with its proficiency. **Adding an item opens the level picker
       immediately**, so a row without a level is never created; the server
       rejects one, and matching its invariant makes that 422 unreachable
-      rather than merely unlikely
+      rather than merely unlikely. 9 widget tests drive the two sheets in
+      `test/features/profile/leveled_field_editor_test.dart`, and the 422
+      field-mapping split has 5 more in `field_validation_exception_test.dart`
 - [ ] **Bespoke sections**: work history and education own their own
       sub-resources (`/candidates/me/experience`, `/education`) and their own
       editors. Currently a notice
