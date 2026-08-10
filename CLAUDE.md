@@ -18,6 +18,7 @@ Open both at once in one editor window with
 | File | Contents |
 |---|---|
 | [docs/SPEC.md](docs/SPEC.md) | The client specification. **Cite it** as §n, BR-nn, UAT-nn. |
+| [docs/SPEC_CHANGELOG.md](docs/SPEC_CHANGELOG.md) | What each client revision changed, and which delivered code it contradicts. Read before assuming a section still says what you remember. |
 | [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) | MVP sign-in is **Log in with Telegram**, not OTP. Read before touching auth. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Design decisions: role shell, localization, forms, offline. Read before adding a feature. |
 | [PLAN.md](PLAN.md) | Milestones in dependency order, mapped to BR/UAT. |
@@ -61,7 +62,14 @@ and a green test suite both missed.
   them** (§10) - there is no web admin panel, ever (§2.4).
 - **Forms are schema-driven** because the field set depends on work category and
   admins add categories at runtime (§5.2, §6.3, §10.3).
-- **Never show a candidate's phone on a search card** (BR-09, §11.1).
+- **Never show a candidate's phone on a search card** (BR-09, §11.1). Since the
+  2026-08-10 spec revision the rule reaches further: phone, e-mail and CV are
+  released to an employer **only after a paid Candidate Unlock** (§6.6, §11.1).
+  An application no longer entitles an employer to contact on its own.
+- **Money is the server's.** Coin price, unlock cost and the registration bonus
+  are server configuration (§6.6) — a constant in Dart makes a price change a
+  store release and disagrees with the ledger the moment it moves. The client
+  never computes a total, a balance or an amount payable (§12.3.1).
 - **Sign-in is phone + OTP** (§4.1, UAT-01), which satisfies BR-01 by
   construction: verifying the code is what makes the number verified. Telegram
   login was tried and **deprecated 2026-08-05** — the code is kept and still

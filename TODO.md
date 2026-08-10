@@ -37,6 +37,19 @@ decision or on the backend.
       there.
 - [?] **Time zone policy** for interview display (§8.3). *Blocks M8.*
 - [?] **App icons and launch screen** - still Flutter defaults.
+- [?] **Payme and CLICK merchant credentials** for the providers' *test*
+      environments (§12.6). Nothing in M13 can be finished without them, and
+      UAT-22 — the duplicated callback — has to be demonstrated rather than
+      argued. *Blocks M13.*
+- [?] **Storefront billing decision** (§12.7, BR-23) — whether Coin purchases
+      ship through Payme/CLICK or must go through Apple IAP / Google Play
+      Billing. The ledger stays provider-agnostic either way, which is what
+      makes this deferrable; the checkout surface in the app does not. *Shapes
+      M13 and gates release.*
+- [?] **Wallet API contract** — balance, pricing, ledger, the atomic unlock, and
+      the shape of the locked/unlockable state on a candidate. The backend is
+      done through its own M11 and has no wallet either, so this is a new
+      contract to agree rather than one to read. *Blocks M12.*
 
 ## M0 - Foundations *(done)*
 
@@ -504,9 +517,32 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       state says "nothing here" rather than "you have saved nobody": a
       candidate who hides their profile leaves the list without having been
       un-saved
-- [ ] Invitations + response tracking (UAT-07); general invitations
+- [~] Invitations + response tracking (UAT-07); general invitations. **Re-scoped
+      2026-08-10**: §8.2 now requires a Candidate Unlock entitlement before an
+      invitation can carry contact context, so this cannot finish before M12
 - [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
       to hang off, which is `GET /vacancies/:id/shortlist`
+
+### Re-opened by the 2026-08-10 spec revision
+
+The search itself is unaffected — cards carried no contact detail and still
+don't. What changed is what a card leads to.
+
+- [!] **The shipped contact-exposure copy is now wrong, and is deliberately
+      unchanged.** `exposureExplanation` tells an employer contact "opens once
+      this candidate applies to one of your vacancies"; §11.1 and §8.2 now say
+      an application is not enough on its own and a paid unlock is required.
+      It is still exactly right for *today's* server, which has no unlocks and
+      no new reason codes — correcting it now would swap one wrong sentence for
+      another and lose the mutation tests pinning it. Moves with M12, in the
+      same change as the new codes
+- [ ] Locked state on the candidate profile, with "Unlock contact — 2 Coins",
+      the price and the balance visible before the decision (§7.3, UAT-17) —
+      owned by M12
+- [ ] UAT-03's wording changed too: the CV is protected "until the employer has
+      Candidate Unlock access", not merely until an interaction exists. Nothing
+      to build on the candidate side; it changes what the *employer* side must
+      show
 - [ ] **Download a candidate's files.** The list renders with the purpose
       resolved as a word, but tapping does nothing: saving bytes to disk and
       opening them needs `path_provider` and an opener, and adding packages
@@ -515,13 +551,72 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       block offers **copy** instead — no new dependency, and the platform
       dialler takes it from the clipboard
 
-## M8 - Chat and interviews
+## M12 - Employer wallet, Coins and Candidate Unlock *(new, 2026-08-10)*
+
+**§6.6 · BR-15 – BR-18, BR-21, BR-24 · UAT-16 – UAT-19.** Delivered **before
+M8**, because §9.1 puts employer-initiated chat behind the same entitlement.
+Needs no payment provider — the ten free Coins are enough to build and accept
+the whole flow, which is why it is split from M13.
+
+- [?] Wallet API contract — see "Blocked on someone else"
+- [ ] Wallet screen: balance, approximate UZS value, **append-only** ledger
+      (BR-24). Reversals and admin adjustments are their own entries; the UI
+      must never render a corrected balance that hides one
+- [ ] **Prices come from the server** (§6.6). `1 Coin = UZS 10,000` and
+      `unlock = 2 Coins` are business configuration — a constant in Dart makes a
+      price change a store release, and disagrees with the ledger the moment it
+      moves
+- [ ] Unlock confirmation sheet: cost, current balance, remaining balance, shown
+      *before* anything is charged
+- [ ] **The unlock is one server call and the client must not simulate it.**
+      Debit and entitlement are atomic server-side (BR-18); an optimistic debit
+      that then failed would show Coins gone with no access. The response is the
+      only truth about the new balance
+- [ ] **Persisted idempotency key on the unlock**, the same discipline as apply
+      (§12.4) — a retry after a timeout must not charge twice, and one
+      employer-candidate pair is charged once (BR-16, UAT-18)
+- [ ] Locked candidate profile: structured data free, contact/CV locked, price
+      and balance visible before the decision (UAT-17)
+- [ ] Under 2 Coins routes to top-up, not a failure (UAT-19). Until M13 ships
+      that route ends in an honest "not available yet", never a dead button
+- [ ] Rewrite `exposureExplanation` against the new reason codes and re-point
+      the tests that pin it — see the M7 note above
+
+## M13 - Coin top-up: Payme and CLICK *(new, 2026-08-10)*
+
+**§6.7, §12.6, §12.7 · BR-19, BR-20, BR-22, BR-23 · UAT-20 – UAT-23.** Blocked
+on client-supplied merchant credentials and the storefront billing decision.
+
+- [ ] Coin quantity chooser; **the server calculates the amount** and returns
+      the Payment Order. A total computed in Dart is never the source of truth
+      (§12.3.1) — show the server's figure or show nothing
+- [ ] Provider choice and checkout through an approved link, deep link or SDK
+- [ ] **No card data in the app, ever** (BR-22) — no PAN, no CVV, no provider
+      credentials, and no "helpful" saved card field
+- [ ] **A success redirect credits nothing** (§6.7). Returning from the provider
+      leaves the order pending; Coins appear only when the backend says PAID
+- [ ] Every Payment Order state rendered honestly, including the unwanted ones:
+      CREATED, PENDING, PAID, FAILED, CANCELLED, REVERSED/REFUNDED. Failure and
+      cancellation return to Wallet with a reason and a retry
+- [ ] Order history showing the internal order ID, so a support call can start
+      from something the user can read out
+- [ ] UAT-22 — the duplicated callback — demonstrated in the provider test
+      environment, not argued
+
+## M8 - Chat and interviews *(now depends on M12)*
+
+§9.1 changed on 2026-08-10: employer-initiated chat is enabled only once that
+employer holds a Candidate Unlock for the candidate. **The candidate's side is
+not gated** — someone who applied can still write, and must never be shown a
+paywall that is not theirs.
 
 - [ ] Conversation list + thread; text and approved attachments
 - [ ] Sent / delivered / read indicators
 - [ ] Report and block; read-only closed conversations
 - [ ] Interview display by type + confirm / request another time
 - [ ] Idempotency key on message send
+- [ ] Employer entry points gated on the entitlement (§9.1); candidate entry
+      points deliberately not
 - [ ] **Deep links switch role before navigating** where required *(moved here
       from M9 - routing infrastructure, not a notification feature)*
 
@@ -550,6 +645,18 @@ this opens. Deep links moved to M8.
 - [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
 - [ ] Dictionary management with four localized labels + skill merge, designed for
       a phone (there is no web panel)
+- [ ] **§10.5 wallet and payment administration** *(new, 2026-08-10)* — employer
+      balance and immutable history; Payment Order search on six axes (employer,
+      provider, status, date, internal order ID, provider transaction ID,
+      because the one support has is whichever the caller can read out); payment
+      detail with status history and failure/reversal reason
+- [ ] Manual wallet adjustment with a **mandatory reason**, audited (BR-24) — it
+      writes a new ledger entry, and nothing on this screen may edit an existing
+      one
+- [ ] Registration bonus / Coin price / unlock price as editable server config,
+      with the screen stating that a change **affects future transactions only**.
+      The natural reading of "change the price" is that history follows, and it
+      does not
 
 ## M11 - Hardening
 
@@ -566,7 +673,15 @@ this opens. Deep links moved to M8.
       `AppFlavor.production.telegramRedirectUri` — until then Telegram login is
       unavailable in a downloaded APK, by design. RELEASE.md §4
 - [ ] App icons and launch screen
-- [ ] Walk all 15 UAT scenarios and keep the evidence
+- [ ] Walk **all 24** UAT scenarios and keep the evidence — the 2026-08-10
+      revision added UAT-16 – UAT-24. UAT-20 – UAT-23 need the providers' test
+      environments, so book those *before* the acceptance window, not inside it
+- [ ] **Verify storefront billing rules immediately before release** (§12.7,
+      BR-23). Listed here as well as in M13 because it is a gate that expires:
+      rules checked two months out are not evidence
+- [ ] Payment-integration documentation in the delivery package (§13.2) —
+      callback endpoints, test/production configuration, reconciliation
+      behaviour, secure credential setup
 
 ---
 
@@ -578,6 +693,9 @@ Applies to every task above:
 - New picker → binds a dictionary **ID**, displays a label.
 - New non-idempotent write → persisted idempotency key.
 - New mutation → list its invalidations next to it.
+- Anything showing a price, total or balance → **the server's figure**, never
+  one computed in Dart (§6.6, §12.3.1).
+- Nothing in the app ever holds card data or provider credentials (BR-22).
 - `flutter analyze` clean and `flutter test` passing before commit; commit the
   `build_runner` output.
 - Do not bump packages casually - the pins in `pubspec.yaml` are load-bearing
