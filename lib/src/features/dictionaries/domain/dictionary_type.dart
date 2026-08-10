@@ -38,8 +38,21 @@ abstract final class DictionaryType {
   static const languageLevel = 'language_level';
 
   static const educationLevel = 'education_level';
+
+  /// Fields of study (§7.1's "specialization where relevant").
+  static const specialization = 'specialization';
+
   static const paymentPeriod = 'payment_period';
   static const filePurpose = 'file_purpose';
+
+  /// BR-12. Only ever selected *alongside* [restrictionJustification] — an age
+  /// or gender filter without a declared reason is refused on both sides.
+  static const gender = 'gender';
+
+  /// The declared reason a vacancy or a search may restrict by age or gender
+  /// (BR-12). The server checks the chosen item's `code` against the kinds of
+  /// restriction it permits, so not every justification fits every filter.
+  static const restrictionJustification = 'restriction_justification';
 
   /// Every type this app version knows how to prefetch.
   ///
@@ -58,7 +71,10 @@ abstract final class DictionaryType {
     skillLevel,
     languageLevel,
     educationLevel,
+    specialization,
     paymentPeriod,
     filePurpose,
+    gender,
+    restrictionJustification,
   ];
 }

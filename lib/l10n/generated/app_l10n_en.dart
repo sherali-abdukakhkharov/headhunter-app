@@ -729,4 +729,229 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get searchShortlisted => 'Shortlisted';
+
+  @override
+  String get filtersTitle => 'Filters';
+
+  @override
+  String get filtersApply => 'Apply filters';
+
+  @override
+  String get filtersReset => 'Reset';
+
+  @override
+  String get filtersEdit => 'Filters';
+
+  @override
+  String get filtersClearAll => 'Clear all';
+
+  @override
+  String get filtersNone => 'No filters — every searchable candidate';
+
+  @override
+  String get filtersBlockedTitle => 'Cannot search yet';
+
+  @override
+  String get filtersOccupation => 'Occupation';
+
+  @override
+  String get filtersSkills => 'Skills';
+
+  @override
+  String get filtersExperience => 'Experience';
+
+  @override
+  String get filtersLanguages => 'Languages';
+
+  @override
+  String get filtersEducation => 'Education';
+
+  @override
+  String get filtersLocation => 'Location';
+
+  @override
+  String get filtersPreferences => 'Work preferences';
+
+  @override
+  String get filtersAvailability => 'Availability';
+
+  @override
+  String get filtersAttributes => 'Additional requirements';
+
+  @override
+  String get filtersProfile => 'Profile';
+
+  @override
+  String get filtersRestrictions => 'Restrictions';
+
+  @override
+  String get filtersSort => 'Sort by';
+
+  @override
+  String get filterOccupations => 'Occupations';
+
+  @override
+  String get filterPrimaryOnly => 'Primary occupation only';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Match the candidate’s main occupation, not every one they listed';
+
+  @override
+  String get filterOccupationLevels => 'Professional level';
+
+  @override
+  String get filterCurrentOccupations => 'Current or last role';
+
+  @override
+  String get filterSkills => 'Skills';
+
+  @override
+  String get filterMatchMode => 'Match';
+
+  @override
+  String get filterMatchAny => 'Any';
+
+  @override
+  String get filterMatchAll => 'All';
+
+  @override
+  String get filterMinLevel => 'Minimum level';
+
+  @override
+  String get filterLevelAny => 'Any level';
+
+  @override
+  String get filterExperienceYearsMin => 'Total years, minimum';
+
+  @override
+  String get filterOccupationExperience => 'Years in this occupation, minimum';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Choose an occupation first';
+
+  @override
+  String get filterLanguages => 'Languages';
+
+  @override
+  String get filterLanguageCertificate => 'Certificate required';
+
+  @override
+  String get filterEducationLevels => 'Education level';
+
+  @override
+  String get filterSpecializations => 'Specialization';
+
+  @override
+  String get filterRegion => 'Region';
+
+  @override
+  String get filterDistricts => 'Districts';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Choose a region first';
+
+  @override
+  String get filterWillingToRelocate => 'Willing to relocate';
+
+  @override
+  String get filterWillingToTravel => 'Ready to travel';
+
+  @override
+  String get filterProximityDistrict => 'Near this district';
+
+  @override
+  String get filterProximityHint => 'Used by the “Nearest” sort';
+
+  @override
+  String get filterEmploymentTypes => 'Employment type';
+
+  @override
+  String get filterWorkFormats => 'Work format';
+
+  @override
+  String get filterShifts => 'Shift';
+
+  @override
+  String get filterSalaryMin => 'Salary from';
+
+  @override
+  String get filterSalaryMax => 'Salary up to';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'A candidate expecting more is excluded. A negotiable expectation still matches.';
+
+  @override
+  String get filterAvailableBy => 'Available by';
+
+  @override
+  String get filterAvailableImmediately => 'Available immediately';
+
+  @override
+  String get filterAttributes => 'Licences, transport and tools';
+
+  @override
+  String get filterCrewSizeMin => 'Can bring a crew of at least';
+
+  @override
+  String get filterMinCompleteness => 'Profile completeness, minimum (%)';
+
+  @override
+  String get filterUpdatedSince => 'Updated since';
+
+  @override
+  String get filterAgeMin => 'Age from';
+
+  @override
+  String get filterAgeMax => 'Age to';
+
+  @override
+  String get filterGender => 'Gender';
+
+  @override
+  String get filterJustification => 'Reason for the restriction';
+
+  @override
+  String get filterRestrictionRequired =>
+      'An age or gender filter needs a declared reason. Every use is logged.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Only where the job genuinely requires it.';
+
+  @override
+  String get sortMatch => 'Best match';
+
+  @override
+  String get sortRecent => 'Recently updated';
+
+  @override
+  String get sortExperience => 'Most experience';
+
+  @override
+  String get sortSalary => 'Lowest expectation';
+
+  @override
+  String get sortProximity => 'Nearest';
+
+  @override
+  String get commonLoadMore => 'Load more';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Find candidates';
+
+  @override
+  String get searchScopedToVacancy => 'Filters came from a vacancy';
 }

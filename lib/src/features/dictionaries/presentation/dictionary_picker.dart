@@ -157,6 +157,9 @@ class HhDictionaryMultiPicker extends ConsumerWidget {
     this.errorText,
     this.enabled = true,
     this.emptyLabel,
+    this.parentId,
+    this.requiresParentLabel,
+    this.parentScoped = false,
   });
 
   final String label;
@@ -171,10 +174,30 @@ class HhDictionaryMultiPicker extends ConsumerWidget {
   final bool enabled;
   final String? emptyLabel;
 
+  /// Restricts the options to children of this id — the districts of a chosen
+  /// region. Same three-field contract as [HhDictionaryPicker], and for the
+  /// same reason: one type holds both levels of the hierarchy, so "all items"
+  /// and "top-level items" are different lists that look identical.
+  final String? parentId;
+
+  final String? requiresParentLabel;
+  final bool parentScoped;
+
+  bool get _blockedOnParent => requiresParentLabel != null && parentId == null;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final resolved = ref.watch(resolvedLabelsProvider(type, labelKey(values)));
+
+    if (_blockedOnParent) {
+      return HhTextField(
+        label: label,
+        enabled: false,
+        disabledHint: requiresParentLabel,
+        errorText: errorText,
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,10 +259,11 @@ class HhDictionaryMultiPicker extends ConsumerWidget {
       builder: (_) => _PickerSheet(
         title: label,
         type: type,
-        parentId: null,
-        // Multi-select types (skills, languages) are flat, so the whole set is
-        // the right list.
-        parentScoped: false,
+        parentId: parentId,
+        // Flat for the usual multi-select types (skills, languages), where the
+        // whole set is the right list. A chosen parent implies scoping even if
+        // the caller forgot to say so.
+        parentScoped: parentScoped || parentId != null,
         selected: values.toSet(),
         multiple: true,
       ),

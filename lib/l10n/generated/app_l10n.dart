@@ -1384,6 +1384,438 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Shortlisted'**
   String get searchShortlisted;
+
+  /// Title of §7.1’s filter builder.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filtersTitle;
+
+  /// Closes the filter builder and re-counts (§7.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Apply filters'**
+  String get filtersApply;
+
+  /// Clears every filter inside the builder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get filtersReset;
+
+  /// Opens the filter builder from the results screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filtersEdit;
+
+  /// Removes every applied-filter chip at once.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get filtersClearAll;
+
+  /// Shown in place of the chips when nothing is filtered. Names BR-02’s gate rather than saying "all candidates", which would be untrue.
+  ///
+  /// In en, this message translates to:
+  /// **'No filters — every searchable candidate'**
+  String get filtersNone;
+
+  /// BR-12: heading of the notice blocking Apply while a restriction is unjustified.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot search yet'**
+  String get filtersBlockedTitle;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation'**
+  String get filtersOccupation;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get filtersSkills;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Experience'**
+  String get filtersExperience;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get filtersLanguages;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get filtersEducation;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get filtersLocation;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Work preferences'**
+  String get filtersPreferences;
+
+  /// Filter-builder section heading (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get filtersAvailability;
+
+  /// Filter-builder section heading — §6.3’s attribute dictionary.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional requirements'**
+  String get filtersAttributes;
+
+  /// Filter-builder section heading: completeness and recency (§7.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get filtersProfile;
+
+  /// Filter-builder section heading for BR-12’s conditional filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrictions'**
+  String get filtersRestrictions;
+
+  /// Filter-builder section heading for §7.3’s ordering.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get filtersSort;
+
+  /// Multi-select of occupation dictionary ids.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupations'**
+  String get filterOccupations;
+
+  /// Restricts the occupation match to the candidate’s main one.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary occupation only'**
+  String get filterPrimaryOnly;
+
+  /// Explains what the switch changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Match the candidate’s main occupation, not every one they listed'**
+  String get filterPrimaryOnlyHint;
+
+  /// §7.1’s "professional level where applicable".
+  ///
+  /// In en, this message translates to:
+  /// **'Professional level'**
+  String get filterOccupationLevels;
+
+  /// §7.1: the occupation of the candidate’s current job.
+  ///
+  /// In en, this message translates to:
+  /// **'Current or last role'**
+  String get filterCurrentOccupations;
+
+  /// Multi-select of skill dictionary ids.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get filterSkills;
+
+  /// Label of §7.1’s match-all / match-any control.
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get filterMatchMode;
+
+  /// Any one of the chosen items is enough. The default: a vacancy naming eight skills would otherwise match nobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get filterMatchAny;
+
+  /// Every chosen item is required.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterMatchAll;
+
+  /// §7.4’s floor on an ordered scale — "B2 or better".
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum level'**
+  String get filterMinLevel;
+
+  /// No floor. Also what a scale that failed to load falls back to.
+  ///
+  /// In en, this message translates to:
+  /// **'Any level'**
+  String get filterLevelAny;
+
+  /// Total years summed from the candidate’s experience rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Total years, minimum'**
+  String get filterExperienceYearsMin;
+
+  /// Years within the chosen occupations, which it therefore requires.
+  ///
+  /// In en, this message translates to:
+  /// **'Years in this occupation, minimum'**
+  String get filterOccupationExperience;
+
+  /// The server’s search.occupation_required, said before the request instead of after it.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an occupation first'**
+  String get filterOccupationExperienceNeedsOccupation;
+
+  /// Multi-select of language dictionary ids; each chosen language then gets its own floor.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get filterLanguages;
+
+  /// §7.1’s "certificate availability", per language.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate required'**
+  String get filterLanguageCertificate;
+
+  /// A set of acceptable levels rather than a floor — the education row stores no rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Education level'**
+  String get filterEducationLevels;
+
+  /// §7.1’s "specialization where relevant", as dictionary ids (BR-13).
+  ///
+  /// In en, this message translates to:
+  /// **'Specialization'**
+  String get filterSpecializations;
+
+  /// Top level of the region dictionary — the districts are its children.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get filterRegion;
+
+  /// Children of the chosen region.
+  ///
+  /// In en, this message translates to:
+  /// **'Districts'**
+  String get filterDistricts;
+
+  /// Cascading picker with no parent chosen. Without it the list would show every district in the country.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a region first'**
+  String get filterDistrictsNeedRegion;
+
+  /// §7.1. Remote-work readiness is not here — it is a work_format id.
+  ///
+  /// In en, this message translates to:
+  /// **'Willing to relocate'**
+  String get filterWillingToRelocate;
+
+  /// §7.1’s travel readiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to travel'**
+  String get filterWillingToTravel;
+
+  /// Where to be near, for the proximity sort. Separate from the district filter, which would exclude everyone else and leave the sort nothing to order.
+  ///
+  /// In en, this message translates to:
+  /// **'Near this district'**
+  String get filterProximityDistrict;
+
+  /// Hint on the proximity picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by the “Nearest” sort'**
+  String get filterProximityHint;
+
+  /// employment_type dictionary ids.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment type'**
+  String get filterEmploymentTypes;
+
+  /// work_format dictionary ids — this is where remote lives.
+  ///
+  /// In en, this message translates to:
+  /// **'Work format'**
+  String get filterWorkFormats;
+
+  /// shift dictionary ids.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift'**
+  String get filterShifts;
+
+  /// The floor of the employer’s range.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary from'**
+  String get filterSalaryMin;
+
+  /// The employer’s ceiling.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary up to'**
+  String get filterSalaryMax;
+
+  /// Says what the ceiling does, including the negotiable case, which is the half people get wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'A candidate expecting more is excluded. A negotiable expectation still matches.'**
+  String get filterSalaryMaxHint;
+
+  /// A date the candidate can start by.
+  ///
+  /// In en, this message translates to:
+  /// **'Available by'**
+  String get filterAvailableBy;
+
+  /// §7.1’s "immediately", tested against today in Asia/Tashkent.
+  ///
+  /// In en, this message translates to:
+  /// **'Available immediately'**
+  String get filterAvailableImmediately;
+
+  /// §6.3’s attribute dictionary, which is one type covering all of these.
+  ///
+  /// In en, this message translates to:
+  /// **'Licences, transport and tools'**
+  String get filterAttributes;
+
+  /// Candidates who can bring a crew — a physical-work filter (§2.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Can bring a crew of at least'**
+  String get filterCrewSizeMin;
+
+  /// Percentage floor on profile completeness.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile completeness, minimum (%)'**
+  String get filterMinCompleteness;
+
+  /// §7.1’s "recently updated", against last_meaningful_update_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated since'**
+  String get filterUpdatedSince;
+
+  /// BR-12. Permitted only with a justification.
+  ///
+  /// In en, this message translates to:
+  /// **'Age from'**
+  String get filterAgeMin;
+
+  /// BR-12. See filterAgeMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Age to'**
+  String get filterAgeMax;
+
+  /// BR-12. Permitted only with a justification.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get filterGender;
+
+  /// BR-12: a restriction_justification dictionary id, required as soon as an age or gender filter is used.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for the restriction'**
+  String get filterJustification;
+
+  /// BR-12, blocking Apply. Says the logging part too: it is a fact about the feature, not a threat.
+  ///
+  /// In en, this message translates to:
+  /// **'An age or gender filter needs a declared reason. Every use is logged.'**
+  String get filterRestrictionRequired;
+
+  /// Sits above the BR-12 section, before anything is filled in.
+  ///
+  /// In en, this message translates to:
+  /// **'Only where the job genuinely requires it.'**
+  String get filterRestrictionExplain;
+
+  /// §7.3 sort: the weighted share of the filters each candidate satisfies.
+  ///
+  /// In en, this message translates to:
+  /// **'Best match'**
+  String get sortMatch;
+
+  /// §7.3 sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently updated'**
+  String get sortRecent;
+
+  /// §7.3 sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Most experience'**
+  String get sortExperience;
+
+  /// §7.3 sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest expectation'**
+  String get sortSalary;
+
+  /// §7.3 sort: tiered — same district, then same region, then the rest. With no location filter it falls through to recency.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest'**
+  String get sortProximity;
+
+  /// Fetches the next page of a paged list.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get commonLoadMore;
+
+  /// An applied-filter chip for a group holding more than one value. The group is named, not its values: turning eight dictionary ids into words is eight asynchronous resolutions in a wrapping row.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} ({count})'**
+  String filterChipCount(String label, int count);
+
+  /// An applied-filter chip for a filter whose value needs no dictionary — a number, a date, a percentage. Those carry their value, because hiding a number the user can already read helps nobody.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String filterChipValue(String label, String value);
+
+  /// UAT-06: opens candidate search with this vacancy’s mandatory requirements prefilled as filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Find candidates'**
+  String get searchFromVacancy;
+
+  /// Shown on the search screen when the config was prefilled from a vacancy (UAT-06). The prefill is a starting point, so the employer has to be able to see that it happened.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters came from a vacancy'**
+  String get searchScopedToVacancy;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

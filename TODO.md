@@ -270,8 +270,10 @@ working destinations rather than dead ends.
 - [x] Resolve labels by id, including retired and merged items (§10.3)
 - [x] Verified on device against the live API: labels switch uz-Latn → ru while
       the bound ids stay byte-identical — the client half of UAT-13
-- [ ] **Match-all / match-any** on multi-select where §7.1 needs it — a search
-      concern, so it belongs with the search UI rather than the picker
+- [x] **Match-all / match-any** on multi-select where §7.1 needs it — landed in
+      the M7 filter builder rather than the picker, which is where the concern
+      actually is. Shown only once its group has values: a mode with no group
+      asks a question with no subject, and `toJson` drops it anyway
 - [x] **Level pickers** (skill × skill_level, language × language_level) —
       `LeveledFieldEditor`, built as M3's `dictionary_leveled` field. It reuses
       the picker sheet via `pickDictionaryItem` rather than growing a second
@@ -452,7 +454,7 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Employer application filters, and the internal-notes UI — the repository
       has `notes`/`addNote`, no screen yet
 
-## M7 - Candidate search *(core done)*
+## M7 - Candidate search *(§7.1–§7.3 done; invitations and the profile view open)*
 
 - [x] **No phone numbers on candidate cards** (BR-09, §11.1) — **asserted in a
       test**, and verified to fail against a card that renders one. The
@@ -466,12 +468,34 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [x] Result list with §7.3 candidate cards and the match score
 - [x] Save candidates — the repository also covers shortlists, private notes
       and UAT-06's prefill-from-vacancy
-- [ ] Filter builder for all §7.1 groups — the repository takes filters, there
-      is no builder UI, so every search is currently unfiltered
-- [ ] Removable filter chips; reset all; edit one
-- [ ] §7.3 sorts
+- [x] Filter builder for all §7.1 groups — every field on
+      `CandidateSearchFiltersDto`, in eleven sections. Two of the server's
+      refusals are re-made in the client so they are read *before* the request
+      rather than as a 403 after it: **BR-12** blocks Apply until an age or
+      gender filter has a declared reason, and `search.occupation_required` is
+      made unreachable by disabling "years in this occupation" until an
+      occupation is chosen
+- [x] **Level floors bind a `rank`, not a dictionary id** — the one deliberate
+      exception to BR-13 in this app, because "B2 or better" is a comparison
+      and ids are unordered. Pinned by a test whose fixture gives `rank` and
+      `sortOrder` *different* values, so a field reading `sortOrder` fails
+      here rather than the day an administrator inserts a level (§7.4, §10.3)
+- [x] Removable filter chips; reset all; edit one. **Removing a group takes its
+      dependents with it** — occupation → occupation-experience, region →
+      districts, justification → age/gender — so a chip can never leave a set
+      the server refuses for a filter the employer did not touch
+- [x] §7.3 sorts, all five
+- [x] Persist last search configuration locally, restrictions included. Safe
+      because a restriction is never invisible: it is always a chip, and it
+      cannot survive without the justification it was declared with
+- [x] UAT-06 prefill from a vacancy — "Find candidates" on a non-draft vacancy
+      fetches `/candidate-search/prefill/:id` *before* navigating, so the tab is
+      never entered showing the previous search and then reshuffled
 - [ ] Invitations + response tracking (UAT-07); general invitations
-- [ ] Persist last search configuration locally
+- [ ] Saved-candidates and shortlist screens — the repository covers both, no
+      screen yet
+- [ ] Candidate profile view from a result card (§7.3 "View profile"), which is
+      where BR-09 *does* open and `exposureReason` says why
 
 ## M8 - Chat and interviews
 

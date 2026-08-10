@@ -736,4 +736,229 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get searchShortlisted => 'В шорт-листе';
+
+  @override
+  String get filtersTitle => 'Фильтры';
+
+  @override
+  String get filtersApply => 'Применить фильтры';
+
+  @override
+  String get filtersReset => 'Сбросить';
+
+  @override
+  String get filtersEdit => 'Фильтры';
+
+  @override
+  String get filtersClearAll => 'Очистить все';
+
+  @override
+  String get filtersNone => 'Без фильтров — все доступные для поиска кандидаты';
+
+  @override
+  String get filtersBlockedTitle => 'Поиск пока невозможен';
+
+  @override
+  String get filtersOccupation => 'Профессия';
+
+  @override
+  String get filtersSkills => 'Навыки';
+
+  @override
+  String get filtersExperience => 'Опыт';
+
+  @override
+  String get filtersLanguages => 'Языки';
+
+  @override
+  String get filtersEducation => 'Образование';
+
+  @override
+  String get filtersLocation => 'Местоположение';
+
+  @override
+  String get filtersPreferences => 'Условия работы';
+
+  @override
+  String get filtersAvailability => 'Готовность приступить';
+
+  @override
+  String get filtersAttributes => 'Дополнительные требования';
+
+  @override
+  String get filtersProfile => 'Профиль';
+
+  @override
+  String get filtersRestrictions => 'Ограничения';
+
+  @override
+  String get filtersSort => 'Сортировка';
+
+  @override
+  String get filterOccupations => 'Профессии';
+
+  @override
+  String get filterPrimaryOnly => 'Только основная профессия';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Учитывать основную профессию, а не все указанные';
+
+  @override
+  String get filterOccupationLevels => 'Профессиональный уровень';
+
+  @override
+  String get filterCurrentOccupations => 'Текущая или последняя должность';
+
+  @override
+  String get filterSkills => 'Навыки';
+
+  @override
+  String get filterMatchMode => 'Совпадение';
+
+  @override
+  String get filterMatchAny => 'Любой';
+
+  @override
+  String get filterMatchAll => 'Все';
+
+  @override
+  String get filterMinLevel => 'Минимальный уровень';
+
+  @override
+  String get filterLevelAny => 'Любой уровень';
+
+  @override
+  String get filterExperienceYearsMin => 'Всего лет, минимум';
+
+  @override
+  String get filterOccupationExperience => 'Лет в этой профессии, минимум';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Сначала выберите профессию';
+
+  @override
+  String get filterLanguages => 'Языки';
+
+  @override
+  String get filterLanguageCertificate => 'Нужен сертификат';
+
+  @override
+  String get filterEducationLevels => 'Уровень образования';
+
+  @override
+  String get filterSpecializations => 'Специальность';
+
+  @override
+  String get filterRegion => 'Регион';
+
+  @override
+  String get filterDistricts => 'Районы';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Сначала выберите регион';
+
+  @override
+  String get filterWillingToRelocate => 'Готов к переезду';
+
+  @override
+  String get filterWillingToTravel => 'Готов к командировкам';
+
+  @override
+  String get filterProximityDistrict => 'Рядом с этим районом';
+
+  @override
+  String get filterProximityHint => 'Используется сортировкой «Ближайшие»';
+
+  @override
+  String get filterEmploymentTypes => 'Тип занятости';
+
+  @override
+  String get filterWorkFormats => 'Формат работы';
+
+  @override
+  String get filterShifts => 'Смена';
+
+  @override
+  String get filterSalaryMin => 'Зарплата от';
+
+  @override
+  String get filterSalaryMax => 'Зарплата до';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Кандидат, ожидающий больше, исключается. Договорные ожидания по-прежнему подходят.';
+
+  @override
+  String get filterAvailableBy => 'Готов приступить к';
+
+  @override
+  String get filterAvailableImmediately => 'Готов приступить сразу';
+
+  @override
+  String get filterAttributes => 'Права, транспорт и инструменты';
+
+  @override
+  String get filterCrewSizeMin => 'Может привести бригаду не менее';
+
+  @override
+  String get filterMinCompleteness => 'Заполненность профиля, минимум (%)';
+
+  @override
+  String get filterUpdatedSince => 'Обновлён с';
+
+  @override
+  String get filterAgeMin => 'Возраст от';
+
+  @override
+  String get filterAgeMax => 'Возраст до';
+
+  @override
+  String get filterGender => 'Пол';
+
+  @override
+  String get filterJustification => 'Основание для ограничения';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Фильтр по возрасту или полу требует указания основания. Каждое использование фиксируется.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Только если этого действительно требует работа.';
+
+  @override
+  String get sortMatch => 'По совпадению';
+
+  @override
+  String get sortRecent => 'По обновлению';
+
+  @override
+  String get sortExperience => 'По опыту';
+
+  @override
+  String get sortSalary => 'По ожидаемой зарплате';
+
+  @override
+  String get sortProximity => 'По близости';
+
+  @override
+  String get commonLoadMore => 'Показать ещё';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Найти кандидатов';
+
+  @override
+  String get searchScopedToVacancy => 'Фильтры взяты из вакансии';
 }

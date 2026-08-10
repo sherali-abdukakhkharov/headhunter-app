@@ -5,6 +5,8 @@ import 'package:headhunter_app/l10n/generated/app_l10n.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/core/router/routes.dart';
+import 'package:headhunter_app/src/features/candidate_search/data/candidate_search_repository.dart';
+import 'package:headhunter_app/src/features/candidate_search/data/search_config_controller.dart';
 import 'package:headhunter_app/src/features/profile/presentation/schema_field_widget.dart';
 import 'package:headhunter_app/src/features/vacancy/data/vacancy_controller.dart';
 import 'package:headhunter_app/src/features/vacancy/presentation/vacancy_status.dart';
@@ -230,6 +232,18 @@ class _Actions extends ConsumerWidget {
                     : () => _submit(context, ref),
               ),
 
+            // UAT-06. Not on a draft: a draft has no agreed requirements to
+            // derive filters from, and prefilling from a half-written vacancy
+            // produces a search nobody meant to run.
+            if (vacancy.status != 'draft' && !state.isDirty) ...[
+              const SizedBox(height: HhSpace.sm),
+              HhButton.secondary(
+                label: l10n.searchFromVacancy,
+                iconPath: HhIconPath.search,
+                onPressed: () => _findCandidates(context, ref),
+              ),
+            ],
+
             // Only the transitions §6.4 allows from here. Closing is terminal
             // (BR-11), so it never appears as something to undo.
             if (vacancy.employerTransitions.isNotEmpty && !state.isDirty) ...[
@@ -252,6 +266,31 @@ class _Actions extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// UAT-06: opens candidate search with this vacancy's requirements applied.
+  ///
+  /// The prefill is fetched *before* navigating, so the search tab is never
+  /// entered showing the previous search's filters and then reshuffled a
+  /// moment later. A failed prefill leaves the employer where they are with a
+  /// reason, rather than on a search screen that quietly ignored the vacancy.
+  Future<void> _findCandidates(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+
+    try {
+      final filters = await ref
+          .read(candidateSearchRepositoryProvider)
+          .prefill(id);
+
+      await ref
+          .read(searchConfigControllerProvider.notifier)
+          .prefillFrom(id, filters);
+
+      router.go(Routes.employerCandidates);
+    } on ApiException catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+    }
   }
 
   Future<void> _save(BuildContext context, WidgetRef ref) async {

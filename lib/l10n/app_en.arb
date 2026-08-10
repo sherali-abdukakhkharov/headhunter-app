@@ -946,5 +946,309 @@
   "searchShortlisted": "Shortlisted",
   "@searchShortlisted": {
     "description": "Already on the shortlist; tapping removes."
+  },
+  "filtersTitle": "Filters",
+  "@filtersTitle": {
+    "description": "Title of §7.1’s filter builder."
+  },
+  "filtersApply": "Apply filters",
+  "@filtersApply": {
+    "description": "Closes the filter builder and re-counts (§7.2)."
+  },
+  "filtersReset": "Reset",
+  "@filtersReset": {
+    "description": "Clears every filter inside the builder."
+  },
+  "filtersEdit": "Filters",
+  "@filtersEdit": {
+    "description": "Opens the filter builder from the results screen."
+  },
+  "filtersClearAll": "Clear all",
+  "@filtersClearAll": {
+    "description": "Removes every applied-filter chip at once."
+  },
+  "filtersNone": "No filters — every searchable candidate",
+  "@filtersNone": {
+    "description": "Shown in place of the chips when nothing is filtered. Names BR-02’s gate rather than saying \"all candidates\", which would be untrue."
+  },
+  "filtersBlockedTitle": "Cannot search yet",
+  "@filtersBlockedTitle": {
+    "description": "BR-12: heading of the notice blocking Apply while a restriction is unjustified."
+  },
+  "filtersOccupation": "Occupation",
+  "@filtersOccupation": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersSkills": "Skills",
+  "@filtersSkills": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersExperience": "Experience",
+  "@filtersExperience": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersLanguages": "Languages",
+  "@filtersLanguages": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersEducation": "Education",
+  "@filtersEducation": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersLocation": "Location",
+  "@filtersLocation": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersPreferences": "Work preferences",
+  "@filtersPreferences": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersAvailability": "Availability",
+  "@filtersAvailability": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersAttributes": "Additional requirements",
+  "@filtersAttributes": {
+    "description": "Filter-builder section heading — §6.3’s attribute dictionary."
+  },
+  "filtersProfile": "Profile",
+  "@filtersProfile": {
+    "description": "Filter-builder section heading: completeness and recency (§7.1)."
+  },
+  "filtersRestrictions": "Restrictions",
+  "@filtersRestrictions": {
+    "description": "Filter-builder section heading for BR-12’s conditional filters."
+  },
+  "filtersSort": "Sort by",
+  "@filtersSort": {
+    "description": "Filter-builder section heading for §7.3’s ordering."
+  },
+  "filterOccupations": "Occupations",
+  "@filterOccupations": {
+    "description": "Multi-select of occupation dictionary ids."
+  },
+  "filterPrimaryOnly": "Primary occupation only",
+  "@filterPrimaryOnly": {
+    "description": "Restricts the occupation match to the candidate’s main one."
+  },
+  "filterPrimaryOnlyHint": "Match the candidate’s main occupation, not every one they listed",
+  "@filterPrimaryOnlyHint": {
+    "description": "Explains what the switch changes."
+  },
+  "filterOccupationLevels": "Professional level",
+  "@filterOccupationLevels": {
+    "description": "§7.1’s \"professional level where applicable\"."
+  },
+  "filterCurrentOccupations": "Current or last role",
+  "@filterCurrentOccupations": {
+    "description": "§7.1: the occupation of the candidate’s current job."
+  },
+  "filterSkills": "Skills",
+  "@filterSkills": {
+    "description": "Multi-select of skill dictionary ids."
+  },
+  "filterMatchMode": "Match",
+  "@filterMatchMode": {
+    "description": "Label of §7.1’s match-all / match-any control."
+  },
+  "filterMatchAny": "Any",
+  "@filterMatchAny": {
+    "description": "Any one of the chosen items is enough. The default: a vacancy naming eight skills would otherwise match nobody."
+  },
+  "filterMatchAll": "All",
+  "@filterMatchAll": {
+    "description": "Every chosen item is required."
+  },
+  "filterMinLevel": "Minimum level",
+  "@filterMinLevel": {
+    "description": "§7.4’s floor on an ordered scale — \"B2 or better\"."
+  },
+  "filterLevelAny": "Any level",
+  "@filterLevelAny": {
+    "description": "No floor. Also what a scale that failed to load falls back to."
+  },
+  "filterExperienceYearsMin": "Total years, minimum",
+  "@filterExperienceYearsMin": {
+    "description": "Total years summed from the candidate’s experience rows."
+  },
+  "filterOccupationExperience": "Years in this occupation, minimum",
+  "@filterOccupationExperience": {
+    "description": "Years within the chosen occupations, which it therefore requires."
+  },
+  "filterOccupationExperienceNeedsOccupation": "Choose an occupation first",
+  "@filterOccupationExperienceNeedsOccupation": {
+    "description": "The server’s search.occupation_required, said before the request instead of after it."
+  },
+  "filterLanguages": "Languages",
+  "@filterLanguages": {
+    "description": "Multi-select of language dictionary ids; each chosen language then gets its own floor."
+  },
+  "filterLanguageCertificate": "Certificate required",
+  "@filterLanguageCertificate": {
+    "description": "§7.1’s \"certificate availability\", per language."
+  },
+  "filterEducationLevels": "Education level",
+  "@filterEducationLevels": {
+    "description": "A set of acceptable levels rather than a floor — the education row stores no rank."
+  },
+  "filterSpecializations": "Specialization",
+  "@filterSpecializations": {
+    "description": "§7.1’s \"specialization where relevant\", as dictionary ids (BR-13)."
+  },
+  "filterRegion": "Region",
+  "@filterRegion": {
+    "description": "Top level of the region dictionary — the districts are its children."
+  },
+  "filterDistricts": "Districts",
+  "@filterDistricts": {
+    "description": "Children of the chosen region."
+  },
+  "filterDistrictsNeedRegion": "Choose a region first",
+  "@filterDistrictsNeedRegion": {
+    "description": "Cascading picker with no parent chosen. Without it the list would show every district in the country."
+  },
+  "filterWillingToRelocate": "Willing to relocate",
+  "@filterWillingToRelocate": {
+    "description": "§7.1. Remote-work readiness is not here — it is a work_format id."
+  },
+  "filterWillingToTravel": "Ready to travel",
+  "@filterWillingToTravel": {
+    "description": "§7.1’s travel readiness."
+  },
+  "filterProximityDistrict": "Near this district",
+  "@filterProximityDistrict": {
+    "description": "Where to be near, for the proximity sort. Separate from the district filter, which would exclude everyone else and leave the sort nothing to order."
+  },
+  "filterProximityHint": "Used by the “Nearest” sort",
+  "@filterProximityHint": {
+    "description": "Hint on the proximity picker."
+  },
+  "filterEmploymentTypes": "Employment type",
+  "@filterEmploymentTypes": {
+    "description": "employment_type dictionary ids."
+  },
+  "filterWorkFormats": "Work format",
+  "@filterWorkFormats": {
+    "description": "work_format dictionary ids — this is where remote lives."
+  },
+  "filterShifts": "Shift",
+  "@filterShifts": {
+    "description": "shift dictionary ids."
+  },
+  "filterSalaryMin": "Salary from",
+  "@filterSalaryMin": {
+    "description": "The floor of the employer’s range."
+  },
+  "filterSalaryMax": "Salary up to",
+  "@filterSalaryMax": {
+    "description": "The employer’s ceiling."
+  },
+  "filterSalaryMaxHint": "A candidate expecting more is excluded. A negotiable expectation still matches.",
+  "@filterSalaryMaxHint": {
+    "description": "Says what the ceiling does, including the negotiable case, which is the half people get wrong."
+  },
+  "filterAvailableBy": "Available by",
+  "@filterAvailableBy": {
+    "description": "A date the candidate can start by."
+  },
+  "filterAvailableImmediately": "Available immediately",
+  "@filterAvailableImmediately": {
+    "description": "§7.1’s \"immediately\", tested against today in Asia/Tashkent."
+  },
+  "filterAttributes": "Licences, transport and tools",
+  "@filterAttributes": {
+    "description": "§6.3’s attribute dictionary, which is one type covering all of these."
+  },
+  "filterCrewSizeMin": "Can bring a crew of at least",
+  "@filterCrewSizeMin": {
+    "description": "Candidates who can bring a crew — a physical-work filter (§2.1)."
+  },
+  "filterMinCompleteness": "Profile completeness, minimum (%)",
+  "@filterMinCompleteness": {
+    "description": "Percentage floor on profile completeness."
+  },
+  "filterUpdatedSince": "Updated since",
+  "@filterUpdatedSince": {
+    "description": "§7.1’s \"recently updated\", against last_meaningful_update_at."
+  },
+  "filterAgeMin": "Age from",
+  "@filterAgeMin": {
+    "description": "BR-12. Permitted only with a justification."
+  },
+  "filterAgeMax": "Age to",
+  "@filterAgeMax": {
+    "description": "BR-12. See filterAgeMin."
+  },
+  "filterGender": "Gender",
+  "@filterGender": {
+    "description": "BR-12. Permitted only with a justification."
+  },
+  "filterJustification": "Reason for the restriction",
+  "@filterJustification": {
+    "description": "BR-12: a restriction_justification dictionary id, required as soon as an age or gender filter is used."
+  },
+  "filterRestrictionRequired": "An age or gender filter needs a declared reason. Every use is logged.",
+  "@filterRestrictionRequired": {
+    "description": "BR-12, blocking Apply. Says the logging part too: it is a fact about the feature, not a threat."
+  },
+  "filterRestrictionExplain": "Only where the job genuinely requires it.",
+  "@filterRestrictionExplain": {
+    "description": "Sits above the BR-12 section, before anything is filled in."
+  },
+  "sortMatch": "Best match",
+  "@sortMatch": {
+    "description": "§7.3 sort: the weighted share of the filters each candidate satisfies."
+  },
+  "sortRecent": "Recently updated",
+  "@sortRecent": {
+    "description": "§7.3 sort."
+  },
+  "sortExperience": "Most experience",
+  "@sortExperience": {
+    "description": "§7.3 sort."
+  },
+  "sortSalary": "Lowest expectation",
+  "@sortSalary": {
+    "description": "§7.3 sort."
+  },
+  "sortProximity": "Nearest",
+  "@sortProximity": {
+    "description": "§7.3 sort: tiered — same district, then same region, then the rest. With no location filter it falls through to recency."
+  },
+  "commonLoadMore": "Load more",
+  "@commonLoadMore": {
+    "description": "Fetches the next page of a paged list."
+  },
+  "filterChipCount": "{label} ({count})",
+  "@filterChipCount": {
+    "description": "An applied-filter chip for a group holding more than one value. The group is named, not its values: turning eight dictionary ids into words is eight asynchronous resolutions in a wrapping row.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterChipValue": "{label}: {value}",
+  "@filterChipValue": {
+    "description": "An applied-filter chip for a filter whose value needs no dictionary — a number, a date, a percentage. Those carry their value, because hiding a number the user can already read helps nobody.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "searchFromVacancy": "Find candidates",
+  "@searchFromVacancy": {
+    "description": "UAT-06: opens candidate search with this vacancy’s mandatory requirements prefilled as filters."
+  },
+  "searchScopedToVacancy": "Filters came from a vacancy",
+  "@searchScopedToVacancy": {
+    "description": "Shown on the search screen when the config was prefilled from a vacancy (UAT-06). The prefill is a starting point, so the employer has to be able to see that it happened."
   }
 }

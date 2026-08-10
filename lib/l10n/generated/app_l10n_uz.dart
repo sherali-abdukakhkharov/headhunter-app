@@ -727,6 +727,231 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get searchShortlisted => 'Short-listda';
+
+  @override
+  String get filtersTitle => 'Filtrlar';
+
+  @override
+  String get filtersApply => 'Filtrlarni qo’llash';
+
+  @override
+  String get filtersReset => 'Tozalash';
+
+  @override
+  String get filtersEdit => 'Filtrlar';
+
+  @override
+  String get filtersClearAll => 'Hammasini tozalash';
+
+  @override
+  String get filtersNone => 'Filtrsiz — qidiruvga ochiq barcha nomzodlar';
+
+  @override
+  String get filtersBlockedTitle => 'Hozircha qidirib bo’lmaydi';
+
+  @override
+  String get filtersOccupation => 'Kasb';
+
+  @override
+  String get filtersSkills => 'Ko’nikmalar';
+
+  @override
+  String get filtersExperience => 'Tajriba';
+
+  @override
+  String get filtersLanguages => 'Tillar';
+
+  @override
+  String get filtersEducation => 'Ta’lim';
+
+  @override
+  String get filtersLocation => 'Joylashuv';
+
+  @override
+  String get filtersPreferences => 'Ish shartlari';
+
+  @override
+  String get filtersAvailability => 'Ishga tayyorlik';
+
+  @override
+  String get filtersAttributes => 'Qo’shimcha talablar';
+
+  @override
+  String get filtersProfile => 'Profil';
+
+  @override
+  String get filtersRestrictions => 'Cheklovlar';
+
+  @override
+  String get filtersSort => 'Saralash';
+
+  @override
+  String get filterOccupations => 'Kasblar';
+
+  @override
+  String get filterPrimaryOnly => 'Faqat asosiy kasb';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Nomzodning barcha kasblari emas, asosiysi hisobga olinadi';
+
+  @override
+  String get filterOccupationLevels => 'Kasbiy daraja';
+
+  @override
+  String get filterCurrentOccupations => 'Hozirgi yoki oxirgi lavozim';
+
+  @override
+  String get filterSkills => 'Ko’nikmalar';
+
+  @override
+  String get filterMatchMode => 'Moslik';
+
+  @override
+  String get filterMatchAny => 'Har qanday';
+
+  @override
+  String get filterMatchAll => 'Barchasi';
+
+  @override
+  String get filterMinLevel => 'Eng past daraja';
+
+  @override
+  String get filterLevelAny => 'Har qanday daraja';
+
+  @override
+  String get filterExperienceYearsMin => 'Jami yillar, kamida';
+
+  @override
+  String get filterOccupationExperience => 'Shu kasbda yillar, kamida';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Avval kasbni tanlang';
+
+  @override
+  String get filterLanguages => 'Tillar';
+
+  @override
+  String get filterLanguageCertificate => 'Sertifikat talab qilinadi';
+
+  @override
+  String get filterEducationLevels => 'Ta’lim darajasi';
+
+  @override
+  String get filterSpecializations => 'Mutaxassislik';
+
+  @override
+  String get filterRegion => 'Viloyat';
+
+  @override
+  String get filterDistricts => 'Tumanlar';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Avval viloyatni tanlang';
+
+  @override
+  String get filterWillingToRelocate => 'Ko’chib o’tishga tayyor';
+
+  @override
+  String get filterWillingToTravel => 'Xizmat safarlariga tayyor';
+
+  @override
+  String get filterProximityDistrict => 'Shu tumanga yaqin';
+
+  @override
+  String get filterProximityHint => '“Eng yaqin” saralashi uchun';
+
+  @override
+  String get filterEmploymentTypes => 'Bandlik turi';
+
+  @override
+  String get filterWorkFormats => 'Ish formati';
+
+  @override
+  String get filterShifts => 'Smena';
+
+  @override
+  String get filterSalaryMin => 'Maosh (dan)';
+
+  @override
+  String get filterSalaryMax => 'Maosh (gacha)';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Ko’proq kutayotgan nomzod chiqarib tashlanadi. Kelishiladigan kutish esa mos keladi.';
+
+  @override
+  String get filterAvailableBy => 'Ishga tayyor (sana)';
+
+  @override
+  String get filterAvailableImmediately => 'Darhol ishga tayyor';
+
+  @override
+  String get filterAttributes => 'Guvohnoma, transport va asboblar';
+
+  @override
+  String get filterCrewSizeMin => 'Kamida shuncha kishilik brigada';
+
+  @override
+  String get filterMinCompleteness => 'Profil to’ldirilishi, kamida (%)';
+
+  @override
+  String get filterUpdatedSince => 'Yangilangan (sanadan)';
+
+  @override
+  String get filterAgeMin => 'Yosh (dan)';
+
+  @override
+  String get filterAgeMax => 'Yosh (gacha)';
+
+  @override
+  String get filterGender => 'Jins';
+
+  @override
+  String get filterJustification => 'Cheklov asosi';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Yosh yoki jins bo’yicha filtr uchun asos ko’rsatilishi shart. Har bir foydalanish qayd etiladi.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Faqat ish haqiqatan talab qilgan holatda.';
+
+  @override
+  String get sortMatch => 'Mosligi bo’yicha';
+
+  @override
+  String get sortRecent => 'Yangilanishi bo’yicha';
+
+  @override
+  String get sortExperience => 'Tajribasi bo’yicha';
+
+  @override
+  String get sortSalary => 'Kutilgan maosh bo’yicha';
+
+  @override
+  String get sortProximity => 'Yaqinligi bo’yicha';
+
+  @override
+  String get commonLoadMore => 'Yana ko’rsatish';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Nomzod topish';
+
+  @override
+  String get searchScopedToVacancy => 'Filtrlar vakansiyadan olindi';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -1450,6 +1675,231 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get searchShortlisted => 'Шорт-листда';
+
+  @override
+  String get filtersTitle => 'Филтрлар';
+
+  @override
+  String get filtersApply => 'Филтрларни қўллаш';
+
+  @override
+  String get filtersReset => 'Тозалаш';
+
+  @override
+  String get filtersEdit => 'Филтрлар';
+
+  @override
+  String get filtersClearAll => 'Ҳаммасини тозалаш';
+
+  @override
+  String get filtersNone => 'Филтрсиз — қидирувга очиқ барча номзодлар';
+
+  @override
+  String get filtersBlockedTitle => 'Ҳозирча қидириб бўлмайди';
+
+  @override
+  String get filtersOccupation => 'Касб';
+
+  @override
+  String get filtersSkills => 'Кўникмалар';
+
+  @override
+  String get filtersExperience => 'Тажриба';
+
+  @override
+  String get filtersLanguages => 'Тиллар';
+
+  @override
+  String get filtersEducation => 'Таълим';
+
+  @override
+  String get filtersLocation => 'Жойлашув';
+
+  @override
+  String get filtersPreferences => 'Иш шартлари';
+
+  @override
+  String get filtersAvailability => 'Ишга тайёрлик';
+
+  @override
+  String get filtersAttributes => 'Қўшимча талаблар';
+
+  @override
+  String get filtersProfile => 'Профил';
+
+  @override
+  String get filtersRestrictions => 'Чекловлар';
+
+  @override
+  String get filtersSort => 'Саралаш';
+
+  @override
+  String get filterOccupations => 'Касблар';
+
+  @override
+  String get filterPrimaryOnly => 'Фақат асосий касб';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Номзоднинг барча касблари эмас, асосийси ҳисобга олинади';
+
+  @override
+  String get filterOccupationLevels => 'Касбий даража';
+
+  @override
+  String get filterCurrentOccupations => 'Ҳозирги ёки охирги лавозим';
+
+  @override
+  String get filterSkills => 'Кўникмалар';
+
+  @override
+  String get filterMatchMode => 'Мослик';
+
+  @override
+  String get filterMatchAny => 'Ҳар қандай';
+
+  @override
+  String get filterMatchAll => 'Барчаси';
+
+  @override
+  String get filterMinLevel => 'Энг паст даража';
+
+  @override
+  String get filterLevelAny => 'Ҳар қандай даража';
+
+  @override
+  String get filterExperienceYearsMin => 'Жами йиллар, камида';
+
+  @override
+  String get filterOccupationExperience => 'Шу касбда йиллар, камида';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Аввал касбни танланг';
+
+  @override
+  String get filterLanguages => 'Тиллар';
+
+  @override
+  String get filterLanguageCertificate => 'Сертификат талаб қилинади';
+
+  @override
+  String get filterEducationLevels => 'Таълим даражаси';
+
+  @override
+  String get filterSpecializations => 'Мутахассислик';
+
+  @override
+  String get filterRegion => 'Вилоят';
+
+  @override
+  String get filterDistricts => 'Туманлар';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Аввал вилоятни танланг';
+
+  @override
+  String get filterWillingToRelocate => 'Кўчиб ўтишга тайёр';
+
+  @override
+  String get filterWillingToTravel => 'Хизмат сафарларига тайёр';
+
+  @override
+  String get filterProximityDistrict => 'Шу туманга яқин';
+
+  @override
+  String get filterProximityHint => '«Энг яқин» саралаши учун';
+
+  @override
+  String get filterEmploymentTypes => 'Бандлик тури';
+
+  @override
+  String get filterWorkFormats => 'Иш формати';
+
+  @override
+  String get filterShifts => 'Смена';
+
+  @override
+  String get filterSalaryMin => 'Маош (дан)';
+
+  @override
+  String get filterSalaryMax => 'Маош (гача)';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Кўпроқ кутаётган номзод чиқариб ташланади. Келишиладиган кутиш эса мос келади.';
+
+  @override
+  String get filterAvailableBy => 'Ишга тайёр (сана)';
+
+  @override
+  String get filterAvailableImmediately => 'Дарҳол ишга тайёр';
+
+  @override
+  String get filterAttributes => 'Гувоҳнома, транспорт ва асбоблар';
+
+  @override
+  String get filterCrewSizeMin => 'Камида шунча кишилик бригада';
+
+  @override
+  String get filterMinCompleteness => 'Профил тўлдирилиши, камида (%)';
+
+  @override
+  String get filterUpdatedSince => 'Янгиланган (санадан)';
+
+  @override
+  String get filterAgeMin => 'Ёш (дан)';
+
+  @override
+  String get filterAgeMax => 'Ёш (гача)';
+
+  @override
+  String get filterGender => 'Жинс';
+
+  @override
+  String get filterJustification => 'Чеклов асоси';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Ёш ёки жинс бўйича филтр учун асос кўрсатилиши шарт. Ҳар бир фойдаланиш қайд этилади.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Фақат иш ҳақиқатан талаб қилган ҳолатда.';
+
+  @override
+  String get sortMatch => 'Мослиги бўйича';
+
+  @override
+  String get sortRecent => 'Янгиланиши бўйича';
+
+  @override
+  String get sortExperience => 'Тажрибаси бўйича';
+
+  @override
+  String get sortSalary => 'Кутилган маош бўйича';
+
+  @override
+  String get sortProximity => 'Яқинлиги бўйича';
+
+  @override
+  String get commonLoadMore => 'Яна кўрсатиш';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Номзод топиш';
+
+  @override
+  String get searchScopedToVacancy => 'Филтрлар вакансиядан олинди';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -2175,4 +2625,229 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get searchShortlisted => 'Short-listda';
+
+  @override
+  String get filtersTitle => 'Filtrlar';
+
+  @override
+  String get filtersApply => 'Filtrlarni qo’llash';
+
+  @override
+  String get filtersReset => 'Tozalash';
+
+  @override
+  String get filtersEdit => 'Filtrlar';
+
+  @override
+  String get filtersClearAll => 'Hammasini tozalash';
+
+  @override
+  String get filtersNone => 'Filtrsiz — qidiruvga ochiq barcha nomzodlar';
+
+  @override
+  String get filtersBlockedTitle => 'Hozircha qidirib bo’lmaydi';
+
+  @override
+  String get filtersOccupation => 'Kasb';
+
+  @override
+  String get filtersSkills => 'Ko’nikmalar';
+
+  @override
+  String get filtersExperience => 'Tajriba';
+
+  @override
+  String get filtersLanguages => 'Tillar';
+
+  @override
+  String get filtersEducation => 'Ta’lim';
+
+  @override
+  String get filtersLocation => 'Joylashuv';
+
+  @override
+  String get filtersPreferences => 'Ish shartlari';
+
+  @override
+  String get filtersAvailability => 'Ishga tayyorlik';
+
+  @override
+  String get filtersAttributes => 'Qo’shimcha talablar';
+
+  @override
+  String get filtersProfile => 'Profil';
+
+  @override
+  String get filtersRestrictions => 'Cheklovlar';
+
+  @override
+  String get filtersSort => 'Saralash';
+
+  @override
+  String get filterOccupations => 'Kasblar';
+
+  @override
+  String get filterPrimaryOnly => 'Faqat asosiy kasb';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Nomzodning barcha kasblari emas, asosiysi hisobga olinadi';
+
+  @override
+  String get filterOccupationLevels => 'Kasbiy daraja';
+
+  @override
+  String get filterCurrentOccupations => 'Hozirgi yoki oxirgi lavozim';
+
+  @override
+  String get filterSkills => 'Ko’nikmalar';
+
+  @override
+  String get filterMatchMode => 'Moslik';
+
+  @override
+  String get filterMatchAny => 'Har qanday';
+
+  @override
+  String get filterMatchAll => 'Barchasi';
+
+  @override
+  String get filterMinLevel => 'Eng past daraja';
+
+  @override
+  String get filterLevelAny => 'Har qanday daraja';
+
+  @override
+  String get filterExperienceYearsMin => 'Jami yillar, kamida';
+
+  @override
+  String get filterOccupationExperience => 'Shu kasbda yillar, kamida';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Avval kasbni tanlang';
+
+  @override
+  String get filterLanguages => 'Tillar';
+
+  @override
+  String get filterLanguageCertificate => 'Sertifikat talab qilinadi';
+
+  @override
+  String get filterEducationLevels => 'Ta’lim darajasi';
+
+  @override
+  String get filterSpecializations => 'Mutaxassislik';
+
+  @override
+  String get filterRegion => 'Viloyat';
+
+  @override
+  String get filterDistricts => 'Tumanlar';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Avval viloyatni tanlang';
+
+  @override
+  String get filterWillingToRelocate => 'Ko’chib o’tishga tayyor';
+
+  @override
+  String get filterWillingToTravel => 'Xizmat safarlariga tayyor';
+
+  @override
+  String get filterProximityDistrict => 'Shu tumanga yaqin';
+
+  @override
+  String get filterProximityHint => '“Eng yaqin” saralashi uchun';
+
+  @override
+  String get filterEmploymentTypes => 'Bandlik turi';
+
+  @override
+  String get filterWorkFormats => 'Ish formati';
+
+  @override
+  String get filterShifts => 'Smena';
+
+  @override
+  String get filterSalaryMin => 'Maosh (dan)';
+
+  @override
+  String get filterSalaryMax => 'Maosh (gacha)';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Ko’proq kutayotgan nomzod chiqarib tashlanadi. Kelishiladigan kutish esa mos keladi.';
+
+  @override
+  String get filterAvailableBy => 'Ishga tayyor (sana)';
+
+  @override
+  String get filterAvailableImmediately => 'Darhol ishga tayyor';
+
+  @override
+  String get filterAttributes => 'Guvohnoma, transport va asboblar';
+
+  @override
+  String get filterCrewSizeMin => 'Kamida shuncha kishilik brigada';
+
+  @override
+  String get filterMinCompleteness => 'Profil to’ldirilishi, kamida (%)';
+
+  @override
+  String get filterUpdatedSince => 'Yangilangan (sanadan)';
+
+  @override
+  String get filterAgeMin => 'Yosh (dan)';
+
+  @override
+  String get filterAgeMax => 'Yosh (gacha)';
+
+  @override
+  String get filterGender => 'Jins';
+
+  @override
+  String get filterJustification => 'Cheklov asosi';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Yosh yoki jins bo’yicha filtr uchun asos ko’rsatilishi shart. Har bir foydalanish qayd etiladi.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Faqat ish haqiqatan talab qilgan holatda.';
+
+  @override
+  String get sortMatch => 'Mosligi bo’yicha';
+
+  @override
+  String get sortRecent => 'Yangilanishi bo’yicha';
+
+  @override
+  String get sortExperience => 'Tajribasi bo’yicha';
+
+  @override
+  String get sortSalary => 'Kutilgan maosh bo’yicha';
+
+  @override
+  String get sortProximity => 'Yaqinligi bo’yicha';
+
+  @override
+  String get commonLoadMore => 'Yana ko’rsatish';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Nomzod topish';
+
+  @override
+  String get searchScopedToVacancy => 'Filtrlar vakansiyadan olindi';
 }
