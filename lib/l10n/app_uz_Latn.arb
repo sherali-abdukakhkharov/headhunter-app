@@ -298,5 +298,19 @@
   "candidateExposureHidden": "Nomzod profilini qidiruvdan yashirgan. U vakansiyalaringizni ko’ra oladi va ariza bera oladi.",
   "searchSavedEmpty": "Saqlangan nomzodlar yo’q",
   "commonCopy": "Nusxalash",
-  "commonCopied": "Nusxalandi"
+  "commonCopied": "Nusxalandi",
+  "vacancyDetailTitle": "Vakansiya",
+  "vacancyDescription": "Ish haqida",
+  "vacancyRequirements": "Talablar",
+  "vacancyMandatory": "Majburiy",
+  "vacancyPreferred": "Ma’qul",
+  "vacancyGoneTitle": "Bu vakansiya endi mavjud emas",
+  "vacancyGoneBody": "U yopilgan, to‘ldirilgan yoki muddati o‘tgan bo‘lishi mumkin.",
+  "vacancyReportReason": "Bu vakansiyada nima noto‘g‘ri?",
+  "vacancyReportSend": "Yuborish",
+  "commonYes": "Ha",
+  "commonNo": "Yo‘q",
+  "vacancyOpenings": "{count, plural, other{{count} ta o‘rin}}",
+  "vacancyWorkWindow": "{start} – {end}",
+  "vacancyStartsOn": "{date} dan"
 }

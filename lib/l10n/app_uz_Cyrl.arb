@@ -298,5 +298,19 @@
   "candidateExposureHidden": "Номзод профилини қидирувдан яширган. У вакансияларингизни кўра олади ва ариза бера олади.",
   "searchSavedEmpty": "Сақланган номзодлар йўқ",
   "commonCopy": "Нусхалаш",
-  "commonCopied": "Нусхаланди"
+  "commonCopied": "Нусхаланди",
+  "vacancyDetailTitle": "Вакансия",
+  "vacancyDescription": "Иш ҳақида",
+  "vacancyRequirements": "Талаблар",
+  "vacancyMandatory": "Мажбурий",
+  "vacancyPreferred": "Маъқул",
+  "vacancyGoneTitle": "Бу вакансия энди мавжуд эмас",
+  "vacancyGoneBody": "У ёпилган, тўлдирилган ёки муддати ўтган бўлиши мумкин.",
+  "vacancyReportReason": "Бу вакансияда нима нотўғри?",
+  "vacancyReportSend": "Юбориш",
+  "commonYes": "Ҳа",
+  "commonNo": "Йўқ",
+  "vacancyOpenings": "{count, plural, other{{count} та ўрин}}",
+  "vacancyWorkWindow": "{start} – {end}",
+  "vacancyStartsOn": "{date} дан"
 }

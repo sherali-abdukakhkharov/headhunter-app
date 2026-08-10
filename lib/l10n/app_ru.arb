@@ -298,5 +298,19 @@
   "candidateExposureHidden": "Кандидат скрыл профиль из поиска. Он по-прежнему видит ваши вакансии и может откликнуться.",
   "searchSavedEmpty": "Нет сохранённых кандидатов",
   "commonCopy": "Копировать",
-  "commonCopied": "Скопировано"
+  "commonCopied": "Скопировано",
+  "vacancyDetailTitle": "Вакансия",
+  "vacancyDescription": "О работе",
+  "vacancyRequirements": "Требования",
+  "vacancyMandatory": "Обязательно",
+  "vacancyPreferred": "Желательно",
+  "vacancyGoneTitle": "Вакансия больше недоступна",
+  "vacancyGoneBody": "Возможно, она закрыта, заполнена или истёк срок подачи.",
+  "vacancyReportReason": "Что не так с этой вакансией?",
+  "vacancyReportSend": "Отправить",
+  "commonYes": "Да",
+  "commonNo": "Нет",
+  "vacancyOpenings": "{count, plural, one{{count} место} few{{count} места} many{{count} мест} other{{count} мест}}",
+  "vacancyWorkWindow": "{start} – {end}",
+  "vacancyStartsOn": "С {date}"
 }

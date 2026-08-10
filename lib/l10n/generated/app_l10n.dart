@@ -1894,6 +1894,90 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Copied'**
   String get commonCopied;
+
+  /// Title of §5.6’s vacancy detail screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancy'**
+  String get vacancyDetailTitle;
+
+  /// Heading above the employer’s free text. Never translated (§2.4) — shown exactly as entered.
+  ///
+  /// In en, this message translates to:
+  /// **'About the job'**
+  String get vacancyDescription;
+
+  /// §6.3’s structured requirements, grouped by schema field.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirements'**
+  String get vacancyRequirements;
+
+  /// §6.3’s mandatory flag. Badged rather than ordered: a preference that looked like a requirement would stop people applying.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get vacancyMandatory;
+
+  /// §6.3’s preferred flag — rewarded by the match score, never used to exclude.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred'**
+  String get vacancyPreferred;
+
+  /// UAT-15: the vacancy closed, expired or was moderated away between the feed being drawn and this screen opening. A normal outcome, not a failure — so it must not read as one.
+  ///
+  /// In en, this message translates to:
+  /// **'This vacancy is no longer available'**
+  String get vacancyGoneTitle;
+
+  /// Names the three reasons without claiming which: the server answers vacancy.not_found for all of them, deliberately, so telling the candidate which would be a guess.
+  ///
+  /// In en, this message translates to:
+  /// **'It may have been filled, closed, or its deadline may have passed.'**
+  String get vacancyGoneBody;
+
+  /// Free text, matching the endpoint — a candidate reporting a fake vacancy should not have to find their objection on somebody else’s menu.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong with this vacancy?'**
+  String get vacancyReportReason;
+
+  /// Submits the complaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get vacancyReportSend;
+
+  /// Boolean true.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get commonYes;
+
+  /// Boolean false.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get commonNo;
+
+  /// BR-05’s required worker count, which is always at least one.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} opening} other{{count} openings}}'**
+  String vacancyOpenings(int count);
+
+  /// The work window for a seasonal or fixed-date assignment (§6.3, UAT-10). ISO dates on the wire; §8.3’s display policy is still open.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} – {end}'**
+  String vacancyWorkWindow(String start, String end);
+
+  /// A start date with no stated end.
+  ///
+  /// In en, this message translates to:
+  /// **'From {date}'**
+  String vacancyStartsOn(String date);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

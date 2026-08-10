@@ -997,6 +997,60 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get commonCopied => 'Nusxalandi';
+
+  @override
+  String get vacancyDetailTitle => 'Vakansiya';
+
+  @override
+  String get vacancyDescription => 'Ish haqida';
+
+  @override
+  String get vacancyRequirements => 'Talablar';
+
+  @override
+  String get vacancyMandatory => 'Majburiy';
+
+  @override
+  String get vacancyPreferred => 'Ma’qul';
+
+  @override
+  String get vacancyGoneTitle => 'Bu vakansiya endi mavjud emas';
+
+  @override
+  String get vacancyGoneBody =>
+      'U yopilgan, to‘ldirilgan yoki muddati o‘tgan bo‘lishi mumkin.';
+
+  @override
+  String get vacancyReportReason => 'Bu vakansiyada nima noto‘g‘ri?';
+
+  @override
+  String get vacancyReportSend => 'Yuborish';
+
+  @override
+  String get commonYes => 'Ha';
+
+  @override
+  String get commonNo => 'Yo‘q';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o‘rin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return '$date dan';
+  }
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -1990,6 +2044,60 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get commonCopied => 'Нусхаланди';
+
+  @override
+  String get vacancyDetailTitle => 'Вакансия';
+
+  @override
+  String get vacancyDescription => 'Иш ҳақида';
+
+  @override
+  String get vacancyRequirements => 'Талаблар';
+
+  @override
+  String get vacancyMandatory => 'Мажбурий';
+
+  @override
+  String get vacancyPreferred => 'Маъқул';
+
+  @override
+  String get vacancyGoneTitle => 'Бу вакансия энди мавжуд эмас';
+
+  @override
+  String get vacancyGoneBody =>
+      'У ёпилган, тўлдирилган ёки муддати ўтган бўлиши мумкин.';
+
+  @override
+  String get vacancyReportReason => 'Бу вакансияда нима нотўғри?';
+
+  @override
+  String get vacancyReportSend => 'Юбориш';
+
+  @override
+  String get commonYes => 'Ҳа';
+
+  @override
+  String get commonNo => 'Йўқ';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та ўрин',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return '$date дан';
+  }
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -2985,4 +3093,58 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get commonCopied => 'Nusxalandi';
+
+  @override
+  String get vacancyDetailTitle => 'Vakansiya';
+
+  @override
+  String get vacancyDescription => 'Ish haqida';
+
+  @override
+  String get vacancyRequirements => 'Talablar';
+
+  @override
+  String get vacancyMandatory => 'Majburiy';
+
+  @override
+  String get vacancyPreferred => 'Ma’qul';
+
+  @override
+  String get vacancyGoneTitle => 'Bu vakansiya endi mavjud emas';
+
+  @override
+  String get vacancyGoneBody =>
+      'U yopilgan, to‘ldirilgan yoki muddati o‘tgan bo‘lishi mumkin.';
+
+  @override
+  String get vacancyReportReason => 'Bu vakansiyada nima noto‘g‘ri?';
+
+  @override
+  String get vacancyReportSend => 'Yuborish';
+
+  @override
+  String get commonYes => 'Ha';
+
+  @override
+  String get commonNo => 'Yo‘q';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o‘rin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return '$date dan';
+  }
 }

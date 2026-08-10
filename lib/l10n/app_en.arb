@@ -1307,5 +1307,79 @@
   "commonCopied": "Copied",
   "@commonCopied": {
     "description": "Confirms the copy."
+  },
+  "vacancyDetailTitle": "Vacancy",
+  "@vacancyDetailTitle": {
+    "description": "Title of §5.6’s vacancy detail screen."
+  },
+  "vacancyDescription": "About the job",
+  "@vacancyDescription": {
+    "description": "Heading above the employer’s free text. Never translated (§2.4) — shown exactly as entered."
+  },
+  "vacancyRequirements": "Requirements",
+  "@vacancyRequirements": {
+    "description": "§6.3’s structured requirements, grouped by schema field."
+  },
+  "vacancyMandatory": "Required",
+  "@vacancyMandatory": {
+    "description": "§6.3’s mandatory flag. Badged rather than ordered: a preference that looked like a requirement would stop people applying."
+  },
+  "vacancyPreferred": "Preferred",
+  "@vacancyPreferred": {
+    "description": "§6.3’s preferred flag — rewarded by the match score, never used to exclude."
+  },
+  "vacancyGoneTitle": "This vacancy is no longer available",
+  "@vacancyGoneTitle": {
+    "description": "UAT-15: the vacancy closed, expired or was moderated away between the feed being drawn and this screen opening. A normal outcome, not a failure — so it must not read as one."
+  },
+  "vacancyGoneBody": "It may have been filled, closed, or its deadline may have passed.",
+  "@vacancyGoneBody": {
+    "description": "Names the three reasons without claiming which: the server answers vacancy.not_found for all of them, deliberately, so telling the candidate which would be a guess."
+  },
+  "vacancyReportReason": "What is wrong with this vacancy?",
+  "@vacancyReportReason": {
+    "description": "Free text, matching the endpoint — a candidate reporting a fake vacancy should not have to find their objection on somebody else’s menu."
+  },
+  "vacancyReportSend": "Send report",
+  "@vacancyReportSend": {
+    "description": "Submits the complaint."
+  },
+  "commonYes": "Yes",
+  "@commonYes": {
+    "description": "Boolean true."
+  },
+  "commonNo": "No",
+  "@commonNo": {
+    "description": "Boolean false."
+  },
+  "vacancyOpenings": "{count, plural, one{{count} opening} other{{count} openings}}",
+  "@vacancyOpenings": {
+    "description": "BR-05’s required worker count, which is always at least one.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vacancyWorkWindow": "{start} – {end}",
+  "@vacancyWorkWindow": {
+    "description": "The work window for a seasonal or fixed-date assignment (§6.3, UAT-10). ISO dates on the wire; §8.3’s display policy is still open.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vacancyStartsOn": "From {date}",
+  "@vacancyStartsOn": {
+    "description": "A start date with no stated end.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   }
 }

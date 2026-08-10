@@ -466,6 +466,25 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       means the server sent no files at all
 - [ ] Employer application filters, and the internal-notes UI — the repository
       has `notes`/`addNote`, no screen yet
+- [x] **Vacancy detail (§5.6)** — the candidate could browse a feed and apply
+      but never open a vacancy to read it. Tapping a card opens it: employer
+      and verification badge, pay, openings, deadline, the work window,
+      location, the description **exactly as entered** (§2.4), the structured
+      requirements grouped by field, and Apply / Save / Report
+- [x] **UAT-15: a vacancy that is gone reads as gone, not as a fault.** The
+      server answers `vacancy.not_found` for unknown, closed, expired and
+      moderated-away alike — deliberately, since saying which would leak the
+      existence of vacancies the candidate may not see. So the client
+      distinguishes only "gone" from "broken", which is the distinction that
+      matters to the person holding the phone: 404 gets its own notice with a
+      Back action and **no retry**, everything else keeps the error state
+- [x] **Required is not the same as preferred** (§6.3) — badged, never told
+      apart by order or colour alone. A preference that looked like a
+      requirement would stop people applying, which is the opposite of what a
+      preference is for. Mandatory rows also sort first within their group
+- [x] A levelled requirement renders **both halves** — the row carries an item
+      *and* a level, so testing the item slot first and stopping would silently
+      drop the "C1" that is the whole requirement. Pinned by a test
 
 ## M7 - Candidate search *(§7.1–§7.3 done; invitations and the profile view open)*
 

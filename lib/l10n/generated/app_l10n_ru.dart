@@ -1005,4 +1005,61 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get commonCopied => 'Скопировано';
+
+  @override
+  String get vacancyDetailTitle => 'Вакансия';
+
+  @override
+  String get vacancyDescription => 'О работе';
+
+  @override
+  String get vacancyRequirements => 'Требования';
+
+  @override
+  String get vacancyMandatory => 'Обязательно';
+
+  @override
+  String get vacancyPreferred => 'Желательно';
+
+  @override
+  String get vacancyGoneTitle => 'Вакансия больше недоступна';
+
+  @override
+  String get vacancyGoneBody =>
+      'Возможно, она закрыта, заполнена или истёк срок подачи.';
+
+  @override
+  String get vacancyReportReason => 'Что не так с этой вакансией?';
+
+  @override
+  String get vacancyReportSend => 'Отправить';
+
+  @override
+  String get commonYes => 'Да';
+
+  @override
+  String get commonNo => 'Нет';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count мест',
+      many: '$count мест',
+      few: '$count места',
+      one: '$count место',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return 'С $date';
+  }
 }

@@ -8,6 +8,7 @@ import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.
 import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
 import 'package:headhunter_app/src/features/discovery/data/discovery_repository.dart';
 import 'package:headhunter_app/src/features/discovery/domain/vacancy_card.dart';
+import 'package:headhunter_app/src/features/discovery/presentation/vacancy_detail_screen.dart';
 
 /// The candidate's vacancy feeds (§5.6).
 ///
@@ -109,6 +110,11 @@ class _VacancyFeedCardState extends ConsumerState<VacancyFeedCard> {
     return Padding(
       padding: const EdgeInsets.only(bottom: HhSpace.sm),
       child: HhCard(
+        // The whole card opens the vacancy (§5.6). The two buttons below sit
+        // inside it and swallow their own taps, so Apply and Save keep working
+        // without a stray navigation behind them.
+        onTap: () =>
+            showVacancyDetail(context, id: card.id, feed: widget.feed),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

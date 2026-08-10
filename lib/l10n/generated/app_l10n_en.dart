@@ -999,4 +999,59 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get commonCopied => 'Copied';
+
+  @override
+  String get vacancyDetailTitle => 'Vacancy';
+
+  @override
+  String get vacancyDescription => 'About the job';
+
+  @override
+  String get vacancyRequirements => 'Requirements';
+
+  @override
+  String get vacancyMandatory => 'Required';
+
+  @override
+  String get vacancyPreferred => 'Preferred';
+
+  @override
+  String get vacancyGoneTitle => 'This vacancy is no longer available';
+
+  @override
+  String get vacancyGoneBody =>
+      'It may have been filled, closed, or its deadline may have passed.';
+
+  @override
+  String get vacancyReportReason => 'What is wrong with this vacancy?';
+
+  @override
+  String get vacancyReportSend => 'Send report';
+
+  @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count openings',
+      one: '$count opening',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return 'From $date';
+  }
 }
