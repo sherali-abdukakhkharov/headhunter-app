@@ -285,5 +285,18 @@
   "filterChipCount": "{label} ({count})",
   "filterChipValue": "{label}: {value}",
   "searchFromVacancy": "Номзод топиш",
-  "searchScopedToVacancy": "Филтрлар вакансиядан олинди"
+  "searchScopedToVacancy": "Филтрлар вакансиядан олинди",
+  "candidateProfileTitle": "Номзод",
+  "candidateViewProfile": "Профилни очиш",
+  "candidateContact": "Алоқа",
+  "candidateAvailableFrom": "{date} дан тайёр",
+  "candidateAttachments": "Иловалар",
+  "candidateNoFiles": "Номзод ҳеч нарса юкламаган",
+  "candidatePhoneNotOnFile": "Номзоднинг телефон рақами кўрсатилмаган.",
+  "candidateExposureNotVerified": "Компаниянгиз тасдиқлангач алоқа маълумотлари очилади.",
+  "candidateExposureNoInteraction": "Номзод вакансиянгизга ариза бергач ёки таклифни қабул қилгач алоқа маълумотлари очилади.",
+  "candidateExposureHidden": "Номзод профилини қидирувдан яширган. У вакансияларингизни кўра олади ва ариза бера олади.",
+  "searchSavedEmpty": "Сақланган номзодлар йўқ",
+  "commonCopy": "Нусхалаш",
+  "commonCopied": "Нусхаланди"
 }

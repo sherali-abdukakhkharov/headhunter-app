@@ -491,11 +491,29 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [x] UAT-06 prefill from a vacancy — "Find candidates" on a non-draft vacancy
       fetches `/candidate-search/prefill/:id` *before* navigating, so the tab is
       never entered showing the previous search and then reshuffled
+- [x] Candidate profile view from a result card (§7.3 "View profile") — the
+      place where **BR-09 does open**. The client holds no copy of the rule to
+      disagree with: `phone` is either in the response or it is not. What the
+      screen adds is the *reason* — `exposureReason` becomes a sentence saying
+      what would change it, mapped exhaustively over the six codes in
+      `contact-exposure.ts` rather than defaulted, because "hidden their
+      profile" and "nobody has applied yet" are undone by different things.
+      The applicants screen now shows the same specific reason instead of a
+      generic line, from the same one function
+- [x] Saved candidates screen (§7.3) — still behind BR-02's gate, so the empty
+      state says "nothing here" rather than "you have saved nobody": a
+      candidate who hides their profile leaves the list without having been
+      un-saved
 - [ ] Invitations + response tracking (UAT-07); general invitations
-- [ ] Saved-candidates and shortlist screens — the repository covers both, no
-      screen yet
-- [ ] Candidate profile view from a result card (§7.3 "View profile"), which is
-      where BR-09 *does* open and `exposureReason` says why
+- [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
+      to hang off, which is `GET /vacancies/:id/shortlist`
+- [ ] **Download a candidate's files.** The list renders with the purpose
+      resolved as a word, but tapping does nothing: saving bytes to disk and
+      opening them needs `path_provider` and an opener, and adding packages
+      here has to be weighed against pubspec.yaml's load-bearing pins. Same
+      decision blocks a `tel:` link on the phone, which is why the contact
+      block offers **copy** instead — no new dependency, and the platform
+      dialler takes it from the clipboard
 
 ## M8 - Chat and interviews
 

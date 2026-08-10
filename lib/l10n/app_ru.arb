@@ -285,5 +285,18 @@
   "filterChipCount": "{label} ({count})",
   "filterChipValue": "{label}: {value}",
   "searchFromVacancy": "Найти кандидатов",
-  "searchScopedToVacancy": "Фильтры взяты из вакансии"
+  "searchScopedToVacancy": "Фильтры взяты из вакансии",
+  "candidateProfileTitle": "Кандидат",
+  "candidateViewProfile": "Открыть профиль",
+  "candidateContact": "Контакты",
+  "candidateAvailableFrom": "Готов с {date}",
+  "candidateAttachments": "Вложения",
+  "candidateNoFiles": "Кандидат ничего не загрузил",
+  "candidatePhoneNotOnFile": "У кандидата не указан номер телефона.",
+  "candidateExposureNotVerified": "Контакты откроются после верификации компании.",
+  "candidateExposureNoInteraction": "Контакты откроются, когда кандидат откликнется на вашу вакансию или примет приглашение.",
+  "candidateExposureHidden": "Кандидат скрыл профиль из поиска. Он по-прежнему видит ваши вакансии и может откликнуться.",
+  "searchSavedEmpty": "Нет сохранённых кандидатов",
+  "commonCopy": "Копировать",
+  "commonCopied": "Скопировано"
 }

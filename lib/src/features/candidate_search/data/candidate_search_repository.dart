@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/core/network/dio_provider.dart';
+import 'package:headhunter_app/src/features/applications/domain/candidate_for_employer.dart';
 import 'package:headhunter_app/src/features/candidate_search/domain/candidate_card.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -69,6 +70,31 @@ class CandidateSearchRepository {
       );
 
       return response.data ?? const {};
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /candidate-search/candidates/:candidateUserId` — §7.3's
+  /// "View profile", as much of it as BR-09 allows.
+  ///
+  /// **The client does not decide what is visible here, and must not try.**
+  /// The server evaluates BR-09 once, in one place, and sends `phone` only
+  /// where a hiring interaction and the candidate's own settings both allow
+  /// it. `exposureReason` says which rule decided, and every call is logged
+  /// (§11.1) — so this is never called speculatively.
+  Future<CandidateForEmployer> candidate(String candidateUserId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/candidate-search/candidates/$candidateUserId',
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return CandidateForEmployer.fromJson(data);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }
@@ -146,3 +172,13 @@ CandidateSearchRepository candidateSearchRepository(Ref ref) =>
 @riverpod
 Future<List<CandidateCard>> savedCandidates(Ref ref) =>
     ref.watch(candidateSearchRepositoryProvider).saved();
+
+/// One candidate, as BR-09 permits this employer to see them (§7.3).
+///
+/// Deliberately **not** `keepAlive`. Reading a candidate is a logged access to
+/// protected data (§11.1), and a cache that outlives the screen would keep
+/// answering with an exposure decision that was made under an interaction the
+/// candidate may since have withdrawn.
+@riverpod
+Future<CandidateForEmployer> searchCandidate(Ref ref, String candidateUserId) =>
+    ref.watch(candidateSearchRepositoryProvider).candidate(candidateUserId);

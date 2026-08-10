@@ -8,6 +8,7 @@ import 'package:headhunter_app/src/features/applications/domain/application.dart
 import 'package:headhunter_app/src/features/applications/domain/application_stage.dart';
 import 'package:headhunter_app/src/features/applications/domain/candidate_for_employer.dart';
 import 'package:headhunter_app/src/features/applications/presentation/applications_screen.dart';
+import 'package:headhunter_app/src/features/applications/presentation/exposure_explanation.dart';
 import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
 
@@ -283,8 +284,12 @@ class _Phone extends StatelessWidget {
           l10n.candidatePhoneHidden,
           style: HhTypography.caption.copyWith(color: HhColors.inkDisabled),
         ),
+        // The specific reason, not a generic line. On this screen the usual
+        // answer is that contact *was* allowed and the candidate simply has no
+        // number on file — which is a different fact from "withheld", and the
+        // one an employer would otherwise misread.
         Text(
-          l10n.candidatePhoneHiddenWhy,
+          exposureExplanation(candidate.exposureReason, l10n),
           style: HhTypography.caption.copyWith(color: HhColors.inkDisabled),
         ),
       ],

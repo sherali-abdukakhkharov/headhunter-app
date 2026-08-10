@@ -952,6 +952,51 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get searchScopedToVacancy => 'Filtrlar vakansiyadan olindi';
+
+  @override
+  String get candidateProfileTitle => 'Nomzod';
+
+  @override
+  String get candidateViewProfile => 'Profilni ochish';
+
+  @override
+  String get candidateContact => 'Aloqa';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return '$date dan tayyor';
+  }
+
+  @override
+  String get candidateAttachments => 'Ilovalar';
+
+  @override
+  String get candidateNoFiles => 'Nomzod hech narsa yuklamagan';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'Nomzodning telefon raqami ko’rsatilmagan.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Kompaniyangiz tasdiqlangach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Nomzod vakansiyangizga ariza bergach yoki taklifni qabul qilgach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Nomzod profilini qidiruvdan yashirgan. U vakansiyalaringizni ko’ra oladi va ariza bera oladi.';
+
+  @override
+  String get searchSavedEmpty => 'Saqlangan nomzodlar yo’q';
+
+  @override
+  String get commonCopy => 'Nusxalash';
+
+  @override
+  String get commonCopied => 'Nusxalandi';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -1900,6 +1945,51 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get searchScopedToVacancy => 'Филтрлар вакансиядан олинди';
+
+  @override
+  String get candidateProfileTitle => 'Номзод';
+
+  @override
+  String get candidateViewProfile => 'Профилни очиш';
+
+  @override
+  String get candidateContact => 'Алоқа';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return '$date дан тайёр';
+  }
+
+  @override
+  String get candidateAttachments => 'Иловалар';
+
+  @override
+  String get candidateNoFiles => 'Номзод ҳеч нарса юкламаган';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'Номзоднинг телефон рақами кўрсатилмаган.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Компаниянгиз тасдиқлангач алоқа маълумотлари очилади.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Номзод вакансиянгизга ариза бергач ёки таклифни қабул қилгач алоқа маълумотлари очилади.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Номзод профилини қидирувдан яширган. У вакансияларингизни кўра олади ва ариза бера олади.';
+
+  @override
+  String get searchSavedEmpty => 'Сақланган номзодлар йўқ';
+
+  @override
+  String get commonCopy => 'Нусхалаш';
+
+  @override
+  String get commonCopied => 'Нусхаланди';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -2850,4 +2940,49 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get searchScopedToVacancy => 'Filtrlar vakansiyadan olindi';
+
+  @override
+  String get candidateProfileTitle => 'Nomzod';
+
+  @override
+  String get candidateViewProfile => 'Profilni ochish';
+
+  @override
+  String get candidateContact => 'Aloqa';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return '$date dan tayyor';
+  }
+
+  @override
+  String get candidateAttachments => 'Ilovalar';
+
+  @override
+  String get candidateNoFiles => 'Nomzod hech narsa yuklamagan';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'Nomzodning telefon raqami ko’rsatilmagan.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Kompaniyangiz tasdiqlangach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Nomzod vakansiyangizga ariza bergach yoki taklifni qabul qilgach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Nomzod profilini qidiruvdan yashirgan. U vakansiyalaringizni ko’ra oladi va ariza bera oladi.';
+
+  @override
+  String get searchSavedEmpty => 'Saqlangan nomzodlar yo’q';
+
+  @override
+  String get commonCopy => 'Nusxalash';
+
+  @override
+  String get commonCopied => 'Nusxalandi';
 }

@@ -285,5 +285,18 @@
   "filterChipCount": "{label} ({count})",
   "filterChipValue": "{label}: {value}",
   "searchFromVacancy": "Nomzod topish",
-  "searchScopedToVacancy": "Filtrlar vakansiyadan olindi"
+  "searchScopedToVacancy": "Filtrlar vakansiyadan olindi",
+  "candidateProfileTitle": "Nomzod",
+  "candidateViewProfile": "Profilni ochish",
+  "candidateContact": "Aloqa",
+  "candidateAvailableFrom": "{date} dan tayyor",
+  "candidateAttachments": "Ilovalar",
+  "candidateNoFiles": "Nomzod hech narsa yuklamagan",
+  "candidatePhoneNotOnFile": "Nomzodning telefon raqami ko’rsatilmagan.",
+  "candidateExposureNotVerified": "Kompaniyangiz tasdiqlangach aloqa ma’lumotlari ochiladi.",
+  "candidateExposureNoInteraction": "Nomzod vakansiyangizga ariza bergach yoki taklifni qabul qilgach aloqa ma’lumotlari ochiladi.",
+  "candidateExposureHidden": "Nomzod profilini qidiruvdan yashirgan. U vakansiyalaringizni ko’ra oladi va ariza bera oladi.",
+  "searchSavedEmpty": "Saqlangan nomzodlar yo’q",
+  "commonCopy": "Nusxalash",
+  "commonCopied": "Nusxalandi"
 }

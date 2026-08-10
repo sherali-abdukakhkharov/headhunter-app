@@ -1250,5 +1250,62 @@
   "searchScopedToVacancy": "Filters came from a vacancy",
   "@searchScopedToVacancy": {
     "description": "Shown on the search screen when the config was prefilled from a vacancy (UAT-06). The prefill is a starting point, so the employer has to be able to see that it happened."
+  },
+  "candidateProfileTitle": "Candidate",
+  "@candidateProfileTitle": {
+    "description": "§7.3 “View profile”. Every open is a logged read of protected data (§11.1)."
+  },
+  "candidateViewProfile": "View profile",
+  "@candidateViewProfile": {
+    "description": "Opens the candidate detail screen from a result card — the only place on the search screen where BR-09 can open at all."
+  },
+  "candidateContact": "Contact",
+  "@candidateContact": {
+    "description": "Heading of the block holding the phone number, shown only when BR-09 allowed it."
+  },
+  "candidateAvailableFrom": "Available from {date}",
+  "@candidateAvailableFrom": {
+    "description": "When the candidate can start. The date is ISO on the wire; §8.3’s display policy is still open.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "candidateAttachments": "Attachments",
+  "@candidateAttachments": {
+    "description": "§5.4: the CV and any other files. The CV is an attachment, never a parsed source of profile data."
+  },
+  "candidateNoFiles": "This candidate has not uploaded anything",
+  "@candidateNoFiles": {
+    "description": "Files are permitted but there are none — different from being withheld, and it has to read differently."
+  },
+  "candidatePhoneNotOnFile": "This candidate has no phone number on file.",
+  "@candidatePhoneNotOnFile": {
+    "description": "BR-09 allowed contact but there is nothing to show. Says so plainly rather than implying something was withheld."
+  },
+  "candidateExposureNotVerified": "Contact details open once your company is verified.",
+  "@candidateExposureNotVerified": {
+    "description": "BR-09 reason not_verified_employer (§7, BR-03). Names the one thing the employer can act on."
+  },
+  "candidateExposureNoInteraction": "Contact details open once this candidate applies to one of your vacancies, or accepts an invitation.",
+  "@candidateExposureNoInteraction": {
+    "description": "BR-09 reason no_interaction. The common case, and the one that reads as a bug when unexplained."
+  },
+  "candidateExposureHidden": "This candidate has hidden their profile from search. They can still see your vacancies and apply.",
+  "@candidateExposureHidden": {
+    "description": "BR-09 reason hidden_by_candidate (§5.3). The second sentence matters: hidden means hidden from search, not unreachable."
+  },
+  "searchSavedEmpty": "No saved candidates",
+  "@searchSavedEmpty": {
+    "description": "Empty saved list. Deliberately not “you have saved nobody” — a saved candidate who hides their profile leaves this list without having been un-saved (BR-02)."
+  },
+  "commonCopy": "Copy",
+  "@commonCopy": {
+    "description": "Copies a value to the clipboard."
+  },
+  "commonCopied": "Copied",
+  "@commonCopied": {
+    "description": "Confirms the copy."
   }
 }

@@ -1816,6 +1816,84 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Filters came from a vacancy'**
   String get searchScopedToVacancy;
+
+  /// §7.3 “View profile”. Every open is a logged read of protected data (§11.1).
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate'**
+  String get candidateProfileTitle;
+
+  /// Opens the candidate detail screen from a result card — the only place on the search screen where BR-09 can open at all.
+  ///
+  /// In en, this message translates to:
+  /// **'View profile'**
+  String get candidateViewProfile;
+
+  /// Heading of the block holding the phone number, shown only when BR-09 allowed it.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get candidateContact;
+
+  /// When the candidate can start. The date is ISO on the wire; §8.3’s display policy is still open.
+  ///
+  /// In en, this message translates to:
+  /// **'Available from {date}'**
+  String candidateAvailableFrom(String date);
+
+  /// §5.4: the CV and any other files. The CV is an attachment, never a parsed source of profile data.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get candidateAttachments;
+
+  /// Files are permitted but there are none — different from being withheld, and it has to read differently.
+  ///
+  /// In en, this message translates to:
+  /// **'This candidate has not uploaded anything'**
+  String get candidateNoFiles;
+
+  /// BR-09 allowed contact but there is nothing to show. Says so plainly rather than implying something was withheld.
+  ///
+  /// In en, this message translates to:
+  /// **'This candidate has no phone number on file.'**
+  String get candidatePhoneNotOnFile;
+
+  /// BR-09 reason not_verified_employer (§7, BR-03). Names the one thing the employer can act on.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details open once your company is verified.'**
+  String get candidateExposureNotVerified;
+
+  /// BR-09 reason no_interaction. The common case, and the one that reads as a bug when unexplained.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details open once this candidate applies to one of your vacancies, or accepts an invitation.'**
+  String get candidateExposureNoInteraction;
+
+  /// BR-09 reason hidden_by_candidate (§5.3). The second sentence matters: hidden means hidden from search, not unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'This candidate has hidden their profile from search. They can still see your vacancies and apply.'**
+  String get candidateExposureHidden;
+
+  /// Empty saved list. Deliberately not “you have saved nobody” — a saved candidate who hides their profile leaves this list without having been un-saved (BR-02).
+  ///
+  /// In en, this message translates to:
+  /// **'No saved candidates'**
+  String get searchSavedEmpty;
+
+  /// Copies a value to the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get commonCopy;
+
+  /// Confirms the copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get commonCopied;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

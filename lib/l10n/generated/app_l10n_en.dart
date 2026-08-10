@@ -954,4 +954,49 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get searchScopedToVacancy => 'Filters came from a vacancy';
+
+  @override
+  String get candidateProfileTitle => 'Candidate';
+
+  @override
+  String get candidateViewProfile => 'View profile';
+
+  @override
+  String get candidateContact => 'Contact';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return 'Available from $date';
+  }
+
+  @override
+  String get candidateAttachments => 'Attachments';
+
+  @override
+  String get candidateNoFiles => 'This candidate has not uploaded anything';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'This candidate has no phone number on file.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Contact details open once your company is verified.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Contact details open once this candidate applies to one of your vacancies, or accepts an invitation.';
+
+  @override
+  String get candidateExposureHidden =>
+      'This candidate has hidden their profile from search. They can still see your vacancies and apply.';
+
+  @override
+  String get searchSavedEmpty => 'No saved candidates';
+
+  @override
+  String get commonCopy => 'Copy';
+
+  @override
+  String get commonCopied => 'Copied';
 }

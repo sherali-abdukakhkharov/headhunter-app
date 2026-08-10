@@ -961,4 +961,48 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get searchScopedToVacancy => 'Фильтры взяты из вакансии';
+
+  @override
+  String get candidateProfileTitle => 'Кандидат';
+
+  @override
+  String get candidateViewProfile => 'Открыть профиль';
+
+  @override
+  String get candidateContact => 'Контакты';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return 'Готов с $date';
+  }
+
+  @override
+  String get candidateAttachments => 'Вложения';
+
+  @override
+  String get candidateNoFiles => 'Кандидат ничего не загрузил';
+
+  @override
+  String get candidatePhoneNotOnFile => 'У кандидата не указан номер телефона.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Контакты откроются после верификации компании.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Контакты откроются, когда кандидат откликнется на вашу вакансию или примет приглашение.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Кандидат скрыл профиль из поиска. Он по-прежнему видит ваши вакансии и может откликнуться.';
+
+  @override
+  String get searchSavedEmpty => 'Нет сохранённых кандидатов';
+
+  @override
+  String get commonCopy => 'Копировать';
+
+  @override
+  String get commonCopied => 'Скопировано';
 }

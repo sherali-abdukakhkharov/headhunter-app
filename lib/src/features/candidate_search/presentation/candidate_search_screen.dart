@@ -8,7 +8,9 @@ import 'package:headhunter_app/src/features/candidate_search/data/search_config_
 import 'package:headhunter_app/src/features/candidate_search/domain/candidate_card.dart';
 import 'package:headhunter_app/src/features/candidate_search/domain/search_filters.dart';
 import 'package:headhunter_app/src/features/candidate_search/presentation/applied_filter_chips.dart';
+import 'package:headhunter_app/src/features/candidate_search/presentation/candidate_detail_screen.dart';
 import 'package:headhunter_app/src/features/candidate_search/presentation/filter_builder_screen.dart';
+import 'package:headhunter_app/src/features/candidate_search/presentation/saved_candidates_screen.dart';
 import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
 
@@ -119,6 +121,15 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
                     child: Text(
                       l10n.searchCandidates,
                       style: HhTypography.title,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => showSavedCandidates(context),
+                    tooltip: l10n.searchSaved,
+                    icon: const HhIcon(
+                      HhIconPath.bookmark,
+                      size: 22,
+                      color: HhColors.brand600,
                     ),
                   ),
                   HhButton.secondary(
@@ -365,9 +376,25 @@ class _CandidateResultCardState extends ConsumerState<CandidateResultCard> {
             ),
 
             const SizedBox(height: HhSpace.sm),
-            HhButton.text(
-              label: card.isSaved ? l10n.vacancySaved : l10n.vacancySave,
-              onPressed: _busy ? null : _toggleSaved,
+            Row(
+              children: [
+                // §7.3's "View profile" — and the *only* place on this screen
+                // where BR-09 can open at all. The card carries nothing that
+                // opening the profile would reveal; the server re-decides, and
+                // logs the read (§11.1).
+                HhButton.text(
+                  label: l10n.candidateViewProfile,
+                  onPressed: () => showCandidateDetail(
+                    context,
+                    candidateUserId: card.candidateUserId,
+                  ),
+                ),
+                const SizedBox(width: HhSpace.md),
+                HhButton.text(
+                  label: card.isSaved ? l10n.vacancySaved : l10n.vacancySave,
+                  onPressed: _busy ? null : _toggleSaved,
+                ),
+              ],
             ),
           ],
         ),
