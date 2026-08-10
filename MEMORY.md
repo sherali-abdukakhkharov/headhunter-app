@@ -735,6 +735,41 @@ genuinely incompatible. **freezed is absent for this reason** - no stable releas
 supports analyzer 12. Revisit the whole block together when a Flutter release
 unpins `meta`. Full chain documented in `pubspec.yaml`.
 
+### 2026-08-10 - A fixture where two fields agree cannot say which one is read
+`LevelFloorField` binds `DictionaryItem.rank`, not `sortOrder` - "B2 or better"
+is a comparison, and `sortOrder` moves when an administrator inserts a level
+between two others (§10.3), while `rank` does not.
+
+The first test fixture built the scale with `sortOrder: rank`, because that is
+what the seed data looks like. Mutating the widget to read `sortOrder` then
+changed **nothing**: every test still passed. A realistic fixture had made the
+distinction untestable, and the bug it was written to catch would have shipped
+and then surfaced months later as a filter that silently drifted.
+
+The rule, and it is general: **when a test exists to pin *which* of two fields
+the code reads, the fixture must give them different values** - deliberately
+unrealistic ones. Realism in a fixture is worth having only where it does not
+collapse the thing under test. Same shape as the `isCurrent`/`endedOn` trap
+above: count the combinations that can occur, not the ones that usually do.
+
+Verified by mutation both ways - the fixed fixture fails on `sortOrder` and
+passes on `rank`.
+
+### 2026-08-10 - A `Text` in a `Row` overflows; it does not wrap
+`HhRemovableChip` painted a striped overflow bar the first time a filter chip
+carried a long label. `Row` gives an unconstrained child its natural width, and
+`Text` has no reason to shrink - so the label ran past the chip and pushed the
+remove control off screen, which is the one part of that component that must
+never be lost. Fixed with `Flexible` + `TextOverflow.ellipsis`.
+
+Worth knowing because **the same label is longer in Russian and Uzbek than in
+English**, so this class of bug is invisible when a screen is built and read in
+one language. A widget test found it in seconds; `flutter analyze` cannot.
+
+Two consequences: prefer short chip labels (the group, not the form label - the
+builder is where the exact wording belongs), and treat any `Text` inside a
+`Row` as needing `Flexible` unless its width is provably bounded.
+
 ### 2026-08-04 - iOS cannot be built on this machine
 Xcode is macOS-only. `ios/` is generated and the Dart code is cross-platform; CI
 compiles it with `--no-codesign`, which needs no certificates and catches
