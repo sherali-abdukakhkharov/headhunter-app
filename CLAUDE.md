@@ -173,6 +173,12 @@ dart run build_runner build         # regenerate *.g.dart after editing provider
 dart run build_runner watch         # continuous codegen while developing
 flutter gen-l10n                    # regenerate localizations after editing an ARB
 flutter build apk --debug --flavor development   # verify the Android toolchain
+
+# Take in a revised client specification. Run it for BOTH repos with the same
+# source - the two SPEC.md files are required to be byte-identical, and two
+# runs agreeing is what makes the conversion checkable.
+node tool/spec_from_docx.js <source.docx>
+node tool/spec_from_docx.js <source.docx> ..\headhunter-backend\docs\SPEC.md
 ```
 
 ## Structure
