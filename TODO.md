@@ -561,17 +561,18 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 The search itself is unaffected — cards carried no contact detail and still
 don't. What changed is what a card leads to.
 
-- [!] **The shipped contact-exposure copy is now wrong, and is deliberately
-      unchanged.** `exposureExplanation` tells an employer contact "opens once
-      this candidate applies to one of your vacancies"; §11.1 and §8.2 now say
-      an application is not enough on its own and a paid unlock is required.
-      It is still exactly right for *today's* server, which has no unlocks and
-      no new reason codes — correcting it now would swap one wrong sentence for
-      another and lose the mutation tests pinning it. Moves with M12, in the
-      same change as the new codes
-- [ ] Locked state on the candidate profile, with "Unlock contact — 2 Coins",
-      the price and the balance visible before the decision (§7.3, UAT-17) —
-      owned by M12
+- [x] ~~**The shipped contact-exposure copy is now wrong**~~ — **resolved
+      2026-08-19, and not the way this item expected.** It assumed the copy had
+      to be replaced. It did not: the client answered the client question in the
+      lenient direction (an application still opens contact), so the original
+      `no_interaction` sentence is *still true wherever it is still sent*, and
+      the new `unlock_required` code got a sentence of its own beside it. Nothing
+      was swapped and no mutation test was lost. The lesson is worth keeping —
+      a code that changes meaning wants a **new** code, not new copy on the old
+      one, and that is what made a single build correct against two servers
+- [x] ~~Locked state on the candidate profile~~ — **built 2026-08-19** under
+      M12. The label carries the server's price rather than §7.3's literal
+      "2 Coins", since §10.5 can change it without a store release
 - [ ] UAT-03's wording changed too: the CV is protected "until the employer has
       Candidate Unlock access", not merely until an interaction exists. Nothing
       to build on the candidate side; it changes what the *employer* side must
@@ -584,20 +585,25 @@ don't. What changed is what a card leads to.
       block offers **copy** instead — no new dependency, and the platform
       dialler takes it from the clipboard
 
-## M12 - Employer wallet, Coins and Candidate Unlock *(wallet done; the unlock waits on the server)*
+## M12 - Employer wallet, Coins and Candidate Unlock *(client complete; the server has one change left)*
 
 **§6.6 · BR-15 – BR-18, BR-21, BR-24 · UAT-16 – UAT-19.** Delivered **before
 M8**, because §9.1 puts employer-initiated chat behind the same entitlement.
 Needs no payment provider — the ten free Coins are enough to build and accept
 the whole flow, which is why it is split from M13.
 
-**The milestone splits cleanly in two, and only the first half was buildable.**
-The wallet — balance, prices, ledger — depends on nothing but the four routes
-the backend published, and is done. Everything that *spends* a Coin depends on
-an unlock changing what an employer can see, and that is not wired yet: the
-entitlement exists and can be bought, but `expose()` never reads it. So the
-purchase would be real and its effect imaginary. Stopping at that line is the
-whole reason the wallet could ship today.
+**The client side is finished. The server has one change left**, and it is
+specified: `expose()` must read the entitlement and gain a reason code for it
+(the task handed over on 2026-08-19 spells out all six changes, including the
+third file-download route and the two gaps in the purchase itself).
+
+**How both halves shipped in one build without shipping a paywall that charges
+for nothing.** The wallet — balance, prices, ledger — never depended on the gate
+and went first. The unlock did, and rather than a flag it is gated on
+`exposureReason == 'unlock_required'`: a code only a server that reads the
+entitlement can send. So the purchase path exists, is tested, and is unreachable
+until the server can honour it. A flag would have been a code path that takes
+money and is enabled by a constant somebody has to remember.
 
 - [x] ~~Wallet API contract~~ — published 2026-08-18, see "Blocked on someone
       else" for the four routes
@@ -624,24 +630,29 @@ whole reason the wallet could ship today.
       and lives in the wallet feature, but the employer home tab is still M5's
       placeholder, so it currently sits on the company tab. The dashboard places
       the same widget rather than growing a second copy
-- [!] **The unlock action is deliberately not built yet, and this is the
-      reason.** Everything below waits on one backend change, not on client
-      work: `expose()` does not read the entitlement, so a working "Unlock
-      contact — 2 Coins" button would take an employer's Coins and leave the
-      profile saying "nobody has applied yet". A control that charges for
-      nothing is worse than a control that is absent, and shipping it would
-      also mean writing the locked-state copy twice — once against today's six
-      reason codes and again against the codes that gate arrives with. Same
-      judgement, and the same reason, as the shipped exposure copy being left
-      wrong on purpose (see M7 above). **Unblocks as one change**: teach
-      `expose()` the entitlement, add the reason code, then the four items below
-      and the copy rewrite land together
-- [ ] Unlock confirmation sheet: cost, current balance, remaining balance, shown
-      *before* anything is charged
-- [ ] **The unlock is one server call and the client must not simulate it.**
-      Debit and entitlement are atomic server-side (BR-18); an optimistic debit
-      that then failed would show Coins gone with no access. The response is the
-      only truth about the new balance
+- [x] **The unlock flow is built, and it cannot fire against today's server.**
+      The whole thing turns on one signal: the control is offered only where
+      `exposureReason` is `unlock_required`, and that code exists **only on a
+      server that actually reads the entitlement**. Today's server answers
+      `no_interaction`, so the control is absent and nobody can be charged for
+      access that would not change — which is what made it safe to merge ahead
+      of the backend. The day the gate deploys, the control appears with no
+      client release and no flag anyone has to remember. Pinned by a test that
+      funds a wallet with 500 Coins against `no_interaction` and asserts both no
+      button and no request; verified by mutation, since loosening the gate to
+      include `no_interaction` fails exactly that test
+- [x] **Unlock confirmation sheet**: cost, current balance and remaining
+      balance, shown *before* anything is charged (UAT-17). Opening it and
+      cancelling both charge nothing, and a test asserts no request is made by
+      either. The remaining balance is the **one derived figure in this feature**
+      — both inputs are server integers, a Coin count is not an amount payable,
+      no endpoint returns it, and §6.6 asks for it by name. It is a preview and
+      never a result: the balance after the charge is refetched
+- [x] **The unlock is one server call and the client does not simulate it.**
+      Debit and entitlement are atomic server-side (BR-18), and the response
+      does not carry the new balance — so the wallet is *invalidated* rather
+      than adjusted by the cost. An optimistic debit that then failed would
+      show Coins gone with no access
 - [x] ~~Persisted idempotency key on the unlock~~ — **not needed, and the
       backend explains why**: `(employer, candidate)` is a primary key, so BR-16
       charges the pair once by construction and any retry returns the existing
@@ -649,15 +660,27 @@ whole reason the wallet could ship today.
       question worse, since one key per tap is two keys for one intent. Apply
       still needs its persisted key (§12.4) because a second application on the
       same vacancy has no such natural key
-- [ ] Locked candidate profile: structured data free, contact/CV locked, price
-      and balance visible before the decision (UAT-17)
-- [ ] Under 2 Coins routes to top-up, not a failure (UAT-19). The server answers
-      **402** carrying `required` and `balance`, so the client routes on the
-      status rather than by comparing numbers it should not be trusting. Until
-      M13 ships that route ends in an honest "not available yet" — which the
-      wallet's own Top up action already does
-- [ ] Rewrite `exposureExplanation` against the new reason codes and re-point
-      the tests that pin it — see the M7 note above
+- [x] **Locked candidate profile**: structured data free, contact locked, price
+      on the button from the server rather than a constant (§10.5 can reprice
+      it while the app is installed). Neither `not_verified_employer` nor
+      `hidden_by_candidate` offers a purchase — BR-03 is a precondition an
+      employer cannot buy past, and a candidate who left search is not for sale
+- [x] **Under 2 Coins routes to top-up, not a failure** (UAT-19), decided
+      *before* the request from figures the server already sent — and the 402 is
+      still handled, because the balance can move between the sheet opening and
+      the tap. The server's sentence carries both numbers in the user's language,
+      so it is rendered rather than rebuilt in Dart
+- [x] **`exposureExplanation` rewritten to tell the truth on both servers.**
+      `candidate_unlock` joins the *allowing* group — an employer who paid and
+      finds no number was not refused anything — and `unlock_required` gets the
+      sentence that offers the purchase *and* names the free route, because
+      §11.1 still treats an application as an entitlement of its own. The
+      original six codes keep their meanings, so one build is correct before and
+      after the gate lands. **This closes M7's `[!]` item**
+- [ ] Files behind an unlock. The backend needs a third download route
+      (`/unlocks/:candidateUserId/files/...`) because a download path is scoped
+      to whatever granted access; until it exists, `canViewFiles` stays false on
+      an unlock-only entitlement and the list is correctly empty
 
 ## M13 - Coin top-up: Payme and CLICK *(new, 2026-08-10)*
 

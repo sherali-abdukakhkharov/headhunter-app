@@ -1188,4 +1188,46 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get walletBalanceUnavailable => 'Баланс недоступен';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Открыть контакты — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Открыть контакты этого кандидата';
+
+  @override
+  String get unlockCost => 'Стоимость';
+
+  @override
+  String get unlockBalanceNow => 'Ваш баланс';
+
+  @override
+  String get unlockBalanceAfter => 'Баланс после';
+
+  @override
+  String get unlockConfirm => 'Открыть контакты';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Станут доступны телефон, e-mail и резюме, и вы сможете начать переписку. Списывается один раз — вернуться к этому кандидату позже можно бесплатно.';
+
+  @override
+  String get unlockDone => 'Контакты открыты';
+
+  @override
+  String get unlockAlready => 'Уже открыто — ничего не списано';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return 'Открыто $date';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Пополнить, чтобы открыть';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Откройте контакты, чтобы связаться с кандидатом сейчас. Они также откроются бесплатно, если он откликнется на вашу вакансию или примет приглашение.';
 }

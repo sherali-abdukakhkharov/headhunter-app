@@ -1522,5 +1522,63 @@
   "walletBalanceUnavailable": "Balance unavailable",
   "@walletBalanceUnavailable": {
     "description": "Shown on the §6.2 wallet tile when the balance could not be fetched. The tile still opens the wallet screen, which renders the failure and offers the retry - a summary beside a profile must not turn that screen into an error page."
+  },
+  "unlockContact": "Unlock contact — {coins}",
+  "@unlockContact": {
+    "description": "§7.3's unlock action. The Coin count is a placeholder rather than the literal \"2 Coins\" of §6.6, because the price is server configuration and §10.5 lets an administrator change it.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockTitle": "Unlock this candidate's contact details",
+  "@unlockTitle": {
+    "description": "Heading of the confirmation sheet (§6.6)."
+  },
+  "unlockCost": "Cost",
+  "@unlockCost": {
+    "description": "Confirmation sheet row: what the unlock costs."
+  },
+  "unlockBalanceNow": "Your balance",
+  "@unlockBalanceNow": {
+    "description": "Confirmation sheet row: the balance before the charge."
+  },
+  "unlockBalanceAfter": "Balance after",
+  "@unlockBalanceAfter": {
+    "description": "Confirmation sheet row: what the balance becomes. §6.6 requires all three figures before anything is charged, so nobody discovers the cost by paying it."
+  },
+  "unlockConfirm": "Unlock contact",
+  "@unlockConfirm": {
+    "description": "The button that charges. Deliberately not \"Confirm\": the sheet's action should name what it buys."
+  },
+  "unlockWhatYouGet": "Phone number, e-mail and CV become available, and you can start a conversation. Charged once — returning to this candidate later is free.",
+  "@unlockWhatYouGet": {
+    "description": "What the two Coins buy (§6.6, BR-16). Says the charge is one-off because UAT-18 is the reassurance an employer needs before spending anything."
+  },
+  "unlockDone": "Contact unlocked",
+  "@unlockDone": {
+    "description": "Confirmation after a successful unlock."
+  },
+  "unlockAlready": "Already unlocked — nothing was charged",
+  "@unlockAlready": {
+    "description": "UAT-18: shown when the entitlement already existed, so `charged` came back false. Worth saying rather than silently succeeding - an employer who tapped twice should be told the second tap was free rather than left wondering."
+  },
+  "unlockUnlockedOn": "Unlocked {date}",
+  "@unlockUnlockedOn": {
+    "description": "Shown where contact was opened by a purchase rather than by an application.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockTopUpNeeded": "Top up to unlock",
+  "@unlockTopUpNeeded": {
+    "description": "UAT-19: replaces the confirm action when the balance is short. The unlock is blocked and the route out is top-up, not an error."
+  },
+  "candidateExposureUnlockRequired": "Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.",
+  "@candidateExposureUnlockRequired": {
+    "description": "The `unlock_required` reason code: a verified employer, a readable candidate, and no entitlement yet. Says both routes on purpose - §11.1 treats an application as an entitlement of its own, so an employer who is happy to wait should not be told paying is the only way. This code exists only on a server that honours the unlock, which is why it is also what the unlock control is gated on."
   }
 }

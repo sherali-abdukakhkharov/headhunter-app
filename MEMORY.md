@@ -781,6 +781,49 @@ left out with the reason written down. Two things follow that are worth keeping:
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
 
+### 2026-08-19 - Gate a feature on a code the old server cannot send, not a flag
+The owner overruled the decision above and asked for the unlock to be merged now,
+with the backend catching up. The concern was real — a button that debits two
+Coins and reveals nothing — but it did not need a flag to solve.
+
+`expose()` answers `no_interaction` today. Once it reads the entitlement it will
+answer `unlock_required` instead. So the unlock control is offered on
+`unlock_required` **and nothing else**: the purchase path is complete, tested and
+merged, and it is unreachable until the server can honour it. It turns itself on
+when the gate deploys, with no client release.
+
+Why this beats the obvious alternative: a build-time flag is a code path that
+takes money, enabled by a constant somebody has to remember to flip at the right
+moment — and forgetting in either direction is a bug (dead feature, or a paywall
+that charges for nothing). The reason code is not a switch at all. It is the
+server telling the client what it is capable of, which is information the client
+was already reading.
+
+**The general shape**: when a client must ship ahead of its server, look for a
+value the new server sends and the old one cannot. Gate on that. If no such value
+exists, ask for one — it is a smaller request than a coordinated release, and it
+is self-documenting.
+
+Pinned by a test that funds a wallet with 500 Coins against `no_interaction` and
+asserts both no button and no request. Verified by mutation: loosening the gate to
+include `no_interaction` fails exactly that test and one other.
+
+### 2026-08-19 - A code whose meaning changed wants a new code, not new copy
+The plan had said M7's shipped exposure copy was "now wrong" and would have to be
+rewritten when the wallet landed, losing the mutation tests pinning it. That
+turned out to be the wrong frame.
+
+`no_interaction` used to mean "wait for an application"; under a paid gate the
+remedy becomes "pay". The instinct is to rewrite that code's sentence. But the
+client answered the §11.1 question leniently — an application still opens contact
+— so the old sentence is **still true wherever it is still sent**. Adding
+`unlock_required` beside it left the original six codes untouched, kept every
+existing test, and made one build correct against two servers at once.
+
+The rule: if a reason code's *remedy* changes, that is a different reason, so give
+it a different code. Rewriting the old one's copy destroys the ability to serve
+both servers and quietly invalidates whatever pinned it.
+
 ### 2026-08-18 - Money on screen must never be arithmetic the client did
 §6.6 makes the Coin price and the unlock cost server configuration, and today
 `balanceValueUzs == balanceCoins * coinPriceUzs` exactly. That coincidence is a

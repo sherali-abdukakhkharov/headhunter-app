@@ -93,6 +93,110 @@ final class WalletProvider
 
 String _$walletHash() => r'179992eaf2b5a4684aa177954b11f61b596ff234';
 
+/// Whether this employer already holds an unlock for [candidateUserId] (§6.6).
+///
+/// A family rather than one provider per screen: the candidate profile and the
+/// confirmation sheet must not be able to disagree about whether a purchase is
+/// still needed, and two fetches of the same question could.
+
+@ProviderFor(unlockState)
+final unlockStateProvider = UnlockStateFamily._();
+
+/// Whether this employer already holds an unlock for [candidateUserId] (§6.6).
+///
+/// A family rather than one provider per screen: the candidate profile and the
+/// confirmation sheet must not be able to disagree about whether a purchase is
+/// still needed, and two fetches of the same question could.
+
+final class UnlockStateProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<UnlockState>,
+          UnlockState,
+          FutureOr<UnlockState>
+        >
+    with $FutureModifier<UnlockState>, $FutureProvider<UnlockState> {
+  /// Whether this employer already holds an unlock for [candidateUserId] (§6.6).
+  ///
+  /// A family rather than one provider per screen: the candidate profile and the
+  /// confirmation sheet must not be able to disagree about whether a purchase is
+  /// still needed, and two fetches of the same question could.
+  UnlockStateProvider._({
+    required UnlockStateFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'unlockStateProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$unlockStateHash();
+
+  @override
+  String toString() {
+    return r'unlockStateProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<UnlockState> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<UnlockState> create(Ref ref) {
+    final argument = this.argument as String;
+    return unlockState(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UnlockStateProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$unlockStateHash() => r'dbec8bd7208167761a44ad0984a04260263071d6';
+
+/// Whether this employer already holds an unlock for [candidateUserId] (§6.6).
+///
+/// A family rather than one provider per screen: the candidate profile and the
+/// confirmation sheet must not be able to disagree about whether a purchase is
+/// still needed, and two fetches of the same question could.
+
+final class UnlockStateFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<UnlockState>, String> {
+  UnlockStateFamily._()
+    : super(
+        retry: null,
+        name: r'unlockStateProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Whether this employer already holds an unlock for [candidateUserId] (§6.6).
+  ///
+  /// A family rather than one provider per screen: the candidate profile and the
+  /// confirmation sheet must not be able to disagree about whether a purchase is
+  /// still needed, and two fetches of the same question could.
+
+  UnlockStateProvider call(String candidateUserId) =>
+      UnlockStateProvider._(argument: candidateUserId, from: this);
+
+  @override
+  String toString() => r'unlockStateProvider';
+}
+
 /// The append-only Coin ledger (§6.6, BR-24), newest first.
 ///
 /// A notifier rather than a family so "show more" *appends* instead of

@@ -338,5 +338,17 @@
   "walletKindReversal": "Қайтариш",
   "walletKindOther": "Ҳамён операцияси",
   "walletCorrection": "Тузатиш",
-  "walletBalanceUnavailable": "Баланс мавжуд эмас"
+  "walletBalanceUnavailable": "Баланс мавжуд эмас",
+  "unlockContact": "Контактларни очиш — {coins}",
+  "unlockTitle": "Бу номзоднинг контактларини очиш",
+  "unlockCost": "Нархи",
+  "unlockBalanceNow": "Сизнинг балансингиз",
+  "unlockBalanceAfter": "Кейинги баланс",
+  "unlockConfirm": "Контактларни очиш",
+  "unlockWhatYouGet": "Телефон, e-mail ва резюме очилади, суҳбатни ҳам бошлашингиз мумкин. Бир марта ечилади — кейинроқ бу номзодга қайтиш бепул.",
+  "unlockDone": "Контактлар очилди",
+  "unlockAlready": "Аллақачон очилган — ҳеч нарса ечилмади",
+  "unlockUnlockedOn": "{date} да очилган",
+  "unlockTopUpNeeded": "Очиш учун тўлдиринг",
+  "candidateExposureUnlockRequired": "Номзод билан ҳозир боғланиш учун контактларни очинг. Агар у сизнинг вакансиянгизга ариза юборса ёки таклифни қабул қилса, улар бепул ҳам очилади."
 }

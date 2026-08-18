@@ -1174,4 +1174,46 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get walletBalanceUnavailable => 'Balance unavailable';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Unlock contact — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Unlock this candidate\'s contact details';
+
+  @override
+  String get unlockCost => 'Cost';
+
+  @override
+  String get unlockBalanceNow => 'Your balance';
+
+  @override
+  String get unlockBalanceAfter => 'Balance after';
+
+  @override
+  String get unlockConfirm => 'Unlock contact';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Phone number, e-mail and CV become available, and you can start a conversation. Charged once — returning to this candidate later is free.';
+
+  @override
+  String get unlockDone => 'Contact unlocked';
+
+  @override
+  String get unlockAlready => 'Already unlocked — nothing was charged';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return 'Unlocked $date';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Top up to unlock';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.';
 }

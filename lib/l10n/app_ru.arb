@@ -338,5 +338,17 @@
   "walletKindReversal": "Возврат",
   "walletKindOther": "Операция по кошельку",
   "walletCorrection": "Корректировка",
-  "walletBalanceUnavailable": "Баланс недоступен"
+  "walletBalanceUnavailable": "Баланс недоступен",
+  "unlockContact": "Открыть контакты — {coins}",
+  "unlockTitle": "Открыть контакты этого кандидата",
+  "unlockCost": "Стоимость",
+  "unlockBalanceNow": "Ваш баланс",
+  "unlockBalanceAfter": "Баланс после",
+  "unlockConfirm": "Открыть контакты",
+  "unlockWhatYouGet": "Станут доступны телефон, e-mail и резюме, и вы сможете начать переписку. Списывается один раз — вернуться к этому кандидату позже можно бесплатно.",
+  "unlockDone": "Контакты открыты",
+  "unlockAlready": "Уже открыто — ничего не списано",
+  "unlockUnlockedOn": "Открыто {date}",
+  "unlockTopUpNeeded": "Пополнить, чтобы открыть",
+  "candidateExposureUnlockRequired": "Откройте контакты, чтобы связаться с кандидатом сейчас. Они также откроются бесплатно, если он откликнется на вашу вакансию или примет приглашение."
 }

@@ -1171,6 +1171,48 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get walletBalanceUnavailable => 'Balans mavjud emas';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Kontaktlarni ochish — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Bu nomzodning kontaktlarini ochish';
+
+  @override
+  String get unlockCost => 'Narxi';
+
+  @override
+  String get unlockBalanceNow => 'Sizning balansingiz';
+
+  @override
+  String get unlockBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get unlockConfirm => 'Kontaktlarni ochish';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Telefon, e-mail va rezyume ochiladi, suhbatni ham boshlashingiz mumkin. Bir marta yechiladi — keyinroq bu nomzodga qaytish bepul.';
+
+  @override
+  String get unlockDone => 'Kontaktlar ochildi';
+
+  @override
+  String get unlockAlready => 'Allaqachon ochilgan — hech narsa yechilmadi';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return '$date da ochilgan';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Ochish uchun to\'ldiring';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Nomzod bilan hozir bog\'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2338,6 +2380,48 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get walletBalanceUnavailable => 'Баланс мавжуд эмас';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Контактларни очиш — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Бу номзоднинг контактларини очиш';
+
+  @override
+  String get unlockCost => 'Нархи';
+
+  @override
+  String get unlockBalanceNow => 'Сизнинг балансингиз';
+
+  @override
+  String get unlockBalanceAfter => 'Кейинги баланс';
+
+  @override
+  String get unlockConfirm => 'Контактларни очиш';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Телефон, e-mail ва резюме очилади, суҳбатни ҳам бошлашингиз мумкин. Бир марта ечилади — кейинроқ бу номзодга қайтиш бепул.';
+
+  @override
+  String get unlockDone => 'Контактлар очилди';
+
+  @override
+  String get unlockAlready => 'Аллақачон очилган — ҳеч нарса ечилмади';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return '$date да очилган';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Очиш учун тўлдиринг';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Номзод билан ҳозир боғланиш учун контактларни очинг. Агар у сизнинг вакансиянгизга ариза юборса ёки таклифни қабул қилса, улар бепул ҳам очилади.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -3507,4 +3591,46 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get walletBalanceUnavailable => 'Balans mavjud emas';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Kontaktlarni ochish — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Bu nomzodning kontaktlarini ochish';
+
+  @override
+  String get unlockCost => 'Narxi';
+
+  @override
+  String get unlockBalanceNow => 'Sizning balansingiz';
+
+  @override
+  String get unlockBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get unlockConfirm => 'Kontaktlarni ochish';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Telefon, e-mail va rezyume ochiladi, suhbatni ham boshlashingiz mumkin. Bir marta yechiladi — keyinroq bu nomzodga qaytish bepul.';
+
+  @override
+  String get unlockDone => 'Kontaktlar ochildi';
+
+  @override
+  String get unlockAlready => 'Allaqachon ochilgan — hech narsa yechilmadi';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return '$date da ochilgan';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Ochish uchun to\'ldiring';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Nomzod bilan hozir bog\'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi.';
 }

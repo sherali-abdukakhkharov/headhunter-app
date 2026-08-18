@@ -2134,6 +2134,78 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Balance unavailable'**
   String get walletBalanceUnavailable;
+
+  /// §7.3's unlock action. The Coin count is a placeholder rather than the literal "2 Coins" of §6.6, because the price is server configuration and §10.5 lets an administrator change it.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock contact — {coins}'**
+  String unlockContact(String coins);
+
+  /// Heading of the confirmation sheet (§6.6).
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock this candidate\'s contact details'**
+  String get unlockTitle;
+
+  /// Confirmation sheet row: what the unlock costs.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost'**
+  String get unlockCost;
+
+  /// Confirmation sheet row: the balance before the charge.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance'**
+  String get unlockBalanceNow;
+
+  /// Confirmation sheet row: what the balance becomes. §6.6 requires all three figures before anything is charged, so nobody discovers the cost by paying it.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance after'**
+  String get unlockBalanceAfter;
+
+  /// The button that charges. Deliberately not "Confirm": the sheet's action should name what it buys.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock contact'**
+  String get unlockConfirm;
+
+  /// What the two Coins buy (§6.6, BR-16). Says the charge is one-off because UAT-18 is the reassurance an employer needs before spending anything.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number, e-mail and CV become available, and you can start a conversation. Charged once — returning to this candidate later is free.'**
+  String get unlockWhatYouGet;
+
+  /// Confirmation after a successful unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact unlocked'**
+  String get unlockDone;
+
+  /// UAT-18: shown when the entitlement already existed, so `charged` came back false. Worth saying rather than silently succeeding - an employer who tapped twice should be told the second tap was free rather than left wondering.
+  ///
+  /// In en, this message translates to:
+  /// **'Already unlocked — nothing was charged'**
+  String get unlockAlready;
+
+  /// Shown where contact was opened by a purchase rather than by an application.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked {date}'**
+  String unlockUnlockedOn(String date);
+
+  /// UAT-19: replaces the confirm action when the balance is short. The unlock is blocked and the route out is top-up, not an error.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up to unlock'**
+  String get unlockTopUpNeeded;
+
+  /// The `unlock_required` reason code: a verified employer, a readable candidate, and no entitlement yet. Says both routes on purpose - §11.1 treats an application as an entitlement of its own, so an employer who is happy to wait should not be told paying is the only way. This code exists only on a server that honours the unlock, which is why it is also what the unlock control is gated on.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.'**
+  String get candidateExposureUnlockRequired;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -338,5 +338,17 @@
   "walletKindReversal": "Qaytarish",
   "walletKindOther": "Hamyon operatsiyasi",
   "walletCorrection": "Tuzatish",
-  "walletBalanceUnavailable": "Balans mavjud emas"
+  "walletBalanceUnavailable": "Balans mavjud emas",
+  "unlockContact": "Kontaktlarni ochish — {coins}",
+  "unlockTitle": "Bu nomzodning kontaktlarini ochish",
+  "unlockCost": "Narxi",
+  "unlockBalanceNow": "Sizning balansingiz",
+  "unlockBalanceAfter": "Keyingi balans",
+  "unlockConfirm": "Kontaktlarni ochish",
+  "unlockWhatYouGet": "Telefon, e-mail va rezyume ochiladi, suhbatni ham boshlashingiz mumkin. Bir marta yechiladi — keyinroq bu nomzodga qaytish bepul.",
+  "unlockDone": "Kontaktlar ochildi",
+  "unlockAlready": "Allaqachon ochilgan — hech narsa yechilmadi",
+  "unlockUnlockedOn": "{date} da ochilgan",
+  "unlockTopUpNeeded": "Ochish uchun to'ldiring",
+  "candidateExposureUnlockRequired": "Nomzod bilan hozir bog'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi."
 }

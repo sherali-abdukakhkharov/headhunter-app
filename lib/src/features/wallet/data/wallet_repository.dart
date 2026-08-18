@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/core/network/dio_provider.dart';
+import 'package:headhunter_app/src/features/wallet/domain/unlock.dart';
 import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
 import 'package:headhunter_app/src/features/wallet/domain/wallet_transaction.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -66,6 +67,66 @@ class WalletRepository {
       throw ApiException.fromDioException(e);
     }
   }
+
+  /// `GET /wallet/unlocks/:candidateUserId` — locked or not, plus the prices.
+  ///
+  /// Asked rather than inferred. Whether an employer holds an entitlement is
+  /// not derivable from anything on a candidate card, and the alternative —
+  /// attempting the purchase to find out — is the one experiment that costs
+  /// money to run.
+  Future<UnlockState> unlockState(String candidateUserId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/wallet/unlocks/$candidateUserId',
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return UnlockState.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /wallet/unlocks` — buy the entitlement (§6.6, BR-16, BR-18).
+  ///
+  /// **One call, and the client must not simulate any part of it.** The debit
+  /// and the entitlement are one server transaction; an optimistic debit that
+  /// then failed would show Coins gone with no access, which is the pair of
+  /// outcomes BR-18 exists to make impossible.
+  ///
+  /// No `Idempotency-Key`, deliberately — see [Unlock.charged].
+  ///
+  /// A 402 comes back as [UnlockUnaffordable] rather than an exception, because
+  /// §6.6 makes a short balance a route to top-up rather than a failure.
+  Future<UnlockResult> unlock(String candidateUserId) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/wallet/unlocks',
+        data: {'candidateUserId': candidateUserId},
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return UnlockGranted(Unlock.fromJson(data));
+    } on DioException catch (e) {
+      final failure = ApiException.fromDioException(e);
+
+      // 402 is the status §6.6 names for this, and the body's sentence already
+      // carries both numbers in the caller's language.
+      if (failure.statusCode == 402) {
+        return UnlockUnaffordable(failure.message);
+      }
+
+      throw failure;
+    }
+  }
 }
 
 @riverpod
@@ -75,6 +136,15 @@ WalletRepository walletRepository(Ref ref) =>
 /// The balance and today's prices.
 @riverpod
 Future<Wallet> wallet(Ref ref) => ref.watch(walletRepositoryProvider).fetch();
+
+/// Whether this employer already holds an unlock for [candidateUserId] (§6.6).
+///
+/// A family rather than one provider per screen: the candidate profile and the
+/// confirmation sheet must not be able to disagree about whether a purchase is
+/// still needed, and two fetches of the same question could.
+@riverpod
+Future<UnlockState> unlockState(Ref ref, String candidateUserId) =>
+    ref.watch(walletRepositoryProvider).unlockState(candidateUserId);
 
 /// One loaded stretch of the ledger.
 ///

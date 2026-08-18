@@ -5,6 +5,7 @@ import 'package:headhunter_app/l10n/generated/app_l10n.dart';
 import 'package:headhunter_app/src/core/design/design.dart';
 import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:headhunter_app/src/features/wallet/domain/unlock.dart';
 import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
 import 'package:headhunter_app/src/features/wallet/domain/wallet_transaction.dart';
 import 'package:headhunter_app/src/features/wallet/presentation/wallet_screen.dart';
@@ -43,6 +44,18 @@ class _FakeWallet implements WalletRepository {
     final index = requestedOffsets.length - 1;
     return index < pages.length ? pages[index] : const [];
   }
+
+  // The wallet *screen* has no business touching an entitlement, so these throw
+  // rather than returning something harmless: a screen that started buying
+  // unlocks should fail this file loudly. The unlock flow has its own fake, in
+  // `candidate_search/unlock_gating_test.dart`.
+  @override
+  Future<UnlockState> unlockState(String candidateUserId) =>
+      throw UnsupportedError('The wallet screen must not read an unlock.');
+
+  @override
+  Future<UnlockResult> unlock(String candidateUserId) =>
+      throw UnsupportedError('The wallet screen must not buy an unlock.');
 }
 
 /// A wallet whose UZS value is **not** `balanceCoins * coinPriceUzs`.

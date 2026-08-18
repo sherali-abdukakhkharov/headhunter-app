@@ -100,7 +100,7 @@ after M11 while being delivered before M8.
 | M5 | Vacancy create/edit + statuses (employer) | after M2 + M4 |
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
 | M7 | Candidate search + invitations + shortlists (employer) | after M2 + M5 — **partly re-opened by the 2026-08-10 revision** |
-| M12 | Employer wallet, Coins, Candidate Unlock | **wallet done** 2026-08-18 — the unlock waits on the backend gating contact exposure on the entitlement |
+| M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
 | M8 | Chat + interviews | after M6 + M7 **+ M12** (§9.1 gates employer-initiated chat on the unlock) |
 | M9 | Notifications + push | **last feature milestone** - after M10 |
@@ -298,15 +298,24 @@ same entitlement. Nothing in this milestone needs a payment provider: the ten
 free Coins are enough to build and accept the whole unlock flow, which is why it
 is separated from M13 rather than waiting on credentials.
 
-**Split in two on 2026-08-18, along the line the backend actually delivered.**
+**Split on 2026-08-18, then reunited on 2026-08-19 by gating on a reason code.**
 The backend published the wallet (`a88d185`) but left `contact-exposure.ts`
 untouched, so an unlock can be *bought* and changes nothing an employer can
-*see* — the entitlement table is read only inside the wallet module. The wallet
-half therefore shipped and the spending half did not, because a working
-"Unlock contact — 2 Coins" button would today debit two Coins and leave the
-profile still saying nobody has applied. One backend change — `expose()` reads
-the entitlement, and a reason code for it — unblocks the rest of this list at
-once, including the copy rewrite that M7 is already holding for the same reason.
+*see*. The wallet half shipped first because it never depended on that.
+
+The unlock did depend on it, and the resolution is worth stating because it
+generalises: the control is offered only where `exposureReason` is
+`unlock_required` — **a code only a server that reads the entitlement can send.**
+The purchase path is therefore complete, tested and unreachable until the server
+can honour it, and it needs no release to switch on. A build-time flag would have
+been the obvious alternative and a worse one: a code path that takes money,
+enabled by a constant somebody has to remember at the right moment.
+
+The remaining server work is specified in the task handed over on 2026-08-19:
+`expose()` reads the entitlement, `between()` gains an `unlocks` kind so §9.1's
+chat gate inherits it, a third file-download route, and two gaps in the purchase
+(an unverified employer can buy today; an unknown candidate id fails on a foreign
+key).
 
 - **Done** — Wallet screen: balance, approximate UZS value, and the ledger as an
   **append-only list** (BR-24). Reversals and administrator adjustments appear
@@ -319,8 +328,11 @@ once, including the copy rewrite that M7 is already holding for the same reason.
   the moment it moved. Held by a test whose fixture makes the UZS value
   *disagree* with coins × price, so a client-side multiplication fails there
   rather than the day a bundle price lands.
-- Candidate Unlock: confirmation sheet showing cost, current balance and
-  remaining balance before anything is charged (§6.6).
+- **Done** — Candidate Unlock: confirmation sheet showing cost, current balance
+  and remaining balance before anything is charged (§6.6). Opening it and
+  cancelling both charge nothing, and tests assert no request is made by either.
+  The remaining balance is the one derived figure in the feature, and it is a
+  preview rather than a result — the balance after the charge is refetched.
 - **The unlock is one server call, and the client must not simulate it.** Debit
   and entitlement are atomic server-side (BR-18); a client that debited
   optimistically and then failed would show Coins gone with no access. Treat the
@@ -332,15 +344,19 @@ once, including the copy rewrite that M7 is already holding for the same reason.
   answer the same question worse: one key per tap is two keys for one intent.
   Apply keeps its persisted key (§12.4) because a second application on the same
   vacancy has no equivalent natural key.
-- Locked state on the candidate profile: structured data free, contact/CV
-  locked, with the price and balance visible before the decision (UAT-17).
-- Fewer than 2 Coins routes to top-up rather than failing (UAT-19), on the
-  server's **402** rather than by comparing numbers the client should not be
-  trusting. Until M13 ships, that route ends in an honest "top-up is not
-  available yet" rather than a dead button — which the wallet's own Top up
-  action already does.
-- Rewrite the contact-exposure copy against the new reason codes, and re-point
-  the tests that pin it.
+- **Done** — Locked state on the candidate profile: structured data free,
+  contact locked, price on the button from the server rather than §7.3's literal
+  "2 Coins". Neither an unverified employer nor a candidate who left search is
+  offered a purchase — the first is a precondition nobody can buy past, the
+  second is not for sale.
+- **Done** — Fewer than 2 Coins routes to top-up rather than failing (UAT-19),
+  decided before the request from figures the server already sent, with the
+  server's **402** still handled because the balance can move in between. Until
+  M13 ships, that route ends in an honest "top-up is not available yet".
+- **Done**, and it needed no rewrite — the contact-exposure copy. A code whose
+  meaning had changed got a **new** code (`unlock_required`) rather than new words
+  on the old one, so the original six stay correct, one build tells the truth
+  against both servers, and every mutation test pinning the old copy survived.
 
 **Done when:** UAT-16 – UAT-19 pass — the wallet exists with exactly ten Coins
 after first employer registration, an unlock debits two and opens contact,

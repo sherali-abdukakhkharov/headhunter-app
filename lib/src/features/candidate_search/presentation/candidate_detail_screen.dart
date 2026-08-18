@@ -9,6 +9,9 @@ import 'package:headhunter_app/src/features/applications/presentation/exposure_e
 import 'package:headhunter_app/src/features/candidate_search/data/candidate_search_repository.dart';
 import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
+import 'package:headhunter_app/src/features/wallet/presentation/unlock_sheet.dart';
 
 /// Opens §7.3's "View profile" for one candidate.
 ///
@@ -146,13 +149,27 @@ class _Profile extends StatelessWidget {
 /// absence, or an absence *plus what would change it*. There is deliberately
 /// nothing here that could reconstruct a number the server withheld — the only
 /// action offered acts on a string that is already on screen.
-class _Contact extends StatelessWidget {
+///
+/// ## The unlock control appears on one signal, and it is not a flag (§6.6)
+///
+/// "Unlock contact" is offered only where `exposureReason` is `unlock_required`
+/// — see `unlockWouldOpenContact`. That code exists only on a server that
+/// actually gates contact on the entitlement; a server that sells an unlock but
+/// does not read it answers `no_interaction` instead, and the control stays
+/// absent.
+///
+/// So this ships safely ahead of the backend: **nobody can be charged two Coins
+/// for access that would not change**, the control turns itself on the day the
+/// server starts sending the code, and there is no configuration anyone has to
+/// remember to switch. The alternative — a build-time flag — would have been a
+/// code path that takes money and is enabled by a constant.
+class _Contact extends ConsumerWidget {
   const _Contact({required this.candidate});
 
   final CandidateForEmployer candidate;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
 
     if (candidate.phone case final phone? when phone.isNotEmpty) {
@@ -166,6 +183,12 @@ class _Contact extends StatelessWidget {
             ),
             const SizedBox(height: HhSpace.sm),
             Text(phone, style: HhTypography.subtitle),
+
+            // Only where a purchase is what opened it. An employer who spent
+            // Coins should be able to see that this is what they bought,
+            // without going to the ledger to work it out.
+            if (candidate.exposureReason == 'candidate_unlock')
+              _UnlockedOn(candidateUserId: candidate.candidateUserId),
 
             const SizedBox(height: HhSpace.sm),
             HhButton.secondary(
@@ -189,13 +212,97 @@ class _Contact extends StatelessWidget {
       );
     }
 
+    final unlockable = unlockWouldOpenContact(candidate.exposureReason);
+    final wallet = unlockable ? ref.watch(walletProvider).value : null;
+
     return HhNotice(
       title: l10n.candidatePhoneHidden,
       message: exposureExplanation(candidate.exposureReason, l10n),
       iconPath: HhIconPath.lock,
       tone: HhNoticeTone.neutral,
+      // The price is on the button because §6.6 and UAT-17 both want the cost
+      // visible before the decision, and it comes from the wallet rather than a
+      // constant — §10.5 can reprice an unlock while the app is installed.
+      //
+      // No wallet yet means no price to name, so no action is offered rather
+      // than one labelled with a guess.
+      actionLabel: wallet == null
+          ? null
+          : l10n.unlockContact(
+              l10n.walletCoins(wallet.pricing.candidateUnlockCoins),
+            ),
+      onAction: wallet == null
+          ? null
+          : () => _unlock(context, ref, wallet),
     );
   }
+
+  /// Opens the confirmation sheet, and refreshes the profile if it succeeded.
+  ///
+  /// The profile is refetched rather than patched: the server decides what an
+  /// entitlement reveals, so the phone number, the files and the reason all
+  /// arrive together from the one place that evaluates BR-09. Writing the
+  /// number into local state would be this screen's second copy of that rule.
+  Future<void> _unlock(
+    BuildContext context,
+    WidgetRef ref,
+    Wallet wallet,
+  ) async {
+    final unlock = await showUnlockSheet(
+      context,
+      candidateUserId: candidate.candidateUserId,
+      wallet: wallet,
+      pricing: wallet.pricing,
+    );
+
+    if (unlock == null) return;
+
+    ref.invalidate(searchCandidateProvider(candidate.candidateUserId));
+  }
+}
+
+/// When this candidate was unlocked, on a profile a purchase opened.
+///
+/// Its own widget so the request is made **only** on the profiles it is about.
+/// An employer opens many candidates and pays for few, and asking every one of
+/// them "did I unlock this?" would be a request per profile to answer what
+/// `exposureReason` has already answered.
+///
+/// Deliberately not the unlock control's gate: this endpoint answers "do I hold
+/// an entitlement", which today's ungated server answers honestly with `false`
+/// while still not honouring the entitlement. Gating a purchase on it would put
+/// the button back in front of employers it cannot help — see [_Contact].
+class _UnlockedOn extends ConsumerWidget {
+  const _UnlockedOn({required this.candidateUserId});
+
+  final String candidateUserId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final state = ref.watch(unlockStateProvider(candidateUserId));
+
+    // Silent while loading or on failure: it is a footnote on a contact block,
+    // and a spinner or an error where a date belongs would draw more attention
+    // than the fact deserves.
+    if (state.value?.unlock case final unlock?) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text(
+          l10n.unlockUnlockedOn(_isoDate(unlock.createdAt.wallClock)),
+          style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  /// The wall clock the server resolved, never `.toLocal()`.
+  static String _isoDate(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
 }
 
 class _Files extends StatelessWidget {
