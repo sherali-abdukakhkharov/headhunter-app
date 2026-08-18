@@ -453,6 +453,33 @@ void main() {
     });
   });
 
+  group('the icon set', () {
+    // An icon is a bare path string wrapped in an SVG document at build time,
+    // so a typo in the path data is a parse failure at paint time rather than a
+    // compile error - and it can only be caught by rendering it.
+    testWidgets('both disclosure chevrons render', (tester) async {
+      await pump(
+        tester,
+        const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            HhIcon(HhIconPath.chevronDown),
+            HhIcon(HhIconPath.chevronRight),
+          ],
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(HhIcon), findsNWidgets(2));
+    });
+
+    test('the two chevrons are different glyphs', () {
+      // They mean different things - down opens a list in place, right opens a
+      // screen - so an alias would make the distinction unrenderable.
+      expect(HhIconPath.chevronRight, isNot(HhIconPath.chevronDown));
+    });
+  });
+
   group('bottom navigation', () {
     testWidgets('height is constant across role configurations', (
       tester,

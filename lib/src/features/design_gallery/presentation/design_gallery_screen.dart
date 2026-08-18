@@ -520,6 +520,11 @@ class _IconGrid extends StatelessWidget {
     'alert': HhIconPath.alertTriangle,
     'wifi-off': HhIconPath.wifiOff,
     'arrow-left': HhIconPath.arrowLeft,
+    // The two disclosure chevrons together, because the whole distinction is
+    // which way they point: down opens a list in place, right opens a screen.
+    // Drawn side by side so a wrong one is obvious here, not on a device.
+    'chevron-down': HhIconPath.chevronDown,
+    'chevron-right': HhIconPath.chevronRight,
   };
 
   @override

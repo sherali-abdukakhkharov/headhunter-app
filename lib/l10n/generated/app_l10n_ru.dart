@@ -1062,4 +1062,130 @@ class AppL10nRu extends AppL10n {
   String vacancyStartsOn(String date) {
     return 'С $date';
   }
+
+  @override
+  String get walletTitle => 'Кошелёк';
+
+  @override
+  String get walletBalanceLabel => 'Баланс';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count монет',
+      many: '$count монет',
+      few: '$count монеты',
+      one: '$count монета',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString сум';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сум';
+  }
+
+  @override
+  String get walletPrices => 'Цены на сегодня';
+
+  @override
+  String get walletCoinPriceLabel => 'Одна монета';
+
+  @override
+  String get walletUnlockPriceLabel => 'Доступ к контактам кандидата';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Бонус за регистрацию начислен $date';
+  }
+
+  @override
+  String get walletTopUp => 'Пополнить';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'Пополнение пока недоступно. Оно появится вместе с поддержкой Payme и CLICK.';
+
+  @override
+  String get walletActivity => 'Последние операции';
+
+  @override
+  String get walletActivityEmpty =>
+      'В этом кошельке пока ничего не происходило. Здесь появляются и начисления, и списания, и ни одна запись никогда не удаляется.';
+
+  @override
+  String get walletShowMore => 'Показать ещё';
+
+  @override
+  String get walletLoadingMore => 'Загружаем ещё…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Баланс $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count монет',
+      many: '$count монет',
+      few: '$count монеты',
+      one: '$count монета',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count монет',
+      many: '$count монет',
+      few: '$count монеты',
+      one: '$count монета',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Бонус за регистрацию';
+
+  @override
+  String get walletKindTopUp => 'Пополнение';
+
+  @override
+  String get walletKindCandidateUnlock => 'Доступ к контактам кандидата';
+
+  @override
+  String get walletKindAdminAdjustment => 'Корректировка администратора';
+
+  @override
+  String get walletKindReversal => 'Возврат';
+
+  @override
+  String get walletKindOther => 'Операция по кошельку';
+
+  @override
+  String get walletCorrection => 'Корректировка';
+
+  @override
+  String get walletBalanceUnavailable => 'Баланс недоступен';
 }

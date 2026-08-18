@@ -755,6 +755,64 @@ above: count the combinations that can occur, not the ones that usually do.
 Verified by mutation both ways - the fixed fixture fails on `sortOrder` and
 passes on `rank`.
 
+### 2026-08-18 - A purchase whose effect is not wired is worse than no button
+The backend shipped the Coin wallet (`a88d185`) and M12 looked unblocked. It was
+half unblocked. The wallet routes are complete — balance, prices, the paged
+ledger, and an atomic unlock that really does debit two Coins — but
+`contact-exposure.ts` was **not touched**, and `expose()` is what decides whether
+an employer sees a phone number. Grepping for the entitlement settles it in one
+command: `candidate_unlocks` appears only inside the backend's wallet module.
+
+So an "Unlock contact — 2 Coins" button built that day would have taken the money
+and left the profile still saying "nobody has applied yet". The purchase real,
+the effect imaginary.
+
+**What was built instead**: the half that depends on nothing else — balance,
+server-supplied prices, and the append-only ledger — and the spending half was
+left out with the reason written down. Two things follow that are worth keeping:
+
+- **Check what the new endpoints are *read by*, not just that they exist.** A
+  published contract says a feature can be called, not that calling it does
+  anything. One `grep` for the new table outside its own module is the whole
+  check.
+- The same judgement M7 already recorded for its wrong exposure copy: when the
+  copy or the control would have to be written twice — once against today's
+  server and again against the one arriving — write it once, later, and say why
+  in the checklist. **Both are now waiting on the same single backend change**,
+  so they land together rather than as two half-corrections.
+
+### 2026-08-18 - Money on screen must never be arithmetic the client did
+§6.6 makes the Coin price and the unlock cost server configuration, and today
+`balanceValueUzs == balanceCoins * coinPriceUzs` exactly. That coincidence is a
+trap: the obvious "simplification" is to drop the server's figure and multiply,
+and it passes every test written against realistic data.
+
+The fixture therefore makes them **disagree** — 8 Coins, 10,000 a Coin, and a
+balance value of 75,000 — which is the `rank`/`sortOrder` rule above applied to
+money. Verified by mutation: replacing the read with the multiplication fails
+exactly one test, the one named for it.
+
+The second half of the same rule is the ledger. Every entry carries the balance
+the server recorded after it, and the temptation is to accumulate down the list
+instead. That is wrong *by construction* rather than merely fragile: the client
+only ever holds one page, so page two's running total would start from nowhere.
+The test fixture gives balances that are not a running sum of their own amounts,
+so an accumulating implementation cannot pass it.
+
+### 2026-08-18 - `scrollUntilVisible` does nothing when the list is not lazy
+Tapping "Show more" under a full page of ledger entries missed: the tap landed at
+y=2453 in an 800-high viewport. `ensureVisible` did not help either, and the two
+failures have different causes worth telling apart.
+
+`ListView(children: [...])` builds **every** child immediately, unlike
+`ListView.builder`. So the finder matches from the first frame — and
+`scrollUntilVisible` stops as soon as the finder matches, which is before it has
+scrolled anything. It is built for lazy lists, where "not found" *is* the signal.
+
+`ensureVisible` is the right call here, but it only schedules the scroll; without
+a `pumpAndSettle` the frame never advances and the tap still lands off-screen.
+`ensureVisible` **then** `pumpAndSettle` is the working pair.
+
 ### 2026-08-10 - A `Text` in a `Row` overflows; it does not wrap
 `HhRemovableChip` painted a striped overflow bar the first time a filter chip
 carried a long label. `Row` gives an unconstrained child its natural width, and

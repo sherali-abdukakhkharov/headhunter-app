@@ -70,6 +70,11 @@ abstract final class HhIconPath {
   /// which means withdrawal — this one is pure "there is a list behind this".
   static const chevronDown = 'M6 9.5 12 15.5 18 9.5';
 
+  /// Disclosure on a row that opens a *screen*, where [chevronDown] means a
+  /// list opens in place. The same glyph turned, because it is the same promise
+  /// — "there is more behind this" — pointed at where the more actually is.
+  static const chevronRight = 'M9.5 6 15.5 12 9.5 18';
+
   // Attributes and metadata
   static const location =
       'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11zM12 12.5a2.5 2.5 0 1 0 '

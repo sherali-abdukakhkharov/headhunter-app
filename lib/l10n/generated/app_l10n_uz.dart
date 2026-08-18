@@ -1051,6 +1051,126 @@ class AppL10nUz extends AppL10n {
   String vacancyStartsOn(String date) {
     return '$date dan';
   }
+
+  @override
+  String get walletTitle => 'Hamyon';
+
+  @override
+  String get walletBalanceLabel => 'Balans';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+      one: '$count tanga',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString so\'m';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'m';
+  }
+
+  @override
+  String get walletPrices => 'Bugungi narxlar';
+
+  @override
+  String get walletCoinPriceLabel => 'Bitta tanga';
+
+  @override
+  String get walletUnlockPriceLabel => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Ro\'yxatdan o\'tish bonusi berildi: $date';
+  }
+
+  @override
+  String get walletTopUp => 'To\'ldirish';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'To\'ldirish hozircha mavjud emas. U Payme va CLICK qo\'llab-quvvatlashi bilan birga keladi.';
+
+  @override
+  String get walletActivity => 'So\'nggi operatsiyalar';
+
+  @override
+  String get walletActivityEmpty =>
+      'Bu hamyonda hali hech qanday harakat bo\'lmagan. Kirim ham, chiqim ham shu yerda ko\'rinadi va biror yozuv hech qachon o\'chirilmaydi.';
+
+  @override
+  String get walletShowMore => 'Ko\'proq ko\'rsatish';
+
+  @override
+  String get walletLoadingMore => 'Yana yuklanmoqda…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Balans $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+      one: '$count tanga',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+      one: '$count tanga',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Ro\'yxatdan o\'tish bonusi';
+
+  @override
+  String get walletKindTopUp => 'To\'ldirish';
+
+  @override
+  String get walletKindCandidateUnlock => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String get walletKindAdminAdjustment => 'Administrator tuzatishi';
+
+  @override
+  String get walletKindReversal => 'Qaytarish';
+
+  @override
+  String get walletKindOther => 'Hamyon operatsiyasi';
+
+  @override
+  String get walletCorrection => 'Tuzatish';
+
+  @override
+  String get walletBalanceUnavailable => 'Balans mavjud emas';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2098,6 +2218,126 @@ class AppL10nUzCyrl extends AppL10nUz {
   String vacancyStartsOn(String date) {
     return '$date дан';
   }
+
+  @override
+  String get walletTitle => 'Ҳамён';
+
+  @override
+  String get walletBalanceLabel => 'Баланс';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count танга',
+      one: '$count танга',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString сўм';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўм';
+  }
+
+  @override
+  String get walletPrices => 'Бугунги нархлар';
+
+  @override
+  String get walletCoinPriceLabel => 'Битта танга';
+
+  @override
+  String get walletUnlockPriceLabel => 'Номзод контактларини очиш';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Рўйхатдан ўтиш бонуси берилди: $date';
+  }
+
+  @override
+  String get walletTopUp => 'Тўлдириш';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'Тўлдириш ҳозирча мавжуд эмас. У Payme ва CLICK қўллаб-қувватлаши билан бирга келади.';
+
+  @override
+  String get walletActivity => 'Сўнгги операциялар';
+
+  @override
+  String get walletActivityEmpty =>
+      'Бу ҳамёнда ҳали ҳеч қандай ҳаракат бўлмаган. Кирим ҳам, чиқим ҳам шу ерда кўринади ва бирор ёзув ҳеч қачон ўчирилмайди.';
+
+  @override
+  String get walletShowMore => 'Кўпроқ кўрсатиш';
+
+  @override
+  String get walletLoadingMore => 'Яна юкланмоқда…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Баланс $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count танга',
+      one: '$count танга',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count танга',
+      one: '$count танга',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Рўйхатдан ўтиш бонуси';
+
+  @override
+  String get walletKindTopUp => 'Тўлдириш';
+
+  @override
+  String get walletKindCandidateUnlock => 'Номзод контактларини очиш';
+
+  @override
+  String get walletKindAdminAdjustment => 'Администратор тузатиши';
+
+  @override
+  String get walletKindReversal => 'Қайтариш';
+
+  @override
+  String get walletKindOther => 'Ҳамён операцияси';
+
+  @override
+  String get walletCorrection => 'Тузатиш';
+
+  @override
+  String get walletBalanceUnavailable => 'Баланс мавжуд эмас';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -3147,4 +3387,124 @@ class AppL10nUzLatn extends AppL10nUz {
   String vacancyStartsOn(String date) {
     return '$date dan';
   }
+
+  @override
+  String get walletTitle => 'Hamyon';
+
+  @override
+  String get walletBalanceLabel => 'Balans';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+      one: '$count tanga',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString so\'m';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'m';
+  }
+
+  @override
+  String get walletPrices => 'Bugungi narxlar';
+
+  @override
+  String get walletCoinPriceLabel => 'Bitta tanga';
+
+  @override
+  String get walletUnlockPriceLabel => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Ro\'yxatdan o\'tish bonusi berildi: $date';
+  }
+
+  @override
+  String get walletTopUp => 'To\'ldirish';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'To\'ldirish hozircha mavjud emas. U Payme va CLICK qo\'llab-quvvatlashi bilan birga keladi.';
+
+  @override
+  String get walletActivity => 'So\'nggi operatsiyalar';
+
+  @override
+  String get walletActivityEmpty =>
+      'Bu hamyonda hali hech qanday harakat bo\'lmagan. Kirim ham, chiqim ham shu yerda ko\'rinadi va biror yozuv hech qachon o\'chirilmaydi.';
+
+  @override
+  String get walletShowMore => 'Ko\'proq ko\'rsatish';
+
+  @override
+  String get walletLoadingMore => 'Yana yuklanmoqda…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Balans $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+      one: '$count tanga',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+      one: '$count tanga',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Ro\'yxatdan o\'tish bonusi';
+
+  @override
+  String get walletKindTopUp => 'To\'ldirish';
+
+  @override
+  String get walletKindCandidateUnlock => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String get walletKindAdminAdjustment => 'Administrator tuzatishi';
+
+  @override
+  String get walletKindReversal => 'Qaytarish';
+
+  @override
+  String get walletKindOther => 'Hamyon operatsiyasi';
+
+  @override
+  String get walletCorrection => 'Tuzatish';
+
+  @override
+  String get walletBalanceUnavailable => 'Balans mavjud emas';
 }

@@ -1054,4 +1054,124 @@ class AppL10nEn extends AppL10n {
   String vacancyStartsOn(String date) {
     return 'From $date';
   }
+
+  @override
+  String get walletTitle => 'Wallet';
+
+  @override
+  String get walletBalanceLabel => 'Balance';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString UZS';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString UZS';
+  }
+
+  @override
+  String get walletPrices => 'Prices today';
+
+  @override
+  String get walletCoinPriceLabel => 'One Coin';
+
+  @override
+  String get walletUnlockPriceLabel => 'Candidate unlock';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Registration bonus granted $date';
+  }
+
+  @override
+  String get walletTopUp => 'Top up';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'Top-up is not available yet. It arrives with Payme and CLICK support.';
+
+  @override
+  String get walletActivity => 'Recent activity';
+
+  @override
+  String get walletActivityEmpty =>
+      'Nothing has moved in this wallet yet. Credits and unlocks both appear here, and neither is ever removed.';
+
+  @override
+  String get walletShowMore => 'Show more';
+
+  @override
+  String get walletLoadingMore => 'Loading more…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Balance $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Registration bonus';
+
+  @override
+  String get walletKindTopUp => 'Top-up';
+
+  @override
+  String get walletKindCandidateUnlock => 'Candidate unlock';
+
+  @override
+  String get walletKindAdminAdjustment => 'Administrator adjustment';
+
+  @override
+  String get walletKindReversal => 'Reversal';
+
+  @override
+  String get walletKindOther => 'Wallet activity';
+
+  @override
+  String get walletCorrection => 'Correction';
+
+  @override
+  String get walletBalanceUnavailable => 'Balance unavailable';
 }

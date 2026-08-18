@@ -8,6 +8,7 @@ import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary
 import 'package:headhunter_app/src/features/employer/data/employer_controller.dart';
 import 'package:headhunter_app/src/features/employer/domain/employer_profile.dart';
 import 'package:headhunter_app/src/features/employer/presentation/verification_card.dart';
+import 'package:headhunter_app/src/features/wallet/presentation/wallet_tile.dart';
 
 /// The employer's own profile (§6.1) and what BR-03 reads from it.
 ///
@@ -75,6 +76,14 @@ class _Form extends ConsumerWidget {
               children: [
                 if (state.profile case final profile?) ...[
                   _Standing(profile: profile),
+                  const SizedBox(height: HhSpace.md),
+
+                  // §6.2 puts the wallet on the employer *dashboard*, which is
+                  // M5's unfinished half. It sits here meanwhile because this
+                  // is the built employer-account surface — the widget belongs
+                  // to the wallet feature, so the dashboard will place the same
+                  // one rather than grow a second copy.
+                  const WalletTile(),
                   const SizedBox(height: HhSpace.sectionGap),
                 ],
 

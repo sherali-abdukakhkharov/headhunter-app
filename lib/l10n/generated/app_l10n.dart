@@ -1978,6 +1978,162 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'From {date}'**
   String vacancyStartsOn(String date);
+
+  /// §6.6's employer Coin wallet. Employer-only: a multi-role account switched to candidate has no wallet to read.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get walletTitle;
+
+  /// Label above the Coin balance on the wallet screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get walletBalanceLabel;
+
+  /// A Coin quantity. Coins are an internal service unit (§6.6) - not money, not transferable, not withdrawable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} Coin} other{{count} Coins}}'**
+  String walletCoins(int count);
+
+  /// §6.2's approximate UZS purchase value. Approximate because it is the balance at today's price and repricing must not restate history - the figure comes from the server, never from multiplying Coins here.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {amount} UZS'**
+  String walletApproxUzs(int amount);
+
+  /// An exact UZS figure: a price, or the value a transaction carried at the time it happened.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} UZS'**
+  String walletUzs(int amount);
+
+  /// Heading over the server-supplied prices. "Today" is deliberate: §10.5 lets an administrator change them.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices today'**
+  String get walletPrices;
+
+  /// Row label for the price of a single Coin.
+  ///
+  /// In en, this message translates to:
+  /// **'One Coin'**
+  String get walletCoinPriceLabel;
+
+  /// Row label for what one Candidate Unlock costs (§6.6).
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate unlock'**
+  String get walletUnlockPriceLabel;
+
+  /// BR-15's one-time bonus. Shown with its date because "granted once" is the guarantee, and the date is the evidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration bonus granted {date}'**
+  String walletRegistrationBonusOn(String date);
+
+  /// §6.2's Top up action, which opens §6.7's Payme / CLICK checkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up'**
+  String get walletTopUp;
+
+  /// Shown when Top up is tapped before M13 ships. An honest sentence rather than a dead button: a control that does nothing reads as a broken app, and the ten free Coins mean nobody is stuck.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-up is not available yet. It arrives with Payme and CLICK support.'**
+  String get walletTopUpUnavailable;
+
+  /// Heading over the Coin ledger (§6.2 "recent wallet activity").
+  ///
+  /// In en, this message translates to:
+  /// **'Recent activity'**
+  String get walletActivity;
+
+  /// Empty ledger. Says how the list fills up, and states BR-24's append-only guarantee in passing - an employer should learn early that nothing here can be quietly rewritten.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has moved in this wallet yet. Credits and unlocks both appear here, and neither is ever removed.'**
+  String get walletActivityEmpty;
+
+  /// Loads the next page of ledger entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get walletShowMore;
+
+  /// Shown while a further page of the ledger is in flight.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more…'**
+  String get walletLoadingMore;
+
+  /// The balance the server recorded after one ledger entry. Read from the entry, never accumulated down the list.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {count}'**
+  String walletBalanceAfter(int count);
+
+  /// Coins arriving. The sign is what distinguishes a credit from a debit - colour alone would fail the same rule badges are held to.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count, plural, one{{count} Coin} other{{count} Coins}}'**
+  String walletAmountCredit(int count);
+
+  /// Coins leaving, with a true minus sign (U+2212). Takes the absolute count, so the caller never renders a double negative.
+  ///
+  /// In en, this message translates to:
+  /// **'−{count, plural, one{{count} Coin} other{{count} Coins}}'**
+  String walletAmountDebit(int count);
+
+  /// Ledger kind registration_bonus (BR-15).
+  ///
+  /// In en, this message translates to:
+  /// **'Registration bonus'**
+  String get walletKindRegistrationBonus;
+
+  /// Ledger kind top_up (§6.7).
+  ///
+  /// In en, this message translates to:
+  /// **'Top-up'**
+  String get walletKindTopUp;
+
+  /// Ledger kind candidate_unlock (§6.6, BR-16).
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate unlock'**
+  String get walletKindCandidateUnlock;
+
+  /// Ledger kind admin_adjustment (§10.5). Always carries a reason - the server refuses one without.
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator adjustment'**
+  String get walletKindAdminAdjustment;
+
+  /// Ledger kind reversal: a refund or an undo, recorded as its own entry rather than by deleting what it corrects (BR-24).
+  ///
+  /// In en, this message translates to:
+  /// **'Reversal'**
+  String get walletKindReversal;
+
+  /// Fallback for a kind this build does not know. A newer server's entry still shows its amount and resulting balance, which is the part being checked.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet activity'**
+  String get walletKindOther;
+
+  /// Marks an adjustment or reversal as correcting an earlier entry. BR-24 forbids fixing a mistake by rewriting the entry that caused it, so the correction is visible instead.
+  ///
+  /// In en, this message translates to:
+  /// **'Correction'**
+  String get walletCorrection;
+
+  /// Shown on the §6.2 wallet tile when the balance could not be fetched. The tile still opens the wallet screen, which renders the failure and offers the retry - a summary beside a profile must not turn that screen into an error page.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance unavailable'**
+  String get walletBalanceUnavailable;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

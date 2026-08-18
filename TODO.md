@@ -46,10 +46,24 @@ decision or on the backend.
       Billing. The ledger stays provider-agnostic either way, which is what
       makes this deferrable; the checkout surface in the app does not. *Shapes
       M13 and gates release.*
-- [?] **Wallet API contract** — balance, pricing, ledger, the atomic unlock, and
-      the shape of the locked/unlockable state on a candidate. The backend is
-      done through its own M11 and has no wallet either, so this is a new
-      contract to agree rather than one to read. *Blocks M12.*
+- [x] ~~**Wallet API contract**~~ — **published 2026-08-18.** The backend built
+      it (`a88d185`): `GET /wallet` carries the balance, its UZS value and the
+      prices; `GET /wallet/transactions` is the paged append-only ledger;
+      `GET /wallet/unlocks/:candidateUserId` answers locked-or-not without
+      attempting a purchase, and `POST /wallet/unlocks` is the atomic debit,
+      answering **402** with `required` and `balance` when the balance is short.
+      There is deliberately **no `Idempotency-Key` on the unlock** — the
+      (employer, candidate) pair is a primary key, so a retry returns the
+      existing entitlement with `charged: false` and one key per tap would be
+      two keys for one intent.
+- [?] **Contact exposure is not yet gated on the entitlement.** The wallet can
+      sell an unlock; `expose()` in `contact-exposure.ts` does not read one. The
+      entitlement table is touched only inside the backend's wallet module, so
+      today an unlock debits Coins and changes nothing an employer can see, and
+      the six reason codes are unchanged. *Blocks the unlock action, the locked
+      candidate profile and the `exposureExplanation` rewrite — everything in
+      M12 downstream of a card. The wallet itself does not depend on it and has
+      shipped.*
 
 ## M0 - Foundations *(done)*
 
@@ -570,34 +584,78 @@ don't. What changed is what a card leads to.
       block offers **copy** instead — no new dependency, and the platform
       dialler takes it from the clipboard
 
-## M12 - Employer wallet, Coins and Candidate Unlock *(new, 2026-08-10)*
+## M12 - Employer wallet, Coins and Candidate Unlock *(wallet done; the unlock waits on the server)*
 
 **§6.6 · BR-15 – BR-18, BR-21, BR-24 · UAT-16 – UAT-19.** Delivered **before
 M8**, because §9.1 puts employer-initiated chat behind the same entitlement.
 Needs no payment provider — the ten free Coins are enough to build and accept
 the whole flow, which is why it is split from M13.
 
-- [?] Wallet API contract — see "Blocked on someone else"
-- [ ] Wallet screen: balance, approximate UZS value, **append-only** ledger
-      (BR-24). Reversals and admin adjustments are their own entries; the UI
-      must never render a corrected balance that hides one
-- [ ] **Prices come from the server** (§6.6). `1 Coin = UZS 10,000` and
-      `unlock = 2 Coins` are business configuration — a constant in Dart makes a
-      price change a store release, and disagrees with the ledger the moment it
-      moves
+**The milestone splits cleanly in two, and only the first half was buildable.**
+The wallet — balance, prices, ledger — depends on nothing but the four routes
+the backend published, and is done. Everything that *spends* a Coin depends on
+an unlock changing what an employer can see, and that is not wired yet: the
+entitlement exists and can be bought, but `expose()` never reads it. So the
+purchase would be real and its effect imaginary. Stopping at that line is the
+whole reason the wallet could ship today.
+
+- [x] ~~Wallet API contract~~ — published 2026-08-18, see "Blocked on someone
+      else" for the four routes
+- [x] **Wallet screen: balance, approximate UZS value, append-only ledger**
+      (BR-24). Reversals and admin adjustments render as their own entries and
+      are marked as corrections; each row shows **the balance the server
+      recorded after it**, never a total accumulated down the list — the client
+      only ever holds one page of a ledger, so accumulating is wrong by
+      construction. Paged with "show more", and an append that fails leaves the
+      entries on screen instead of replacing a correct ledger with an error page
+- [x] **Prices come from the server** (§6.6), and a test enforces it: the
+      fixture's `balanceValueUzs` deliberately **disagrees** with
+      `balanceCoins × coinPriceUzs`, and the same for the unlock price, so any
+      client-side multiplication fails here rather than the day a bundle price
+      or a rounding rule lands. Verified by mutation — computing the value
+      instead of reading it fails exactly that test. Same idiom as the
+      level-floor test's mismatched `rank`/`sortOrder`
+- [x] **A ledger kind is not a badge.** `HhBadge`'s tone answers "whose turn is
+      it, and did it end well?" and a ledger entry is an event with neither, so
+      the kind is a word plus a glyph. What *is* held to the badge rule is the
+      amount: `+5` and `−2` carry the sign, so credit and debit never rest on
+      green versus grey
+- [ ] **The §6.2 dashboard tile has no dashboard yet.** `WalletTile` is built
+      and lives in the wallet feature, but the employer home tab is still M5's
+      placeholder, so it currently sits on the company tab. The dashboard places
+      the same widget rather than growing a second copy
+- [!] **The unlock action is deliberately not built yet, and this is the
+      reason.** Everything below waits on one backend change, not on client
+      work: `expose()` does not read the entitlement, so a working "Unlock
+      contact — 2 Coins" button would take an employer's Coins and leave the
+      profile saying "nobody has applied yet". A control that charges for
+      nothing is worse than a control that is absent, and shipping it would
+      also mean writing the locked-state copy twice — once against today's six
+      reason codes and again against the codes that gate arrives with. Same
+      judgement, and the same reason, as the shipped exposure copy being left
+      wrong on purpose (see M7 above). **Unblocks as one change**: teach
+      `expose()` the entitlement, add the reason code, then the four items below
+      and the copy rewrite land together
 - [ ] Unlock confirmation sheet: cost, current balance, remaining balance, shown
       *before* anything is charged
 - [ ] **The unlock is one server call and the client must not simulate it.**
       Debit and entitlement are atomic server-side (BR-18); an optimistic debit
       that then failed would show Coins gone with no access. The response is the
       only truth about the new balance
-- [ ] **Persisted idempotency key on the unlock**, the same discipline as apply
-      (§12.4) — a retry after a timeout must not charge twice, and one
-      employer-candidate pair is charged once (BR-16, UAT-18)
+- [x] ~~Persisted idempotency key on the unlock~~ — **not needed, and the
+      backend explains why**: `(employer, candidate)` is a primary key, so BR-16
+      charges the pair once by construction and any retry returns the existing
+      entitlement with `charged: false`. A header key would answer the same
+      question worse, since one key per tap is two keys for one intent. Apply
+      still needs its persisted key (§12.4) because a second application on the
+      same vacancy has no such natural key
 - [ ] Locked candidate profile: structured data free, contact/CV locked, price
       and balance visible before the decision (UAT-17)
-- [ ] Under 2 Coins routes to top-up, not a failure (UAT-19). Until M13 ships
-      that route ends in an honest "not available yet", never a dead button
+- [ ] Under 2 Coins routes to top-up, not a failure (UAT-19). The server answers
+      **402** carrying `required` and `balance`, so the client routes on the
+      status rather than by comparing numbers it should not be trusting. Until
+      M13 ships that route ends in an honest "not available yet" — which the
+      wallet's own Top up action already does
 - [ ] Rewrite `exposureExplanation` against the new reason codes and re-point
       the tests that pin it — see the M7 note above
 
