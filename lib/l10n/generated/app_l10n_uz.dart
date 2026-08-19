@@ -1549,6 +1549,10 @@ class AppL10nUz extends AppL10n {
   String invitationCounts(int invited, int accepted) {
     return '$invited ta taklif yuborilgan, $accepted tasi qabul qilingan';
   }
+
+  @override
+  String get candidateFileDownloadSoon =>
+      'Ilovada ilovalarni ochish hozircha mumkin emas.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3094,6 +3098,10 @@ class AppL10nUzCyrl extends AppL10nUz {
   String invitationCounts(int invited, int accepted) {
     return '$invited та таклиф юборилган, $accepted таси қабул қилинган';
   }
+
+  @override
+  String get candidateFileDownloadSoon =>
+      'Иловада иловаларни очиш ҳозирча мумкин эмас.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4641,4 +4649,8 @@ class AppL10nUzLatn extends AppL10nUz {
   String invitationCounts(int invited, int accepted) {
     return '$invited ta taklif yuborilgan, $accepted tasi qabul qilingan';
   }
+
+  @override
+  String get candidateFileDownloadSoon =>
+      'Ilovada ilovalarni ochish hozircha mumkin emas.';
 }

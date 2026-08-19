@@ -442,5 +442,6 @@
   "invitationContactOpenTitle": "Aloqa ma'lumotlari ochiq",
   "invitationContactOpenBody": "Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to'lov kerak emas.",
   "invitationOpenCandidate": "Nomzodni ko'rish",
-  "invitationCounts": "{invited} ta taklif yuborilgan, {accepted} tasi qabul qilingan"
+  "invitationCounts": "{invited} ta taklif yuborilgan, {accepted} tasi qabul qilingan",
+  "candidateFileDownloadSoon": "Ilovada ilovalarni ochish hozircha mumkin emas."
 }

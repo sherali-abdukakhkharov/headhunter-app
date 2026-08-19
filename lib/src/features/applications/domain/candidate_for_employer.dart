@@ -22,6 +22,19 @@ class CandidateFile {
   final String fileName;
 
   /// A path on this API, never a storage URL (§11.1).
+  ///
+  /// **Follow it verbatim. Never construct it.** It is scoped to whatever
+  /// entitled this employer to the file, so the same CV is
+  /// `/applications/…/files/…/content` for an employer holding an application,
+  /// `/invitations/…` for one whose invitation was accepted, and `/unlocks/…`
+  /// for one who paid — three routes, and hard-coding any of them works for a
+  /// third of the cases.
+  ///
+  /// The reason it is server-built rather than derivable: BR-09 is re-evaluated
+  /// on **every download**, so holding a path is not holding permission. A
+  /// candidate who withdraws stops the download working mid-session, and this
+  /// path is the only thing that stays in step with which interaction is
+  /// currently granting access.
   final String downloadPath;
 }
 

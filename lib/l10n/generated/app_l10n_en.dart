@@ -1551,4 +1551,8 @@ class AppL10nEn extends AppL10n {
   String invitationCounts(int invited, int accepted) {
     return '$invited invited, $accepted accepted';
   }
+
+  @override
+  String get candidateFileDownloadSoon =>
+      'Opening attachments is not available in the app yet.';
 }

@@ -2758,6 +2758,12 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'{invited} invited, {accepted} accepted'**
   String invitationCounts(int invited, int accepted);
+
+  /// Shown when an employer taps a candidate attachment they are entitled to. BR-09 has granted the file and the server serves it at the file's own `downloadPath`; what is missing is the client, which has no way to open a downloaded file without a plugin the team has deliberately not added. Says so rather than doing nothing, the same way section 6.7's top-up does — a row that looks like a file and answers nothing reads as a broken app.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening attachments is not available in the app yet.'**
+  String get candidateFileDownloadSoon;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

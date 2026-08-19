@@ -787,7 +787,13 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       resource-precedence mechanism every adaptive-icon setup already uses, one
       level further down. Flutter's default logo mipmaps are deleted rather than
       left as dead weight in the APK
-- [!] **The Android build could not be run in this session, so run it once.**
+- [x] **The Android build was run and passed, 2026-08-20.** `flutter build apk
+      --debug --flavor development` built `app-development-debug.apk` in 56s, so
+      AAPT2 accepted both vector drawables and the resource precedence resolves.
+      The KGP warning still names **only `file_picker`**, which is what it named
+      before the brand work — nothing new was added to it. The note below is kept
+      because the reason it could not be run here will recur.
+- [-] ~~**The Android build could not be run in this session, so run it once.**~~
       Gradle failed at startup with `java.io.IOException: Unable to establish
       loopback connection` — an environment restriction, not a code problem, and
       it failed identically for `flutter build apk`, a direct `gradlew` call and
@@ -799,6 +805,35 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       ```powershell
       flutter build apk --debug --flavor development
       ```
+- [?] **Opening a candidate attachment needs a plugin decision — yours, not
+      ours.** BR-09 grants the file, the server serves it, and the client cannot
+      open it.
+      What is already right: `CandidateFile.downloadPath` is parsed, and the
+      **client has never constructed a file route** — the backend's guess that we
+      had hard-coded the application-scoped one was wrong in our favour. There is
+      simply no download anywhere in the app: `downloadPath` and
+      `Attachment.downloadPath` are both read from JSON and used nowhere.
+      What is missing is only the last step. `path_provider` is **already a
+      transitive dependency** (2.1.6, via `file_picker`), so fetching the bytes
+      to a cache directory costs nothing. *Opening* them needs a viewer plugin —
+      `open_filex` or equivalent — and every candidate is written in Kotlin, so
+      it would **apply the Kotlin Gradle Plugin**. That is the second name on a
+      warning list the team deliberately emptied on 2026-08-19 by removing
+      `telegram_login`, and future Flutter versions will refuse a build that has
+      one. So this is not a decision to slip in.
+      Three ways out, in ascending cost:
+      1. **Live with the current behaviour.** The row says opening is not
+         available yet, the way §6.7's top-up does. Phone and e-mail — the two
+         things an employer needs to make contact — already work.
+      2. **Show images in-app only.** `Image.memory` needs no plugin, so a photo
+         attachment could open and a PDF could not. Half of the list behaving
+         differently from the other half, for a reason no employer can deduce.
+      3. **Add a viewer plugin and accept a second KGP entry.** The only option
+         that actually opens a CV, which is the attachment that matters.
+      Nothing is blocked on the backend: **follow `downloadPath` verbatim, never
+      construct it.** It is scoped to whichever interaction currently entitles the
+      employer — application, accepted invitation or unlock — and BR-09 is
+      re-evaluated per download, so holding a path is not holding permission
 - [!] **Check the launcher icon on an API 24 or 25 device.** It is the one file
       in `res/` that a modern launcher never exercises, and a vector launcher
       icon on Android 7 is the only part of this that rests on documented

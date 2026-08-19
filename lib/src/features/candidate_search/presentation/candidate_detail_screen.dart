@@ -522,6 +522,14 @@ class _Files extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: HhSpace.sm),
             child: HhCard(
+              // Says the download is not built yet rather than doing nothing,
+              // the same way §6.7's top-up does. A row that looks like a file
+              // and answers nothing reads as a broken app, and BR-09 has
+              // genuinely granted this employer the file — what is missing is
+              // ours, not theirs.
+              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.candidateFileDownloadSoon)),
+              ),
               child: Row(
                 children: [
                   const HhIcon(

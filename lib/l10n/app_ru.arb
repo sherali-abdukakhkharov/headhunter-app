@@ -442,5 +442,6 @@
   "invitationContactOpenTitle": "Контакты открыты",
   "invitationContactOpenBody": "Кандидат принял приглашение — телефон, эл. почта и резюме доступны в профиле кандидата. Платное открытие не требуется.",
   "invitationOpenCandidate": "Открыть кандидата",
-  "invitationCounts": "Приглашено: {invited}, принято: {accepted}"
+  "invitationCounts": "Приглашено: {invited}, принято: {accepted}",
+  "candidateFileDownloadSoon": "Открытие вложений в приложении пока недоступно."
 }

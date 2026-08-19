@@ -442,5 +442,6 @@
   "invitationContactOpenTitle": "Алоқа маълумотлари очиқ",
   "invitationContactOpenBody": "Номзод таклифни қабул қилди — телефон, е-почта ва резюме унинг профилида. Бунинг учун тўлов керак эмас.",
   "invitationOpenCandidate": "Номзодни кўриш",
-  "invitationCounts": "{invited} та таклиф юборилган, {accepted} таси қабул қилинган"
+  "invitationCounts": "{invited} та таклиф юборилган, {accepted} таси қабул қилинган",
+  "candidateFileDownloadSoon": "Иловада иловаларни очиш ҳозирча мумкин эмас."
 }

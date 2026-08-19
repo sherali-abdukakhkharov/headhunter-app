@@ -318,4 +318,52 @@ void main() {
       );
     });
   });
+  group('attachments BR-09 granted but the app cannot open yet', () {
+    testWidgets('a file row says so rather than doing nothing', (tester) async {
+      await pump(
+        tester,
+        subject: candidate(
+          exposureReason: 'accepted_invitation',
+          canViewFiles: true,
+          files: const [
+            {
+              'id': 'f1',
+              'purposeCode': 'cv',
+              'fileName': 'rezyume.pdf',
+              'downloadPath': '/invitations/inv-1/files/f1/content',
+            },
+          ],
+        ),
+      );
+
+      expect(find.text('rezyume.pdf'), findsOneWidget);
+
+      await tester.tap(find.text('rezyume.pdf'));
+      await tester.pump();
+
+      // The wallet's precedent: a control that silently fails reads as a
+      // broken app, and here BR-09 really has granted the file — what is
+      // missing is ours. Opening a downloaded file needs a plugin, and the team
+      // emptied the KGP warning list on purpose, so it is a deliberate gap.
+      expect(
+        find.textContaining('not available in the app yet'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the row is not offered when the server sent no files', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        // `canViewFiles: false` is the default, so it is not restated: the
+        // point of this case is that the server sent nothing.
+        subject: candidate(exposureReason: 'unlock_required'),
+      );
+
+      // Not a client-side hide: with `canViewFiles` false the server sends no
+      // files at all, so there is nothing here to leak and nothing to tap.
+      expect(find.textContaining('not available in the app yet'), findsNothing);
+    });
+  });
 }

@@ -1564,4 +1564,8 @@ class AppL10nRu extends AppL10n {
   String invitationCounts(int invited, int accepted) {
     return 'Приглашено: $invited, принято: $accepted';
   }
+
+  @override
+  String get candidateFileDownloadSoon =>
+      'Открытие вложений в приложении пока недоступно.';
 }
