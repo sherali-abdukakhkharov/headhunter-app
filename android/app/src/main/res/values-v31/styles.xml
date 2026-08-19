@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 12+ replaced the `windowBackground` splash with the platform
+  SplashScreen API: the system draws the app icon on
+  `windowSplashScreenBackground` and ignores @drawable/launch_background
+  entirely. Without these two lines a JobBridge cold start on Android 12+ would
+  put the icon on the platform default - white on a light device - and then cut
+  to a navy Flutter splash, which is exactly the flash the navy launch background
+  was written to remove.
+
+  The icon shown is the adaptive one, so the mark arrives turquoise-on-navy and
+  the Flutter splash then inverts it onto the turquoise plate. That change is
+  intended: the design's launch screen inverts the mark so a stalled launch is
+  never mistaken for the home-screen icon frozen mid-load.
+-->
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowSplashScreenBackground">@color/brand_navy</item>
+        <!-- Kept so a launcher that still honours it agrees with the line above. -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@color/app_surface</item>
+    </style>
+</resources>

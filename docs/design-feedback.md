@@ -6,6 +6,79 @@
 
 ---
 
+## ROUND 5 — the mark is in, and three sentences disagree with three drawings
+
+**2026-08-20.** §01 is built: the mark, both lockups, the launch screen, and the
+Android launcher icon. The geometry went in exactly as specified and the maths
+checked out — 48% gives a 63.34% diagonal against the 66% safe zone, clearing by
+1.33pp per side, which is your "~1.3pp" to two decimal places.
+
+**The construction panel did the work.** Stating the shoulder at y 13.2, the apex
+at y 11.8, the heads at r 3.6 and the crop as `viewBox="4.5 6.2 23 19.8"` meant
+the mark could be rebuilt from the document without tracing anything, and the
+path data in our Android drawables is byte-identical to yours, so it can be
+diffed against it. Please keep doing this.
+
+### Three places a rule and a specimen disagree
+
+Each is small, and in every case we implemented the **stated rule** and left the
+drawing alone. Tell us if that was backwards.
+
+1. **The launch screen's wordmark.** The lockup rule says the wordmark is "one
+   capital B, never spaced or hyphenated"; the launch specimen draws it
+   letterspaced at .1em and uppercase — "JOBBRIDGE". We shipped the rule.
+2. **Its colour.** The same rule says "on navy the mark goes turquoise and the
+   word stays white"; the launch specimen draws the word in `#8FD3DB`. We
+   shipped white. Note the launch screen is a third arrangement your colour
+   panel does not cover — turquoise *plate*, navy mark — so the rule may simply
+   not have been written for it.
+3. **"The gap between mark and word equals the arch's overhang."** We could not
+   find a measurable overhang: the base overhangs the heads by 0.5 of 23 units,
+   which at any real size is under a pixel. The specimens give ½ the mark's width
+   horizontally (11 of 21, 10 of 18) and ¼ its height stacked (7 of 29), so we
+   used those. **What is the overhang?**
+
+### One number we read off a drawing because the rule was unusable
+
+"In the horizontal lockup the mark's height equals the wordmark's cap height."
+Taken literally with Golos Text's cap height, a 23pt wordmark gives a 19.2pt
+mark — **under your own 20pt pair floor**, so the default lockup silently
+rendered as a single figure. Your specimen draws 21 x 18 beside 23pt type, which
+implies a cap height of 18.08/23 = 0.786em. We used that, and the lockup now
+refuses any size that would drop a figure.
+
+Worth knowing because it means the two rules interact: **any lockup under about
+22pt of wordmark is below the pair floor**, and the design has no small
+horizontal lockup. If one is needed, it needs either a smaller floor or the solo
+figure.
+
+### The one surface the icon rules do not cover
+
+`minSdk` is 24, so **Android 7.0 and 7.1 have no adaptive icons and no
+OS-supplied mask.** Your rule "no rounded-rect drawn *into* the artwork — the OS
+supplies the shape" holds for iOS, for both adaptive masks and for the 1024
+master, and on those two API levels there is nothing to supply it: a full-bleed
+square would ship as a hard-edged navy tile.
+
+So that one file draws its own plate, at the icon specimens' own radius (22 of 96
+= 23%) and with the mark at the square-mask **56%** rather than the adaptive 48%,
+since nothing will mask it to a circle. Flagged rather than assumed — if you would
+rather it were a circle, or a different radius, it is a one-line change.
+
+### Themed icons are deliberately not supported
+
+Android 13 lets the launcher take a **single silhouette** and tint it. Ours would
+merge the two figures into one shape and close the 1.6-unit gap — the same failure
+your 20px floor exists to prevent — so we ship no `<monochrome>` layer and the
+launcher falls back to the full-colour icon. If you want a themed variant it has
+to be drawn as a deliberate one-figure mark, not derived from the pair.
+
+### Still owed from round 3
+
+**Item 7's copy**, still. See round 4 below.
+
+---
+
 ## ROUND 4 — §8.2 invitations are built, and undrawn
 
 **2026-08-19.** We built the candidate's invitation inbox (§8.2) because M12

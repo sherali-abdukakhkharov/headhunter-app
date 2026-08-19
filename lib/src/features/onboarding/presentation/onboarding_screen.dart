@@ -110,7 +110,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: HhSpace.xxl),
-              Text(l10n.appTitle, style: HhTypography.display),
+              // The stacked lockup, not the app title as text: this is the
+              // first thing anybody sees, and a logotype is what belongs
+              // there. The mark also carries the product's one idea — two
+              // people and the span between them — which `appTitle` cannot.
+              const Center(
+                child: HhBrandLockup(axis: HhBrandLockupAxis.stacked),
+              ),
               const SizedBox(height: HhSpace.xl),
 
               Text(l10n.settingsLanguage, style: HhTypography.subtitle),

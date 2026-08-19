@@ -768,6 +768,41 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
          honestly meanwhile — that refusal reads as a fact, not a failure
 - [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
       to hang off, which is `GET /vacancies/:id/shortlist`
+- [x] **The brand mark, its lockups and the Android launcher icon, 2026-08-20.**
+      §01 of the design document, delivered by the designer and implemented as
+      `HhBrandMark` / `HhBrandWordmark` / `HhBrandLockup` /
+      `HhBrandLaunchPlate`, plus the adaptive and legacy launcher icons and a
+      navy platform launch window.
+      Two API shapes are load-bearing. The mark takes a **ground, not colours**,
+      because "turquoise on white" and "both figures turquoise" are two of the
+      four documented misuses and selecting by ground makes them unwritable. And
+      it **switches to the single figure below 20pt** on its own, because the
+      pair fuses there — a rule a caller has to remember is a rule that breaks at
+      the fourteenth call site. The consequence to know is that the crop changes
+      from 23 : 19.8 to 10.7 : 19.8, so the mark is taller than wide under the
+      floor.
+      The launcher icon is **vector, not PNG**: there is no rasteriser on this
+      machine, and one file beats five that can drift. `mipmap-anydpi` serves
+      API 24/25 and `mipmap-anydpi-v26` serves the rest, which is the same
+      resource-precedence mechanism every adaptive-icon setup already uses, one
+      level further down. Flutter's default logo mipmaps are deleted rather than
+      left as dead weight in the APK
+- [!] **The Android build could not be run in this session, so run it once.**
+      Gradle failed at startup with `java.io.IOException: Unable to establish
+      loopback connection` — an environment restriction, not a code problem, and
+      it failed identically for `flutter build apk`, a direct `gradlew` call and
+      a resource-only task. So **AAPT2 has never seen the new vector drawables.**
+      Their geometry is checked by `test/core/design/brand_test.dart` (centring,
+      the 48% and 56% ratios, the locked aspect, the safe-zone diagonal, the path
+      data against the design) and every file is well-formed XML, but neither of
+      those is the compiler:
+      ```powershell
+      flutter build apk --debug --flavor development
+      ```
+- [!] **Check the launcher icon on an API 24 or 25 device.** It is the one file
+      in `res/` that a modern launcher never exercises, and a vector launcher
+      icon on Android 7 is the only part of this that rests on documented
+      behaviour rather than on something already shipping in this app
 
 ### Re-opened by the 2026-08-10 spec revision
 

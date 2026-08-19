@@ -60,6 +60,116 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         HhSpace.xxl,
       ),
       children: [
+        // --- Brand --------------------------------------------------------
+        // First, because it is §01 of the design document and because the three
+        // colour arrangements are the part most likely to be got wrong by hand.
+        const _Section('Brend belgisi'),
+
+        // Navy: two-tone, and the turquoise figure is always the right one.
+        Container(
+          padding: const EdgeInsets.all(HhSpace.lg),
+          decoration: const BoxDecoration(
+            color: HhColors.brand900,
+            borderRadius: HhRadius.cardAll,
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              HhBrandMark(width: 72, ground: HhBrandGround.navy),
+              HhBrandLockup(ground: HhBrandGround.navy),
+            ],
+          ),
+        ),
+        const SizedBox(height: HhSpace.sm),
+
+        // Light: mono navy. Turquoise on white is misuse, so there is no
+        // specimen of it here and no way to write one.
+        const HhCard(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              HhBrandMark(width: 72),
+              HhBrandLockup(),
+            ],
+          ),
+        ),
+        const SizedBox(height: HhSpace.sm),
+
+        // The stacked lockup and the launch plate, which inverts the mark.
+        Row(
+          children: [
+            const Expanded(
+              child: HhCard(
+                child: Center(
+                  child: HhBrandLockup(axis: HhBrandLockupAxis.stacked),
+                ),
+              ),
+            ),
+            const SizedBox(width: HhSpace.sm),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(HhSpace.lg),
+                decoration: const BoxDecoration(
+                  color: HhColors.brand900,
+                  borderRadius: HhRadius.cardAll,
+                ),
+                // 240 rather than a real screen width: the plate is 44% of
+                // it, and this cell is about a third of a phone. The ratio is
+                // what is on show, not the size.
+                child: const Center(
+                  child: HhBrandLaunchPlate(screenSize: Size(240, 240)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: HhSpace.sm),
+
+        // The size ramp, and the floor. **Look at this one on a device**: the
+        // whole reason the solo figure exists is that the pair fuses below
+        // 20pt, and no test can say whether the 20 is in the right place.
+        HhCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "O'lchamlar · 40 / 24 / 20 · 19 va past — yakka",
+                style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+              ),
+              const SizedBox(height: HhSpace.sm),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  HhBrandMark(width: 40),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: 24),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: HhBrandMark.pairFloor),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: 19),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: 16),
+                ],
+              ),
+              const SizedBox(height: HhSpace.md),
+              Text(
+                "Bo'sh maydon — kamon balandligining yarmi",
+                style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: HhColors.brand200),
+                  borderRadius: HhRadius.inputAll,
+                ),
+                child: const HhBrandMark(width: 48, clearSpace: true),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: HhSpace.sectionGap),
+
         // --- Type ---------------------------------------------------------
         const _Section('Tipografika'),
         Text('Sarlavha · display', style: HhTypography.display),

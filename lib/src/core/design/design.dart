@@ -29,6 +29,7 @@ export 'components/hh_progress.dart';
 export 'components/hh_selection.dart';
 export 'components/hh_states.dart';
 export 'components/hh_text_field.dart';
+export 'hh_brand.dart';
 export 'hh_colors.dart';
 export 'hh_icons.dart';
 export 'hh_metrics.dart';

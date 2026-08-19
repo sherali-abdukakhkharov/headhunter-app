@@ -470,6 +470,66 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - Two brand rules that interact, and the one that lost silently
+The design's mark has a **20pt floor for the pair** (below it the 1.6-unit gap
+closes and the two figures fuse) and, separately, "in the horizontal lockup the
+mark's height equals the wordmark's cap height". Both are reasonable. Together
+they are a trap: Golos Text's cap height is about 0.72em, so a 23pt wordmark - the
+design's own default - derives a **19.2pt mark**, which is under the floor. The
+lockup rendered a single figure and looked entirely plausible doing it.
+
+Three things to carry:
+
+1. **When two rules from a design constrain the same number, compute the boundary
+   before trusting either.** Nothing announced the collision; the widget did what
+   both rules said and produced a mark with one person in it.
+2. **The specimen was the arbiter.** The document draws 21 x 18 beside 23pt type,
+   which implies a cap height of 18.08/23 = 0.786em rather than the textbook 0.72.
+   Reading the number off the drawing reproduced the drawing; deriving it from
+   typographic convention did not.
+3. **What caught it was a test about something else.** "On navy the word stays
+   white while the mark goes turquoise" failed, because a solo mark has no
+   turquoise figure - the two-tone assertion is what noticed the missing person.
+   A test for the *colour rule* found a *size* bug, which is an argument for
+   asserting the rule rather than the pixels.
+
+The lockup now asserts `markWidth >= pairFloor` rather than degrading, because a
+lockup is defined with the pair in both specimens.
+
+### 2026-08-20 - An Android launcher icon needs no rasteriser, and no PNGs
+There is no ImageMagick, Inkscape or rsvg on this machine (`convert` resolves to
+Windows' filesystem converter, which is a fine trap of its own), so the launcher
+icon is **vector all the way down**:
+
+- `mipmap-anydpi-v26/ic_launcher.xml` - `<adaptive-icon>`, navy background layer,
+  arch foreground layer.
+- `mipmap-anydpi/ic_launcher.xml` - a plain `<vector>` for **API 24 and 25**,
+  which predate adaptive icons. `anydpi` outranks the density qualifiers and
+  `anydpi-v26` is excluded below 26, so each API level gets the right one. That is
+  the same precedence rule every adaptive-icon setup already depends on, used one
+  level further down.
+- Flutter's five default `ic_launcher.png` files are **deleted**. Left in place
+  they are unreachable and still ship, so any tool that bypasses `anydpi` shows
+  the Flutter logo.
+
+Two details that would have been silent bugs:
+
+- **Android's `<vector>` viewport has no origin**, where the designer's export is
+  cropped to the ink with `viewBox="4.5 6.2 23 19.8"`. The crop is carried as an
+  inner `<group android:translateX="-4.5" android:translateY="-6.2">` so the path
+  data stays **byte-identical to the design document** and can be diffed against
+  it. Pre-multiplying the coordinates would have saved two lines and made the
+  mark unverifiable.
+- **`<vector>` has no `<circle>`.** The two heads are circles in the source and
+  become two-arc paths here.
+
+And the reason there is a test for all of it: `flutter analyze` does not read
+Android XML, `flutter test` does not build it, and an off-centre icon looks
+plausible until it is beside another app's on a home screen. So
+`test/core/design/brand_test.dart` reads the drawables, applies the transforms and
+asserts the centring, the 48%/56% ratios, the locked 23 : 19.8 aspect and the
+safe-zone diagonal. **It is arithmetic nothing else in the toolchain checks.**
+
 ### 2026-08-20 - A rule tested on one variant is a rule tested nowhere
 `HhButton.text` shipped without wrapping its label. Every filled variant puts the
 label in a `Flexible`, which is what makes §08.2's "the box grows with the label,
@@ -825,6 +885,28 @@ left out with the reason written down. Two things follow that are worth keeping:
   server and again against the one arriving — write it once, later, and say why
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
+
+### 2026-08-20 - Make a design's misuse cases unwritable, not documented
+The brand mark has four documented misuses, and two of them are colour choices:
+turquoise on white, and both figures turquoise. An API taking colours would leave
+both expressible and rely on whoever writes the fifteenth call site having read
+the guidelines.
+
+So `HhBrandMark` takes a **ground** - navy, light or turquoise - and derives the
+colours. There is no parameter to get wrong. The same reasoning made the 20pt
+floor automatic rather than advisory: the mark switches to the single figure
+itself, because a rule a caller has to remember is a rule that breaks eventually
+and silently.
+
+This is worth generalising. The design's own solution to "turquoise is banned on
+white but the mark needs two colours" was to make the separation **structural** -
+two heads and a 1.6-unit gap - so that colour became an enhancement rather than
+the mechanism. Encoding the rules the same way, as structure instead of as
+documentation, is the same move one layer down.
+
+The cost to know about: the automatic switch **changes the widget's aspect**, from
+23 : 19.8 to 10.7 : 19.8, because the solo crop is taller than wide. A rule that
+enforces itself still has to say what it did.
 
 ### 2026-08-20 - A logged endpoint must never be fanned out per row
 The employer's sent list has `candidateUserId` on every row and no name, and the

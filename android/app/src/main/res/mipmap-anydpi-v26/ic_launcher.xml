@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The adaptive launcher icon (API 26+).
+
+  Navy on the background layer, the arch on the foreground layer — exactly the
+  split the design asks for, so the launcher's parallax moves the mark against
+  its ground rather than sliding a flat tile.
+
+  `<monochrome>` is deliberately absent. Android 13's themed icons take a single
+  silhouette and tint it, which would collapse the two figures into one shape and
+  close the 1.6-unit gap that makes the mark read as two people — the same
+  failure the 20px floor exists to prevent. Without this element the launcher
+  falls back to the full-colour icon, which is the correct outcome.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>

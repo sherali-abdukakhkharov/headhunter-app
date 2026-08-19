@@ -92,7 +92,7 @@ after M11 while being delivered before M8.
 | # | Milestone | State |
 |---|---|---|
 | M0 | Foundations: toolchain, health slice, error handling | **done** |
-| M0.5 | App shell: localization, flavors, design system, role shell skeleton | **done** - two items carried, see TODO.md |
+| M0.5 | App shell: localization, flavors, design system, role shell skeleton | **done** - two items carried, see TODO.md. The design system is now complete: §01's brand mark, lockups, launch screen and launcher icon landed 2026-08-20, the last undrawn section of the design document |
 | M1 | Onboarding: language, phone + OTP, role selection, session | **next** - blocked on the auth contract for the session half |
 | M2 | Dictionary cache + reusable pickers | after M1 |
 | M3 | Candidate profile: dynamic forms, completeness, privacy, CV | after M2 |
