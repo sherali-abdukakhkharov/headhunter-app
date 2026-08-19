@@ -431,5 +431,16 @@
   "invitationQuotaResets": "{at} да янгиланади",
   "invitationQuotaSpentTitle": "Бугунги таклифлар тугади",
   "invitationAlreadySentTitle": "Аллақачон таклиф қилинган",
-  "invitationSentConfirm": "Таклиф юборилди"
+  "invitationSentConfirm": "Таклиф юборилди",
+  "invitationsSentTitle": "Юборилган таклифлар",
+  "invitationsSentEmpty": "Сиз таклиф қилган номзодлар шу ерда кўринади.",
+  "invitationsSentNoMatch": "Бу ҳолатда таклиф йўқ. Юборилганларнинг ҳаммасини кўриш учун филтрни тозаланг.",
+  "invitationsSentForVacancy": "Фақат бу вакансия",
+  "invitationFilterAll": "Ҳаммаси",
+  "invitationYourMessage": "Сиз ёзган хабар",
+  "invitationCandidateReply": "Номзоднинг жавоби",
+  "invitationContactOpenTitle": "Алоқа маълумотлари очиқ",
+  "invitationContactOpenBody": "Номзод таклифни қабул қилди — телефон, е-почта ва резюме унинг профилида. Бунинг учун тўлов керак эмас.",
+  "invitationOpenCandidate": "Номзодни кўриш",
+  "invitationCounts": "{invited} та таклиф юборилган, {accepted} таси қабул қилинган"
 }

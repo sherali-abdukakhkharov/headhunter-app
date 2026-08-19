@@ -83,6 +83,67 @@ void main() {
       );
     });
 
+    // The rule above is a rule for **every** variant, and the test above only
+    // ever exercised the filled one — which is how `HhButton.text` shipped
+    // without the `Flexible` its siblings have. A text button reading "View
+    // candidate" in a card overflowed by 190pt at 320 wide and 2.0x, and the
+    // 320pt QA case on a feature screen is what caught it, not this file.
+    //
+    // Narrow box plus 2.0x is the whole test: an unflexed `Text` in a `Row`
+    // takes its intrinsic width and overflows, where a flexed one wraps and the
+    // box grows in height, which is what §08.2 asks for.
+    testWidgets('no variant clips or overflows its label at 2.0x', (
+      tester,
+    ) async {
+      final variants = <String, Widget>{
+        'primary': HhButton(label: 'Продолжить регистрацию', onPressed: () {}),
+        'secondary': HhButton.secondary(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'tertiary': HhButton.tertiary(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'destructive': HhButton.destructive(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'text': HhButton.text(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'text with icon': HhButton.text(
+          label: 'Продолжить регистрацию',
+          iconPath: HhIconPath.plus,
+          onPressed: () {},
+        ),
+      };
+
+      for (final entry in variants.entries) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: HhTheme.light,
+            home: MediaQuery(
+              data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+              child: Scaffold(
+                body: Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(width: 200, child: entry.value),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: '${entry.key} must wrap its label, not overflow',
+        );
+      }
+    });
+
     // Regression: the bordered variants set Material.shape, and passing both
     // shape and borderRadius trips an assertion. The original tests only
     // covered `primary`, which has no border — so every variant is built here.

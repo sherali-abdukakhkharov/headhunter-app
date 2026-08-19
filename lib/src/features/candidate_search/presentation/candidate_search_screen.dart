@@ -13,6 +13,7 @@ import 'package:jobbridge_app/src/features/candidate_search/presentation/filter_
 import 'package:jobbridge_app/src/features/candidate_search/presentation/saved_candidates_screen.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/invitations/presentation/sent_invitations_screen.dart';
 
 /// Employer candidate search (§7.1–§7.3).
 ///
@@ -115,14 +116,18 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Title on its own line, actions beneath it.
+              //
+              // They shared a row until the sent-invitation list needed a third
+              // place in it: title, saved, filters was already tight, and at
+              // 2.0x text scale a fourth child left the title about twelve
+              // points to lay "Search candidates" out in. Nothing overflowed —
+              // an `Expanded` `Text` wraps — it simply became one word per
+              // line, which is the failure mode a layout test does not catch.
+              Text(l10n.searchCandidates, style: HhTypography.title),
+              const SizedBox(height: HhSpace.sm),
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      l10n.searchCandidates,
-                      style: HhTypography.title,
-                    ),
-                  ),
                   IconButton(
                     onPressed: () => showSavedCandidates(context),
                     tooltip: l10n.searchSaved,
@@ -132,6 +137,20 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
                       color: HhColors.brand600,
                     ),
                   ),
+                  IconButton(
+                    onPressed: () => showSentInvitations(context),
+                    tooltip: l10n.invitationsSentTitle,
+                    // The same glyph `HhBadge.invitationSent` carries: within
+                    // this product a paper plane means an invitation, and the
+                    // badge rule that no glyph means two things holds outside
+                    // the badges too.
+                    icon: const HhIcon(
+                      HhIconPath.send,
+                      size: 22,
+                      color: HhColors.brand600,
+                    ),
+                  ),
+                  const Spacer(),
                   HhButton.secondary(
                     label: l10n.filtersEdit,
                     iconPath: HhIconPath.filters,

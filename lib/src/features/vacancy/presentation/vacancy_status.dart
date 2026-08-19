@@ -1,6 +1,22 @@
 import 'package:flutter/widgets.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
+
+/// What to call a vacancy on screen.
+///
+/// The title is a **schema-driven field** (§6.3) and not a column, so it lives
+/// in `fields` and may be missing, blank or not a string at all — a draft
+/// created and abandoned has none. Every caller has to answer the same question
+/// the same way, and there were three copies of this before the employer's
+/// sent-invitation list would have made a fourth.
+String vacancyTitle(Vacancy vacancy, AppL10n l10n) {
+  final title = vacancy.fields['title'];
+
+  return title is String && title.trim().isNotEmpty
+      ? title
+      : l10n.vacancyUntitled;
+}
 
 /// The badge for one of §6.4's six vacancy statuses.
 ///

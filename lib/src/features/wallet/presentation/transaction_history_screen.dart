@@ -8,6 +8,7 @@ import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
 import 'package:jobbridge_app/src/features/wallet/presentation/transaction_detail_screen.dart';
 import 'package:jobbridge_app/src/features/wallet/presentation/wallet_transaction_row.dart';
+import 'package:jobbridge_app/src/shared/widgets/refreshable_fill.dart';
 
 /// Opens the full Coin ledger (§06, E-52).
 Future<void> showTransactionHistory(BuildContext context) =>
@@ -72,8 +73,8 @@ class _TransactionHistoryScreenState
         child: RefreshIndicator(
           onRefresh: () async => ref.invalidate(walletLedgerProvider),
           child: switch (ledger) {
-            AsyncValue(hasError: true, :final error?) => _scrollable(
-              Padding(
+            AsyncValue(hasError: true, :final error?) => RefreshableFill(
+              child: Padding(
                 padding: const EdgeInsets.all(HhSpace.gutter),
                 child: HhErrorState(
                   title: l10n.stateErrorTitle,
@@ -96,18 +97,6 @@ class _TransactionHistoryScreenState
       ),
     );
   }
-
-  /// `RefreshIndicator` only fires on a scrollable child, and the error state
-  /// is not one.
-  Widget _scrollable(Widget child) => LayoutBuilder(
-    builder: (context, constraints) => SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: constraints.maxHeight),
-        child: child,
-      ),
-    ),
-  );
 }
 
 class _Body extends ConsumerWidget {

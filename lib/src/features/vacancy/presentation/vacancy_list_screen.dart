@@ -122,7 +122,6 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final title = vacancy.fields['title'];
 
     return Padding(
       padding: const EdgeInsets.only(bottom: HhSpace.sm),
@@ -135,9 +134,7 @@ class _Row extends StatelessWidget {
             Text(
               // A draft may genuinely have no title yet; saying so beats an
               // empty row that looks like a rendering failure.
-              title is String && title.trim().isNotEmpty
-                  ? title
-                  : l10n.vacancyUntitled,
+              vacancyTitle(vacancy, l10n),
               style: HhTypography.body.copyWith(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: HhSpace.sm),

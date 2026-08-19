@@ -431,5 +431,16 @@
   "invitationQuotaResets": "Обновится в {at}",
   "invitationQuotaSpentTitle": "Приглашения на сегодня закончились",
   "invitationAlreadySentTitle": "Приглашение уже отправлено",
-  "invitationSentConfirm": "Приглашение отправлено"
+  "invitationSentConfirm": "Приглашение отправлено",
+  "invitationsSentTitle": "Отправленные приглашения",
+  "invitationsSentEmpty": "Здесь появятся кандидаты, которых вы пригласили.",
+  "invitationsSentNoMatch": "Приглашений с этим статусом нет. Снимите фильтр, чтобы увидеть все отправленные.",
+  "invitationsSentForVacancy": "Только эта вакансия",
+  "invitationFilterAll": "Все",
+  "invitationYourMessage": "Ваше сообщение",
+  "invitationCandidateReply": "Ответ кандидата",
+  "invitationContactOpenTitle": "Контакты открыты",
+  "invitationContactOpenBody": "Кандидат принял приглашение — телефон, эл. почта и резюме доступны в профиле кандидата. Платное открытие не требуется.",
+  "invitationOpenCandidate": "Открыть кандидата",
+  "invitationCounts": "Приглашено: {invited}, принято: {accepted}"
 }

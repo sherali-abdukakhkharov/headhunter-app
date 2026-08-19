@@ -99,7 +99,7 @@ after M11 while being delivered before M8.
 | M4 | Employer profile + verification status | after M1 |
 | M5 | Vacancy create/edit + statuses (employer) | after M2 + M4 |
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
-| M7 | Candidate search + invitations + shortlists (employer) | search done; **invitations: inbox and send done** 2026-08-19 — sent list and §7.4 counts remain |
+| M7 | Candidate search + invitations + shortlists (employer) | search done; **invitations complete** — inbox and send 2026-08-19, sent list and §7.4 counts 2026-08-20; shortlist screen remains |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
 | M8 | Chat + interviews | after M6 + M7 **+ M12** (§9.1 gates employer-initiated chat on the unlock) |

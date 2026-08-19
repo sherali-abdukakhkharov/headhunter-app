@@ -470,6 +470,51 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - A rule tested on one variant is a rule tested nowhere
+`HhButton.text` shipped without wrapping its label. Every filled variant puts the
+label in a `Flexible`, which is what makes §08.2's "the box grows with the label,
+it never clips it" true — the box grows in *height* because the text is allowed to
+wrap. The text variant had a bare `Text`, so it took its intrinsic width and the
+`Row` overflowed: **190pt at 320 wide and 2.0x text scale**, on a button reading
+"View candidate" inside a card.
+
+The part worth remembering is not the missing widget. It is that
+`design_system_test.dart` **already had a test for exactly this rule** —
+"a control grows with the text scale instead of clipping" — and it only ever built
+the filled button. A green suite therefore said the rule held when it held for one
+of six variants.
+
+Two habits follow:
+
+- **When a design rule is stated for a component, test it across the component's
+  variants, not on the default one.** The neighbouring test in that file
+  ("every button variant builds without asserting") was already written as a loop
+  over all variants, for the same reason — it just checked a different thing.
+  The rule test is now a loop too.
+- **The 320pt x 2.0x case has now caught four defects**, and this is the first
+  one the design-system tests could have caught themselves. Nothing about it is
+  visible at 1.0x in English, which is the width and language a mockup is drawn
+  at and the width a hand-written test defaults to. Keep pinning feature screens
+  at 320pt with the longest label the screen can hold.
+
+### 2026-08-20 - "Invited" is every status, and `byStatus.sent` is the plausible wrong answer
+§7.4 step 7 tracks "invited, accepted, interviewed, and hired counts against the
+target". `GET /invitations/counts/:vacancyId` answers with `byStatus`, and the
+obvious reading of "invited" is `byStatus['sent']`. It is wrong: `sent` is the
+count of invitations **nobody has answered yet**, so the number would have looked
+correct until the first reply and then counted *downwards* as replies arrived.
+
+A candidate who accepted was still invited. So invited is the **sum of every
+status**, which has a second benefit: it counts a status this build has never
+heard of, which is why `countsForVacancy` returns the server's map rather than a
+typed pair of ints.
+
+This is the failure mode to watch for in any status-bucketed count: the bucket
+named like the whole is usually the bucket of *unresolved* members of it. The test
+that pins it uses a fixture where the two readings differ (`{sent: 3, accepted: 5,
+declined: 2}` — 10, not 3), because a fixture where nobody has answered passes
+either way.
+
 ### 2026-08-04 - Three Android flavor traps, in the order they fire
 Adding the three flavors of §12.1 hit three separate walls. All of them fail at
 Gradle *configuration* time, so none of them is visible from Dart.
@@ -780,6 +825,36 @@ left out with the reason written down. Two things follow that are worth keeping:
   server and again against the one arriving — write it once, later, and say why
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
+
+### 2026-08-20 - A logged endpoint must never be fanned out per row
+The employer's sent list has `candidateUserId` on every row and no name, and the
+one route that would resolve a name is
+`GET /candidate-search/candidates/:candidateUserId`. Its own contract rules the
+obvious fix out: **every call is a logged access to protected data (§11.1)**, and
+so it "is never called speculatively". Thirty rows would have written thirty audit
+entries nobody asked for — into the very log BR-09 exists to make meaningful, and
+diluting it is the actual harm, not the request count.
+
+So the client renders no name, and `Invitation.candidateName` is **parsed but not
+yet sent**: the field is a backend ask, null on every server today, and the name
+appears the day it lands with no client release. Same discipline as the quota's
+404 and `unlock_required` — render what the server can say, invent nothing.
+
+Two related shapes settled at the same time, both worth keeping:
+
+- **The vacancy on a row comes from `myVacanciesProvider`, not from discovery.**
+  The candidate's inbox resolves a posting per row through
+  `GET /discovery/vacancies/:id`, and that whole controller carries
+  `@RequireRole('candidate')` — an employer calling it gets 403, not a title. The
+  employer's side pulls its own list once and looks up locally, which is also one
+  request instead of N.
+- **A screen whose subject rendering is shared must share it in code.** The
+  general-invitation subject is now one widget used by both sides
+  (`invitation_subject.dart`), for the reason already recorded for
+  `invitationStamp`: two views of one resource that describe it differently drift,
+  and the drift is invisible until somebody reads both screens side by side. The
+  **vacancy** subject is deliberately *not* shared, because the two roles reach it
+  through different endpoints.
 
 ### 2026-08-19 - Filter a ledger by the amount's sign, never by a list of kinds
 E-52's filters are "topped up" and "spent", which read like they name transaction

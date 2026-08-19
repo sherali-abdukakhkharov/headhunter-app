@@ -720,21 +720,52 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       `not_verified_employer` (BR-03, and the exposure notice already routes there)
       and `hidden_by_candidate` (BR-02 — the server will not accept an invitation
       to somebody the employer could not have found)
-- [ ] **Employer sent list + §7.4 counts.** `GET /invitations/sent` with the
-      server's own `vacancyId`/`status` filters — unlike the ledger's, these are
-      real server-side filters, so a filtered list is complete rather than
-      filtered-over-what-was-loaded — and `GET /invitations/counts/:vacancyId` for
-      §7.4's invited and accepted counts. Repository and providers are built; the
-      screens are not
-- [ ] **The candidate card carries no invitation status.** Unlike the vacancy
-      card, which carries `applicationStatus` so Apply is offered exactly when
-      valid (BR-07), `CandidateCard` has `isSaved` and `isShortlisted` and nothing
-      about invitations — so a search result cannot show "already invited" and the
-      employer learns it from the 409. Handled honestly for now (that refusal
-      reads as a fact, not a failure), and cross-referencing `/invitations/sent`
-      would fix it client-side, except that endpoint is unpaged and returns an
-      employer's whole history. Worth one backend ask covering both: a
-      `candidateUserId` filter, or the status on the card
+- [x] **Employer sent list + §7.4 counts, 2026-08-20.** `GET /invitations/sent`
+      behind a screen reached two ways: unscoped from the Candidates tab, and
+      scoped to one vacancy from the §7.4 counts card. Both filters are the
+      **server's** — unlike the ledger's, these are real server-side filters, so
+      a filtered list is complete rather than filtered-over-what-was-loaded, and
+      "Accepted" means every acceptance rather than the acceptances on the first
+      page. That is also why there is no "showing some of possibly more" caveat
+      here and there is one on the ledger.
+      Five statuses are **chips and not `HhSegmented`**: segments divide the
+      width equally and clip to one line, which at 360pt gives each about 66pt,
+      and "Details requested" does not fit that in any of the four variants.
+      **An acceptance is announced rather than badged.** BR-09's `expose()`
+      grants contact details *and* files on an accepted invitation, at the same
+      strength as an application and with no Coin — and it survives the candidate
+      hiding their profile, because that branch only fires when there is no
+      application, no invitation and no unlock. The notice says the unlock is not
+      needed, because an employer shown a paid unlock on every other candidate
+      screen has every reason to assume one is.
+      §7.4 step 7's four counts are joined from **two** endpoints in the
+      applicants card, and "invited" is the **sum of every status** rather than
+      `byStatus.sent`: a candidate who answered was still invited, so reading
+      `sent` would have looked right until the first reply and then counted
+      downwards. Both halves are watched independently, so a vacancy whose
+      invitation counts 404 still shows its hiring progress
+- [!] **Backend ask, one request covering three gaps in `/invitations`.** All
+      three are the same shape — the employer's side of §8.2 can say *what* was
+      sent and not *to whom*:
+      1. **`candidateName` on `InvitationDto`.** A sent list has
+         `candidateUserId` and no name, and the client-side substitute is the
+         wrong one: `GET /candidate-search/candidates/:id` logs a protected-data
+         access per call (§11.1) and its own contract says it "is never called
+         speculatively", so resolving thirty rows would write thirty audit
+         entries nobody asked for — into the log BR-09 exists to make meaningful.
+         **The client already parses the field** (`Invitation.candidateName`,
+         null everywhere today), so the name appears the day it is sent with no
+         client release. §7.3's "permitted name", and null where a name may not
+         be shown.
+      2. **A `candidateUserId` filter on `GET /invitations/sent`**, so a card
+         can ask "did I invite this person?" without pulling an employer's whole
+         history — the endpoint is unpaged.
+      3. **Or the invitation status on `CandidateCard`**, which is what (2) would
+         be used for. The vacancy card carries `applicationStatus` so Apply is
+         offered exactly when valid (BR-07); `CandidateCard` has `isSaved` and
+         `isShortlisted` and nothing about invitations, so a search result cannot
+         show "already invited" and the employer learns it from a 409. Handled
+         honestly meanwhile — that refusal reads as a fact, not a failure
 - [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
       to hang off, which is `GET /vacancies/:id/shortlist`
 

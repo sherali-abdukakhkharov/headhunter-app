@@ -12,6 +12,7 @@ import 'package:jobbridge_app/src/features/invitations/domain/invite_outcome.dar
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_format.dart';
 import 'package:jobbridge_app/src/features/vacancy/data/vacancy_repository.dart';
 import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
+import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_status.dart';
 
 /// Opens §8.2's send-invitation form for one candidate.
 ///
@@ -481,19 +482,12 @@ class _VacancyChoice extends ConsumerWidget {
         const SizedBox(height: HhSpace.xs),
         for (final vacancy in open)
           HhRadioRow<String>(
-            label: _title(vacancy, l10n),
+            label: vacancyTitle(vacancy, l10n),
             value: vacancy.id,
             groupValue: selected,
             onChanged: onChanged,
           ),
       ],
     );
-  }
-
-  String _title(Vacancy vacancy, AppL10n l10n) {
-    final title = vacancy.fields['title'];
-    return title is String && title.trim().isNotEmpty
-        ? title
-        : l10n.vacancyUntitled;
   }
 }

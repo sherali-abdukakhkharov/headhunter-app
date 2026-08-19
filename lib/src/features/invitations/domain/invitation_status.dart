@@ -24,6 +24,19 @@ abstract final class InvitationStatus {
   static const accepted = 'accepted';
   static const declined = 'declined';
 
+  /// All four, in the order `INVITATION_STATUSES` declares them.
+  ///
+  /// For a **filter** rather than a state machine: an employer narrowing their
+  /// sent list needs every status offered, including the ones no action of
+  /// theirs can produce. Driving the chips off this rather than a literal list
+  /// means a fifth status added server-side needs a label and nothing else.
+  static const List<String> all = [
+    sent,
+    detailsRequested,
+    accepted,
+    declined,
+  ];
+
   /// Answered. Nothing can change an invitation once it is here.
   static const Set<String> terminal = {accepted, declined};
 

@@ -1514,4 +1514,41 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get invitationSentConfirm => 'Invitation sent';
+
+  @override
+  String get invitationsSentTitle => 'Invitations sent';
+
+  @override
+  String get invitationsSentEmpty => 'Candidates you invite will appear here.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'No invitations with this status. Clear the filter to see everything you have sent.';
+
+  @override
+  String get invitationsSentForVacancy => 'This vacancy only';
+
+  @override
+  String get invitationFilterAll => 'All';
+
+  @override
+  String get invitationYourMessage => 'What you wrote';
+
+  @override
+  String get invitationCandidateReply => 'Candidate\'s reply';
+
+  @override
+  String get invitationContactOpenTitle => 'Contact is open';
+
+  @override
+  String get invitationContactOpenBody =>
+      'The candidate accepted, so their phone, e-mail and CV are on their profile. No unlock needed.';
+
+  @override
+  String get invitationOpenCandidate => 'View candidate';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited invited, $accepted accepted';
+  }
 }

@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
-import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
 import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_detail_screen.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
@@ -13,6 +11,7 @@ import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_format.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_response_sheet.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_status_badge.dart';
+import 'package:jobbridge_app/src/features/invitations/presentation/invitation_subject.dart';
 
 /// The candidate's invitation inbox (§8.2, UAT-07).
 ///
@@ -111,7 +110,7 @@ class _InvitationCard extends StatelessWidget {
             const SizedBox(height: HhSpace.md),
 
             if (invitation.isGeneral)
-              _GeneralSubject(invitation: invitation)
+              InvitationGeneralSubject(invitation: invitation)
             else
               _VacancySubject(invitation: invitation),
 
@@ -188,72 +187,6 @@ class _VacancySubject extends ConsumerWidget {
       // that reserves the space and fills it in reads better in a list than one
       // flickering a progress indicator per row.
       _ => Text(l10n.invitationVacancyLoading, style: muted),
-    };
-  }
-}
-
-/// A general work invitation: everything it carries, resolved from ids (BR-13).
-class _GeneralSubject extends ConsumerWidget {
-  const _GeneralSubject({required this.invitation});
-
-  final Invitation invitation;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppL10n.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Named as general before anything else, because the absence of a
-        // vacancy is the first thing a candidate needs to know: there is no
-        // posting to read and no deadline to meet.
-        Text(l10n.invitationGeneral, style: HhTypography.overline),
-        if (invitation.occupationId case final id?)
-          _DictionaryLine(
-            type: DictionaryType.occupation,
-            id: id,
-            style: HhTypography.subtitle,
-          ),
-
-        // District in preference to region, as everywhere else: the narrower
-        // answer is the useful one, and both are ids in the **`region`**
-        // dictionary — districts are its children (§5.1), not a type of their
-        // own.
-        if (invitation.districtId ?? invitation.regionId case final id?)
-          _DictionaryLine(type: DictionaryType.region, id: id),
-
-        if (invitationPay(invitation, l10n) case final pay?)
-          Text(pay, style: HhTypography.body),
-
-        if (invitation.scheduleNote case final note? when note.isNotEmpty)
-          // Free text by design (§8.2), and the employer's words (§2.4).
-          Text(note, style: HhTypography.body),
-      ],
-    );
-  }
-}
-
-/// One dictionary id, shown as a word (BR-13).
-class _DictionaryLine extends ConsumerWidget {
-  const _DictionaryLine({required this.type, required this.id, this.style});
-
-  final String type;
-  final String id;
-  final TextStyle? style;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final labels = ref.watch(resolvedLabelsProvider(type, labelKey([id])));
-
-    // An id the server cannot resolve either renders as nothing rather than as
-    // a UUID: a raw id tells a candidate less than an absent line does.
-    return switch (labels) {
-      AsyncData(:final value) when value[id] != null => Text(
-        value[id]!.label,
-        style: style ?? HhTypography.body,
-      ),
-      _ => const SizedBox.shrink(),
     };
   }
 }

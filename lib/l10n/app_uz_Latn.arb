@@ -431,5 +431,16 @@
   "invitationQuotaResets": "{at} da yangilanadi",
   "invitationQuotaSpentTitle": "Bugungi takliflar tugadi",
   "invitationAlreadySentTitle": "Allaqachon taklif qilingan",
-  "invitationSentConfirm": "Taklif yuborildi"
+  "invitationSentConfirm": "Taklif yuborildi",
+  "invitationsSentTitle": "Yuborilgan takliflar",
+  "invitationsSentEmpty": "Siz taklif qilgan nomzodlar shu yerda ko'rinadi.",
+  "invitationsSentNoMatch": "Bu holatda taklif yo'q. Yuborilganlarning hammasini ko'rish uchun filtrni tozalang.",
+  "invitationsSentForVacancy": "Faqat bu vakansiya",
+  "invitationFilterAll": "Hammasi",
+  "invitationYourMessage": "Siz yozgan xabar",
+  "invitationCandidateReply": "Nomzodning javobi",
+  "invitationContactOpenTitle": "Aloqa ma'lumotlari ochiq",
+  "invitationContactOpenBody": "Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to'lov kerak emas.",
+  "invitationOpenCandidate": "Nomzodni ko'rish",
+  "invitationCounts": "{invited} ta taklif yuborilgan, {accepted} tasi qabul qilingan"
 }

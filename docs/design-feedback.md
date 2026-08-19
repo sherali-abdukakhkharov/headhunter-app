@@ -60,10 +60,45 @@ would like your geometry for rather than ours:
   occupation, place, pay and schedule with "General invitation" above it. That
   label placement is a guess.
 
+### A bug in your text button, found at your own QA width
+
+**2026-08-20.** `HhButton.text` did not wrap its label. The filled variants put
+the label in a `Flexible` — which is what makes §08.2's "the box grows with the
+label, it never clips it" true, by letting it grow in *height* — and the text
+variant was missing it. A text button reading "View candidate" inside a card
+**overflowed by 190pt at 320 wide and 2.0× text scale**.
+
+Two things worth passing back rather than just fixing:
+
+- **It is the fourth defect the 320pt × 2.0× case has caught**, and the first one
+  our design-system tests could have caught and did not: the test for this rule
+  existed and only ever ran the *filled* button. It now runs every variant.
+- **Nothing about it is visible at 1.0× in English**, which is the width and scale
+  a mockup is drawn at. If any of your specimens show a text button, it would help
+  to show one at 320pt with a Cyrillic label — that is the case that fails.
+
+Fixed on our side, no change needed from you. Flagged because the same omission
+could exist in whatever we have not built yet.
+
+### One control we chose against the design's own
+
+The employer's sent list filters by five invitation states, and **`HhSegmented`
+was wrong for it**: segments divide the width equally and clip to one line, so at
+360pt each of five gets about 66pt and "Details requested" — "Запрошены детали",
+longer still — cannot be read. We used a scrolling row of `HhFilterChip` instead,
+which sizes to its label.
+
+The rule we were protecting is yours: a badge or a filter is icon **plus word**,
+and a truncated word puts the state back on colour alone. If you would rather
+five states were segments, they need shorter names, and the names are copy rather
+than layout.
+
 ### Still owed from round 3, and now blocking a shipped screen
 
 **Item 7's copy in all four variants.** We wrote Uzbek Latin, Cyrillic and
-Russian for twenty-nine new invitation strings ourselves. The Coin round already
+Russian for **forty** new invitation strings ourselves — twenty-nine for the
+candidate's inbox and the send screen, eleven more for the employer's sent list
+and §7.4's counts. The Coin round already
 established that our translations of your copy are a liability rather than a
 shortcut — `tanga` for "Coin" was exactly that mistake — so these need your
 certified pass, and the **accept disclosure** most of all: it is the sentence a

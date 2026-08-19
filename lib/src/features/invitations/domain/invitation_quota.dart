@@ -36,8 +36,12 @@ class InvitationQuota {
 
   factory InvitationQuota.fromJson(Map<String, dynamic> json) =>
       InvitationQuota(
-        remaining: json['remaining'] as int,
-        limit: json['limit'] as int,
+        // `as num).toInt()` rather than `as int`, to agree with how the
+        // 409 reads its copy of the same two figures. OpenAPI types both as
+        // `number`, and two parsers for one figure — one strict, one lenient —
+        // differ only where it costs something.
+        remaining: (json['remaining'] as num).toInt(),
+        limit: (json['limit'] as num).toInt(),
         resetsAt: ZonedTimestamp.parse(json['resetsAt'] as String),
       );
 

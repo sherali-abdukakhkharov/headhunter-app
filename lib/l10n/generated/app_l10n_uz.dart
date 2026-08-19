@@ -1511,6 +1511,44 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get invitationSentConfirm => 'Taklif yuborildi';
+
+  @override
+  String get invitationsSentTitle => 'Yuborilgan takliflar';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Siz taklif qilgan nomzodlar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Bu holatda taklif yo\'q. Yuborilganlarning hammasini ko\'rish uchun filtrni tozalang.';
+
+  @override
+  String get invitationsSentForVacancy => 'Faqat bu vakansiya';
+
+  @override
+  String get invitationFilterAll => 'Hammasi';
+
+  @override
+  String get invitationYourMessage => 'Siz yozgan xabar';
+
+  @override
+  String get invitationCandidateReply => 'Nomzodning javobi';
+
+  @override
+  String get invitationContactOpenTitle => 'Aloqa ma\'lumotlari ochiq';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to\'lov kerak emas.';
+
+  @override
+  String get invitationOpenCandidate => 'Nomzodni ko\'rish';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited ta taklif yuborilgan, $accepted tasi qabul qilingan';
+  }
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3018,6 +3056,44 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get invitationSentConfirm => 'Таклиф юборилди';
+
+  @override
+  String get invitationsSentTitle => 'Юборилган таклифлар';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Сиз таклиф қилган номзодлар шу ерда кўринади.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Бу ҳолатда таклиф йўқ. Юборилганларнинг ҳаммасини кўриш учун филтрни тозаланг.';
+
+  @override
+  String get invitationsSentForVacancy => 'Фақат бу вакансия';
+
+  @override
+  String get invitationFilterAll => 'Ҳаммаси';
+
+  @override
+  String get invitationYourMessage => 'Сиз ёзган хабар';
+
+  @override
+  String get invitationCandidateReply => 'Номзоднинг жавоби';
+
+  @override
+  String get invitationContactOpenTitle => 'Алоқа маълумотлари очиқ';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Номзод таклифни қабул қилди — телефон, е-почта ва резюме унинг профилида. Бунинг учун тўлов керак эмас.';
+
+  @override
+  String get invitationOpenCandidate => 'Номзодни кўриш';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited та таклиф юборилган, $accepted таси қабул қилинган';
+  }
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4527,4 +4603,42 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get invitationSentConfirm => 'Taklif yuborildi';
+
+  @override
+  String get invitationsSentTitle => 'Yuborilgan takliflar';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Siz taklif qilgan nomzodlar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Bu holatda taklif yo\'q. Yuborilganlarning hammasini ko\'rish uchun filtrni tozalang.';
+
+  @override
+  String get invitationsSentForVacancy => 'Faqat bu vakansiya';
+
+  @override
+  String get invitationFilterAll => 'Hammasi';
+
+  @override
+  String get invitationYourMessage => 'Siz yozgan xabar';
+
+  @override
+  String get invitationCandidateReply => 'Nomzodning javobi';
+
+  @override
+  String get invitationContactOpenTitle => 'Aloqa ma\'lumotlari ochiq';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to\'lov kerak emas.';
+
+  @override
+  String get invitationOpenCandidate => 'Nomzodni ko\'rish';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited ta taklif yuborilgan, $accepted tasi qabul qilingan';
+  }
 }

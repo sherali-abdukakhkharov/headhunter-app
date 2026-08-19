@@ -2692,6 +2692,72 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Invitation sent'**
   String get invitationSentConfirm;
+
+  /// The employer's half of section 8.2, and the title of the screen the section 7.4 counts open. Deliberately not "My invitations", which the candidate's inbox could equally be called.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations sent'**
+  String get invitationsSentTitle;
+
+  /// The unfiltered empty list. States what would fill it rather than that it is empty, which the title above it already says.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates you invite will appear here.'**
+  String get invitationsSentEmpty;
+
+  /// A filter that matched nothing, which is a different fact from having invited nobody: this one is fixed by clearing the filter. Telling an employer looking at "Declined" that they have invited nobody would simply be false.
+  ///
+  /// In en, this message translates to:
+  /// **'No invitations with this status. Clear the filter to see everything you have sent.'**
+  String get invitationsSentNoMatch;
+
+  /// Shown when the list was opened from one vacancy, so the server is narrowing it. The scope is stated because the list looks identical to the unscoped one otherwise, and a short list would read as "few invitations" rather than "few on this vacancy".
+  ///
+  /// In en, this message translates to:
+  /// **'This vacancy only'**
+  String get invitationsSentForVacancy;
+
+  /// The unfiltered choice among the four statuses. Sends no `status` parameter rather than a fifth value, matching what the server means by its absence.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get invitationFilterAll;
+
+  /// Labels the employer's own message on their sent list. The counterpart of `invitationYourReply` on the candidate's side: the same words belong to whoever is reading, and only the label says whose they are.
+  ///
+  /// In en, this message translates to:
+  /// **'What you wrote'**
+  String get invitationYourMessage;
+
+  /// Labels the note a candidate attached when answering — and on "Details requested" it is a question waiting for an answer, which is why it is never trimmed to a preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate\'s reply'**
+  String get invitationCandidateReply;
+
+  /// Heading on an accepted invitation. BR-09 grants contact details and files on an acceptance, at the same strength as an application and without a Coin.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact is open'**
+  String get invitationContactOpenTitle;
+
+  /// Says the unlock is not needed, because an employer who has just been shown a paid unlock on every other candidate screen has every reason to assume it is. Section 11.1 grants contact on an accepted invitation, and it survives the candidate hiding their profile.
+  ///
+  /// In en, this message translates to:
+  /// **'The candidate accepted, so their phone, e-mail and CV are on their profile. No unlock needed.'**
+  String get invitationContactOpenBody;
+
+  /// Opens section 7.3's "View profile" from a sent invitation. A tap and never a prefetch: every open is a logged access to protected data (section 11.1), so thirty rows must not resolve thirty candidates.
+  ///
+  /// In en, this message translates to:
+  /// **'View candidate'**
+  String get invitationOpenCandidate;
+
+  /// The first two of section 7.4 step 7's four counts; interviewed and hired are application stages and sit beside this from a different endpoint. `invited` is the **sum of every status** and not the count of `sent` — a candidate who answered was still invited, so reading `byStatus.sent` would make the number fall as replies arrive.
+  ///
+  /// In en, this message translates to:
+  /// **'{invited} invited, {accepted} accepted'**
+  String invitationCounts(int invited, int accepted);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

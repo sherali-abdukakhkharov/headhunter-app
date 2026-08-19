@@ -28,6 +28,22 @@ import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.
 /// labels, and must be resolved for display through `resolvedLabelsProvider`.
 /// [districtId] resolves against the **`region`** dictionary too — districts
 /// are that dictionary's children (§5.1), not a type of their own.
+///
+/// ## [candidateName] is read but not yet sent
+///
+/// Today's `InvitationDto` carries [candidateUserId] and no name, so an
+/// employer's sent list can show *what* was sent and not *to whom*. The obvious
+/// client-side fix is the wrong one: the only route that returns a candidate is
+/// `GET /candidate-search/candidates/:id`, and its own contract says every call
+/// is a **logged access to protected data (§11.1)** and so "is never called
+/// speculatively". Resolving one per row would write thirty audit entries
+/// nobody asked for, into the log BR-09 exists to make meaningful.
+///
+/// So the name is a **server field, requested and not yet delivered**, and it
+/// is parsed here now: null means "this server does not send it", the row shows
+/// no name, and the day the field lands the name appears with no client
+/// release. The same shape as the quota's 404 and `unlock_required` — read what
+/// the server can say, invent nothing, and never guess at protected data.
 @immutable
 class Invitation {
   const Invitation({
@@ -49,6 +65,7 @@ class Invitation {
     this.message,
     this.responseNote,
     this.respondedAt,
+    this.candidateName,
   });
 
   factory Invitation.fromJson(Map<String, dynamic> json) => Invitation(
@@ -73,11 +90,19 @@ class Invitation {
       final String at => ZonedTimestamp.parse(at),
       _ => null,
     },
+    candidateName: json['candidateName'] as String?,
   );
 
   final String id;
   final String employerUserId;
   final String candidateUserId;
+
+  /// §7.3's "permitted name", where the server sends one.
+  ///
+  /// Null on every server built so far, and null is also the answer for a
+  /// candidate whose name may not be shown — so a missing name is never
+  /// rendered as a gap where a name should be.
+  final String? candidateName;
 
   /// One of [InvitationStatus]'s four codes, or something newer.
   final String status;

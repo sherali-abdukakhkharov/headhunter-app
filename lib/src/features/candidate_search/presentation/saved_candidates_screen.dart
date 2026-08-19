@@ -5,6 +5,7 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/candidate_search/data/candidate_search_repository.dart';
 import 'package:jobbridge_app/src/features/candidate_search/presentation/candidate_search_screen.dart';
+import 'package:jobbridge_app/src/shared/widgets/refreshable_fill.dart';
 
 /// Opens the saved list (§7.3).
 Future<void> showSavedCandidates(BuildContext context) =>
@@ -36,8 +37,8 @@ class SavedCandidatesScreen extends ConsumerWidget {
         child: RefreshIndicator(
           onRefresh: () async => ref.invalidate(savedCandidatesProvider),
           child: switch (saved) {
-            AsyncValue(hasError: true, :final error?) => _scrollable(
-              Padding(
+            AsyncValue(hasError: true, :final error?) => RefreshableFill(
+              child: Padding(
                 padding: const EdgeInsets.all(HhSpace.gutter),
                 child: HhErrorState(
                   title: l10n.stateErrorTitle,
@@ -49,8 +50,8 @@ class SavedCandidatesScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            AsyncData(:final value) when value.isEmpty => _scrollable(
-              HhEmptyState(
+            AsyncData(:final value) when value.isEmpty => RefreshableFill(
+              child: HhEmptyState(
                 title: l10n.stateEmptyTitle,
                 message: l10n.searchSavedEmpty,
               ),
@@ -68,16 +69,4 @@ class SavedCandidatesScreen extends ConsumerWidget {
     );
   }
 
-  /// `RefreshIndicator` only fires on a scrollable child, and neither the empty
-  /// nor the error state is one — so pull-to-refresh would be dead on exactly
-  /// the two screens where a user most wants to retry.
-  Widget _scrollable(Widget child) => LayoutBuilder(
-    builder: (context, constraints) => SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: constraints.maxHeight),
-        child: child,
-      ),
-    ),
-  );
 }

@@ -1526,4 +1526,42 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get invitationSentConfirm => 'Приглашение отправлено';
+
+  @override
+  String get invitationsSentTitle => 'Отправленные приглашения';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Здесь появятся кандидаты, которых вы пригласили.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Приглашений с этим статусом нет. Снимите фильтр, чтобы увидеть все отправленные.';
+
+  @override
+  String get invitationsSentForVacancy => 'Только эта вакансия';
+
+  @override
+  String get invitationFilterAll => 'Все';
+
+  @override
+  String get invitationYourMessage => 'Ваше сообщение';
+
+  @override
+  String get invitationCandidateReply => 'Ответ кандидата';
+
+  @override
+  String get invitationContactOpenTitle => 'Контакты открыты';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Кандидат принял приглашение — телефон, эл. почта и резюме доступны в профиле кандидата. Платное открытие не требуется.';
+
+  @override
+  String get invitationOpenCandidate => 'Открыть кандидата';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return 'Приглашено: $invited, принято: $accepted';
+  }
 }
