@@ -671,6 +671,34 @@ money and is enabled by a constant somebody has to remember.
       and lives in the wallet feature, but the employer home tab is still M5's
       placeholder, so it currently sits on the company tab. The dashboard places
       the same widget rather than growing a second copy
+- [x] **E-52 activity history and E-53 activity detail, 2026-08-19.** The wallet
+      now shows *recent* activity with an "All" link, as §06 splits them: the
+      wallet answers "what just happened", the history answers "what has ever
+      happened" and needs the filters and month headers the first one does not.
+      The filter reads the amount's **sign, not the kind** — an
+      `admin_adjustment` can be either and a `reversal` is a credit that undoes a
+      debit, so a list of kind codes would have to guess, and would silently drop
+      a sixth kind from *both* filters. Pinned by a test that files a reversal
+      under "topped up" and an unknown kind under it too.
+      E-53 takes the entry rather than refetching it: there is no
+      `GET /wallet/transactions/{id}` and none is needed, because BR-24's
+      triggers make an entry immutable, so the copy in hand cannot be stale.
+      Its reference number is the payment order where one exists and the entry id
+      otherwise — **never an unlock's `referenceId`**, which is a candidate's user
+      id and would hand somebody's identifier to support for no reason. Pinned.
+- [x] **The balance card lost its price table**, per §06's first principle. The
+      UZS value and the Coin price share one line under the balance, and what a
+      Coin is *for* is a sentence where the table was — including that search and
+      preview are free, because an employer who thinks browsing costs Coins will
+      not browse
+- [ ] **Server-side ledger filtering.** `GET /wallet/transactions` takes only
+      `limit` and `offset`, so E-52's filter runs over what has been loaded:
+      choosing "spent" on a first page of twenty shows the spends *in those
+      twenty*. Handled honestly rather than hidden — "show more" stays offered
+      whenever the server may hold more, even when the filtered list looks short,
+      because the alternative is a list that looks complete and is not. A `kind`
+      or `sign` query parameter would fix it properly. *Not blocking; the wallet
+      of a real employer is unlikely to exceed one page for a long time.*
 - [x] **The unlock flow is built, and it cannot fire against today's server.**
       The whole thing turns on one signal: the control is offered only where
       `exposureReason` is `unlock_required`, and that code exists **only on a

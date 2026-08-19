@@ -1633,5 +1633,92 @@
   "unlockInsufficient": "Not enough Coins",
   "@unlockInsufficient": {
     "description": "Title of the in-sheet notice when the server refuses a purchase the sheet had judged affordable - the balance moved between the sheet opening and the tap. Names the state; the server's own sentence below it carries the two numbers, which are the authority now that the displayed rows are known to be stale."
+  },
+  "walletValueAndPrice": "≈ {value} UZS · 1 Coin = {price} UZS",
+  "@walletValueAndPrice": {
+    "description": "§06 puts the balance's approximate UZS value and the Coin price on one line under the balance, instead of a prices table. Both figures are the server's: `value` is `balanceValueUzs`, never coins × price, and `price` is `coinPriceUzs`.",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "price": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "walletCoinRule": "{coins} unlocks one new candidate's contact. Searching candidates and viewing profiles is free.",
+  "@walletCoinRule": {
+    "description": "What a Coin is for, in a sentence, where a price table used to be. The second half matters as much as the first: §6.6 makes search and preview free, and an employer who thinks browsing costs Coins will not browse.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "walletHistoryTitle": "Activity history",
+  "@walletHistoryTitle": {
+    "description": "§06's E-52, the whole ledger. Distinct from the wallet's own \"recent activity\": this one has filters and month headers."
+  },
+  "walletHistoryAll": "All",
+  "@walletHistoryAll": {
+    "description": "Doubles as the filter chip on E-52 and the link from the wallet's recent-activity heading to it."
+  },
+  "walletHistoryIncoming": "Topped up",
+  "@walletHistoryIncoming": {
+    "description": "Filter for entries where Coins arrived. Selected by the amount's **sign**, not by kind — an administrator adjustment can be either, and a reversal is a credit that undoes a debit."
+  },
+  "walletHistoryOutgoing": "Spent",
+  "@walletHistoryOutgoing": {
+    "description": "Filter for entries where Coins left. Also by sign, so a sixth kind from a newer server lands on one side rather than vanishing from both."
+  },
+  "walletHistoryNoMatch": "No activity of this kind yet. Clear the filter to see everything the wallet has recorded.",
+  "@walletHistoryNoMatch": {
+    "description": "§11 wants an empty filter result told apart from an empty list: one is resolved by clearing the filter, the other by using the app."
+  },
+  "walletDetailTitle": "Activity detail",
+  "@walletDetailTitle": {
+    "description": "§06's E-53."
+  },
+  "walletDetailSection": "Detail",
+  "@walletDetailSection": {
+    "description": "Heading over the detail rows."
+  },
+  "walletDetailReason": "Reason",
+  "@walletDetailReason": {
+    "description": "Mandatory on an administrator adjustment (§10.5); absent on everything else."
+  },
+  "walletDetailWhen": "Date and time",
+  "@walletDetailWhen": {
+    "description": "The wall clock the server resolved, never re-rendered in the device zone."
+  },
+  "walletDetailAmountUzs": "Amount paid",
+  "@walletDetailAmountUzs": {
+    "description": "The UZS this entry carried **at the time**, never recomputed from today's price (§10.5). Absent on an unlock or a bonus, which are priced in Coins and never touched money."
+  },
+  "walletDetailEffect": "Effect on balance",
+  "@walletDetailEffect": {
+    "description": "The signed Coin amount, repeated here because it is the figure a support call is about."
+  },
+  "walletDetailBalanceAfter": "Balance after",
+  "@walletDetailBalanceAfter": {
+    "description": "The balance the server recorded after this entry — read, never accumulated."
+  },
+  "walletDetailReference": "Reference number",
+  "@walletDetailReference": {
+    "description": "What support can look the entry up by: the payment order behind a top-up, otherwise the entry's own id. Never an unlock's `referenceId`, which is a candidate's user id and identifies a person rather than a transaction."
+  },
+  "walletDetailSupportTitle": "Something wrong with this entry?",
+  "@walletDetailSupportTitle": {
+    "description": "Title of the support notice on E-53."
+  },
+  "walletDetailSupport": "Contact support and quote the reference number above. Nothing in this history can be edited or deleted, so the record you are looking at is the record they will see.",
+  "@walletDetailSupport": {
+    "description": "§06's support footnote, plus BR-24 stated plainly. The second sentence is worth the words: an employer disputing a charge should know the ledger cannot have been altered, which is exactly why the append-only guarantee exists."
+  },
+  "walletCorrectionExplained": "This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.",
+  "@walletCorrectionExplained": {
+    "description": "Shown on E-53 for an adjustment or a reversal. BR-24 in one sentence, at the moment an employer is most likely to wonder why they can see both entries."
   }
 }

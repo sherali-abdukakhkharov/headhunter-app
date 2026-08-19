@@ -5,7 +5,8 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
-import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
+import 'package:jobbridge_app/src/features/wallet/presentation/transaction_history_screen.dart';
+import 'package:jobbridge_app/src/features/wallet/presentation/wallet_transaction_row.dart';
 
 /// Opens the Coin wallet (§6.6).
 ///
@@ -92,7 +93,20 @@ class _WalletBody extends ConsumerWidget {
       children: [
         _BalanceCard(wallet: wallet),
         const SizedBox(height: HhSpace.sectionGap),
-        Text(l10n.walletActivity, style: HhTypography.subtitle),
+        Row(
+          children: [
+            Expanded(
+              child: Text(l10n.walletActivity, style: HhTypography.subtitle),
+            ),
+            // §06 splits recent from all: the wallet answers "what just
+            // happened", E-52 answers "what has ever happened", and the second
+            // question needs filters and month headers the first one does not.
+            HhButton.text(
+              label: l10n.walletHistoryAll,
+              onPressed: () => showTransactionHistory(context),
+            ),
+          ],
+        ),
         const SizedBox(height: HhSpace.md),
         switch (ledger) {
           AsyncValue(hasError: true, :final error?) => HhErrorState(
@@ -152,9 +166,16 @@ class _BalanceCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 2),
+          // The server's UZS figure and the Coin price on **one** line, as §06
+          // draws it. There is no separate "prices" block: the design keeps
+          // this a service balance rather than a wallet, and a table of prices
+          // is the finance chrome it spends its restraint avoiding. Neither
+          // number is computed here.
           Text(
-            // The server's figure. Never balanceCoins * coinPriceUzs.
-            l10n.walletApproxUzs(wallet.balanceValueUzs),
+            l10n.walletValueAndPrice(
+              wallet.balanceValueUzs,
+              wallet.pricing.coinPriceUzs,
+            ),
             style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
           ),
           if (wallet.registrationBonusAt case final at?) ...[
@@ -170,7 +191,7 @@ class _BalanceCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    l10n.walletRegistrationBonusOn(_stamp(at.wallClock)),
+                    l10n.walletRegistrationBonusOn(walletStamp(at.wallClock)),
                     style: HhTypography.meta.copyWith(
                       color: HhColors.successFg,
                     ),
@@ -179,32 +200,40 @@ class _BalanceCard extends StatelessWidget {
               ],
             ),
           ],
+
           const SizedBox(height: HhSpace.lg),
           const Divider(height: 1, color: HhColors.border),
           const SizedBox(height: HhSpace.md),
-          Text(
-            l10n.walletPrices,
-            style: HhTypography.overline.copyWith(color: HhColors.inkMuted),
-          ),
-          const SizedBox(height: HhSpace.sm),
-          _PriceRow(
-            label: l10n.walletCoinPriceLabel,
-            value: l10n.walletUzs(wallet.pricing.coinPriceUzs),
-          ),
-          const SizedBox(height: 6),
-          _PriceRow(
-            label: l10n.walletUnlockPriceLabel,
-            value: l10n.walletCoins(wallet.pricing.candidateUnlockCoins),
-            // **No UZS figure here, deliberately.** §06's first principle is
-            // that this is a service balance rather than a wallet, and that the
-            // UZS value appears only where money actually changes hands — the
-            // top-up screen, the payment screen, the receipt. An unlock is
-            // priced in Coins and paid for in Coins; som beside it turns a
-            // service action back into a financial transaction, which is the
-            // finance chrome the design spends its restraint avoiding.
-            //
-            // `pricing.candidateUnlockUzs` is still read from the server rather
-            // than derived, and M13's top-up screens are where it belongs.
+
+          // What a Coin is *for*, in a sentence, where a price table used to
+          // be. The unlock cost comes from the server, so a reprice moves this
+          // line without a release (§10.5).
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 1),
+                child: HhIcon(
+                  HhIconPath.infoCircle,
+                  size: 15,
+                  color: HhColors.inkMuted,
+                  strokeWidth: 2,
+                ),
+              ),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Text(
+                  l10n.walletCoinRule(
+                    l10n.walletCoins(wallet.pricing.candidateUnlockCoins),
+                  ),
+                  style: HhTypography.meta.copyWith(
+                    fontSize: 12.5,
+                    height: 1.5,
+                    color: HhColors.inkMuted,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: HhSpace.lg),
           HhButton.secondary(
@@ -228,28 +257,6 @@ class _BalanceCard extends StatelessWidget {
       );
 }
 
-class _PriceRow extends StatelessWidget {
-  const _PriceRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Expanded(child: Text(label, style: HhTypography.body)),
-      const SizedBox(width: HhSpace.sm),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(value, style: HhTypography.bodyStrong),
-        ],
-      ),
-    ],
-  );
-}
-
 class _Ledger extends ConsumerWidget {
   const _Ledger({required this.page});
 
@@ -262,7 +269,7 @@ class _Ledger extends ConsumerWidget {
     return Column(
       children: [
         for (final entry in page.entries) ...[
-          _LedgerRow(entry: entry),
+          WalletTransactionRow(entry: entry),
           const SizedBox(height: HhSpace.sm),
         ],
         if (page.isLoadingMore)
@@ -292,133 +299,6 @@ class _Ledger extends ConsumerWidget {
   }
 }
 
-/// One ledger entry.
-///
-/// The signed amount is what separates a credit from a debit, so `+2` and `−2`
-/// stay distinguishable with the colour removed — the same rule that stops any
-/// status badge relying on its tone.
-class _LedgerRow extends StatelessWidget {
-  const _LedgerRow({required this.entry});
-
-  final WalletTransaction entry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final credit = entry.isCredit;
-
-    return HhCard(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: HhIcon(
-              _glyph(entry.kind),
-              size: 16,
-              color: HhColors.inkMuted,
-              strokeWidth: 2,
-            ),
-          ),
-          const SizedBox(width: HhSpace.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(_kindLabel(entry.kind, l10n), style: HhTypography.label),
-                const SizedBox(height: 2),
-                Text(
-                  _stamp(entry.createdAt.wallClock),
-                  style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
-                ),
-                if (entry.isCorrection) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.walletCorrection,
-                    style: HhTypography.meta.copyWith(
-                      color: HhColors.warningFg,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-                // Mandatory on an administrator adjustment (§10.5), and the one
-                // thing that makes one accountable rather than mysterious.
-                if (entry.reason case final reason?) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    reason,
-                    style: HhTypography.meta.copyWith(
-                      color: HhColors.inkMuted,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(width: HhSpace.sm),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                credit
-                    ? l10n.walletAmountCredit(entry.amountCoins)
-                    : l10n.walletAmountDebit(entry.amountCoins.abs()),
-                style: HhTypography.bodyStrong.copyWith(
-                  color: credit ? HhColors.successFg : HhColors.ink,
-                ),
-              ),
-              Text(
-                l10n.walletBalanceAfter(entry.balanceAfter),
-                style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
-              ),
-              // The UZS this entry actually carried, never re-derived from
-              // today's price — which is what "never restate history" means on
-              // screen (§10.5).
-              if (entry.amountUzs case final uzs?)
-                Text(
-                  l10n.walletUzs(uzs),
-                  style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// A glyph per kind, so a row is scannable without reading the word.
-  ///
-  /// Deliberately not an `HhBadge`: a badge's tone answers "whose turn is it,
-  /// and did it end well?", and a ledger entry is an event with neither.
-  /// Inventing five badges for it would dilute a vocabulary the design keeps
-  /// small on purpose.
-  static String _glyph(String kind) => switch (kind) {
-    WalletTransactionKind.registrationBonus => HhIconPath.checkCircle,
-    WalletTransactionKind.topUp => HhIconPath.plus,
-    WalletTransactionKind.candidateUnlock => HhIconPath.lock,
-    WalletTransactionKind.adminAdjustment => HhIconPath.edit,
-    WalletTransactionKind.reversal => HhIconPath.refresh,
-    _ => HhIconPath.wallet,
-  };
-
-  /// Exhaustive over the five kinds, with a fallback that still says something
-  /// true. A newer server's sixth kind keeps its amount and its balance, which
-  /// is the part an employer is checking.
-  static String _kindLabel(String kind, AppL10n l10n) => switch (kind) {
-    WalletTransactionKind.registrationBonus =>
-      l10n.walletKindRegistrationBonus,
-    WalletTransactionKind.topUp => l10n.walletKindTopUp,
-    WalletTransactionKind.candidateUnlock => l10n.walletKindCandidateUnlock,
-    WalletTransactionKind.adminAdjustment => l10n.walletKindAdminAdjustment,
-    WalletTransactionKind.reversal => l10n.walletKindReversal,
-    _ => l10n.walletKindOther,
-  };
-}
-
-/// `RefreshIndicator` only fires on a scrollable child, and the error state is
-/// not one — so pull-to-refresh would be dead on the screen where a user most
-/// wants to retry.
 class _Scrollable extends StatelessWidget {
   const _Scrollable({required this.child});
 
@@ -435,19 +315,3 @@ class _Scrollable extends StatelessWidget {
     ),
   );
 }
-
-/// `YYYY-MM-DD HH:MM`, from the **wall clock the server resolved**.
-///
-/// Deliberately not a `DateFormat`: §8.3's display policy is still an open
-/// decision, and the rest of the app renders an ISO date for the same reason.
-/// A ledger needs the time as well — two entries a minute apart are otherwise
-/// indistinguishable — and the wall-clock fields need no policy to be right.
-///
-/// Never `.toLocal()`: that re-renders in the *device* zone and quietly moves
-/// every timestamp for anyone outside Uzbekistan.
-String _stamp(DateTime d) =>
-    '${d.year.toString().padLeft(4, '0')}-'
-    '${d.month.toString().padLeft(2, '0')}-'
-    '${d.day.toString().padLeft(2, '0')} '
-    '${d.hour.toString().padLeft(2, '0')}:'
-    '${d.minute.toString().padLeft(2, '0')}';

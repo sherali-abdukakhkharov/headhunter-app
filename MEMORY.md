@@ -781,6 +781,36 @@ left out with the reason written down. Two things follow that are worth keeping:
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
 
+### 2026-08-19 - Filter a ledger by the amount's sign, never by a list of kinds
+E-52's filters are "topped up" and "spent", which read like they name transaction
+kinds. They do not, and building them that way would have been wrong twice over.
+
+An `admin_adjustment` is a credit *or* a debit depending on its sign. A `reversal`
+is a credit whose whole purpose is to undo a debit. So no mapping from kind to
+side is even correct — and worse, a hard-coded list of kinds means a **sixth kind
+from a newer server disappears from both filters**, which is a silent hole in the
+one screen an employer opens to reconcile money.
+
+`isCredit` — `amountCoins > 0` — puts every entry on exactly one side, forever,
+including kinds that do not exist yet. Two tests pin it: a reversal files under
+"topped up", and an unknown `promotional_grant` files under it as well.
+
+The general shape: when a filter's two halves are really about a **property** of
+the row, filter on the property. A list of type codes is a filter that needs
+maintaining every time the server learns a new word.
+
+### 2026-08-19 - A detail screen does not always need to refetch
+E-53 takes the ledger entry as a constructor argument instead of fetching it by
+id, and there is no `GET /wallet/transactions/{id}` to fetch from.
+
+That is not a shortcut. The only reason a detail screen normally refetches is that
+the copy in the list might be stale — and a ledger entry **cannot** be: three
+database triggers refuse `UPDATE`, `DELETE` and `TRUNCATE` on that table (BR-24).
+Immutability upstream removes the need for freshness downstream.
+
+Worth checking for elsewhere before adding an endpoint: if the record is
+append-only, the list already has the truth.
+
 ### 2026-08-19 - Renamed to JobBridge, and where the old name legitimately stays
 The product is **JobBridge**. Renamed the same day: launcher name and in-app title,
 Android `applicationId` (`com.jobbridge.app` + `.dev` / `.staging`), Android

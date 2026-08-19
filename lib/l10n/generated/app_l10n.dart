@@ -2266,6 +2266,114 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Not enough Coins'**
   String get unlockInsufficient;
+
+  /// §06 puts the balance's approximate UZS value and the Coin price on one line under the balance, instead of a prices table. Both figures are the server's: `value` is `balanceValueUzs`, never coins × price, and `price` is `coinPriceUzs`.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {value} UZS · 1 Coin = {price} UZS'**
+  String walletValueAndPrice(int value, int price);
+
+  /// What a Coin is for, in a sentence, where a price table used to be. The second half matters as much as the first: §6.6 makes search and preview free, and an employer who thinks browsing costs Coins will not browse.
+  ///
+  /// In en, this message translates to:
+  /// **'{coins} unlocks one new candidate\'s contact. Searching candidates and viewing profiles is free.'**
+  String walletCoinRule(String coins);
+
+  /// §06's E-52, the whole ledger. Distinct from the wallet's own "recent activity": this one has filters and month headers.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity history'**
+  String get walletHistoryTitle;
+
+  /// Doubles as the filter chip on E-52 and the link from the wallet's recent-activity heading to it.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get walletHistoryAll;
+
+  /// Filter for entries where Coins arrived. Selected by the amount's **sign**, not by kind — an administrator adjustment can be either, and a reversal is a credit that undoes a debit.
+  ///
+  /// In en, this message translates to:
+  /// **'Topped up'**
+  String get walletHistoryIncoming;
+
+  /// Filter for entries where Coins left. Also by sign, so a sixth kind from a newer server lands on one side rather than vanishing from both.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get walletHistoryOutgoing;
+
+  /// §11 wants an empty filter result told apart from an empty list: one is resolved by clearing the filter, the other by using the app.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity of this kind yet. Clear the filter to see everything the wallet has recorded.'**
+  String get walletHistoryNoMatch;
+
+  /// §06's E-53.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity detail'**
+  String get walletDetailTitle;
+
+  /// Heading over the detail rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail'**
+  String get walletDetailSection;
+
+  /// Mandatory on an administrator adjustment (§10.5); absent on everything else.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get walletDetailReason;
+
+  /// The wall clock the server resolved, never re-rendered in the device zone.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and time'**
+  String get walletDetailWhen;
+
+  /// The UZS this entry carried **at the time**, never recomputed from today's price (§10.5). Absent on an unlock or a bonus, which are priced in Coins and never touched money.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount paid'**
+  String get walletDetailAmountUzs;
+
+  /// The signed Coin amount, repeated here because it is the figure a support call is about.
+  ///
+  /// In en, this message translates to:
+  /// **'Effect on balance'**
+  String get walletDetailEffect;
+
+  /// The balance the server recorded after this entry — read, never accumulated.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance after'**
+  String get walletDetailBalanceAfter;
+
+  /// What support can look the entry up by: the payment order behind a top-up, otherwise the entry's own id. Never an unlock's `referenceId`, which is a candidate's user id and identifies a person rather than a transaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference number'**
+  String get walletDetailReference;
+
+  /// Title of the support notice on E-53.
+  ///
+  /// In en, this message translates to:
+  /// **'Something wrong with this entry?'**
+  String get walletDetailSupportTitle;
+
+  /// §06's support footnote, plus BR-24 stated plainly. The second sentence is worth the words: an employer disputing a charge should know the ledger cannot have been altered, which is exactly why the append-only guarantee exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support and quote the reference number above. Nothing in this history can be edited or deleted, so the record you are looking at is the record they will see.'**
+  String get walletDetailSupport;
+
+  /// Shown on E-53 for an adjustment or a reversal. BR-24 in one sentence, at the moment an employer is most likely to wonder why they can see both entries.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.'**
+  String get walletCorrectionExplained;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

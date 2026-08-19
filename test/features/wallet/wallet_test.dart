@@ -136,8 +136,12 @@ void main() {
       // server said 75,000, and the server is the only authority on money.
       await pump(tester, _FakeWallet(wallet: _wallet()));
 
-      expect(find.text('≈ 75,000 UZS'), findsOneWidget);
-      expect(find.text('≈ 80,000 UZS'), findsNothing);
+      // §06 puts the value and the price on one line under the balance.
+      expect(
+        find.text('≈ 75,000 UZS · 1 Coin = 10,000 UZS'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('80,000'), findsNothing);
     });
 
     testWidgets('the unlock price carries no UZS at all', (tester) async {
@@ -150,9 +154,14 @@ void main() {
       // the server's, or one computed from the Coin price.
       await pump(tester, _FakeWallet(wallet: _wallet()));
 
-      expect(find.text('2 Coins'), findsOneWidget);
-      expect(find.text('≈ 17,000 UZS'), findsNothing);
-      expect(find.text('≈ 20,000 UZS'), findsNothing);
+      // The cost is named in the rule sentence rather than a price row —
+      // §06 replaced the price table with "what a Coin is for".
+      expect(
+        find.textContaining('2 Coins unlocks one new candidate'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('17,000'), findsNothing);
+      expect(find.textContaining('20,000'), findsNothing);
     });
 
     testWidgets('a reprice moves what is on screen, with no code change', (
@@ -172,9 +181,14 @@ void main() {
         ),
       );
 
-      expect(find.text('12,000 UZS'), findsOneWidget);
-      expect(find.text('3 Coins'), findsOneWidget);
-      expect(find.text('≈ 96,000 UZS'), findsOneWidget);
+      expect(
+        find.text('≈ 96,000 UZS · 1 Coin = 12,000 UZS'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('3 Coins unlocks one new candidate'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('the balance is the wallet response, not the ledger', (
@@ -329,10 +343,10 @@ void main() {
       expect(find.text('Balance 6'), findsOneWidget);
       expect(find.text('Balance 8'), findsOneWidget);
 
-      // "Candidate unlock" twice, on purpose: once as the price of the thing in
-      // the prices block, once as the record of having bought it. The same
-      // product concept should not acquire two names one section apart.
-      expect(find.text('Candidate unlock'), findsNWidgets(2));
+      // Once, now. It used to appear twice — the prices block labelled the
+      // unlock's cost with the same words the ledger row uses — and §06 removed
+      // that block, so the ledger is the only place the phrase appears.
+      expect(find.text('Candidate unlock'), findsOneWidget);
     });
 
     testWidgets('a correction says that it is one', (tester) async {

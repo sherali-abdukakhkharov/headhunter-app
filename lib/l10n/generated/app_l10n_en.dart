@@ -1250,4 +1250,72 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get unlockInsufficient => 'Not enough Coins';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString UZS · 1 Coin = $priceString UZS';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins unlocks one new candidate\'s contact. Searching candidates and viewing profiles is free.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Activity history';
+
+  @override
+  String get walletHistoryAll => 'All';
+
+  @override
+  String get walletHistoryIncoming => 'Topped up';
+
+  @override
+  String get walletHistoryOutgoing => 'Spent';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'No activity of this kind yet. Clear the filter to see everything the wallet has recorded.';
+
+  @override
+  String get walletDetailTitle => 'Activity detail';
+
+  @override
+  String get walletDetailSection => 'Detail';
+
+  @override
+  String get walletDetailReason => 'Reason';
+
+  @override
+  String get walletDetailWhen => 'Date and time';
+
+  @override
+  String get walletDetailAmountUzs => 'Amount paid';
+
+  @override
+  String get walletDetailEffect => 'Effect on balance';
+
+  @override
+  String get walletDetailBalanceAfter => 'Balance after';
+
+  @override
+  String get walletDetailReference => 'Reference number';
+
+  @override
+  String get walletDetailSupportTitle => 'Something wrong with this entry?';
+
+  @override
+  String get walletDetailSupport =>
+      'Contact support and quote the reference number above. Nothing in this history can be edited or deleted, so the record you are looking at is the record they will see.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.';
 }

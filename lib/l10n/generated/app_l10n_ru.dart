@@ -1264,4 +1264,72 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get unlockInsufficient => 'Недостаточно Coin';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString сум · 1 Coin = $priceString сум';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins открывает контакты одного нового кандидата. Поиск кандидатов и просмотр профилей бесплатны.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'История операций';
+
+  @override
+  String get walletHistoryAll => 'Все';
+
+  @override
+  String get walletHistoryIncoming => 'Пополнения';
+
+  @override
+  String get walletHistoryOutgoing => 'Списания';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Операций такого типа пока нет. Снимите фильтр, чтобы увидеть всё, что записано в кошельке.';
+
+  @override
+  String get walletDetailTitle => 'Детали операции';
+
+  @override
+  String get walletDetailSection => 'Детали';
+
+  @override
+  String get walletDetailReason => 'Причина';
+
+  @override
+  String get walletDetailWhen => 'Дата и время';
+
+  @override
+  String get walletDetailAmountUzs => 'Оплаченная сумма';
+
+  @override
+  String get walletDetailEffect => 'Влияние на баланс';
+
+  @override
+  String get walletDetailBalanceAfter => 'Баланс после';
+
+  @override
+  String get walletDetailReference => 'Номер для обращения';
+
+  @override
+  String get walletDetailSupportTitle => 'Что-то не так с этой записью?';
+
+  @override
+  String get walletDetailSupport =>
+      'Обратитесь в поддержку и укажите номер выше. Ни одну запись в этой истории нельзя изменить или удалить, поэтому вы видите ровно то, что увидят они.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Эта запись исправляет предыдущую. Исходная остаётся в истории — исправления добавляются, а не переписываются.';
 }

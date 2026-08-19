@@ -1247,6 +1247,74 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get unlockInsufficient => 'Coin yetarli emas';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString so\'m · 1 Coin = $priceString so\'m';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins bitta yangi nomzod kontaktini ochadi. Nomzodlarni qidirish va profilni ko\'rish bepul.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Amallar tarixi';
+
+  @override
+  String get walletHistoryAll => 'Barchasi';
+
+  @override
+  String get walletHistoryIncoming => 'To\'ldirish';
+
+  @override
+  String get walletHistoryOutgoing => 'Sarflangan';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Bu turdagi amal hozircha yo\'q. Hamyonda yozilgan hammasini ko\'rish uchun filtrni olib tashlang.';
+
+  @override
+  String get walletDetailTitle => 'Amal tafsiloti';
+
+  @override
+  String get walletDetailSection => 'Tafsilot';
+
+  @override
+  String get walletDetailReason => 'Sabab';
+
+  @override
+  String get walletDetailWhen => 'Sana va vaqt';
+
+  @override
+  String get walletDetailAmountUzs => 'To\'langan summa';
+
+  @override
+  String get walletDetailEffect => 'Balansga ta\'siri';
+
+  @override
+  String get walletDetailBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get walletDetailReference => 'Ma\'lumot raqami';
+
+  @override
+  String get walletDetailSupportTitle => 'Bu yozuvda nimadir noto\'g\'rimi?';
+
+  @override
+  String get walletDetailSupport =>
+      'Qo\'llab-quvvatlash xizmatiga murojaat qilib, yuqoridagi ma\'lumot raqamini ko\'rsating. Bu tarixdagi hech bir yozuvni o\'zgartirish yoki o\'chirish mumkin emas, shuning uchun siz ko\'rgan yozuvni ular ham xuddi shunday ko\'radi.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Bu yozuv oldingisini tuzatadi. Asl yozuv tarixda qoladi — tuzatishlar qo\'shiladi, ustidan yozilmaydi.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2490,6 +2558,74 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get unlockInsufficient => 'Coin етарли эмас';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString сўм · 1 Coin = $priceString сўм';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins битта янги номзод контактини очади. Номзодларни қидириш ва профилни кўриш бепул.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Амаллар тарихи';
+
+  @override
+  String get walletHistoryAll => 'Барчаси';
+
+  @override
+  String get walletHistoryIncoming => 'Тўлдириш';
+
+  @override
+  String get walletHistoryOutgoing => 'Сарфланган';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Бу турдаги амал ҳозирча йўқ. Ҳамёнда ёзилган ҳаммасини кўриш учун филтрни олиб ташланг.';
+
+  @override
+  String get walletDetailTitle => 'Амал тафсилоти';
+
+  @override
+  String get walletDetailSection => 'Тафсилот';
+
+  @override
+  String get walletDetailReason => 'Сабаб';
+
+  @override
+  String get walletDetailWhen => 'Сана ва вақт';
+
+  @override
+  String get walletDetailAmountUzs => 'Тўланган сумма';
+
+  @override
+  String get walletDetailEffect => 'Балансга таъсири';
+
+  @override
+  String get walletDetailBalanceAfter => 'Кейинги баланс';
+
+  @override
+  String get walletDetailReference => 'Маълумот рақами';
+
+  @override
+  String get walletDetailSupportTitle => 'Бу ёзувда нимадир нотўғрими?';
+
+  @override
+  String get walletDetailSupport =>
+      'Қўллаб-қувватлаш хизматига мурожаат қилиб, юқоридаги маълумот рақамини кўрсатинг. Бу тарихдаги ҳеч бир ёзувни ўзгартириш ёки ўчириш мумкин эмас, шунинг учун сиз кўрган ёзувни улар ҳам худди шундай кўради.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Бу ёзув олдингисини тузатади. Асл ёзув тарихда қолади — тузатишлар қўшилади, устидан ёзилмайди.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -3735,4 +3871,72 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get unlockInsufficient => 'Coin yetarli emas';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString so\'m · 1 Coin = $priceString so\'m';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins bitta yangi nomzod kontaktini ochadi. Nomzodlarni qidirish va profilni ko\'rish bepul.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Amallar tarixi';
+
+  @override
+  String get walletHistoryAll => 'Barchasi';
+
+  @override
+  String get walletHistoryIncoming => 'To\'ldirish';
+
+  @override
+  String get walletHistoryOutgoing => 'Sarflangan';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Bu turdagi amal hozircha yo\'q. Hamyonda yozilgan hammasini ko\'rish uchun filtrni olib tashlang.';
+
+  @override
+  String get walletDetailTitle => 'Amal tafsiloti';
+
+  @override
+  String get walletDetailSection => 'Tafsilot';
+
+  @override
+  String get walletDetailReason => 'Sabab';
+
+  @override
+  String get walletDetailWhen => 'Sana va vaqt';
+
+  @override
+  String get walletDetailAmountUzs => 'To\'langan summa';
+
+  @override
+  String get walletDetailEffect => 'Balansga ta\'siri';
+
+  @override
+  String get walletDetailBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get walletDetailReference => 'Ma\'lumot raqami';
+
+  @override
+  String get walletDetailSupportTitle => 'Bu yozuvda nimadir noto\'g\'rimi?';
+
+  @override
+  String get walletDetailSupport =>
+      'Qo\'llab-quvvatlash xizmatiga murojaat qilib, yuqoridagi ma\'lumot raqamini ko\'rsating. Bu tarixdagi hech bir yozuvni o\'zgartirish yoki o\'chirish mumkin emas, shuning uchun siz ko\'rgan yozuvni ular ham xuddi shunday ko\'radi.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Bu yozuv oldingisini tuzatadi. Asl yozuv tarixda qoladi — tuzatishlar qo\'shiladi, ustidan yozilmaydi.';
 }
