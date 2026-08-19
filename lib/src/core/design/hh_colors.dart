@@ -54,7 +54,17 @@ abstract final class HhColors {
 
   static const sand300 = Color(0xFFE2D9C6);
 
-  /// App background.
+  /// App background — **and this may be the wrong token for that job.**
+  ///
+  /// It is a real palette colour: the design's foundations page swatches it as
+  /// sand-100. But every phone frame in the design document draws its screen on
+  /// [surfaceMuted] (`#F7F8FA`), and `#EFEBE4` appears there only as the canvas
+  /// paper the artboards sit on and as that one swatch. So the app may have
+  /// adopted the paper colour as its background.
+  ///
+  /// Left as it is deliberately: changing it repaints every screen in the
+  /// product, which is a change that wants its own commit and a look on a real
+  /// device rather than a quiet edit inside a feature. Recorded in TODO.md.
   static const sand100 = Color(0xFFEFEBE4);
 
   /// Subtle raised surface on white cards.
@@ -91,6 +101,17 @@ abstract final class HhColors {
   /// Neutral fill for meta chips and segmented-control track.
   static const fill = Color(0xFFF3F5F7);
 
+  /// The coolest surface in the ramp — one step off white.
+  ///
+  /// §06 uses it for a contact row whose value is **present**, against [fill]
+  /// for one still locked. The pair only has to be distinguishable from each
+  /// other, which is why they sit this close: the difference says open-or-shut
+  /// before a word is read, without either row shouting.
+  ///
+  /// It is also the background the design's phone frames are drawn on — see the
+  /// note on [sand100], which is what the app currently paints instead.
+  static const surfaceMuted = Color(0xFFF7F8FA);
+
   /// Disabled control background.
   static const fillDisabled = Color(0xFFEFF2F5);
 
@@ -115,6 +136,12 @@ abstract final class HhColors {
 
   static const successBg = Color(0xFFE7F3EC);
   static const successFg = Color(0xFF0F5E3A);
+
+  /// Hairline on a success-toned surface, to match [warningBorder] and
+  /// [errorBorder]. Added with §06's unlock-success banner, which is the first
+  /// success notice in the product — badges carry no border, so the ramp had no
+  /// need of it until a bordered success surface was drawn.
+  static const successBorder = Color(0xFFBFE0CC);
 
   static const warningBg = Color(0xFFFBF0DC);
   static const warningFg = Color(0xFF8A5200);

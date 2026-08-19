@@ -2018,7 +2018,7 @@ abstract class AppL10n {
   /// Row label for the price of a single Coin.
   ///
   /// In en, this message translates to:
-  /// **'One Coin'**
+  /// **'1 Coin'**
   String get walletCoinPriceLabel;
 
   /// Row label for what one Candidate Unlock costs (§6.6).
@@ -2144,7 +2144,7 @@ abstract class AppL10n {
   /// Heading of the confirmation sheet (§6.6).
   ///
   /// In en, this message translates to:
-  /// **'Unlock this candidate\'s contact details'**
+  /// **'Unlock contact'**
   String get unlockTitle;
 
   /// Confirmation sheet row: what the unlock costs.
@@ -2165,10 +2165,10 @@ abstract class AppL10n {
   /// **'Balance after'**
   String get unlockBalanceAfter;
 
-  /// The button that charges. Deliberately not "Confirm": the sheet's action should name what it buys.
+  /// The button that charges. E-44 asks for Cancel and Confirm, and the sheet title already names the purchase — repeating it on the button would be the same words twice with the cost and both balances in between.
   ///
   /// In en, this message translates to:
-  /// **'Unlock contact'**
+  /// **'Confirm'**
   String get unlockConfirm;
 
   /// What the two Coins buy (§6.6, BR-16). Says the charge is one-off because UAT-18 is the reassurance an employer needs before spending anything.
@@ -2206,6 +2206,66 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.'**
   String get candidateExposureUnlockRequired;
+
+  /// Heading of §06's locked contact block (E-43). Names what is behind the lock rather than announcing that something is locked - an employer deciding whether to spend Coins needs to know what the Coins buy.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected information'**
+  String get contactLockedTitle;
+
+  /// The same block once BR-09 allows contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details'**
+  String get contactUnlockedTitle;
+
+  /// Row label. The value beside it is masked with a fixed-width run of dots until the entitlement exists - never a mask derived from the real value, which would leak its length (§8.7).
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get contactPhone;
+
+  /// Row label. Reserved: the candidate DTO carries no e-mail field yet, so this row is always masked today.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail'**
+  String get contactEmail;
+
+  /// Row label for the CV while it is locked. Once open, the real file list renders below with each file's purpose and size, so this row disappears rather than duplicating it.
+  ///
+  /// In en, this message translates to:
+  /// **'CV file'**
+  String get contactCv;
+
+  /// Stands in for the CV's name and size while locked. Says the format, which is useful, and nothing that identifies the file.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF · locked'**
+  String get contactCvLocked;
+
+  /// §6.6 and BR-16 in two sentences, under the locked rows. The second sentence is the one that matters before a purchase: UAT-18's guarantee is the reassurance an employer needs to spend anything at all.
+  ///
+  /// In en, this message translates to:
+  /// **'{coins} opens one new candidate\'s phone, e-mail, CV and conversation. An unlocked candidate is never charged for again.'**
+  String contactLockedExplainer(String coins);
+
+  /// Destination for the 403 refusals (`employer.not_verified`, `employer.profile_incomplete`) and for the `not_verified_employer` exposure reason. BR-03 is a precondition an employer cannot buy past, so these must route to verification and never to top-up - offering Coins there would sell access §7 is about to refuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to verification'**
+  String get unlockGoToVerification;
+
+  /// §06's unlock-success banner. Both figures are already-localized Coin quantities: the amount actually debited, taken from the response rather than from what the sheet predicted, and the new balance refetched from the wallet. Neither is computed here.
+  ///
+  /// In en, this message translates to:
+  /// **'{coins} spent · balance {balance}'**
+  String unlockChargedDetail(String coins, String balance);
+
+  /// Title of the in-sheet notice when the server refuses a purchase the sheet had judged affordable - the balance moved between the sheet opening and the tap. Names the state; the server's own sentence below it carries the two numbers, which are the authority now that the displayed rows are known to be stale.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough Coins'**
+  String get unlockInsufficient;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

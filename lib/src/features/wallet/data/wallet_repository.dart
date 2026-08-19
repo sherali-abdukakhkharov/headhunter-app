@@ -100,8 +100,20 @@ class WalletRepository {
   ///
   /// No `Idempotency-Key`, deliberately — see [Unlock.charged].
   ///
-  /// A 402 comes back as [UnlockUnaffordable] rather than an exception, because
-  /// §6.6 makes a short balance a route to top-up rather than a failure.
+  /// Four refusals, and **each wants a different destination** — which is why
+  /// two of them are results rather than exceptions:
+  ///
+  /// | Status | Meaning | Destination |
+  /// |---|---|---|
+  /// | 402 | too few Coins | top-up — [UnlockUnaffordable] |
+  /// | 403 | unverified / incomplete | verification — [UnlockNeedsVerification] |
+  /// | 404 | no such candidate | none; thrown |
+  /// | 409 | bought its own profile | none; thrown |
+  ///
+  /// All four happen **before any Coins move**, so none of them needs undoing.
+  ///
+  /// Confusing the first two is the expensive mistake: routing an unverified
+  /// employer to top-up sells them Coins that cannot buy what they came for.
   Future<UnlockResult> unlock(String candidateUserId) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
@@ -118,13 +130,13 @@ class WalletRepository {
     } on DioException catch (e) {
       final failure = ApiException.fromDioException(e);
 
-      // 402 is the status §6.6 names for this, and the body's sentence already
-      // carries both numbers in the caller's language.
-      if (failure.statusCode == 402) {
-        return UnlockUnaffordable(failure.message);
-      }
-
-      throw failure;
+      // Both bodies are already translated into the caller's language, and the
+      // 402's already carries the two numbers, so neither is rebuilt here.
+      return switch (failure.statusCode) {
+        402 => UnlockUnaffordable(failure.message),
+        403 => UnlockNeedsVerification(failure.message),
+        _ => throw failure,
+      };
     }
   }
 }
@@ -169,8 +181,8 @@ class LedgerPage {
   /// The endpoint returns no total, and adding one to a table that only ever
   /// grows would mean counting on every read to answer a question a full page
   /// already answers. It errs in the safe direction: when the ledger holds
-  /// exactly [walletPageSize] entries this is true once and "show more"
-  /// spends a request to find nothing. The opposite mistake would hide entries.
+  /// exactly [walletPageSize] entries this is true once and "show more" spends
+  /// a request to find nothing. The opposite mistake would hide entries.
   final bool hasMore;
 
   /// True while a further page is in flight, so the control can show progress

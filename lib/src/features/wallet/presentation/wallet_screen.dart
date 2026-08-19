@@ -195,10 +195,16 @@ class _BalanceCard extends StatelessWidget {
           _PriceRow(
             label: l10n.walletUnlockPriceLabel,
             value: l10n.walletCoins(wallet.pricing.candidateUnlockCoins),
-            // Also sent rather than multiplied: a bundle price or a rounding
-            // rule would make coins x price the wrong answer, and both are
-            // pricing decisions §6.6 puts on the server.
-            note: l10n.walletApproxUzs(wallet.pricing.candidateUnlockUzs),
+            // **No UZS figure here, deliberately.** §06's first principle is
+            // that this is a service balance rather than a wallet, and that the
+            // UZS value appears only where money actually changes hands — the
+            // top-up screen, the payment screen, the receipt. An unlock is
+            // priced in Coins and paid for in Coins; som beside it turns a
+            // service action back into a financial transaction, which is the
+            // finance chrome the design spends its restraint avoiding.
+            //
+            // `pricing.candidateUnlockUzs` is still read from the server rather
+            // than derived, and M13's top-up screens are where it belongs.
           ),
           const SizedBox(height: HhSpace.lg),
           HhButton.secondary(
@@ -223,11 +229,10 @@ class _BalanceCard extends StatelessWidget {
 }
 
 class _PriceRow extends StatelessWidget {
-  const _PriceRow({required this.label, required this.value, this.note});
+  const _PriceRow({required this.label, required this.value});
 
   final String label;
   final String value;
-  final String? note;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -239,11 +244,6 @@ class _PriceRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(value, style: HhTypography.bodyStrong),
-          if (note case final note?)
-            Text(
-              note,
-              style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
-            ),
         ],
       ),
     ],

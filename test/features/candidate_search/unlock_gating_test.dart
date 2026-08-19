@@ -8,6 +8,7 @@ import 'package:headhunter_app/src/features/applications/domain/candidate_for_em
 import 'package:headhunter_app/src/features/applications/presentation/exposure_explanation.dart';
 import 'package:headhunter_app/src/features/candidate_search/data/candidate_search_repository.dart';
 import 'package:headhunter_app/src/features/candidate_search/presentation/candidate_detail_screen.dart';
+import 'package:headhunter_app/src/features/candidate_search/presentation/protected_contact_card.dart';
 import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
 import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
@@ -38,6 +39,10 @@ class _FakeWallet implements WalletRepository {
   /// Set to make the purchase answer 402, as it would if the balance moved
   /// between the sheet opening and the tap.
   String? insufficientMessage;
+
+  /// Set to refuse the purchase with something other than a short balance:
+  /// a 403 becomes [UnlockNeedsVerification], anything else is thrown.
+  ApiException? refusal;
 
   /// True on the second and later purchases of the same pair (BR-16, UAT-18).
   bool alreadyHeld = false;
@@ -91,6 +96,13 @@ class _FakeWallet implements WalletRepository {
 
     if (insufficientMessage case final message?) {
       return UnlockUnaffordable(message);
+    }
+
+    if (refusal case final failure?) {
+      if (failure.statusCode == 403) {
+        return UnlockNeedsVerification(failure.message);
+      }
+      throw failure;
     }
 
     final charged = !alreadyHeld;
@@ -256,6 +268,109 @@ void main() {
     });
   });
 
+  group('DA-14: a locked candidate exposes nothing', () {
+    testWidgets('names all three protected fields', (tester) async {
+      // The card says *what* is locked, not merely that something is. An
+      // employer deciding whether to spend Coins needs to know what the Coins
+      // buy, and a single line of prose leaves them guessing whether there is
+      // even a number on file.
+      await pump(tester, exposureReason: 'unlock_required');
+
+      expect(find.text('Protected information'), findsOneWidget);
+      expect(find.text('Phone number'), findsOneWidget);
+      expect(find.text('E-mail'), findsOneWidget);
+      expect(find.text('CV file'), findsOneWidget);
+      expect(find.text('PDF · locked'), findsOneWidget);
+    });
+
+    testWidgets('the mask is the constant, and no digits reach the screen', (
+      tester,
+    ) async {
+      // Two guarantees in one. The mask is a fixed-width constant rather than
+      // anything derived from the value, so it cannot leak a length (§8.7); and
+      // nothing on a locked profile reconstructs a number, which is what BR-09
+      // is for. The digit sweep is the part that would catch a well-meaning
+      // "show the last four".
+      await pump(tester, exposureReason: 'unlock_required');
+
+      expect(find.text(ProtectedContactCard.maskedPhone), findsOneWidget);
+      expect(find.text(ProtectedContactCard.maskedEmail), findsOneWidget);
+
+      final runsOfDigits = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((t) => t.data ?? '')
+          .where((s) => RegExp('[0-9]{3}').hasMatch(s))
+          .toList();
+      expect(
+        runsOfDigits,
+        isEmpty,
+        reason: 'nothing on a locked profile may look like a number',
+      );
+    });
+
+    testWidgets('offers no way to copy what it does not have', (tester) async {
+      await pump(tester, exposureReason: 'unlock_required');
+
+      expect(find.text('Copy'), findsNothing);
+    });
+
+    testWidgets('an open profile shows the number and offers Copy', (
+      tester,
+    ) async {
+      // Copy rather than dial: placing a call needs a package pubspec.yaml's
+      // bounds have not taken on, and the platform dialler reads the clipboard.
+      await pump(
+        tester,
+        exposureReason: 'candidate_unlock',
+        phone: '+998901234567',
+      );
+
+      expect(find.text('Contact details'), findsOneWidget);
+      expect(find.text('+998901234567'), findsOneWidget);
+      expect(find.text('Copy'), findsOneWidget);
+      // The CV belongs to the file list once open, not to this card.
+      expect(find.text('PDF · locked'), findsNothing);
+    });
+  });
+
+  group('BR-03 is a precondition, not a paywall', () {
+    testWidgets('an unverified employer is routed to verification', (
+      tester,
+    ) async {
+      // The backend answers this with 200 and a readable profile, so it belongs
+      // in the page rather than in an error state — and its destination is
+      // verification, because Coins cannot buy past §7.
+      await pump(tester, exposureReason: 'not_verified_employer');
+
+      expect(find.text('Go to verification'), findsOneWidget);
+      expect(find.text(unlockAction), findsNothing);
+      expect(find.text('Top up to unlock'), findsNothing);
+    });
+
+    testWidgets('a 403 on the purchase does not route to top-up', (
+      tester,
+    ) async {
+      // The expensive confusion: selling Coins to an employer whose problem is
+      // verification. The server reuses the same 403 codes every other §7-gated
+      // route returns, so this is one refusal arriving through a new door.
+      final fake = _FakeWallet()
+        ..refusal = const ApiException(
+          'Your company is not verified yet.',
+          statusCode: 403,
+        );
+
+      await pump(tester, exposureReason: 'unlock_required', wallet: fake);
+      await tester.tap(find.text(unlockAction));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirm'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Your company is not verified yet.'), findsOneWidget);
+      expect(find.text('Go to verification'), findsWidgets);
+      expect(find.text('Top up to unlock'), findsNothing);
+    });
+  });
+
   group('UAT-17: the confirmation sheet', () {
     Future<_FakeWallet> openSheet(
       WidgetTester tester, {
@@ -304,11 +419,15 @@ void main() {
     testWidgets('confirming buys it exactly once', (tester) async {
       final fake = await openSheet(tester);
 
-      await tester.tap(find.text('Unlock contact'));
+      await tester.tap(find.text('Confirm'));
       await tester.pumpAndSettle();
 
       expect(fake.unlockRequests, ['cand-1']);
+      // §06 keeps the outcome on the screen it belongs to rather than flashing
+      // it as a toast: the figures are money, and a message that vanishes after
+      // four seconds is the wrong container for money.
       expect(find.text('Contact unlocked'), findsOneWidget);
+      expect(find.textContaining('spent · balance'), findsOneWidget);
     });
   });
 
@@ -328,14 +447,15 @@ void main() {
       );
       await tester.tap(find.text(unlockAction));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Unlock contact'));
+      await tester.tap(find.text('Confirm'));
       await tester.pumpAndSettle();
 
       expect(
         find.text('Already unlocked — nothing was charged'),
         findsOneWidget,
       );
-      expect(find.text('Contact unlocked'), findsNothing);
+      // No debit line, because nothing was debited.
+      expect(find.textContaining('spent · balance'), findsNothing);
     });
   });
 
@@ -355,7 +475,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Top up to unlock'), findsOneWidget);
-      expect(find.text('Unlock contact'), findsNothing);
+      expect(find.text('Confirm'), findsNothing);
       expect(fake.unlockRequests, isEmpty);
     });
 
@@ -389,11 +509,15 @@ void main() {
       );
       await tester.tap(find.text(unlockAction));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Unlock contact'));
+      await tester.tap(find.text('Confirm'));
       await tester.pumpAndSettle();
 
       expect(find.text(shortBalance), findsOneWidget);
       expect(find.text('Contact unlocked'), findsNothing);
+      // §06's third principle: paying must never lose the candidate. The sheet
+      // stays open, still naming them, and now offers top-up.
+      expect(find.text('Aziza Karimova'), findsWidgets);
+      expect(find.text('Top up to unlock'), findsOneWidget);
     });
   });
 

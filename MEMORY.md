@@ -781,6 +781,54 @@ left out with the reason written down. Two things follow that are worth keeping:
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
 
+### 2026-08-19 - The design document's canvas colour is not the app's background
+`scaffoldBackgroundColor` is `sand100` = `#EFEBE4`. That colour is genuinely in
+the palette — the foundations page swatches it as sand-100 — but in the design
+*document* it is also `body{background:#EFEBE4}`, the paper the artboards sit on.
+
+Every phone frame in the document draws its screen on `#F7F8FA` instead: 30 uses
+against 4 for `#EFEBE4`, and of those 4 the only one inside an artboard is the
+swatch itself. So the app looks to have adopted the canvas colour as its
+background — warm beige where the design is cool grey.
+
+**Not changed yet**, deliberately: it repaints every screen, so it wants its own
+commit and a device check rather than a quiet edit inside a feature. Recorded in
+TODO.md. The lesson generalises to any `.dc.html` import: **a colour's presence
+in the file is not evidence of its role.** Check whether it appears inside an
+artboard or around one, and count.
+
+### 2026-08-19 - A designer's copy beats an invented translation, always
+The wallet shipped with `walletCoins` reading "2 tanga" in Uzbek and "2 монеты"
+in Russian. Both were mine. The design writes **"2 Coin"** — the unit name left
+untranslated, as a service unit rather than a currency.
+
+Round 1's handoff had already said who owns what: design owns the Uzbek Latin
+source and the English reference, and **uz-Cyrl and ru need certified translation
+from the client**, because "machine translation of recruitment and legal-consent
+strings is a liability, not a shortcut". A money unit is squarely in that class,
+and inventing `монета` was exactly the shortcut being warned against.
+
+The rule: when a design document contains the string, use the design's string.
+Where it does not, and the string is money, legal or consent copy, leave the
+client's obligation visible rather than filling it in plausibly.
+
+### 2026-08-19 - Reflowing comments by line orphans words; reflow paragraphs
+Fixing 80-column lints with a per-line wrapper produced comments ending in single
+words — "deciding", "price", "alone", "of". Wrapping a line in isolation cannot
+know the next line continues the sentence.
+
+Worse, the same script silently disabled a lint: `hh_icons.dart` opens with a
+prose paragraph followed by `// ignore_for_file: lines_longer_than_80_chars`, and
+the wrapper folded the directive into the prose. Analyze then reported four
+*pre-existing* long lines as new — the file's SVG path data, which that directive
+exempts on purpose.
+
+Two rules if this is ever automated again: **reflow paragraphs, not lines**
+(group consecutive same-marker comment lines, join, rewrap), and **never let a
+comment reflow touch a line matching `ignore` or `ignore_for_file`** — those are
+code wearing a comment's clothes. Markdown tables and lists need the same
+exemption; they are structure, not prose.
+
 ### 2026-08-19 - Gate a feature on a code the old server cannot send, not a flag
 The owner overruled the decision above and asked for the unlock to be merged now,
 with the backend catching up. The concern was real — a button that debits two

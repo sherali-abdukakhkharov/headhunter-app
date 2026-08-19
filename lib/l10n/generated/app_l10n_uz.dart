@@ -1063,8 +1063,8 @@ class AppL10nUz extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
-      one: '$count tanga',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '$_temp0';
   }
@@ -1091,7 +1091,7 @@ class AppL10nUz extends AppL10n {
   String get walletPrices => 'Bugungi narxlar';
 
   @override
-  String get walletCoinPriceLabel => 'Bitta tanga';
+  String get walletCoinPriceLabel => '1 Coin';
 
   @override
   String get walletUnlockPriceLabel => 'Nomzod kontaktlarini ochish';
@@ -1131,8 +1131,8 @@ class AppL10nUz extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
-      one: '$count tanga',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '+$_temp0';
   }
@@ -1142,8 +1142,8 @@ class AppL10nUz extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
-      one: '$count tanga',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '−$_temp0';
   }
@@ -1174,11 +1174,11 @@ class AppL10nUz extends AppL10n {
 
   @override
   String unlockContact(String coins) {
-    return 'Kontaktlarni ochish — $coins';
+    return 'Kontaktni ochish — $coins';
   }
 
   @override
-  String get unlockTitle => 'Bu nomzodning kontaktlarini ochish';
+  String get unlockTitle => 'Kontaktni ochish';
 
   @override
   String get unlockCost => 'Narxi';
@@ -1190,7 +1190,7 @@ class AppL10nUz extends AppL10n {
   String get unlockBalanceAfter => 'Keyingi balans';
 
   @override
-  String get unlockConfirm => 'Kontaktlarni ochish';
+  String get unlockConfirm => 'Tasdiqlash';
 
   @override
   String get unlockWhatYouGet =>
@@ -1213,6 +1213,40 @@ class AppL10nUz extends AppL10n {
   @override
   String get candidateExposureUnlockRequired =>
       'Nomzod bilan hozir bog\'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi.';
+
+  @override
+  String get contactLockedTitle => 'Himoyalangan ma\'lumotlar';
+
+  @override
+  String get contactUnlockedTitle => 'Aloqa ma\'lumotlari';
+
+  @override
+  String get contactPhone => 'Telefon raqami';
+
+  @override
+  String get contactEmail => 'E-pochta';
+
+  @override
+  String get contactCv => 'Rezyume fayli';
+
+  @override
+  String get contactCvLocked => 'PDF · qulflangan';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins bitta yangi nomzodning kontakti, rezyumesi va yozishmasini ochadi. Bir marta ochilgan nomzod uchun qayta to\'lov olinmaydi.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Tasdiqlashga o\'tish';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins yechildi · balans $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Coin yetarli emas';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2272,8 +2306,8 @@ class AppL10nUzCyrl extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count танга',
-      one: '$count танга',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '$_temp0';
   }
@@ -2300,7 +2334,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get walletPrices => 'Бугунги нархлар';
 
   @override
-  String get walletCoinPriceLabel => 'Битта танга';
+  String get walletCoinPriceLabel => '1 Coin';
 
   @override
   String get walletUnlockPriceLabel => 'Номзод контактларини очиш';
@@ -2340,8 +2374,8 @@ class AppL10nUzCyrl extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count танга',
-      one: '$count танга',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '+$_temp0';
   }
@@ -2351,8 +2385,8 @@ class AppL10nUzCyrl extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count танга',
-      one: '$count танга',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '−$_temp0';
   }
@@ -2383,11 +2417,11 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String unlockContact(String coins) {
-    return 'Контактларни очиш — $coins';
+    return 'Контактни очиш — $coins';
   }
 
   @override
-  String get unlockTitle => 'Бу номзоднинг контактларини очиш';
+  String get unlockTitle => 'Контактни очиш';
 
   @override
   String get unlockCost => 'Нархи';
@@ -2399,7 +2433,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get unlockBalanceAfter => 'Кейинги баланс';
 
   @override
-  String get unlockConfirm => 'Контактларни очиш';
+  String get unlockConfirm => 'Тасдиқлаш';
 
   @override
   String get unlockWhatYouGet =>
@@ -2422,6 +2456,40 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get candidateExposureUnlockRequired =>
       'Номзод билан ҳозир боғланиш учун контактларни очинг. Агар у сизнинг вакансиянгизга ариза юборса ёки таклифни қабул қилса, улар бепул ҳам очилади.';
+
+  @override
+  String get contactLockedTitle => 'Ҳимояланган маълумотлар';
+
+  @override
+  String get contactUnlockedTitle => 'Алоқа маълумотлари';
+
+  @override
+  String get contactPhone => 'Телефон рақами';
+
+  @override
+  String get contactEmail => 'Е-почта';
+
+  @override
+  String get contactCv => 'Резюме файли';
+
+  @override
+  String get contactCvLocked => 'PDF · қулфланган';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins битта янги номзоднинг контакти, резюмеси ва ёзишмасини очади. Бир марта очилган номзод учун қайта тўлов олинмайди.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Тасдиқлашга ўтиш';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins ечилди · баланс $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Coin етарли эмас';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -3483,8 +3551,8 @@ class AppL10nUzLatn extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
-      one: '$count tanga',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '$_temp0';
   }
@@ -3511,7 +3579,7 @@ class AppL10nUzLatn extends AppL10nUz {
   String get walletPrices => 'Bugungi narxlar';
 
   @override
-  String get walletCoinPriceLabel => 'Bitta tanga';
+  String get walletCoinPriceLabel => '1 Coin';
 
   @override
   String get walletUnlockPriceLabel => 'Nomzod kontaktlarini ochish';
@@ -3551,8 +3619,8 @@ class AppL10nUzLatn extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
-      one: '$count tanga',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '+$_temp0';
   }
@@ -3562,8 +3630,8 @@ class AppL10nUzLatn extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
-      one: '$count tanga',
+      other: '$count Coin',
+      one: '$count Coin',
     );
     return '−$_temp0';
   }
@@ -3594,11 +3662,11 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String unlockContact(String coins) {
-    return 'Kontaktlarni ochish — $coins';
+    return 'Kontaktni ochish — $coins';
   }
 
   @override
-  String get unlockTitle => 'Bu nomzodning kontaktlarini ochish';
+  String get unlockTitle => 'Kontaktni ochish';
 
   @override
   String get unlockCost => 'Narxi';
@@ -3610,7 +3678,7 @@ class AppL10nUzLatn extends AppL10nUz {
   String get unlockBalanceAfter => 'Keyingi balans';
 
   @override
-  String get unlockConfirm => 'Kontaktlarni ochish';
+  String get unlockConfirm => 'Tasdiqlash';
 
   @override
   String get unlockWhatYouGet =>
@@ -3633,4 +3701,38 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get candidateExposureUnlockRequired =>
       'Nomzod bilan hozir bog\'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi.';
+
+  @override
+  String get contactLockedTitle => 'Himoyalangan ma\'lumotlar';
+
+  @override
+  String get contactUnlockedTitle => 'Aloqa ma\'lumotlari';
+
+  @override
+  String get contactPhone => 'Telefon raqami';
+
+  @override
+  String get contactEmail => 'E-pochta';
+
+  @override
+  String get contactCv => 'Rezyume fayli';
+
+  @override
+  String get contactCvLocked => 'PDF · qulflangan';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins bitta yangi nomzodning kontakti, rezyumesi va yozishmasini ochadi. Bir marta ochilgan nomzod uchun qayta to\'lov olinmaydi.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Tasdiqlashga o\'tish';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins yechildi · balans $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Coin yetarli emas';
 }

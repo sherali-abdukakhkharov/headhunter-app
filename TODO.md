@@ -56,14 +56,27 @@ decision or on the backend.
       (employer, candidate) pair is a primary key, so a retry returns the
       existing entitlement with `charged: false` and one key per tap would be
       two keys for one intent.
-- [?] **Contact exposure is not yet gated on the entitlement.** The wallet can
-      sell an unlock; `expose()` in `contact-exposure.ts` does not read one. The
-      entitlement table is touched only inside the backend's wallet module, so
-      today an unlock debits Coins and changes nothing an employer can see, and
-      the six reason codes are unchanged. *Blocks the unlock action, the locked
-      candidate profile and the `exposureExplanation` rewrite — everything in
-      M12 downstream of a card. The wallet itself does not depend on it and has
-      shipped.*
+- [x] ~~**Contact exposure is not gated on the entitlement**~~ — **merged
+      2026-08-19** (backend `c5e7a97`, 970 tests). `expose()` reads the unlock,
+      `no_interaction` became **`unlock_required`**, `candidate_unlock` joined
+      the granting codes, `between()` gained an `unlocks` kind, and there is a
+      third download route at `/unlocks/{candidateUserId}/files/{fileId}`. All
+      seven codes are now an enum on the DTO rather than prose. The client's
+      reason-code gate needed no change to activate — which was the point of it.
+      Two corrections worth keeping:
+      **`hidden_by_candidate` did *not* become reachable** as the brief
+      predicted — the readability gate 404s before `expose()` is consulted, so
+      keep it mapped as defence in depth but do not design a screen around it.
+      And **`not_verified_employer` is reachable with a 200**, a readable
+      profile and `phone: null`, so it belongs in the page rather than in an
+      error state; it now routes to verification.
+- [x] **The purchase has four refusals, and they do not share a destination.**
+      402 `wallet.insufficient_coins` → top-up; **403 `employer.not_verified` /
+      `employer.profile_incomplete` → verification, never top-up** (BR-03 is a
+      precondition an employer cannot buy past, so selling Coins there sells
+      access §7 is about to refuse); 404 and 409 have no destination at all.
+      All four land before any Coins move. The 403 reuses the codes every other
+      §7-gated route already returns rather than minting a wallet-specific one
 
 ## M0 - Foundations *(done)*
 
@@ -98,6 +111,30 @@ emulator against the design document, with 18 tests pinning the rules.
       rule, always-on category band, conditional-field rail, two-line nav at a
       constant 70pt, min-52 control height, 2.0x text-scale clamp, derived
       skeletons
+- [x] **§06 (wallet) round applied 2026-08-19** — imported from the designer's
+      project via the Claude Design MCP. Added: `HhNoticeTone.success` with a
+      `HhNotice.done` constructor and an optional dismiss control (the first
+      success-toned *notice* in the product — badges carry no border, so the
+      ramp had no `successBorder` until one was drawn); the `coin`, `phone` and
+      `mail` glyphs, transcribed from the designer's own paths; `surfaceMuted`.
+      All registered in the gallery, and the two chevrons — which the catalogue
+      had been missing since round 1 — now render there beside each other
+- [!] **The employer nav question resolved itself in the design's favour.** The
+      wallet TZ §5.2 lists Wallet as an employer bottom-nav destination, which
+      would be a **sixth** tab against `HhBottomNav`'s five-tab cap and round
+      1's constant 70pt bar. The design keeps five (Bosh sahifa · Vakansiyalar ·
+      Nomzodlar · Xabarlar · Kompaniya) and makes the **balance chip** the entry
+      point instead, in the app bar of surfaces where Coins get spent. So no
+      cap to renegotiate and no tab to add — `CoinBalanceChip` is that widget
+- [?] **The app may be painting the canvas colour as its screen background.**
+      `scaffoldBackgroundColor` is `sand100` (`#EFEBE4`), which the design's
+      foundations page does swatch as sand-100 — but every phone frame in the
+      design document draws its screen on `#F7F8FA`, and `#EFEBE4` appears
+      there only as that swatch and as the canvas paper the artboards sit on.
+      `surfaceMuted` now holds `#F7F8FA` and is used for the drawn contact rows.
+      **Not changed**: it repaints every screen in the product, which wants its
+      own commit and a look on a device rather than a quiet edit inside a
+      feature. One line in `hh_theme.dart` when someone decides
 - [x] Verified at the design's QA case — 320pt at 2.0x, no overflow anywhere
 - [ ] **Category photography** - five 3:2 masters (1620x1080), one per §2.1
       category, subject inside the middle 60% vertically so one file survives
@@ -677,15 +714,75 @@ money and is enabled by a constant somebody has to remember.
       §11.1 still treats an application as an entitlement of its own. The
       original six codes keep their meanings, so one build is correct before and
       after the gate lands. **This closes M7's `[!]` item**
-- [ ] Files behind an unlock. The backend needs a third download route
-      (`/unlocks/:candidateUserId/files/...`) because a download path is scoped
-      to whatever granted access; until it exists, `canViewFiles` stays false on
-      an unlock-only entitlement and the list is correctly empty
+- [x] **Built to the design (§06, E-42 – E-46), 2026-08-19.** The locked block is
+      now the drawn card — `Himoyalangan ma'lumotlar` with three **named** rows,
+      phone / e-mail / CV, each masked — rather than a sentence saying contact is
+      unavailable. That is DA-14, and it is also the better answer to the
+      question an employer is actually asking: what do the two Coins buy?
+      The mask is a **fixed-width constant**, never derived from the value,
+      because a mask that tracked the length would leak the length (§8.7); the
+      masked value is excluded from semantics so a screen reader announces the
+      label and not twelve bullets; and a test sweeps every `Text` on a locked
+      profile for any run of three digits
+- [x] **The priced action is a sticky bar** (§3.1), not a button inside a card —
+      a price halfway down a long scroll stops being visible at the moment of
+      the decision. The success outcome is an **inline dismissible banner**
+      carrying Coins spent and the new balance, not a snackbar: those are
+      figures somebody may want to read twice, and four seconds is the wrong
+      container for money
+- [x] **Insufficient balance no longer redirects** (§06's third principle:
+      paying must never lose the candidate). It stays in the sheet, still naming
+      them, and swaps the action for top-up. The same now applies to the 403 —
+      which also fixed a real overflow, since a snackbar carrying the server's
+      sentence *and* a verification action overflows a 360pt bar in English and
+      would be worse in Russian
+- [x] **"Coin" is the unit name in every language.** The design writes `2 Coin`
+      in Uzbek Latin, and round 1 puts uz-Latn copy under design ownership. My
+      `tanga` / `монета` were inventions — exactly the machine translation of a
+      money string the handoff calls "a liability, not a shortcut". Still owed:
+      the client's certified uz-Cyrl and ru translation to confirm it
+- [ ] Files behind an unlock. The route now exists
+      (`/unlocks/{candidateUserId}/files/{fileId}/content`), so what is left is
+      the client half: saving bytes and opening them needs `path_provider` and an
+      opener, weighed against pubspec.yaml's load-bearing pins. **Always use the
+      `downloadPath` the server hands back** — an employer holding both an
+      application and an unlock is served through `/applications/…`, because the
+      application is the stronger claim
 
-## M13 - Coin top-up: Payme and CLICK *(new, 2026-08-10)*
+## M13 - Coin top-up: Payme and CLICK *(designed 2026-08-19; still blocked)*
 
 **§6.7, §12.6, §12.7 · BR-19, BR-20, BR-22, BR-23 · UAT-20 – UAT-23.** Blocked
 on client-supplied merchant credentials and the storefront billing decision.
+
+**Now fully drawn, and still not buildable.** The designer's §06 covers
+E-47 – E-53 in full — pack selector and free-entry amount, provider cards for
+Payme / CLICK / store billing, the pending state with "Holatni tekshirish", the
+receipt, the failure, the filtered history and the transaction detail. Copy and
+geometry are in the design document; the section is imported and readable.
+
+What is missing is not design. It is **a server**: there are no payment-order
+endpoints at all, `wallet_transactions.reference_id` is reserved for this and
+still unfilled, and the two client-owed items above (merchant credentials, the
+storefront billing decision) are unchanged. Building a checkout against no
+server is the trap the wallet and the unlock were each split to avoid, twice —
+and this one is worse, because there is nothing to gate on either. No reason
+code, no endpoint, nothing a running server could say that would make the screens
+correct.
+
+So the drawn screens are recorded here rather than half-built. Three things from
+the design worth carrying into that work when it opens:
+
+- **The UZS figure belongs here and almost nowhere else.** §06's first principle:
+  the amount in som appears on the top-up screen, the payment screen and the
+  receipt — the three places money actually changes hands. It has been removed
+  from the unlock price row for this reason.
+- **The receipt's primary action is "back to the candidate"**, not "go to the
+  wallet". §06's third principle again: the name travels through every screen of
+  the top-up flow, and the employer must never have to find their way back.
+- **Card fields are never drawn** (BR-22, and §15.2 says so explicitly): the
+  design hands off to provider checkout and annotates what is app-owned versus
+  provider-owned. The store-billing card is a *third provider option* in the same
+  list, which is what makes DA-16's configurability a layout that already works.
 
 - [ ] Coin quantity chooser; **the server calculates the amount** and returns
       the Payment Order. A total computed in Dart is never the source of truth

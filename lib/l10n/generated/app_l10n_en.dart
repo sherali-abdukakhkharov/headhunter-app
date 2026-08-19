@@ -1094,7 +1094,7 @@ class AppL10nEn extends AppL10n {
   String get walletPrices => 'Prices today';
 
   @override
-  String get walletCoinPriceLabel => 'One Coin';
+  String get walletCoinPriceLabel => '1 Coin';
 
   @override
   String get walletUnlockPriceLabel => 'Candidate unlock';
@@ -1181,7 +1181,7 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get unlockTitle => 'Unlock this candidate\'s contact details';
+  String get unlockTitle => 'Unlock contact';
 
   @override
   String get unlockCost => 'Cost';
@@ -1193,7 +1193,7 @@ class AppL10nEn extends AppL10n {
   String get unlockBalanceAfter => 'Balance after';
 
   @override
-  String get unlockConfirm => 'Unlock contact';
+  String get unlockConfirm => 'Confirm';
 
   @override
   String get unlockWhatYouGet =>
@@ -1216,4 +1216,38 @@ class AppL10nEn extends AppL10n {
   @override
   String get candidateExposureUnlockRequired =>
       'Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.';
+
+  @override
+  String get contactLockedTitle => 'Protected information';
+
+  @override
+  String get contactUnlockedTitle => 'Contact details';
+
+  @override
+  String get contactPhone => 'Phone number';
+
+  @override
+  String get contactEmail => 'E-mail';
+
+  @override
+  String get contactCv => 'CV file';
+
+  @override
+  String get contactCvLocked => 'PDF · locked';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins opens one new candidate\'s phone, e-mail, CV and conversation. An unlocked candidate is never charged for again.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Go to verification';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins spent · balance $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Not enough Coins';
 }

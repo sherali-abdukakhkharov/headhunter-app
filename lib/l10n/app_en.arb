@@ -1423,7 +1423,7 @@
   "@walletPrices": {
     "description": "Heading over the server-supplied prices. \"Today\" is deliberate: §10.5 lets an administrator change them."
   },
-  "walletCoinPriceLabel": "One Coin",
+  "walletCoinPriceLabel": "1 Coin",
   "@walletCoinPriceLabel": {
     "description": "Row label for the price of a single Coin."
   },
@@ -1532,7 +1532,7 @@
       }
     }
   },
-  "unlockTitle": "Unlock this candidate's contact details",
+  "unlockTitle": "Unlock contact",
   "@unlockTitle": {
     "description": "Heading of the confirmation sheet (§6.6)."
   },
@@ -1548,9 +1548,9 @@
   "@unlockBalanceAfter": {
     "description": "Confirmation sheet row: what the balance becomes. §6.6 requires all three figures before anything is charged, so nobody discovers the cost by paying it."
   },
-  "unlockConfirm": "Unlock contact",
+  "unlockConfirm": "Confirm",
   "@unlockConfirm": {
-    "description": "The button that charges. Deliberately not \"Confirm\": the sheet's action should name what it buys."
+    "description": "The button that charges. E-44 asks for Cancel and Confirm, and the sheet title already names the purchase — repeating it on the button would be the same words twice with the cost and both balances in between."
   },
   "unlockWhatYouGet": "Phone number, e-mail and CV become available, and you can start a conversation. Charged once — returning to this candidate later is free.",
   "@unlockWhatYouGet": {
@@ -1580,5 +1580,58 @@
   "candidateExposureUnlockRequired": "Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.",
   "@candidateExposureUnlockRequired": {
     "description": "The `unlock_required` reason code: a verified employer, a readable candidate, and no entitlement yet. Says both routes on purpose - §11.1 treats an application as an entitlement of its own, so an employer who is happy to wait should not be told paying is the only way. This code exists only on a server that honours the unlock, which is why it is also what the unlock control is gated on."
+  },
+  "contactLockedTitle": "Protected information",
+  "@contactLockedTitle": {
+    "description": "Heading of §06's locked contact block (E-43). Names what is behind the lock rather than announcing that something is locked - an employer deciding whether to spend Coins needs to know what the Coins buy."
+  },
+  "contactUnlockedTitle": "Contact details",
+  "@contactUnlockedTitle": {
+    "description": "The same block once BR-09 allows contact."
+  },
+  "contactPhone": "Phone number",
+  "@contactPhone": {
+    "description": "Row label. The value beside it is masked with a fixed-width run of dots until the entitlement exists - never a mask derived from the real value, which would leak its length (§8.7)."
+  },
+  "contactEmail": "E-mail",
+  "@contactEmail": {
+    "description": "Row label. Reserved: the candidate DTO carries no e-mail field yet, so this row is always masked today."
+  },
+  "contactCv": "CV file",
+  "@contactCv": {
+    "description": "Row label for the CV while it is locked. Once open, the real file list renders below with each file's purpose and size, so this row disappears rather than duplicating it."
+  },
+  "contactCvLocked": "PDF · locked",
+  "@contactCvLocked": {
+    "description": "Stands in for the CV's name and size while locked. Says the format, which is useful, and nothing that identifies the file."
+  },
+  "contactLockedExplainer": "{coins} opens one new candidate's phone, e-mail, CV and conversation. An unlocked candidate is never charged for again.",
+  "@contactLockedExplainer": {
+    "description": "§6.6 and BR-16 in two sentences, under the locked rows. The second sentence is the one that matters before a purchase: UAT-18's guarantee is the reassurance an employer needs to spend anything at all.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockGoToVerification": "Go to verification",
+  "@unlockGoToVerification": {
+    "description": "Destination for the 403 refusals (`employer.not_verified`, `employer.profile_incomplete`) and for the `not_verified_employer` exposure reason. BR-03 is a precondition an employer cannot buy past, so these must route to verification and never to top-up - offering Coins there would sell access §7 is about to refuse."
+  },
+  "unlockChargedDetail": "{coins} spent · balance {balance}",
+  "@unlockChargedDetail": {
+    "description": "§06's unlock-success banner. Both figures are already-localized Coin quantities: the amount actually debited, taken from the response rather than from what the sheet predicted, and the new balance refetched from the wallet. Neither is computed here.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      },
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockInsufficient": "Not enough Coins",
+  "@unlockInsufficient": {
+    "description": "Title of the in-sheet notice when the server refuses a purchase the sheet had judged affordable - the balance moved between the sheet opening and the tap. Names the state; the server's own sentence below it carries the two numbers, which are the authority now that the displayed rows are known to be stale."
   }
 }

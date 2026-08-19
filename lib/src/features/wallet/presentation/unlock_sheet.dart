@@ -6,7 +6,6 @@ import 'package:headhunter_app/src/core/network/api_exception.dart';
 import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
 import 'package:headhunter_app/src/features/wallet/domain/unlock.dart';
 import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
-import 'package:headhunter_app/src/features/wallet/presentation/wallet_screen.dart';
 
 /// Offers the §6.6 confirmation sheet, and returns the entitlement if one was
 /// obtained.
@@ -18,6 +17,9 @@ Future<Unlock?> showUnlockSheet(
   required String candidateUserId,
   required Wallet wallet,
   required WalletPricing pricing,
+  String? candidateName,
+  String? candidateHeadline,
+  VoidCallback? onVerify,
 }) => showModalBottomSheet<Unlock>(
   context: context,
   isScrollControlled: true,
@@ -26,6 +28,9 @@ Future<Unlock?> showUnlockSheet(
     candidateUserId: candidateUserId,
     wallet: wallet,
     pricing: pricing,
+    candidateName: candidateName,
+    candidateHeadline: candidateHeadline,
+    onVerify: onVerify,
   ),
 );
 
@@ -56,11 +61,27 @@ class _UnlockSheet extends ConsumerStatefulWidget {
     required this.candidateUserId,
     required this.wallet,
     required this.pricing,
+    this.candidateName,
+    this.candidateHeadline,
+    this.onVerify,
   });
 
   final String candidateUserId;
   final Wallet wallet;
   final WalletPricing pricing;
+
+  /// Who is being bought. §06's third principle — paying must never lose the
+  /// candidate — starts here: the name travels into every screen the purchase
+  /// opens, so nobody confirms a charge against an anonymous "this candidate".
+  final String? candidateName;
+
+  /// Their occupation line, shown under the name exactly as the design draws
+  /// it.
+  final String? candidateHeadline;
+
+  /// Where BR-03 sends them. Null where the caller has nowhere to send them, in
+  /// which case the refusal is still reported and simply carries no action.
+  final VoidCallback? onVerify;
 
   @override
   ConsumerState<_UnlockSheet> createState() => _UnlockSheetState();
@@ -68,6 +89,22 @@ class _UnlockSheet extends ConsumerStatefulWidget {
 
 class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
   bool _busy = false;
+
+  /// The server's 402 sentence, once it has refused a purchase this sheet
+  /// thought was affordable.
+  ///
+  /// Held rather than shown as a snackbar because it changes what the sheet
+  /// *offers*: the confirm action becomes top-up, in place, with the candidate
+  /// still named above it.
+  String? _serverShortfall;
+
+  /// The server's 403 sentence: BR-03 refused the purchase.
+  ///
+  /// Kept here for the same reason as the shortfall, and it matters more: a
+  /// snackbar carrying this message *and* a verification action overflows a
+  /// 360pt bar in English, and would be worse in Russian. In the sheet both
+  /// fit, and the candidate stays named above them.
+  String? _verificationRefusal;
 
   /// Whether the balance covers it, decided *before* the request.
   ///
@@ -77,6 +114,7 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
   /// frame and the tap — another device, or an administrator adjustment — and a
   /// pre-check is an optimisation, not the authority.
   bool get _affordable =>
+      _serverShortfall == null &&
       widget.wallet.balanceCoins >= widget.pricing.candidateUnlockCoins;
 
   @override
@@ -109,6 +147,23 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
               ),
               const SizedBox(height: HhSpace.lg),
               Text(l10n.unlockTitle, style: HhTypography.subtitle),
+
+              // The name, directly under the title, as drawn. An employer about
+              // to spend Coins should see who on, without scrolling back.
+              if (widget.candidateName case final name? when name.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Text(
+                    switch (widget.candidateHeadline) {
+                      final String h when h.isNotEmpty => '$name — $h',
+                      _ => name,
+                    },
+                    style: HhTypography.caption.copyWith(
+                      color: HhColors.inkMuted,
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: HhSpace.sm),
               Text(
                 l10n.unlockWhatYouGet,
@@ -143,7 +198,41 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
               const Divider(height: 1, color: HhColors.border),
               const SizedBox(height: HhSpace.lg),
 
-              if (_affordable)
+              // Shown only when the *server* refused a purchase this sheet had
+              // judged affordable. Its own sentence, carrying its own numbers —
+              // and it appears here rather than replacing the sheet, so the
+              // candidate above it survives the refusal.
+              if (_serverShortfall case final shortfall?) ...[
+                HhNotice.restricted(
+                  title: l10n.unlockInsufficient,
+                  message: shortfall,
+                ),
+                const SizedBox(height: HhSpace.md),
+              ],
+
+              // BR-03, which Coins cannot buy past. Same treatment as the
+              // shortfall and for the same reason: a refusal belongs beside
+              // the candidate it was about.
+              if (_verificationRefusal case final refusal?) ...[
+                HhNotice.restricted(
+                  title: l10n.unlockGoToVerification,
+                  message: refusal,
+                ),
+                const SizedBox(height: HhSpace.md),
+              ],
+
+              if (_verificationRefusal != null)
+                // Buying is pointless here, so the only action offered is
+                // the one that would actually change the answer.
+                HhButton(
+                  label: l10n.unlockGoToVerification,
+                  iconPath: HhIconPath.shieldCheck,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.onVerify?.call();
+                  },
+                )
+              else if (_affordable)
                 HhButton(
                   label: l10n.unlockConfirm,
                   loading: _busy,
@@ -177,7 +266,6 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
   /// cost. An optimistic debit that then turned out to have failed would show
   /// Coins gone with no access, which is the pair BR-18 exists to prevent.
   Future<void> _confirm() async {
-    final l10n = AppL10n.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
@@ -195,40 +283,54 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
             ..invalidate(walletLedgerProvider)
             ..invalidate(unlockStateProvider(widget.candidateUserId));
 
+          // The outcome is reported by the caller, as §06 draws it: a banner on
+          // the profile the purchase just changed, carrying the Coins spent and
+          // the balance left. A snackbar here as well would say the same thing
+          // twice and take the shorter-lived half of it with the sheet.
           navigator.pop(unlock);
-          messenger.showSnackBar(
-            SnackBar(
-              // UAT-18: a second tap is free, and saying so is better than
-              // succeeding silently — an employer who tapped twice should learn
-              // the second cost nothing rather than go check the ledger.
-              content: Text(
-                unlock.charged ? l10n.unlockDone : l10n.unlockAlready,
-              ),
-            ),
-          );
 
         case UnlockUnaffordable(:final message):
-          // The balance moved under us. The server's sentence already carries
-          // both numbers, in this user's language.
+          // The balance moved under us — another device, or an administrator
+          // adjustment. The sheet stays open on the short-balance state rather
+          // than closing: closing would be the redirect §06 forbids, one step
+          // later.
           if (!mounted) return;
-          setState(() => _busy = false);
+          setState(() {
+            _busy = false;
+            _serverShortfall = message;
+          });
           ref.invalidate(walletProvider);
-          messenger.showSnackBar(SnackBar(content: Text(message)));
+
+        case UnlockNeedsVerification(:final message):
+          // BR-03, and **not** a route to top-up: Coins cannot buy past §7,
+          // so the sheet swaps its action for the one that can.
+          if (!mounted) return;
+          setState(() {
+            _busy = false;
+            _verificationRefusal = message;
+          });
       }
     } on ApiException catch (e) {
+      // 404 and 409 land here. Neither has a destination — an absent candidate
+      // and a multi-role account unlocking itself are both dead ends, so the
+      // sheet says what happened and stays put.
       if (!mounted) return;
       setState(() => _busy = false);
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
-  /// §6.7's checkout is M13 and needs merchant credentials nobody has yet, so
-  /// this opens the wallet — where the same honest sentence lives — rather than
-  /// dead-ending here.
-  Future<void> _topUp() async {
-    Navigator.of(context).pop();
-    await showWallet(context);
-  }
+  /// **Never a redirect.** §06's third principle is that paying must not lose
+  /// the candidate, so the top-up route opens *over* this sheet and returns to
+  /// it; the candidate's name travels with it.
+  ///
+  /// Until M13 ships there is nothing to open — no payment-order endpoint
+  /// exists — so this says so in place rather than navigating away to say it
+  /// somewhere else. That is the same honest dead end the Wallet's own Top up
+  /// gives, minus the trip.
+  void _topUp() => ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(AppL10n.of(context).walletTopUpUnavailable)),
+  );
 }
 
 class _Row extends StatelessWidget {

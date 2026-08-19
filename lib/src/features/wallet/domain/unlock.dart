@@ -109,3 +109,20 @@ class UnlockUnaffordable extends UnlockResult {
 
   final String message;
 }
+
+/// The employer is not verified, or their profile is incomplete (BR-03, §7).
+///
+/// **A different destination from [UnlockUnaffordable], which is the whole
+/// reason it is a different case.** Coins cannot fix this: §7 admits only a
+/// verified employer to candidates at all, so sending them to top-up would sell
+/// access the server is about to refuse. They go to verification instead.
+///
+/// The server reuses the codes every other §7-gated route already returns
+/// (`employer.not_verified`, `employer.profile_incomplete`) rather than minting
+/// a wallet-specific one — so this is the same refusal the rest of the product
+/// handles, arriving through a new door. [message] says which of the two it is.
+class UnlockNeedsVerification extends UnlockResult {
+  const UnlockNeedsVerification(this.message);
+
+  final String message;
+}

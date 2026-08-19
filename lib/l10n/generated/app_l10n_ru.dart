@@ -1074,10 +1074,10 @@ class AppL10nRu extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count монет',
-      many: '$count монет',
-      few: '$count монеты',
-      one: '$count монета',
+      other: '$count Coin',
+      many: '$count Coin',
+      few: '$count Coin',
+      one: '$count Coin',
     );
     return '$_temp0';
   }
@@ -1104,7 +1104,7 @@ class AppL10nRu extends AppL10n {
   String get walletPrices => 'Цены на сегодня';
 
   @override
-  String get walletCoinPriceLabel => 'Одна монета';
+  String get walletCoinPriceLabel => '1 Coin';
 
   @override
   String get walletUnlockPriceLabel => 'Доступ к контактам кандидата';
@@ -1144,10 +1144,10 @@ class AppL10nRu extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count монет',
-      many: '$count монет',
-      few: '$count монеты',
-      one: '$count монета',
+      other: '$count Coin',
+      many: '$count Coin',
+      few: '$count Coin',
+      one: '$count Coin',
     );
     return '+$_temp0';
   }
@@ -1157,10 +1157,10 @@ class AppL10nRu extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count монет',
-      many: '$count монет',
-      few: '$count монеты',
-      one: '$count монета',
+      other: '$count Coin',
+      many: '$count Coin',
+      few: '$count Coin',
+      one: '$count Coin',
     );
     return '−$_temp0';
   }
@@ -1195,7 +1195,7 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get unlockTitle => 'Открыть контакты этого кандидата';
+  String get unlockTitle => 'Открыть контакты';
 
   @override
   String get unlockCost => 'Стоимость';
@@ -1207,7 +1207,7 @@ class AppL10nRu extends AppL10n {
   String get unlockBalanceAfter => 'Баланс после';
 
   @override
-  String get unlockConfirm => 'Открыть контакты';
+  String get unlockConfirm => 'Подтвердить';
 
   @override
   String get unlockWhatYouGet =>
@@ -1230,4 +1230,38 @@ class AppL10nRu extends AppL10n {
   @override
   String get candidateExposureUnlockRequired =>
       'Откройте контакты, чтобы связаться с кандидатом сейчас. Они также откроются бесплатно, если он откликнется на вашу вакансию или примет приглашение.';
+
+  @override
+  String get contactLockedTitle => 'Защищённые данные';
+
+  @override
+  String get contactUnlockedTitle => 'Контактные данные';
+
+  @override
+  String get contactPhone => 'Номер телефона';
+
+  @override
+  String get contactEmail => 'E-mail';
+
+  @override
+  String get contactCv => 'Файл резюме';
+
+  @override
+  String get contactCvLocked => 'PDF · закрыт';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins открывает телефон, e-mail, резюме и переписку одного нового кандидата. За уже открытого кандидата повторно списаний нет.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Перейти к верификации';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return 'Списано $coins · баланс $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Недостаточно Coin';
 }

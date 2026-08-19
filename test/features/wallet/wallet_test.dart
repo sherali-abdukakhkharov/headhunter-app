@@ -140,14 +140,18 @@ void main() {
       expect(find.text('≈ 80,000 UZS'), findsNothing);
     });
 
-    testWidgets('the unlock price in UZS is read, never multiplied', (
-      tester,
-    ) async {
-      // Likewise 2 x 10,000 = 20,000, and the server said 17,000. A bundle
-      // price is a pricing decision, so coins x price is not the answer.
+    testWidgets('the unlock price carries no UZS at all', (tester) async {
+      // §06's first principle: a service balance, not a wallet. The UZS figure
+      // appears only where money actually changes hands — top-up, payment,
+      // receipt — and an unlock is priced in Coins and paid for in Coins.
+      //
+      // The fixture's unlock UZS (17,000) deliberately disagrees with coins x
+      // price (20,000), so this fails loudly if either number reappears here:
+      // the server's, or one computed from the Coin price.
       await pump(tester, _FakeWallet(wallet: _wallet()));
 
-      expect(find.text('≈ 17,000 UZS'), findsOneWidget);
+      expect(find.text('2 Coins'), findsOneWidget);
+      expect(find.text('≈ 17,000 UZS'), findsNothing);
       expect(find.text('≈ 20,000 UZS'), findsNothing);
     });
 

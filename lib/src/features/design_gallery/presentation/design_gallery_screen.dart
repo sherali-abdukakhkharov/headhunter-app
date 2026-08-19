@@ -364,6 +364,16 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           title: "Muddati o'tgan",
           message: 'Ariza qabul qilish muddati tugagan.',
         ),
+        const SizedBox(height: HhSpace.sm),
+        // §06's unlock-success banner: the one success-toned notice, and the
+        // one that is dismissible. Drawn here beside the four conditions so the
+        // difference is visible — those describe something the user cannot
+        // clear, this confirms something they just did.
+        HhNotice.done(
+          title: 'Kontakt ochildi',
+          message: '2 Coin yechildi · balans 8 Coin',
+          onDismiss: () {},
+        ),
         const SizedBox(height: HhSpace.md),
         const _StateLabel('09 · Destructive confirm / 11 · Toast'),
         Row(
@@ -525,6 +535,12 @@ class _IconGrid extends StatelessWidget {
     // Drawn side by side so a wrong one is obvious here, not on a device.
     'chevron-down': HhIconPath.chevronDown,
     'chevron-right': HhIconPath.chevronRight,
+    // §06's monetisation glyphs. `coin` sits beside `wallet` deliberately — the
+    // unit and the place it lives are a pair, and drawing them together is how
+    // you notice if one ever starts standing in for the other.
+    'coin': HhIconPath.coin,
+    'phone': HhIconPath.phone,
+    'mail': HhIconPath.mail,
   };
 
   @override
