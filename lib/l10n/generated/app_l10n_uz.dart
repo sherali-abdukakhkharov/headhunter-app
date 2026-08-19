@@ -1018,10 +1018,10 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get vacancyGoneBody =>
-      'U yopilgan, to‘ldirilgan yoki muddati o‘tgan bo‘lishi mumkin.';
+      'U yopilgan, to\'ldirilgan yoki muddati o\'tgan bo\'lishi mumkin.';
 
   @override
-  String get vacancyReportReason => 'Bu vakansiyada nima noto‘g‘ri?';
+  String get vacancyReportReason => 'Bu vakansiyada nima noto\'g\'ri?';
 
   @override
   String get vacancyReportSend => 'Yuborish';
@@ -1030,14 +1030,14 @@ class AppL10nUz extends AppL10n {
   String get commonYes => 'Ha';
 
   @override
-  String get commonNo => 'Yo‘q';
+  String get commonNo => 'Yo\'q';
 
   @override
   String vacancyOpenings(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ta o‘rin',
+      other: '$count ta o\'rin',
     );
     return '$_temp0';
   }
@@ -1315,6 +1315,123 @@ class AppL10nUz extends AppL10n {
   @override
   String get walletCorrectionExplained =>
       'Bu yozuv oldingisini tuzatadi. Asl yozuv tarixda qoladi — tuzatishlar qo\'shiladi, ustidan yozilmaydi.';
+
+  @override
+  String get navInvitations => 'Takliflar';
+
+  @override
+  String get invitationSent => 'Yuborilgan';
+
+  @override
+  String get invitationDetailsRequested => 'Batafsil so\'ralgan';
+
+  @override
+  String get invitationAccepted => 'Qabul qilingan';
+
+  @override
+  String get invitationDeclined => 'Rad etilgan';
+
+  @override
+  String get invitationAccept => 'Qabul qilish';
+
+  @override
+  String get invitationDecline => 'Rad etish';
+
+  @override
+  String get invitationRequestDetails => 'Savol berish';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Sizni vakansiyaga taklif qilgan ish beruvchilar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationGeneral => 'Umumiy taklif';
+
+  @override
+  String get invitationOpenVacancy => 'Vakansiyani ochish';
+
+  @override
+  String get invitationVacancyLoading => 'Vakansiya yuklanmoqda…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Vakansiyani yuklab bo\'lmadi.';
+
+  @override
+  String get invitationVacancyUntitled => 'Vakansiya';
+
+  @override
+  String get invitationYourReply => 'Sizning javobingiz';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString so\'m';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mdan';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mgacha';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Bu taklif qabul qilinsinmi?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Qabul qilsangiz, telefon raqamingiz, e-pochtangiz va rezyumeingiz shu ish beruvchiga ko\'rinadi. Buni ortga qaytarib bo\'lmaydi.';
+
+  @override
+  String get invitationDeclineTitle => 'Bu taklif rad etilsinmi?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Aloqa ma\'lumotlaringiz yopiq qoladi. Rad etishni ortga qaytarib bo\'lmaydi, lekin ish beruvchi keyinroq yana taklif qilishi mumkin.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Ish beruvchiga savol berish';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Keyin ham qabul qilish yoki rad etish mumkin. Qabul qilmaguningizcha aloqa ma\'lumotlaringiz yopiq qoladi.';
+
+  @override
+  String get invitationQuestionLabel => 'Savolingiz';
+
+  @override
+  String get invitationQuestionHint =>
+      'Masalan: ish aynan qayerda va qachon boshlanadi?';
+
+  @override
+  String get invitationNoteLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationNoteHint =>
+      'Ish beruvchi bilishi kerak deb hisoblagan narsangiz.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'Bu taklifga allaqachon javob berilgan';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2626,6 +2743,123 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get walletCorrectionExplained =>
       'Бу ёзув олдингисини тузатади. Асл ёзув тарихда қолади — тузатишлар қўшилади, устидан ёзилмайди.';
+
+  @override
+  String get navInvitations => 'Таклифлар';
+
+  @override
+  String get invitationSent => 'Юборилган';
+
+  @override
+  String get invitationDetailsRequested => 'Батафсил сўралган';
+
+  @override
+  String get invitationAccepted => 'Қабул қилинган';
+
+  @override
+  String get invitationDeclined => 'Рад этилган';
+
+  @override
+  String get invitationAccept => 'Қабул қилиш';
+
+  @override
+  String get invitationDecline => 'Рад этиш';
+
+  @override
+  String get invitationRequestDetails => 'Савол бериш';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Сизни вакансияга таклиф қилган иш берувчилар шу ерда кўринади.';
+
+  @override
+  String get invitationGeneral => 'Умумий таклиф';
+
+  @override
+  String get invitationOpenVacancy => 'Вакансияни очиш';
+
+  @override
+  String get invitationVacancyLoading => 'Вакансия юкланмоқда…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Вакансияни юклаб бўлмади.';
+
+  @override
+  String get invitationVacancyUntitled => 'Вакансия';
+
+  @override
+  String get invitationYourReply => 'Сизнинг жавобингиз';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString сўм';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўмдан';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўмгача';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Бу таклиф қабул қилинсинми?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Қабул қилсангиз, телефон рақамингиз, э-почтангиз ва резюмеингиз шу иш берувчига кўринади. Буни ортга қайтариб бўлмайди.';
+
+  @override
+  String get invitationDeclineTitle => 'Бу таклиф рад этилсинми?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Алоқа маълумотларингиз ёпиқ қолади. Рад этишни ортга қайтариб бўлмайди, лекин иш берувчи кейинроқ яна таклиф қилиши мумкин.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Иш берувчига савол бериш';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Кейин ҳам қабул қилиш ёки рад этиш мумкин. Қабул қилмагунингизча алоқа маълумотларингиз ёпиқ қолади.';
+
+  @override
+  String get invitationQuestionLabel => 'Саволингиз';
+
+  @override
+  String get invitationQuestionHint =>
+      'Масалан: иш айнан қаерда ва қачон бошланади?';
+
+  @override
+  String get invitationNoteLabel => 'Хабар (мажбурий эмас)';
+
+  @override
+  String get invitationNoteHint =>
+      'Иш берувчи билиши керак деб ҳисоблаган нарсангиз.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'Бу таклифга аллақачон жавоб берилган';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -3642,10 +3876,10 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get vacancyGoneBody =>
-      'U yopilgan, to‘ldirilgan yoki muddati o‘tgan bo‘lishi mumkin.';
+      'U yopilgan, to\'ldirilgan yoki muddati o\'tgan bo\'lishi mumkin.';
 
   @override
-  String get vacancyReportReason => 'Bu vakansiyada nima noto‘g‘ri?';
+  String get vacancyReportReason => 'Bu vakansiyada nima noto\'g\'ri?';
 
   @override
   String get vacancyReportSend => 'Yuborish';
@@ -3654,14 +3888,14 @@ class AppL10nUzLatn extends AppL10nUz {
   String get commonYes => 'Ha';
 
   @override
-  String get commonNo => 'Yo‘q';
+  String get commonNo => 'Yo\'q';
 
   @override
   String vacancyOpenings(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ta o‘rin',
+      other: '$count ta o\'rin',
     );
     return '$_temp0';
   }
@@ -3939,4 +4173,121 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get walletCorrectionExplained =>
       'Bu yozuv oldingisini tuzatadi. Asl yozuv tarixda qoladi — tuzatishlar qo\'shiladi, ustidan yozilmaydi.';
+
+  @override
+  String get navInvitations => 'Takliflar';
+
+  @override
+  String get invitationSent => 'Yuborilgan';
+
+  @override
+  String get invitationDetailsRequested => 'Batafsil so\'ralgan';
+
+  @override
+  String get invitationAccepted => 'Qabul qilingan';
+
+  @override
+  String get invitationDeclined => 'Rad etilgan';
+
+  @override
+  String get invitationAccept => 'Qabul qilish';
+
+  @override
+  String get invitationDecline => 'Rad etish';
+
+  @override
+  String get invitationRequestDetails => 'Savol berish';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Sizni vakansiyaga taklif qilgan ish beruvchilar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationGeneral => 'Umumiy taklif';
+
+  @override
+  String get invitationOpenVacancy => 'Vakansiyani ochish';
+
+  @override
+  String get invitationVacancyLoading => 'Vakansiya yuklanmoqda…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Vakansiyani yuklab bo\'lmadi.';
+
+  @override
+  String get invitationVacancyUntitled => 'Vakansiya';
+
+  @override
+  String get invitationYourReply => 'Sizning javobingiz';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString so\'m';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mdan';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mgacha';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Bu taklif qabul qilinsinmi?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Qabul qilsangiz, telefon raqamingiz, e-pochtangiz va rezyumeingiz shu ish beruvchiga ko\'rinadi. Buni ortga qaytarib bo\'lmaydi.';
+
+  @override
+  String get invitationDeclineTitle => 'Bu taklif rad etilsinmi?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Aloqa ma\'lumotlaringiz yopiq qoladi. Rad etishni ortga qaytarib bo\'lmaydi, lekin ish beruvchi keyinroq yana taklif qilishi mumkin.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Ish beruvchiga savol berish';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Keyin ham qabul qilish yoki rad etish mumkin. Qabul qilmaguningizcha aloqa ma\'lumotlaringiz yopiq qoladi.';
+
+  @override
+  String get invitationQuestionLabel => 'Savolingiz';
+
+  @override
+  String get invitationQuestionHint =>
+      'Masalan: ish aynan qayerda va qachon boshlanadi?';
+
+  @override
+  String get invitationNoteLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationNoteHint =>
+      'Ish beruvchi bilishi kerak deb hisoblagan narsangiz.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'Bu taklifga allaqachon javob berilgan';
 }

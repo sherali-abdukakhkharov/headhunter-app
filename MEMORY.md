@@ -975,6 +975,41 @@ The rule: if a reason code's *remedy* changes, that is a different reason, so gi
 it a different code. Rewriting the old one's copy destroys the ability to serve
 both servers and quietly invalidates whatever pinned it.
 
+### 2026-08-19 - When the spec and the server disagree about money, ask
+§8.2 as revised reads "the employer must have a Candidate Unlock entitlement for
+that candidate. An invitation **may then** be attached to an active vacancy or
+sent as a general work invitation." The word "then" makes the unlock a
+precondition of *sending an invitation*.
+
+The backend does not implement that, and not by omission: its integration tests
+assert the looser behaviour deliberately. A verified employer may invite any
+search-visible candidate for free; a merely `sent` invitation answers
+`exposureReason: unlock_required` and reveals nothing; **acceptance** is what
+turns the code into `accepted_invitation` and opens the phone, e-mail and CV.
+
+The tempting move is to implement the spec — it is the client's own document, and
+the strict reading is the cautious one. **It is the wrong move here, twice over.**
+A client that gates on the unlock while the server does not tells an employer to
+pay for something the API would have accepted free: not a conservative failure, a
+false one. And deciding *when money must be spent* is exactly what §12.3.1 puts on
+the server, for the same reason it forbids computing a total — the rule has to
+live in one place, and that place is the side that owns the ledger.
+
+So the client built the half the two agree on (the candidate's inbox, which is
+unaffected either way), left the employer's send screen for after the answer, and
+recorded the question in PLAN.md next to the §11.1 one it resembles. The
+underlying product question is real and worth the client's attention: **is an
+invitation a contact action, or a request to make contact?** The server implements
+the second, and it is the better answer — an employer should not pay to be
+declined, and a candidate's consent is a better gate on their own phone number
+than the employer's wallet is.
+
+Generalises past this case: **a spec sentence and a running endpoint that
+disagree are a question, not a bug to be fixed in the client.** Build what they
+agree on, name the disagreement where the decision-maker will see it, and do not
+resolve it by writing the stricter rule into Dart where it cannot be changed
+without a store release.
+
 ### 2026-08-18 - Money on screen must never be arithmetic the client did
 §6.6 makes the Coin price and the unlock cost server configuration, and today
 `balanceValueUzs == balanceCoins * coinPriceUzs` exactly. That coincidence is a
@@ -1021,6 +1056,20 @@ one language. A widget test found it in seconds; `flutter analyze` cannot.
 Two consequences: prefer short chip labels (the group, not the form label - the
 builder is where the exact wording belongs), and treat any `Text` inside a
 `Row` as needing `Flexible` unless its width is provably bounded.
+
+**2026-08-19, the same bug with a different answer.** The invitation card's header
+was `Row(badge, Spacer, timestamp)` and overflowed by 32pt at 360 wide:
+"Details requested" plus `2026-08-18 09:30` needs 330 of the card's 298. Here
+`Flexible` + ellipsis is the *wrong* fix, because the only two candidates for
+truncation are both unshrinkable in principle — a badge is icon **plus word**, so
+a clipped word puts the state back on colour alone, and a truncated date is worse
+than no date. So the header became a `Wrap`: both fit on one line when they fit,
+and the timestamp drops to a second line when they do not.
+
+The general rule: **when nothing in a `Row` may shrink, the row is the wrong
+widget.** Reach for `Wrap` before deciding which piece of information to damage.
+Pinned at 320pt × 2.0x — the design's own QA case — rather than at 360, because
+the width that happened to fail is not the width worth guarding.
 
 ### 2026-08-04 - iOS cannot be built on this machine
 Xcode is macOS-only. `ios/` is generated and the Dart code is cross-platform; CI

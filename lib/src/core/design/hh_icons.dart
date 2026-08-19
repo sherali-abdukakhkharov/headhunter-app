@@ -131,6 +131,15 @@ abstract final class HhIconPath {
       'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.2 9.2l5.6 5.6M14.8 9.2l-5.6 5.6';
   static const infoCircle =
       'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5.5M12 7.6v.1';
+  /// A question was **asked** — not "here is information", which is
+  /// [infoCircle]. The only glyph in this set the designer did not draw:
+  /// §8.2's "details requested" needs one and the design has no invitation
+  /// section yet. Raised in docs/design-feedback.md; the geometry is this
+  /// family's own (the same 9-radius circle as [checkCircle], [xCircle] and
+  /// [infoCircle], with [infoCircle]'s dot-below-stem construction inverted).
+  static const helpCircle =
+      'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.4 9.3a2.7 2.7 0 0 1 5.25.9c0 '
+      '1.8-2.7 2.4-2.7 4M12 16.9v.1';
   static const alertTriangle = 'M12 4.5 21 20H3zM12 10.5v4M12 17.3v.1';
   static const wifiOff =
       'M3 3l18 18M8.6 15.6a5 5 0 0 1 5.2-1.1M5.4 12.2a10 10 0 0 1 2.8-2M2 8.6A15 '

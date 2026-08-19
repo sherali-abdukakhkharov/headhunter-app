@@ -6,6 +6,72 @@
 
 ---
 
+## ROUND 4 — §8.2 invitations are built, and undrawn
+
+**2026-08-19.** We built the candidate's invitation inbox (§8.2) because M12
+unblocked it. Nothing in the design covers it, so two things were invented and we
+would rather you replaced them than left them.
+
+### One glyph we drew ourselves: `help-circle`
+
+§8.2's third candidate action is "Request details", which needs a *question*
+glyph. The set has `info-circle` — "here is information" — and reusing it for
+"information was asked for" would break the rule that a shared glyph means the
+same thing everywhere, which is the rule that makes the vocabulary learnable.
+
+So `help-circle` is a question mark in the same 9-radius circle as
+`check-circle`, `x-circle` and `info-circle`, at the same stroke. It is in the
+gallery beside them. **Please redraw it** if the proportions are wrong; it is the
+only glyph in the set that is not yours.
+
+### Four badges the rule already required
+
+Your round-1 rule names "invitation" as one of the object types the badge stands
+behind, and the four states did not exist. They now do: **sent · details
+requested · accepted · declined**, and they follow the rule rather than inventing
+tones.
+
+One decision is worth your review because it is the only place we read the tone
+table against itself:
+
+> **A declined invitation is neutral, not error.**
+
+The table defines error as "resolved badly **for the person reading it**", and
+this badge has two readers — the employer, for whom a decline is a no, and the
+candidate who chose it, for whom red is the app disapproving of a decision it
+asked them to make. `application-withdrawn` already settled the same trade-off
+the same way, and appears on both of its surfaces too, so we followed it: neutral
+tone, and the same `arrow-left` glyph, because it is the same fact. Tell us if
+you want the employer's list to read it differently — that would need two badges,
+not one, and we would rather you chose than we guessed.
+
+### The invitation card itself
+
+Built to the existing card and badge components, not to a drawing. Two things we
+would like your geometry for rather than ours:
+
+- **The card header** is a `Wrap`, not a row with the timestamp pushed right. A
+  row overflowed by 32pt at 360 wide with "Details requested" beside a timestamp,
+  and Russian and 2.0× both make it worse. A badge must not be the thing that
+  truncates, so the timestamp drops to its own line. If you would rather it sat
+  on one line, the timestamp needs a shorter format.
+- **The two shapes read differently** and we made that visible: a vacancy
+  invitation shows the posting it points at, a general one shows its own
+  occupation, place, pay and schedule with "General invitation" above it. That
+  label placement is a guess.
+
+### Still owed from round 3, and now blocking a shipped screen
+
+**Item 7's copy in all four variants.** We wrote Uzbek Latin, Cyrillic and
+Russian for twenty-nine new invitation strings ourselves. The Coin round already
+established that our translations of your copy are a liability rather than a
+shortcut — `tanga` for "Coin" was exactly that mistake — so these need your
+certified pass, and the **accept disclosure** most of all: it is the sentence a
+candidate reads before releasing their phone number, e-mail and CV, and it is the
+one string in this feature where a mistranslation has a consequence.
+
+---
+
 ## ROUND 3 — all eight answers implemented
 
 Thank you for the standalone copy; it read through cleanly. Everything in §§1–8

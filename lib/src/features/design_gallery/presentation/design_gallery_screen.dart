@@ -229,6 +229,18 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           ],
         ),
         const SizedBox(height: HhSpace.md),
+        const _StateLabel('Taklif · 4'),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            HhBadge.invitationSent(label: 'Yuborilgan'),
+            HhBadge.invitationDetailsRequested(label: "Batafsil so'ralgan"),
+            HhBadge.invitationAccepted(label: 'Qabul qilingan'),
+            HhBadge.invitationDeclined(label: 'Rad etilgan'),
+          ],
+        ),
+        const SizedBox(height: HhSpace.md),
         const _StateLabel('Tasdiqlash · 5'),
         const Wrap(
           spacing: 8,
@@ -527,6 +539,7 @@ class _IconGrid extends StatelessWidget {
     'check-circle': HhIconPath.checkCircle,
     'x-circle': HhIconPath.xCircle,
     'info': HhIconPath.infoCircle,
+    'help': HhIconPath.helpCircle,
     'alert': HhIconPath.alertTriangle,
     'wifi-off': HhIconPath.wifiOff,
     'arrow-left': HhIconPath.arrowLeft,

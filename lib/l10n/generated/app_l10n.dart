@@ -2374,6 +2374,180 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.'**
   String get walletCorrectionExplained;
+
+  /// Employer invitations (§8.2). Used on the segmented control inside the candidate's Applications tab, not as a bottom-nav label — the five-tab cap is full.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get navInvitations;
+
+  /// Invitation status: delivered and not yet answered. Also the fallback label for a status this app version does not recognise.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get invitationSent;
+
+  /// Invitation status: the candidate asked a question, so it now waits on the employer. Not a final state — accepting or declining afterwards is allowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Details requested'**
+  String get invitationDetailsRequested;
+
+  /// Invitation status: the candidate accepted, which is what opens contact details to that employer (BR-09).
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get invitationAccepted;
+
+  /// Invitation status: the candidate declined. Final. Shown to both sides, so the wording must not read as a reproach to the person who chose it.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get invitationDeclined;
+
+  /// Button. A verb where invitationAccepted is a state — a past participle on a button reads as a label, not an action.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get invitationAccept;
+
+  /// Button.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get invitationDecline;
+
+  /// Button for §8.2's "Request details". Phrased as asking a question rather than requesting details, because that is what the candidate actually does with it and it makes the empty state of the field obvious.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a question'**
+  String get invitationRequestDetails;
+
+  /// Empty state for the candidate's invitation inbox. Says what would fill it rather than that it is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Employers who invite you to a vacancy will appear here.'**
+  String get invitationsInboxEmpty;
+
+  /// §8.2's second shape: an invitation to work rather than to a specific vacancy. Shown first on the card, because the absence of a posting is the first thing the candidate needs to know.
+  ///
+  /// In en, this message translates to:
+  /// **'General invitation'**
+  String get invitationGeneral;
+
+  /// Opens the full vacancy behind a vacancy-scoped invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Open vacancy'**
+  String get invitationOpenVacancy;
+
+  /// Placeholder line while the vacancy behind an invitation is fetched. A line of text rather than a spinner, so a list of cards does not flicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the vacancy…'**
+  String get invitationVacancyLoading;
+
+  /// A real failure fetching the vacancy behind an invitation, as distinct from vacancyGoneTitle, which is the ordinary 404 for a vacancy that has closed since.
+  ///
+  /// In en, this message translates to:
+  /// **'The vacancy could not be loaded.'**
+  String get invitationVacancyUnavailable;
+
+  /// Fallback when the vacancy behind an invitation has no title yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancy'**
+  String get invitationVacancyUntitled;
+
+  /// Label above the candidate's own note, played back to them on the invitation card.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reply'**
+  String get invitationYourReply;
+
+  /// A general invitation's stated pay range. Only general invitations carry pay of their own — a vacancy invitation's lives on the vacancy.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} – {to} UZS'**
+  String invitationPayRange(int from, int to);
+
+  /// A general invitation with only a lower bound on pay.
+  ///
+  /// In en, this message translates to:
+  /// **'From {amount} UZS'**
+  String invitationPayFrom(int amount);
+
+  /// A general invitation with only an upper bound on pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {amount} UZS'**
+  String invitationPayUpTo(int amount);
+
+  /// Title of the accept confirmation sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept this invitation?'**
+  String get invitationAcceptTitle;
+
+  /// The disclosure, shown before the accept button. Names the three protected fields rather than saying "your contact details": a candidate cannot weigh a category, and these are exactly the three §11.1 protects. Also states irreversibility, because §8.2 has no transition out of accepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepting shares your phone number, e-mail address and CV with this employer, and cannot be undone.'**
+  String get invitationAcceptDiscloses;
+
+  /// Title of the decline confirmation sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline this invitation?'**
+  String get invitationDeclineTitle;
+
+  /// Shown before the decline button. Says what stays private, that the status is final, and that a decline is not a permanent block — the last part matters because the alternative reading is that declining once ends the relationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Your contact details stay private. Declining is final, but the employer may invite you again later.'**
+  String get invitationDeclineFinal;
+
+  /// Title of the sheet behind §8.2's "Request details".
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the employer a question'**
+  String get invitationRequestDetailsTitle;
+
+  /// Shown before the ask-a-question button. States both things the candidate needs: that asking is not a decision, and that it discloses nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'You can still accept or decline afterwards. Your contact details stay private until you accept.'**
+  String get invitationRequestDetailsBody;
+
+  /// Field label when asking for details. Required, unlike the note on the other two responses.
+  ///
+  /// In en, this message translates to:
+  /// **'Your question'**
+  String get invitationQuestionLabel;
+
+  /// Hint under the question field. An example rather than an instruction, because the field is empty and a blank box invites a blank answer.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: where exactly is the work, and when does it start?'**
+  String get invitationQuestionHint;
+
+  /// Field label on accept and decline. Marked optional in the label itself, so a candidate declining is never left wondering whether a reason is required.
+  ///
+  /// In en, this message translates to:
+  /// **'Message (optional)'**
+  String get invitationNoteLabel;
+
+  /// Hint under the optional message field.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything you would like the employer to know.'**
+  String get invitationNoteHint;
+
+  /// Title over the server's refusal in the response sheet. §8.2's `invitation.final` and `invitation.response_not_allowed` both mean the invitation moved elsewhere — usually another device — so the sentence explains the refusal rather than blaming the tap.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation has already been answered'**
+  String get invitationAlreadyAnswered;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -1318,4 +1318,121 @@ class AppL10nEn extends AppL10n {
   @override
   String get walletCorrectionExplained =>
       'This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.';
+
+  @override
+  String get navInvitations => 'Invitations';
+
+  @override
+  String get invitationSent => 'Sent';
+
+  @override
+  String get invitationDetailsRequested => 'Details requested';
+
+  @override
+  String get invitationAccepted => 'Accepted';
+
+  @override
+  String get invitationDeclined => 'Declined';
+
+  @override
+  String get invitationAccept => 'Accept';
+
+  @override
+  String get invitationDecline => 'Decline';
+
+  @override
+  String get invitationRequestDetails => 'Ask a question';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Employers who invite you to a vacancy will appear here.';
+
+  @override
+  String get invitationGeneral => 'General invitation';
+
+  @override
+  String get invitationOpenVacancy => 'Open vacancy';
+
+  @override
+  String get invitationVacancyLoading => 'Loading the vacancy…';
+
+  @override
+  String get invitationVacancyUnavailable => 'The vacancy could not be loaded.';
+
+  @override
+  String get invitationVacancyUntitled => 'Vacancy';
+
+  @override
+  String get invitationYourReply => 'Your reply';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString UZS';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'From $amountString UZS';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'Up to $amountString UZS';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Accept this invitation?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Accepting shares your phone number, e-mail address and CV with this employer, and cannot be undone.';
+
+  @override
+  String get invitationDeclineTitle => 'Decline this invitation?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Your contact details stay private. Declining is final, but the employer may invite you again later.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Ask the employer a question';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'You can still accept or decline afterwards. Your contact details stay private until you accept.';
+
+  @override
+  String get invitationQuestionLabel => 'Your question';
+
+  @override
+  String get invitationQuestionHint =>
+      'For example: where exactly is the work, and when does it start?';
+
+  @override
+  String get invitationNoteLabel => 'Message (optional)';
+
+  @override
+  String get invitationNoteHint =>
+      'Anything you would like the employer to know.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'This invitation has already been answered';
 }

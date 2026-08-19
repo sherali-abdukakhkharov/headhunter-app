@@ -99,7 +99,7 @@ after M11 while being delivered before M8.
 | M4 | Employer profile + verification status | after M1 |
 | M5 | Vacancy create/edit + statuses (employer) | after M2 + M4 |
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
-| M7 | Candidate search + invitations + shortlists (employer) | after M2 + M5 — **partly re-opened by the 2026-08-10 revision** |
+| M7 | Candidate search + invitations + shortlists (employer) | search done; **invitations: candidate half done** 2026-08-19, employer half next — see the §8.2 question below |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
 | M8 | Chat + interviews | after M6 + M7 **+ M12** (§9.1 gates employer-initiated chat on the unlock) |
@@ -279,7 +279,11 @@ and stay that way. What changed is everything downstream of a card:
   purchased for that employer". The result card is unchanged; the **profile view
   behind it** gains a locked state and an "Unlock contact — 2 Coins" action.
 - §8.2 now requires an entitlement before an invitation can carry contact
-  context, so **UAT-07 cannot be finished before M12**.
+  context, so **UAT-07 cannot be finished before M12**. *Resolved 2026-08-19, and
+  the blocker was narrower than this said:* an invitation carries no contact
+  context until the candidate **accepts**, and acceptance is free. The candidate
+  inbox shipped; see the §8.2 question below for what is still open on the
+  employer's side.
 - **The shipped contact-exposure copy is now wrong and is deliberately left
   alone.** `exposureExplanation` tells an employer that contact "opens once this
   candidate applies to one of your vacancies", which the revision has just made
@@ -287,6 +291,39 @@ and stay that way. What changed is everything downstream of a card:
   and no new reason codes. Correcting the copy before the backend returns the
   new codes would replace one wrong sentence with another and lose the mutation
   tests that pin it. It moves with M12, in the same change as the codes.
+
+### Ask the client this too — §8.2's "then"
+
+Discovered while building the invitation inbox on 2026-08-19, and it is the same
+*shape* as the §11.1 question above rather than a duplicate of it.
+
+§8.2 as revised reads: "To initiate direct contact … the employer must have a
+Candidate Unlock entitlement for that candidate. An invitation **may then** be
+attached to an active vacancy or sent as a general work invitation." The word
+"then" makes the unlock a precondition of *sending an invitation*.
+
+**The backend does not implement that**, and its integration tests assert the
+looser behaviour deliberately: a verified employer may invite any search-visible
+candidate for free, a merely `sent` invitation answers
+`exposureReason: unlock_required` and reveals nothing, and **acceptance** is what
+turns the code into `accepted_invitation` and opens the phone, e-mail and CV.
+
+So the two readings are:
+
+- **An invitation is a contact action** — pay first, as §8.2's "then" says. The
+  employer's send screen gains the unlock gate, and an employer pays before
+  learning whether the candidate is even interested.
+- **An invitation is a *request* to make contact** — pay nothing to ask, and the
+  candidate's acceptance is what grants access. This is what the server does, and
+  it is the more defensible reading: an employer should not pay to be declined,
+  and the candidate's consent is a better gate on their own contact details than
+  the employer's wallet is.
+
+**The client has not resolved this in either direction, on purpose.** Enforcing
+the strict reading in Dart would be the app deciding when money must be spent,
+which §12.3.1 puts on the server — and a client that gated while the server did
+not would tell an employer to pay for something the API would have accepted free.
+Worth putting in the same email as the §11.1 question.
 
 ## M12 - Employer wallet, Coins and Candidate Unlock
 

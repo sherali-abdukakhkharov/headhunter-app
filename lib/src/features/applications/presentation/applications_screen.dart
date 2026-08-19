@@ -6,6 +6,7 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
 import 'package:jobbridge_app/src/features/applications/domain/application.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/invitations/presentation/invitations_inbox_screen.dart';
 
 /// The word for one of §8.1's eight application stages.
 ///
@@ -41,42 +42,93 @@ Widget stageBadge(String status, AppL10n l10n) => switch (status) {
   _ => HhBadge.applicationSubmitted(label: l10n.stageSubmitted),
 };
 
-/// The candidate's own applications and their stages (§8.1).
-class ApplicationsScreen extends ConsumerWidget {
+/// The candidate's applications and invitations — §8.1 and §8.2 (UAT-07).
+///
+/// ## Why the invitations live behind a segment rather than a tab
+///
+/// §8.2's invitations are the candidate's other correspondence with employers,
+/// and they want a home beside the applications rather than buried under one.
+/// A sixth bottom-nav destination is not available: the design caps the bar at
+/// five, `HhBottomNav` asserts it, and round 1 fixed the bar at a constant
+/// 70pt with two-line labels already tight at 320pt.
+///
+/// So the two lists share this tab and a segmented control chooses between
+/// them. The distinction is real and worth keeping visible: an application is
+/// something the candidate started, an invitation is something addressed to
+/// them, and only the second one has actions waiting.
+class ApplicationsScreen extends ConsumerStatefulWidget {
   const ApplicationsScreen({super.key});
+
+  @override
+  ConsumerState<ApplicationsScreen> createState() => _ApplicationsScreenState();
+}
+
+class _ApplicationsScreenState extends ConsumerState<ApplicationsScreen> {
+  int _segment = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                HhSpace.gutter,
+                HhSpace.gutter,
+                HhSpace.gutter,
+                0,
+              ),
+              child: HhSegmented(
+                labels: [l10n.navApplications, l10n.navInvitations],
+                selectedIndex: _segment,
+                onChanged: (i) => setState(() => _segment = i),
+              ),
+            ),
+            Expanded(
+              child: _segment == 0
+                  ? const _Applications()
+                  : const InvitationsInboxScreen(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// §8.1's own list: what this candidate applied to, and where each one got to.
+class _Applications extends ConsumerWidget {
+  const _Applications();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final applications = ref.watch(myApplicationsProvider);
 
-    return Scaffold(
-      body: SafeArea(
-        child: switch (applications) {
-          AsyncValue(hasError: true, :final error?) => Padding(
-            padding: const EdgeInsets.all(HhSpace.gutter),
-            child: HhErrorState(
-              title: l10n.stateErrorTitle,
-              message: error is ApiException
-                  ? error.message
-                  : l10n.stateErrorBody,
-              retryLabel: l10n.commonRetry,
-              onRetry: () => ref.invalidate(myApplicationsProvider),
-            ),
-          ),
-          AsyncData(:final value) when value.isEmpty => HhEmptyState(
-            title: l10n.stateEmptyTitle,
-            message: l10n.applicationsEmpty,
-          ),
-          AsyncData(:final value) => ListView.builder(
-            padding: const EdgeInsets.all(HhSpace.gutter),
-            itemCount: value.length,
-            itemBuilder: (context, index) => _Row(application: value[index]),
-          ),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
+    return switch (applications) {
+      AsyncValue(hasError: true, :final error?) => Padding(
+        padding: const EdgeInsets.all(HhSpace.gutter),
+        child: HhErrorState(
+          title: l10n.stateErrorTitle,
+          message: error is ApiException ? error.message : l10n.stateErrorBody,
+          retryLabel: l10n.commonRetry,
+          onRetry: () => ref.invalidate(myApplicationsProvider),
+        ),
       ),
-    );
+      AsyncData(:final value) when value.isEmpty => HhEmptyState(
+        title: l10n.stateEmptyTitle,
+        message: l10n.applicationsEmpty,
+      ),
+      AsyncData(:final value) => ListView.builder(
+        padding: const EdgeInsets.all(HhSpace.gutter),
+        itemCount: value.length,
+        itemBuilder: (context, index) => _Row(application: value[index]),
+      ),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }
 

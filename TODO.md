@@ -140,6 +140,25 @@ emulator against the design document, with 18 tests pinning the rules.
       told the screen's colour. **Not yet seen on a device**, which is the one
       check this change really wants
 - [x] Verified at the design's QA case — 320pt at 2.0x, no overflow anywhere
+- [x] **§8.2's four invitation badges, 2026-08-19** — the round-1 rule named
+      invitation state as one of the object types `HhBadge` stands behind, and
+      the constructors did not exist, so every invitation surface would have
+      hand-rolled one. Now **sent · details requested · accepted · declined**,
+      registered in the gallery and held to both halves of the glyph rule by the
+      same tests as the other twenty. Two decisions worth keeping:
+      **a declined invitation is neutral, not error.** The tone table defines
+      error as "resolved badly *for the person reading it*", and this badge has
+      two readers — the employer, for whom it is a no, and the candidate who
+      chose it, for whom red is the app disapproving of a decision it asked them
+      to make. `applicationWithdrawn` settled the same trade-off the same way
+      and appears on both of its surfaces too, so this follows it rather than
+      inventing a rule: neutral tone, and the same `arrowLeft` glyph, because it
+      is the same fact.
+      And **`helpCircle` is the one glyph in the set the designer did not
+      draw** — "request details" needs a *question* glyph, and `infoCircle`
+      means "here is information", so reusing it would break the rule that a
+      shared glyph means the same thing everywhere. Same 9-radius circle and
+      stroke as its three siblings. Raised in docs/design-feedback.md round 4
 - [ ] **Category photography** - five 3:2 masters (1620x1080), one per §2.1
       category, subject inside the middle 60% vertically so one file survives
       both the 4.15:1 card crop and the 2.6:1 hero crop. Stock, art-directed by
@@ -591,9 +610,66 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       state says "nothing here" rather than "you have saved nobody": a
       candidate who hides their profile leaves the list without having been
       un-saved
-- [~] Invitations + response tracking (UAT-07); general invitations. **Re-scoped
-      2026-08-10**: §8.2 now requires a Candidate Unlock entitlement before an
-      invitation can carry contact context, so this cannot finish before M12
+- [~] Invitations + response tracking (UAT-07); general invitations.
+      **The candidate half shipped 2026-08-19**; the employer half is next.
+      The 2026-08-10 re-scope said this could not finish before M12, and M12
+      landing showed the blocker was narrower than recorded: **the server does
+      not require an unlock to send an invitation.** `invitations.service.ts`
+      checks BR-03 and BR-02 and nothing else, and a merely `sent` invitation
+      answers `exposureReason: unlock_required` — so it carries no contact
+      context until the candidate **accepts**, at which point the code becomes
+      `accepted_invitation` and contact opens. The gate is acceptance, not
+      payment. §8.2's prose disagrees; see the item below it
+- [!] **§8.2 as revised says unlock *then* invite, and the server does not.**
+      The sentence reads "To initiate direct contact … the employer must have a
+      Candidate Unlock entitlement for that candidate. An invitation **may then**
+      be attached to an active vacancy or sent as a general work invitation." The
+      word "then" makes the unlock a precondition of *sending*. The backend has
+      no such check, and its own integration tests assert the looser behaviour.
+      **Not resolved in the client, deliberately.** Enforcing it here would be
+      the client deciding when money must be spent, which §12.3.1 puts on the
+      server — and if the client gated while the server did not, an employer
+      would be told to pay for something the API would have accepted free.
+      Needs a one-line answer, and it is the same shape as the §11.1 question
+      that was already emailed: is an invitation a *contact* action (pay first)
+      or a *request* to make contact (pay when they say yes)? The second reading
+      is what the server implements and it is the more defensible one — an
+      employer should not pay to be declined. *Blocks nothing today: the
+      candidate inbox is unaffected either way, and the employer's send screen
+      is the one that would carry the gate.*
+- [x] **Candidate invitation inbox (§8.2, UAT-07's second half), 2026-08-19.**
+      Three actions rendered from the status rather than as a fixed row of three,
+      so an answered invitation offers nothing and one already at
+      `details_requested` no longer offers to ask again — the server refuses
+      both, and offering a refusal is worse than offering nothing.
+      **Accepting is a disclosure and the sheet says so before the button**: it
+      names the phone, e-mail and CV by name rather than saying "your contact
+      details", because a candidate cannot weigh a category, and it states that
+      the status is final. That is the most consequential tap in the product and
+      §8.2 gives it no way back.
+      **"Request details" requires its question**, though the server takes the
+      note as optional: "the candidate asked for details" with nothing attached
+      is a message the employer cannot answer. Same idiom as the leveled field
+      editor opening its level picker immediately. Declining takes an optional
+      note, marked optional in the label, because a decline owes no reason.
+      **No price, balance or unlock appears anywhere on the screen** — swept by a
+      test, because the way this regresses is a well-meaning "top up to reply"
+      landing on the wrong person's screen. §8.2's entitlement is the employer's.
+      A **vacancy** invitation fetches and shows its posting, and 404 renders as
+      "no longer available" rather than as a fault: the inbox is deliberately not
+      filtered by whether the vacancy is still visible. A **general** one shows
+      its own occupation, place, pay and schedule, every id resolved (BR-13).
+      **Running the tests found a real overflow**: the card header was a row with
+      the timestamp pushed right, and "Details requested" beside a timestamp
+      needs 330 of a 360pt card's 298. It is a `Wrap` now — a badge is icon plus
+      word, so truncating it would put the state back on colour alone. Pinned at
+      the design's own QA case, 320pt at 2.0x, and mutation-verified
+- [ ] **Employer send + sent list (UAT-07's first half).** `POST /invitations`,
+      `GET /invitations/sent` with the server's own `vacancyId`/`status`
+      filters, and `GET /invitations/counts/:vacancyId` for §7.4's invited and
+      accepted counts. The repository covers all three already. What is left is
+      the two screens and the §8.2 question above, which is where the gate would
+      go if the answer is "pay first"
 - [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
       to hang off, which is `GET /vacancies/:id/shortlist`
 

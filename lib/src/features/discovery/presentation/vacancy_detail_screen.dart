@@ -16,10 +16,12 @@ import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
 /// Root navigator and no route, like the other detail surfaces: a vacancy id is
 /// linkable in principle, but deep links are M8's — introducing a path here
 /// would create one nothing yet redirects or role-switches for.
+/// [feed] is the list to invalidate on returning, and is **null when there is
+/// no list** — an invitation points at a vacancy without coming from a feed.
 Future<void> showVacancyDetail(
   BuildContext context, {
   required String id,
-  required Feed feed,
+  Feed? feed,
 }) => Navigator.of(context, rootNavigator: true).push<void>(
   MaterialPageRoute(builder: (_) => VacancyDetailScreen(id: id, feed: feed)),
 );
@@ -36,13 +38,18 @@ Future<void> showVacancyDetail(
 /// gone. It gets its own notice, and the feed is invalidated on the way out so
 /// the card they tapped stops being offered.
 class VacancyDetailScreen extends ConsumerStatefulWidget {
-  const VacancyDetailScreen({required this.id, required this.feed, super.key});
+  const VacancyDetailScreen({required this.id, super.key, this.feed});
 
   final String id;
 
   /// The feed this was opened from, so applying or saving invalidates the list
   /// the candidate returns to rather than leaving a stale card behind it.
-  final Feed feed;
+  ///
+  /// **Null when it was not opened from a feed** — an invitation (§8.2) names a
+  /// vacancy directly, and there is no list behind it to go stale. Invalidating
+  /// an arbitrary feed instead would refetch a list the candidate is not
+  /// looking at, which is work done to keep a lie tidy.
+  final Feed? feed;
 
   @override
   ConsumerState<VacancyDetailScreen> createState() =>
@@ -285,6 +292,18 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
     return '${from ?? to}';
   }
 
+  /// Refreshes the list this screen was opened from, when there was one.
+  ///
+  /// A no-op for an invitation (§8.2), which names a vacancy with no feed
+  /// behind it. Guarded rather than defaulted: refetching an arbitrary feed
+  /// would be a round trip spent keeping a list the candidate is not looking at
+  /// consistent with a screen they opened from somewhere else.
+  void _invalidateOriginFeed() {
+    if (widget.feed case final feed?) {
+      ref.invalidate(vacancyFeedProvider(feed));
+    }
+  }
+
   Future<void> _apply(VacancyDetail detail) async {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
@@ -295,8 +314,8 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
 
       ref
         ..invalidate(vacancyDetailProvider(widget.id))
-        ..invalidate(vacancyFeedProvider(widget.feed))
         ..invalidate(myApplicationsProvider);
+      _invalidateOriginFeed();
     } on ApiException catch (e) {
       // BR-06's deadline refusal and BR-07's duplicate both land here, in the
       // server's words — which name which rule refused.
@@ -317,8 +336,9 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
 
       ref
         ..invalidate(vacancyDetailProvider(widget.id))
-        ..invalidate(vacancyFeedProvider(widget.feed))
+        // Saved always changes, whichever feed this was opened from.
         ..invalidate(vacancyFeedProvider(Feed.saved));
+      _invalidateOriginFeed();
     } on ApiException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     } finally {

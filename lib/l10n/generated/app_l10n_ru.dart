@@ -1332,4 +1332,119 @@ class AppL10nRu extends AppL10n {
   @override
   String get walletCorrectionExplained =>
       'Эта запись исправляет предыдущую. Исходная остаётся в истории — исправления добавляются, а не переписываются.';
+
+  @override
+  String get navInvitations => 'Приглашения';
+
+  @override
+  String get invitationSent => 'Отправлено';
+
+  @override
+  String get invitationDetailsRequested => 'Запрошены детали';
+
+  @override
+  String get invitationAccepted => 'Принято';
+
+  @override
+  String get invitationDeclined => 'Отклонено';
+
+  @override
+  String get invitationAccept => 'Принять';
+
+  @override
+  String get invitationDecline => 'Отклонить';
+
+  @override
+  String get invitationRequestDetails => 'Задать вопрос';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Здесь появятся работодатели, которые пригласят вас на вакансию.';
+
+  @override
+  String get invitationGeneral => 'Общее приглашение';
+
+  @override
+  String get invitationOpenVacancy => 'Открыть вакансию';
+
+  @override
+  String get invitationVacancyLoading => 'Загрузка вакансии…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Не удалось загрузить вакансию.';
+
+  @override
+  String get invitationVacancyUntitled => 'Вакансия';
+
+  @override
+  String get invitationYourReply => 'Ваш ответ';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString сум';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'От $amountString сум';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'До $amountString сум';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Принять это приглашение?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Если вы примете приглашение, работодатель увидит ваш номер телефона, адрес электронной почты и резюме. Отменить это нельзя.';
+
+  @override
+  String get invitationDeclineTitle => 'Отклонить это приглашение?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Ваши контактные данные останутся закрытыми. Отклонить можно только один раз, но работодатель может пригласить вас снова позже.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Задать вопрос работодателю';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Вы сможете принять или отклонить приглашение позже. До этого ваши контактные данные останутся закрытыми.';
+
+  @override
+  String get invitationQuestionLabel => 'Ваш вопрос';
+
+  @override
+  String get invitationQuestionHint =>
+      'Например: где именно находится работа и когда она начинается?';
+
+  @override
+  String get invitationNoteLabel => 'Сообщение (необязательно)';
+
+  @override
+  String get invitationNoteHint => 'Всё, что вы хотите сообщить работодателю.';
+
+  @override
+  String get invitationAlreadyAnswered => 'На это приглашение уже ответили';
 }

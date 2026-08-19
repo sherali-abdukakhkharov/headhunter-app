@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
 
 /// Guards the design decisions that are easy to erode one screen at a time.
 ///
@@ -179,16 +180,31 @@ void main() {
       HhBadge.verificationRejected(label: 'Rad etildi'),
       HhBadge.verificationChangesRequired(label: "O'zgartirish talab"),
     ];
+    // §8.2's four, added 2026-08-19 with the invitations feature. The design
+    // system's own rule named invitation state from round 1 and the badges did
+    // not exist, so this group closes a gap rather than extending the design.
+    const invitation = <HhBadge>[
+      HhBadge.invitationSent(label: 'Yuborilgan'),
+      HhBadge.invitationDetailsRequested(label: "Batafsil so'ralgan"),
+      HhBadge.invitationAccepted(label: 'Qabul qilingan'),
+      HhBadge.invitationDeclined(label: 'Rad etilgan'),
+    ];
 
-    test('all twenty states exist', () {
-      expect(vacancy.length + application.length + verification.length, 20);
+    test('the twenty-state vocabulary plus §8.2 four is twenty-four', () {
+      expect(
+        vacancy.length +
+            application.length +
+            verification.length +
+            invitation.length,
+        24,
+      );
     });
 
     // "Within one object type no glyph ever repeats, so tone never has to carry
     // the distinction alone." This is what lets withdrawn / paused / closed all
     // be neutral without becoming indistinguishable.
     test('no glyph repeats within an object type', () {
-      for (final group in [vacancy, application, verification]) {
+      for (final group in [vacancy, application, verification, invitation]) {
         final glyphs = group.map((b) => b.iconPath).toList();
         expect(
           glyphs.toSet().length,
@@ -214,6 +230,57 @@ void main() {
       expect(
         const HhBadge.vacancyClosed(label: '').iconPath,
         const HhBadge.applicationVacancyClosed(label: '').iconPath,
+      );
+      // Sent, and the other party has not acted yet.
+      expect(
+        const HhBadge.applicationSubmitted(label: '').iconPath,
+        const HhBadge.invitationSent(label: '').iconPath,
+      );
+      // A person was accepted — check-circle, on both objects that carry one.
+      expect(
+        const HhBadge.applicationHired(label: '').iconPath,
+        const HhBadge.invitationAccepted(label: '').iconPath,
+      );
+      // The party whose choice it was stepped away.
+      expect(
+        const HhBadge.applicationWithdrawn(label: '').iconPath,
+        const HhBadge.invitationDeclined(label: '').iconPath,
+      );
+    });
+
+    // The tone table defines error as "resolved badly **for the person reading
+    // it**", and a declined invitation has two readers: an employer, for whom
+    // it is a no, and the candidate who chose it, for whom red would be the app
+    // disapproving of a decision it asked them to make. `withdrawn` settled the
+    // same trade-off the same way and appears on both of its surfaces too, so
+    // this is the existing rule applied rather than a new one.
+    test('a declined invitation is neutral, not error', () {
+      const declined = HhBadge.invitationDeclined(label: 'Rad etilgan');
+
+      expect(declined.tone, HhTone.neutral);
+      expect(
+        declined.tone,
+        const HhBadge.applicationWithdrawn(label: '').tone,
+        reason: 'declining and withdrawing are the same fact',
+      );
+      expect(
+        declined.tone,
+        isNot(const HhBadge.applicationRejected(label: '').tone),
+        reason: 'a decline is a choice, a rejection is an outcome',
+      );
+    });
+
+    // Warning means "waiting on a person", and after "request details" that
+    // person is the employer — so it is warning-toned because something is
+    // pending, not because anything is wrong.
+    test('details requested waits on the employer, and is not terminal', () {
+      const asked = HhBadge.invitationDetailsRequested(label: '');
+
+      expect(asked.tone, HhTone.warning);
+      expect(asked.iconPath, HhIconPath.helpCircle);
+      expect(
+        InvitationStatus.terminal.contains(InvitationStatus.detailsRequested),
+        isFalse,
       );
     });
 
@@ -243,7 +310,12 @@ void main() {
     });
 
     testWidgets('every badge renders an icon beside its word', (tester) async {
-      final badges = [...vacancy, ...application, ...verification];
+      final badges = [
+        ...vacancy,
+        ...application,
+        ...verification,
+        ...invitation,
+      ];
 
       for (final badge in badges) {
         await pump(tester, badge);
