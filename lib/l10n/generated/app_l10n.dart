@@ -2759,11 +2759,11 @@ abstract class AppL10n {
   /// **'{invited} invited, {accepted} accepted'**
   String invitationCounts(int invited, int accepted);
 
-  /// Shown when an employer taps a candidate attachment they are entitled to. BR-09 has granted the file and the server serves it at the file's own `downloadPath`; what is missing is the client, which has no way to open a downloaded file without a plugin the team has deliberately not added. Says so rather than doing nothing, the same way section 6.7's top-up does — a row that looks like a file and answers nothing reads as a broken app.
+  /// Shown when an attachment downloaded fine and nothing installed can display it. Its own message rather than a generic failure: the bytes arrived and the server allowed it, so "check your connection" would send an employer looking in the wrong place. The remedy is on the device.
   ///
   /// In en, this message translates to:
-  /// **'Opening attachments is not available in the app yet.'**
-  String get candidateFileDownloadSoon;
+  /// **'No app on this phone can open this file.'**
+  String get candidateFileNoViewer;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

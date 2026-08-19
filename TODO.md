@@ -805,9 +805,47 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       ```powershell
       flutter build apk --debug --flavor development
       ```
-- [?] **Opening a candidate attachment needs a plugin decision — yours, not
-      ours.** BR-09 grants the file, the server serves it, and the client cannot
-      open it.
+- [x] **Candidate attachments open, with no plugin, 2026-08-20.** The client
+      chose the platform-channel route: `AttachmentOpener` fetches the bytes over
+      the file's own `downloadPath` into an app-private cache directory, and
+      thirty lines in `MainActivity.kt` hand it to the OS through a
+      `FileProvider` and `ACTION_VIEW`.
+      **The point of doing it this way is the KGP list.** Every pub package that
+      opens a file is written in Kotlin and applies the Kotlin Gradle Plugin — the
+      warning this project emptied on 2026-08-19 by removing `telegram_login`, and
+      one future Flutter versions refuse outright. The app module's *own* Kotlin
+      is not a plugin and does not appear on that list, so the feature costs zero
+      entries. `path_provider` was promoted from transitive (already 2.1.6 via
+      `file_picker`) and `androidx.core` needed no Gradle change: it is already on
+      the compile classpath at 1.15.0 through the Flutter embedding.
+      Four things are load-bearing and tested:
+      1. **The path is followed verbatim.** It is scoped to whichever interaction
+         entitles this employer, so the test asserts the string was passed through
+         untouched rather than that a request happened.
+      2. **Every tap re-downloads.** BR-09 is re-evaluated per download, so a copy
+         on disk must never answer the next tap — a candidate who withdraws has
+         to stop being readable mid-session.
+      3. **The local name comes from the server's file id**, never from
+         `fileName`, which is content a candidate typed: only a validated
+         extension is carried over, so `../../shared_prefs/x` cannot become a
+         path. Pinned with eight hostile names.
+      4. **The provider authority is `\${applicationId}.fileprovider`.** Two
+         installed apps cannot declare the same authority, so a literal would make
+         §12.1's three side-by-side flavors fail at *install* time — which is
+         later and stranger than a build failure
+- [!] **`MainActivity.kt` has never been compiled.** Gradle would not start in
+      the session that wrote it (see the note below), so the Kotlin is unverified
+      in a way the XML is not: it has no well-formedness check and no test that
+      runs it. `attachment_opener_test.dart` asserts the *contract* across the
+      language boundary — the channel name, the authority, the read-only flag, the
+      cache scope — but a typo in the Kotlin fails at the tap, not at the build.
+      Build once and open a CV:
+      ```powershell
+      flutter build apk --debug --flavor development
+      ```
+- [-] ~~**Opening a candidate attachment needs a plugin decision — yours, not
+      ours.**~~ Answered 2026-08-20: platform channel. BR-09 grants the file, the
+      server serves it, and the client could not open it.
       What is already right: `CandidateFile.downloadPath` is parsed, and the
       **client has never constructed a file route** — the backend's guess that we
       had hard-coded the application-scoped one was wrong in our favour. There is

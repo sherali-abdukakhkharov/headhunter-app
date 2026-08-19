@@ -470,6 +470,26 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - A test asserting a token is *absent* must strip comments first
+Three times in one day, in three different files:
+
+- `expect(xml.contains('<monochrome'), isFalse)` failed because the file's own
+  comment explains why the element is absent.
+- `expect(paths.contains('external'), isFalse)` failed because the comment says
+  "deliberately not `<external-path>`".
+- `expect(kotlin.contains('FLAG_GRANT_WRITE_URI_PERMISSION'), isFalse)` failed
+  because the code above it says "never FLAG_GRANT_WRITE_URI_PERMISSION".
+
+The pattern is structural, not careless: **the better the file documents why
+something is missing, the more certainly a naive absence check fails.** And the
+failure is the confusing kind — the assertion is correct, the file is correct, and
+the test is red.
+
+`_code(path)` in `attachment_opener_test.dart` strips `<!-- -->`, `/* */` and
+`//` before matching, and every absence assertion goes through it. Presence
+assertions do not need it, which is why the mistake keeps hiding: half the
+assertions in the same test are fine without it.
+
 ### 2026-08-20 - Two brand rules that interact, and the one that lost silently
 The design's mark has a **20pt floor for the pair** (below it the 1.6-unit gap
 closes and the two figures fuse) and, separately, "in the horizontal lockup the
@@ -885,6 +905,39 @@ left out with the reason written down. Two things follow that are worth keeping:
   server and again against the one arriving — write it once, later, and say why
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
+
+### 2026-08-20 - The app's own Kotlin is not a plugin, and that is a way out
+Opening a downloaded file needs native code. Every pub package that does it is
+written in Kotlin and therefore **applies the Kotlin Gradle Plugin**, which is the
+warning this project emptied on 2026-08-19 by removing `telegram_login` and which
+future Flutter versions will refuse outright. So the obvious dependency was the
+one thing not to add.
+
+**`MainActivity.kt` does not count against that.** The KGP warning names *plugins*
+- pub packages that apply the plugin in their own build files. The app module's
+Kotlin is compiled by Flutter's built-in support: `android/app/build.gradle.kts`
+has no `kotlin("android")` id in its `plugins` block and yet carries a working
+`kotlin { compilerOptions { } }` block. So thirty lines behind a `MethodChannel`
+bought a feature that a dependency could not.
+
+Two facts that made it cheap, both checkable before writing anything:
+
+- **`androidx.core` is already on the app's compile classpath** at 1.15.0 through
+  the Flutter embedding - the previous build's manifest-merger blame report names
+  it. So `FileProvider` needed no Gradle change, and `build.gradle.kts` - a file
+  CLAUDE.md warns about - stayed untouched.
+- **`path_provider` was already transitive** at 2.1.6 via `file_picker`, so
+  promoting it to a direct dependency pinned nothing new.
+
+The generalisation: before accepting a dependency, check whether the app's own
+platform code can do it, and check what is *already* resolved. Both answers are in
+the repo and neither needs a build.
+
+The cost to be honest about: **native code written here cannot be compiled here.**
+Gradle would not start, so `MainActivity.kt` shipped unverified. The mitigation is
+a test that asserts the *contract* across the boundary - channel name, provider
+authority, the read-only flag, the cache scope - because those are the four things
+that fail silently at a tap rather than loudly at a build.
 
 ### 2026-08-20 - Make a design's misuse cases unwritable, not documented
 The brand mark has four documented misuses, and two of them are colour choices:

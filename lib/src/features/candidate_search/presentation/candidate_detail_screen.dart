@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/files/attachment_opener.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
@@ -521,46 +522,106 @@ class _Files extends StatelessWidget {
         for (final file in candidate.files)
           Padding(
             padding: const EdgeInsets.only(bottom: HhSpace.sm),
-            child: HhCard(
-              // Says the download is not built yet rather than doing nothing,
-              // the same way §6.7's top-up does. A row that looks like a file
-              // and answers nothing reads as a broken app, and BR-09 has
-              // genuinely granted this employer the file — what is missing is
-              // ours, not theirs.
-              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.candidateFileDownloadSoon)),
-              ),
-              child: Row(
-                children: [
-                  const HhIcon(
+            child: _FileRow(file: file),
+          ),
+      ],
+    );
+  }
+}
+
+/// One attachment, downloaded on tap and handed to the OS.
+///
+/// ## Every tap re-downloads
+///
+/// BR-09 is re-evaluated on **every** download, which is why the file's
+/// `downloadPath` is server-built in the first place: holding a path is not
+/// holding permission. So there is no "already fetched" shortcut here — a
+/// candidate who withdraws has to stop being readable mid-session, and
+/// answering from a copy on disk would defeat the only check that notices.
+class _FileRow extends ConsumerStatefulWidget {
+  const _FileRow({required this.file});
+
+  final CandidateFile file;
+
+  @override
+  ConsumerState<_FileRow> createState() => _FileRowState();
+}
+
+class _FileRowState extends ConsumerState<_FileRow> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final file = widget.file;
+
+    return HhCard(
+      onTap: _busy ? null : _open,
+      child: Row(
+        children: [
+          SizedBox.square(
+            dimension: 20,
+            child: _busy
+                ? const CircularProgressIndicator(strokeWidth: 2.2)
+                : const HhIcon(
                     HhIconPath.document,
                     size: 20,
                     color: HhColors.inkMuted,
                   ),
-                  const SizedBox(width: HhSpace.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(file.fileName, style: HhTypography.body),
-                        // The purpose is a dictionary id like any other, so it
-                        // reads as a word in all four interface variants rather
-                        // than as `cv` (BR-13).
-                        DictionaryLabel(
-                          type: DictionaryType.filePurpose,
-                          id: file.purposeCode,
-                          style: HhTypography.caption.copyWith(
-                            color: HhColors.inkMuted,
-                          ),
-                        ),
-                      ],
-                    ),
+          ),
+          const SizedBox(width: HhSpace.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(file.fileName, style: HhTypography.body),
+                // The purpose is a dictionary id like any other, so it reads as
+                // a word in all four interface variants rather than as `cv`
+                // (BR-13).
+                DictionaryLabel(
+                  type: DictionaryType.filePurpose,
+                  id: file.purposeCode,
+                  style: HhTypography.caption.copyWith(
+                    color: HhColors.inkMuted,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-      ],
+          const HhIcon(
+            HhIconPath.chevronRight,
+            size: 18,
+            color: HhColors.inkDisabled,
+          ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _open() async {
+    final l10n = AppL10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+
+    try {
+      await ref.read(attachmentOpenerProvider).open(
+        // Verbatim, never constructed: the path is scoped to whichever
+        // interaction currently entitles this employer — application, accepted
+        // invitation or unlock — and only the server knows which.
+        downloadPath: widget.file.downloadPath,
+        fileId: widget.file.id,
+        fileName: widget.file.fileName,
+      );
+    } on NoViewerException {
+      // The bytes arrived and the phone has nothing that reads them. Its own
+      // message, because "check your connection" would send an employer looking
+      // in the wrong place.
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.candidateFileNoViewer)),
+      );
+    } on ApiException catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 }

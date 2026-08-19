@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/files/attachment_opener.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
 import 'package:jobbridge_app/src/features/candidate_search/data/candidate_search_repository.dart';
@@ -40,6 +42,7 @@ void main() {
     WidgetTester tester, {
     CandidateForEmployer? subject,
     Exception? error,
+    AttachmentOpener? opener,
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -53,6 +56,12 @@ void main() {
         overrides: [
           searchCandidateProvider('cand-1').overrideWith(
             (ref) => error != null ? throw error : subject!,
+          ),
+          // Overridden even where a test never taps a file: the real opener
+          // reaches for a platform channel and a temporary directory, and
+          // neither exists under `flutter test`.
+          attachmentOpenerProvider.overrideWithValue(
+            opener ?? _RecordingOpener(),
           ),
           dictionaryProvider(
             'region',
@@ -318,8 +327,12 @@ void main() {
       );
     });
   });
-  group('attachments BR-09 granted but the app cannot open yet', () {
-    testWidgets('a file row says so rather than doing nothing', (tester) async {
+  group('attachments open through the path the server gave', () {
+    testWidgets('tapping a file downloads it and hands it to the OS', (
+      tester,
+    ) async {
+      final opener = _RecordingOpener();
+
       await pump(
         tester,
         subject: candidate(
@@ -334,36 +347,125 @@ void main() {
             },
           ],
         ),
+        opener: opener,
       );
-
-      expect(find.text('rezyume.pdf'), findsOneWidget);
 
       await tester.tap(find.text('rezyume.pdf'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      // The wallet's precedent: a control that silently fails reads as a
-      // broken app, and here BR-09 really has granted the file — what is
-      // missing is ours. Opening a downloaded file needs a plugin, and the team
-      // emptied the KGP warning list on purpose, so it is a deliberate gap.
-      expect(
-        find.textContaining('not available in the app yet'),
-        findsOneWidget,
-      );
+      // **Verbatim.** The same CV is /applications/… for an employer holding an
+      // application, /invitations/… for one whose invitation was accepted and
+      // /unlocks/… for one who paid, so a client that built the path would be
+      // right a third of the time. This asserts the path was passed through
+      // untouched rather than merely that a request happened.
+      expect(opener.calls, [
+        (
+          downloadPath: '/invitations/inv-1/files/f1/content',
+          fileId: 'f1',
+          fileName: 'rezyume.pdf',
+        ),
+      ]);
     });
 
-    testWidgets('the row is not offered when the server sent no files', (
+    testWidgets('a device with no viewer says so, not "check your network"', (
       tester,
     ) async {
       await pump(
         tester,
-        // `canViewFiles: false` is the default, so it is not restated: the
-        // point of this case is that the server sent nothing.
-        subject: candidate(exposureReason: 'unlock_required'),
+        subject: candidate(
+          exposureReason: 'accepted_invitation',
+          canViewFiles: true,
+          files: const [
+            {
+              'id': 'f1',
+              'purposeCode': 'cv',
+              'fileName': 'rezyume.pdf',
+              'downloadPath': '/invitations/inv-1/files/f1/content',
+            },
+          ],
+        ),
+        opener: _RecordingOpener(failure: const NoViewerException()),
       );
 
-      // Not a client-side hide: with `canViewFiles` false the server sends no
-      // files at all, so there is nothing here to leak and nothing to tap.
-      expect(find.textContaining('not available in the app yet'), findsNothing);
+      await tester.tap(find.text('rezyume.pdf'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // The bytes arrived and the server allowed it; the gap is on the phone.
+      expect(find.textContaining('No app on this phone'), findsOneWidget);
+    });
+
+    testWidgets('a refusal is rendered as the server worded it', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        subject: candidate(
+          exposureReason: 'accepted_invitation',
+          canViewFiles: true,
+          files: const [
+            {
+              'id': 'f1',
+              'purposeCode': 'cv',
+              'fileName': 'rezyume.pdf',
+              'downloadPath': '/invitations/inv-1/files/f1/content',
+            },
+          ],
+        ),
+        opener: _RecordingOpener(
+          failure: const ApiException('This invitation was withdrawn.'),
+        ),
+      );
+
+      await tester.tap(find.text('rezyume.pdf'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // BR-09 is re-evaluated per download, so a mid-session refusal is a
+      // normal outcome and the server's sentence is the honest thing to show.
+      expect(find.text('This invitation was withdrawn.'), findsOneWidget);
+    });
+
+    testWidgets('nothing is offered when the server sent no files', (
+      tester,
+    ) async {
+      final opener = _RecordingOpener();
+
+      await pump(
+        tester,
+        // `canViewFiles: false` is the default: the point of this case is that
+        // the server sent nothing, so there is nothing to leak and nothing to
+        // tap.
+        subject: candidate(exposureReason: 'unlock_required'),
+        opener: opener,
+      );
+
+      expect(find.byType(HhCard), findsWidgets);
+      expect(opener.calls, isEmpty);
     });
   });
+}
+
+/// Records what the screen asked for, and can fail the way the device does.
+class _RecordingOpener implements AttachmentOpener {
+  _RecordingOpener({this.failure});
+
+  final Exception? failure;
+
+  final calls = <({String downloadPath, String fileId, String fileName})>[];
+
+  @override
+  Future<void> open({
+    required String downloadPath,
+    required String fileId,
+    required String fileName,
+  }) async {
+    calls.add((
+      downloadPath: downloadPath,
+      fileId: fileId,
+      fileName: fileName,
+    ));
+    if (failure case final f?) throw f;
+  }
 }

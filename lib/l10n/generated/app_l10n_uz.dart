@@ -1551,8 +1551,8 @@ class AppL10nUz extends AppL10n {
   }
 
   @override
-  String get candidateFileDownloadSoon =>
-      'Ilovada ilovalarni ochish hozircha mumkin emas.';
+  String get candidateFileNoViewer =>
+      'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3100,8 +3100,8 @@ class AppL10nUzCyrl extends AppL10nUz {
   }
 
   @override
-  String get candidateFileDownloadSoon =>
-      'Иловада иловаларни очиш ҳозирча мумкин эмас.';
+  String get candidateFileNoViewer =>
+      'Бу телефонда бу файлни оча оладиган илова йўқ.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4651,6 +4651,6 @@ class AppL10nUzLatn extends AppL10nUz {
   }
 
   @override
-  String get candidateFileDownloadSoon =>
-      'Ilovada ilovalarni ochish hozircha mumkin emas.';
+  String get candidateFileNoViewer =>
+      'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
 }

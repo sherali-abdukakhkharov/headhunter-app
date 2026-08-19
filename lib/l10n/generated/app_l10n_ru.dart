@@ -1566,6 +1566,6 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get candidateFileDownloadSoon =>
-      'Открытие вложений в приложении пока недоступно.';
+  String get candidateFileNoViewer =>
+      'На этом телефоне нет приложения, которое откроет этот файл.';
 }

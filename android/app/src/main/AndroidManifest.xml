@@ -32,6 +32,34 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Hands a downloaded attachment to whatever app can display it.
+
+             `${applicationId}` and not a literal: the three flavors have three
+             application ids, and two installed apps declaring the same provider
+             authority cannot coexist - which would break the side-by-side
+             installation §12.1 exists to give us.
+
+             `exported="false"` with `grantUriPermissions="true"` is the whole
+             security model: nothing can bind to this provider, and a viewer sees
+             one file for as long as the intent that named it lives.
+             res/xml/file_paths.xml narrows it to a single cache subdirectory.
+
+             There is deliberately **no `<queries>` entry for ACTION_VIEW**.
+             Android 11's package visibility filters `queryIntentActivities` and
+             `resolveActivity`, not `startActivity` with an implicit intent - and
+             the Kotlin side launches directly and catches
+             ActivityNotFoundException instead of asking first. A broad `<queries>`
+             block would widen what this app can see for no gain. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

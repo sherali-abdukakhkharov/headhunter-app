@@ -69,6 +69,15 @@ dependencies:
   # JSON models.
   json_annotation: ^4.12.0
 
+  # Where a downloaded attachment is written before the OS opens it.
+  #
+  # Promoted from transitive rather than added: it was already resolved at 2.1.6
+  # through file_picker, so this pins nothing new and cannot disturb the analyzer
+  # chain below. Only `getTemporaryDirectory` is used, which on Android is
+  # `context.getCacheDir()` — the same root the FileProvider in
+  # AndroidManifest.xml declares, and app-private.
+  path_provider: ^2.1.6
+
   riverpod_annotation: 4.0.3
 
   # Non-secret local state: selected locale pre-auth, persisted idempotency keys.

@@ -443,5 +443,5 @@
   "invitationContactOpenBody": "Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to'lov kerak emas.",
   "invitationOpenCandidate": "Nomzodni ko'rish",
   "invitationCounts": "{invited} ta taklif yuborilgan, {accepted} tasi qabul qilingan",
-  "candidateFileDownloadSoon": "Ilovada ilovalarni ochish hozircha mumkin emas."
+  "candidateFileNoViewer": "Bu telefonda bu faylni ocha oladigan ilova yo'q."
 }

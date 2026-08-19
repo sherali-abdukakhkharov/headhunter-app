@@ -1553,6 +1553,6 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get candidateFileDownloadSoon =>
-      'Opening attachments is not available in the app yet.';
+  String get candidateFileNoViewer =>
+      'No app on this phone can open this file.';
 }
