@@ -805,6 +805,30 @@ The rename was only possible because **nothing has been published**. An
 `applicationId` is a store identity: after the first Play upload it is fixed, and
 changing it means a new listing with no upgrade path for installed users.
 
+**How it was verified, because "it compiled" proves almost nothing here.** A
+successful build does not prove the id changed, and the one failure mode that
+matters — `namespace` and the Kotlin package disagreeing — surfaces as a runtime
+`ClassNotFoundException` on launch, not as a build error. Two checks settle it
+without installing anything:
+
+```powershell
+# the id Gradle actually stamped
+Get-Content build\app\outputs\apk\development\debug\output-metadata.json
+
+# the id, the launcher label and the resolved activity, from the APK itself
+& "$env:LOCALAPPDATA\Android\Sdk\build-tools\36.0.0\aapt2.exe" dump badging `
+  build\app\outputs\flutter-apk\app-development-debug.apk
+```
+
+For this rename they reported `com.jobbridge.app.dev`, `application-label:
+'JobBridge Dev'` and `launchable-activity: com.jobbridge.app.MainActivity` — the
+third being the one that proves the namespace and the Kotlin package agree.
+
+Note that Gradle cannot run inside this project's agent sandbox at all: it fails in
+about a second with `java.io.IOException: Unable to establish loopback connection`,
+before compiling anything. That is the environment, not the build — an Android
+build has to be run from a normal shell.
+
 ### 2026-08-19 - A stale google-services.json is better than a hand-edited one
 The rename left `android/app/google-services.json` listing the old package names.
 The tempting fix — search-and-replace `package_name` — is the wrong one.
