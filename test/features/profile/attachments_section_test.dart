@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/profile/data/attachments_repository.dart';
-import 'package:headhunter_app/src/features/profile/domain/attachment.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
-import 'package:headhunter_app/src/features/profile/presentation/attachments_section.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/profile/data/attachments_repository.dart';
+import 'package:jobbridge_app/src/features/profile/domain/attachment.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/attachments_section.dart';
 
 /// Profile files (§5.4, UAT-03).
 class _FakeAttachments implements AttachmentsRepository {

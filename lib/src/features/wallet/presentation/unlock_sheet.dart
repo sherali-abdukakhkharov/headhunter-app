@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
-import 'package:headhunter_app/src/features/wallet/domain/unlock.dart';
-import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
 
 /// Offers the §6.6 confirmation sheet, and returns the entitlement if one was
 /// obtained.

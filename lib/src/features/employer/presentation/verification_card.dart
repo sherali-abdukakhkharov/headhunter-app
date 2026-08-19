@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/employer/data/employer_controller.dart';
-import 'package:headhunter_app/src/features/employer/domain/employer_profile.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
+import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
 
 /// The badge for one of §6.1's five verification states.
 ///

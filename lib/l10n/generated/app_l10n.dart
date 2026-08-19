@@ -104,7 +104,7 @@ abstract class AppL10n {
   /// Application name. Brand term - left untranslated in every locale.
   ///
   /// In en, this message translates to:
-  /// **'HeadHunter'**
+  /// **'JobBridge'**
   String get appTitle;
 
   /// Action on an error state. Every error state must offer one.

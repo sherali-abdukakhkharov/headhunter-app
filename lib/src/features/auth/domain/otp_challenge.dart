@@ -1,4 +1,4 @@
-import 'package:headhunter_app/src/core/time/zoned_timestamp.dart';
+import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 
 /// What `POST /auth/otp/send` (and `/resend`) returns: a code is now waiting on
 /// the phone, and these are its two deadlines.

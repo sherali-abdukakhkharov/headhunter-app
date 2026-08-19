@@ -9,7 +9,7 @@ class AppL10nEn extends AppL10n {
   AppL10nEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Try again';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// A living catalogue of the design system.
 ///

@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/auth/session_state.dart';
-import 'package:headhunter_app/src/core/auth/token_store.dart';
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/auth_events.dart';
-import 'package:headhunter_app/src/core/storage/preferences_provider.dart';
-import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
-import 'package:headhunter_app/src/features/auth/data/telegram_sign_in.dart';
-import 'package:headhunter_app/src/features/auth/domain/auth_session.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
+import 'package:jobbridge_app/src/core/auth/token_store.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/auth_events.dart';
+import 'package:jobbridge_app/src/core/storage/preferences_provider.dart';
+import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
+import 'package:jobbridge_app/src/features/auth/data/telegram_sign_in.dart';
+import 'package:jobbridge_app/src/features/auth/domain/auth_session.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'session_controller.g.dart';

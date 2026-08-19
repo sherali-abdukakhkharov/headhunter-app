@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
-import 'package:headhunter_app/src/features/employer/data/employer_repository.dart';
-import 'package:headhunter_app/src/features/employer/domain/employer_profile.dart';
-import 'package:headhunter_app/src/features/employer/presentation/employer_profile_screen.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/employer/data/employer_repository.dart';
+import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
+import 'package:jobbridge_app/src/features/employer/presentation/employer_profile_screen.dart';
 
 /// The employer profile and verification (§6.1, BR-03).
 class _FakeEmployer implements EmployerRepository {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/auth/domain/otp_challenge.dart';
+import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 
 /// The countdown is the one place a server clock and a device clock meet, so
 /// the clamping is what these tests are for.

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// The badge for one of §6.4's six vacancy statuses.
 ///

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/applications/data/employer_applications_repository.dart';
-import 'package:headhunter_app/src/features/applications/domain/application.dart';
-import 'package:headhunter_app/src/features/applications/domain/application_stage.dart';
-import 'package:headhunter_app/src/features/applications/domain/candidate_for_employer.dart';
-import 'package:headhunter_app/src/features/applications/presentation/applications_screen.dart';
-import 'package:headhunter_app/src/features/applications/presentation/exposure_explanation.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/applications/data/employer_applications_repository.dart';
+import 'package:jobbridge_app/src/features/applications/domain/application.dart';
+import 'package:jobbridge_app/src/features/applications/domain/application_stage.dart';
+import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 
 /// Applications on one vacancy, for the employer (§6.5, §8.1).
 class VacancyApplicantsScreen extends ConsumerWidget {

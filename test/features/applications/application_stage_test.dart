@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/applications/domain/application.dart';
-import 'package:headhunter_app/src/features/applications/domain/application_stage.dart';
+import 'package:jobbridge_app/src/features/applications/domain/application.dart';
+import 'package:jobbridge_app/src/features/applications/domain/application_stage.dart';
 
 /// §8.1's stage rules — who may move where.
 ///

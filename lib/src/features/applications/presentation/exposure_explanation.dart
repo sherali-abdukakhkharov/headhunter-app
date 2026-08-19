@@ -1,4 +1,4 @@
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 
 /// Turns BR-09's `exposureReason` into a sentence that says what would change
 /// it.

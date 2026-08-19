@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
-import 'package:headhunter_app/src/features/employer/data/employer_repository.dart';
-import 'package:headhunter_app/src/features/employer/domain/employer_profile.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/features/employer/data/employer_repository.dart';
+import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'employer_controller.g.dart';

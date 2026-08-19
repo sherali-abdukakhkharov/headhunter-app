@@ -1,6 +1,6 @@
-import 'package:headhunter_app/src/features/profile/data/history_repository.dart';
-import 'package:headhunter_app/src/features/profile/data/profile_controller.dart';
-import 'package:headhunter_app/src/features/profile/domain/history_record.dart';
+import 'package:jobbridge_app/src/features/profile/data/history_repository.dart';
+import 'package:jobbridge_app/src/features/profile/data/profile_controller.dart';
+import 'package:jobbridge_app/src/features/profile/domain/history_record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'history_controller.g.dart';

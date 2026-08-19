@@ -1,4 +1,4 @@
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 
 /// Compile-time application configuration.
 ///

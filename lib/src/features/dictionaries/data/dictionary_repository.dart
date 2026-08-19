@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_delta.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_delta.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dictionary_repository.g.dart';

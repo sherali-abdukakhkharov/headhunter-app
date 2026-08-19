@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
-import 'package:headhunter_app/src/features/profile/data/history_controller.dart';
-import 'package:headhunter_app/src/features/profile/data/history_repository.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
-import 'package:headhunter_app/src/features/profile/domain/history_record.dart';
-import 'package:headhunter_app/src/features/profile/presentation/education_editor_sheet.dart';
-import 'package:headhunter_app/src/features/profile/presentation/experience_editor_sheet.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/profile/data/history_controller.dart';
+import 'package:jobbridge_app/src/features/profile/data/history_repository.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/features/profile/domain/history_record.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/education_editor_sheet.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/experience_editor_sheet.dart';
 
 /// Renders a `editor: "bespoke"` section of the candidate profile (§5.1).
 ///

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/auth/domain/uz_phone.dart';
+import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 
 /// The wire format is the thing worth pinning here.
 ///

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// Held on screen while the session is being restored - the visible form of
 /// `SessionUnknown`.

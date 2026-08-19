@@ -1,4 +1,4 @@
-package com.headhunter.app
+package com.jobbridge.app
 
 import io.flutter.embedding.android.FlutterActivity
 

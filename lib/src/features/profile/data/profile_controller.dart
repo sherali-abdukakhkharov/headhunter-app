@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
-import 'package:headhunter_app/src/features/profile/data/profile_repository.dart';
-import 'package:headhunter_app/src/features/profile/domain/candidate_profile.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/features/profile/data/profile_repository.dart';
+import 'package:jobbridge_app/src/features/profile/domain/candidate_profile.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'profile_controller.g.dart';

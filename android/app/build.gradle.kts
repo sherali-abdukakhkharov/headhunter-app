@@ -26,7 +26,7 @@ val keystoreProperties = Properties().apply {
 val hasReleaseKeystore = keystoreProperties.containsKey("storeFile")
 
 android {
-    namespace = "com.headhunter.app"
+    namespace = "com.jobbridge.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -36,7 +36,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.headhunter.app"
+        applicationId = "com.jobbridge.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -94,7 +94,7 @@ android {
         create("development") {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            manifestPlaceholders["appName"] = "HeadHunter Dev"
+            manifestPlaceholders["appName"] = "JobBridge Dev"
         }
         // §12.1 calls this environment "testing". It is named `staging` because
         // AGP rejects any flavor name starting with `test` - it would collide
@@ -103,13 +103,13 @@ android {
         create("staging") {
             dimension = "env"
             applicationIdSuffix = ".staging"
-            manifestPlaceholders["appName"] = "HeadHunter Staging"
+            manifestPlaceholders["appName"] = "JobBridge Staging"
         }
         create("production") {
             dimension = "env"
             // No suffix: this is the id the store record is bound to. Changing
             // it after the first upload orphans every installed copy.
-            manifestPlaceholders["appName"] = "HeadHunter"
+            manifestPlaceholders["appName"] = "JobBridge"
         }
     }
 }

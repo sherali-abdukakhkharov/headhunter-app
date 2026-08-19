@@ -826,11 +826,27 @@ this opens. Deep links moved to M8.
       forward at no cost if the client wants notification history earlier)*
 - [~] Push registration and foreground/background handling — **config in place**
       2026-08-07: `android/app/google-services.json` holds the Firebase project
-      `headhunter-app-b463f` with all three package names, so one file covers
-      every flavor. **No Firebase package is in `pubspec.yaml` and no Gradle
-      plugin is applied** — the file is inert until this milestone opens, which
-      is the owner's explicit ordering (wire it last). The backend side is
-      ready as of 2026-08-07
+      `headhunter-app-b463f`, so one file covers every flavor. **No Firebase
+      package is in `pubspec.yaml` and no Gradle plugin is applied** — the file is
+      inert until this milestone opens, which is the owner's explicit ordering
+      (wire it last). The backend side is ready as of 2026-08-07
+- [?] **`google-services.json` now lists the OLD package names, and is left that
+      way deliberately** (JobBridge rename, 2026-08-19). It cannot be fixed by
+      editing the text: Firebase issues a `mobilesdk_app_id`, an `api_key` and a
+      `client_id` per package name, so a hand-edited `package_name` yields a file
+      the Gradle plugin accepts and that then fails at *runtime*, when a device
+      registers a token against an app id that does not exist. That failure looks
+      like "notifications just don't arrive", which is far worse than a build
+      error.
+      Left stale, it fails **loudly and at the right moment** instead: the moment
+      this milestone applies the Google Services plugin, the build stops with
+      `No matching client found for package name 'com.jobbridge.app.dev'`.
+      *The fix is console work, not code*: add three Android apps
+      (`com.jobbridge.app`, `.dev`, `.staging`) to the same Firebase project,
+      re-add the debug and upload-keystore SHA fingerprints (they are stored per
+      app, so new apps start with none), download the regenerated file — one
+      download covers all three — and replace it. No new Firebase project, no
+      server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
 ## M10 - Admin module

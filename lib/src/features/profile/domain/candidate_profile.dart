@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/time/zoned_timestamp.dart';
+import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 
 /// A field the profile still needs before it can be searchable (BR-02).
 @immutable

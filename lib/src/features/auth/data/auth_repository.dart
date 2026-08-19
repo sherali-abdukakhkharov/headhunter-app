@@ -1,12 +1,12 @@
 import 'dart:io' show Platform;
 
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/core/network/interceptors/auth_interceptor.dart';
-import 'package:headhunter_app/src/features/auth/domain/auth_session.dart';
-import 'package:headhunter_app/src/features/auth/domain/otp_challenge.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/auth_interceptor.dart';
+import 'package:jobbridge_app/src/features/auth/domain/auth_session.dart';
+import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_repository.g.dart';

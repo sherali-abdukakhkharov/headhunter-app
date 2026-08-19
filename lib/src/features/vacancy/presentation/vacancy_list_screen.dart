@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
-import 'package:headhunter_app/src/features/vacancy/data/vacancy_repository.dart';
-import 'package:headhunter_app/src/features/vacancy/domain/vacancy.dart';
-import 'package:headhunter_app/src/features/vacancy/presentation/vacancy_status.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/vacancy/data/vacancy_repository.dart';
+import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
+import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_status.dart';
 
 /// The employer's own vacancies, every status (§6.2).
 ///

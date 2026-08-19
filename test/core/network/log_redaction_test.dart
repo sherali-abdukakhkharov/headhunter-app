@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/network/log_redaction.dart';
+import 'package:jobbridge_app/src/core/network/log_redaction.dart';
 
 /// §12.1: log without sensitive data. dio's `LogInterceptor` prints headers and
 /// both bodies verbatim, so this is the thing standing between a developer's

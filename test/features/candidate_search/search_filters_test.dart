@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/candidate_search/domain/search_filters.dart';
+import 'package:jobbridge_app/src/features/candidate_search/domain/search_filters.dart';
 
 /// §7.1's filter set as a value: what reaches the wire, and what does not.
 ///

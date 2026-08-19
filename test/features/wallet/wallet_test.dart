@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
-import 'package:headhunter_app/src/features/wallet/domain/unlock.dart';
-import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
-import 'package:headhunter_app/src/features/wallet/domain/wallet_transaction.dart';
-import 'package:headhunter_app/src/features/wallet/presentation/wallet_screen.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
+import 'package:jobbridge_app/src/features/wallet/presentation/wallet_screen.dart';
 
 /// The Coin wallet (§6.6, BR-15, BR-24, UAT-16).
 class _FakeWallet implements WalletRepository {

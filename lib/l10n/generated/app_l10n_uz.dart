@@ -9,7 +9,7 @@ class AppL10nUz extends AppL10n {
   AppL10nUz([String locale = 'uz']) : super(locale);
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Qayta urinish';
@@ -1254,7 +1254,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   AppL10nUzCyrl() : super('uz_Cyrl');
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Қайта уриниш';
@@ -2497,7 +2497,7 @@ class AppL10nUzLatn extends AppL10nUz {
   AppL10nUzLatn() : super('uz_Latn');
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Qayta urinish';

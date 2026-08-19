@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/time/zoned_timestamp.dart';
+import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 
 /// §6.6's prices, **as the server states them**.
 ///

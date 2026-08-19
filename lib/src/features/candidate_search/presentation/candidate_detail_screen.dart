@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
-import 'package:headhunter_app/src/features/applications/domain/candidate_for_employer.dart';
-import 'package:headhunter_app/src/features/applications/presentation/exposure_explanation.dart';
-import 'package:headhunter_app/src/features/candidate_search/data/candidate_search_repository.dart';
-import 'package:headhunter_app/src/features/candidate_search/presentation/protected_contact_card.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
-import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
-import 'package:headhunter_app/src/features/wallet/domain/unlock.dart';
-import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
-import 'package:headhunter_app/src/features/wallet/presentation/coin_balance_chip.dart';
-import 'package:headhunter_app/src/features/wallet/presentation/unlock_sheet.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
+import 'package:jobbridge_app/src/features/candidate_search/data/candidate_search_repository.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/protected_contact_card.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
+import 'package:jobbridge_app/src/features/wallet/presentation/coin_balance_chip.dart';
+import 'package:jobbridge_app/src/features/wallet/presentation/unlock_sheet.dart';
 
 /// Opens §7.3's "View profile" for one candidate.
 ///

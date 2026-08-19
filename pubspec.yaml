@@ -1,5 +1,5 @@
-name: headhunter_app
-description: "Headhunter - job search and recruitment mobile app"
+name: jobbridge_app
+description: "JobBridge - job search and recruitment mobile app"
 # Prevents accidental publication to pub.dev.
 publish_to: 'none'
 

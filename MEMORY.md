@@ -781,6 +781,55 @@ left out with the reason written down. Two things follow that are worth keeping:
   in the checklist. **Both are now waiting on the same single backend change**,
   so they land together rather than as two half-corrections.
 
+### 2026-08-19 - Renamed to JobBridge, and where the old name legitimately stays
+The product is **JobBridge**. Renamed the same day: launcher name and in-app title,
+Android `applicationId` (`com.jobbridge.app` + `.dev` / `.staging`), Android
+`namespace`, the Kotlin package and its directory, and the Dart package
+(`headhunter_app` → `jobbridge_app`, which rewrote imports in 136 files).
+
+**Deliberately not renamed**, so nobody "finishes the job" later and breaks things:
+
+- **Repository folders** — the owner's call, and they are not user-visible.
+- **`headhunter-backend` in doc comments** — that repository really is called
+  that. Every `Mirrors …Dto in headhunter-backend` comment is correct as written.
+- **`docs/SPEC.md` and the design document** — client deliverables that carry the
+  old name. Regenerating SPEC.md from a renamed .docx is the client's move, not
+  ours, and the two repos' copies must stay byte-identical.
+- **`hh.qitmir.uz`** and `api.staging.headhunter.uz` — infrastructure, and the
+  staging host deliberately does not exist.
+
+So: a `headhunter` in a path or a backend reference is **correct**. A `headhunter`
+in an application id or a Dart import is a leftover.
+
+The rename was only possible because **nothing has been published**. An
+`applicationId` is a store identity: after the first Play upload it is fixed, and
+changing it means a new listing with no upgrade path for installed users.
+
+### 2026-08-19 - A stale google-services.json is better than a hand-edited one
+The rename left `android/app/google-services.json` listing the old package names.
+The tempting fix — search-and-replace `package_name` — is the wrong one.
+
+Firebase issues a `mobilesdk_app_id`, an `api_key` and a `client_id` **per package
+name**. Editing only the package name produces a file the Gradle plugin happily
+accepts, and which then fails on the device when it registers a token against an
+app id that does not exist. The symptom is "notifications don't arrive" — a runtime
+mystery instead of a build error.
+
+Left stale, it fails at exactly the right moment and says exactly what is wrong:
+the Google Services plugin refuses the build with `No matching client found for
+package name 'com.jobbridge.app.dev'`. Since the plugin is not applied until M9,
+nothing is broken in the meantime.
+
+**The general rule: a generated credentials file is not text to be edited.**
+Regenerate it from the console that issued it. And when a config will be wrong
+later, prefer the form that fails loudly at the point of use over the form that
+looks right.
+
+Two things that surprised me and are worth remembering: SHA certificate
+fingerprints are stored **per Android app**, so new apps start with none even in
+the same project; and one `google-services.json` download contains **every** app in
+the project, which is why a single file covers all three flavors.
+
 ### 2026-08-19 - The design document's canvas colour is not the app's background
 `scaffoldBackgroundColor` is `sand100` = `#EFEBE4`. That colour is genuinely in
 the palette — the foundations page swatches it as sand-100 — but in the design

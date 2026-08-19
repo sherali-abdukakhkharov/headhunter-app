@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/vacancy/domain/vacancy.dart';
+import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
 
 /// Vacancy status rules (§6.4, BR-06, BR-11).
 ///

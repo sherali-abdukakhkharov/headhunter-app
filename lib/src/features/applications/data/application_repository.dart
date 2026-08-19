@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/core/network/interceptors/idempotency_interceptor.dart';
-import 'package:headhunter_app/src/features/applications/domain/application.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/idempotency_interceptor.dart';
+import 'package:jobbridge_app/src/features/applications/domain/application.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';

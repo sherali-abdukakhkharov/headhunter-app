@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/auth/data/telegram_sign_in.dart';
+import 'package:jobbridge_app/src/features/auth/data/telegram_sign_in.dart';
 import 'package:telegram_login/telegram_login.dart';
 
 /// Stands in for the plugin, so no platform channel is involved.

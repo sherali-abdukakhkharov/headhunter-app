@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/features/discovery/domain/vacancy_card.dart';
+import 'package:jobbridge_app/src/features/discovery/domain/vacancy_card.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'vacancy_detail.g.dart';

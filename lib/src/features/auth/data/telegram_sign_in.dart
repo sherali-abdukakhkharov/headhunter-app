@@ -1,5 +1,5 @@
-import 'package:headhunter_app/src/core/config/app_config.dart';
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/config/app_config.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:telegram_login/telegram_login.dart';
 

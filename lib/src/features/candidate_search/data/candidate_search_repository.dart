@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/features/applications/domain/candidate_for_employer.dart';
-import 'package:headhunter_app/src/features/candidate_search/domain/candidate_card.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
+import 'package:jobbridge_app/src/features/candidate_search/domain/candidate_card.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'candidate_search_repository.g.dart';

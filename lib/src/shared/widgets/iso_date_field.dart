@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// A read-only field that opens a date picker and emits ISO `yyyy-MM-dd`.
 ///

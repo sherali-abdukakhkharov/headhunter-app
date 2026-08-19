@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/wallet/data/wallet_repository.dart';
-import 'package:headhunter_app/src/features/wallet/presentation/wallet_screen.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/presentation/wallet_screen.dart';
 
 /// §6.2's Wallet widget: balance, approximate UZS value, and a way in.
 ///

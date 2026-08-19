@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/candidate_search/domain/search_filters.dart';
-import 'package:headhunter_app/src/features/candidate_search/presentation/level_floor_field.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_picker.dart';
-import 'package:headhunter_app/src/shared/widgets/iso_date_field.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/candidate_search/domain/search_filters.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/level_floor_field.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_picker.dart';
+import 'package:jobbridge_app/src/shared/widgets/iso_date_field.dart';
 
 /// Opens §7.1's filter builder and returns the edited configuration, or null if
 /// the employer backed out.

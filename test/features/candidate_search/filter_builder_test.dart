@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/candidate_search/domain/search_filters.dart';
-import 'package:headhunter_app/src/features/candidate_search/presentation/applied_filter_chips.dart';
-import 'package:headhunter_app/src/features/candidate_search/presentation/level_floor_field.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/candidate_search/domain/search_filters.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/applied_filter_chips.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/level_floor_field.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 
 /// The filter builder's two load-bearing rules, and the chips above it.
 ///

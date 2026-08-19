@@ -4,7 +4,7 @@
 
       Why this is a flavor manifest rather than a placeholder in the main one:
       Telegram binds a redirect URI to one application id plus one signing
-      certificate, and only `com.headhunter.app.dev` is registered with BotFather
+      certificate, and only `com.jobbridge.app.dev` is registered with BotFather
       so far. Putting the filter in the shared manifest would mean inventing a
       host for staging and production - either a dummy that fails App Link
       verification on every install, or the dev host, which would let a staging

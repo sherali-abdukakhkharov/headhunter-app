@@ -1,5 +1,5 @@
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/auth/token_store.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/token_store.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'auth_session.g.dart';

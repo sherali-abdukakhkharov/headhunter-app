@@ -1,7 +1,22 @@
-# Universal HeadHunter
+# JobBridge
 
 Mobile-only recruitment platform for Uzbekistan. Two repositories, developed
 together.
+
+**The product was renamed from "Universal HeadHunter" to JobBridge on
+2026-08-19, and the rename is deliberately partial.** Renamed: the launcher name
+and in-app title, the Android application id (`com.jobbridge.app` + flavor
+suffixes), the Android namespace and Kotlin package, and the Dart package
+(`jobbridge_app`). **Not renamed, on purpose:** the repository folders, the
+`headhunter-backend` references in doc comments (that repo really is called that),
+`docs/SPEC.md` and the design document (both are client deliverables carrying the
+old name), and the `hh.qitmir.uz` API host. So a `headhunter` in a path or a
+backend reference is correct; a `headhunter` in an application id or an import is
+a leftover.
+
+`android/app/google-services.json` still lists the **old** package names and is
+left that way on purpose — see the Notifications note in
+[TODO.md](TODO.md).
 
 | Repo | Path | Stack |
 |---|---|---|
@@ -127,7 +142,13 @@ flutter run --flavor development `
 ## Flavors
 
 Three targets (§12.1), each with its own application id so all three install side
-by side: `development` (`.dev`), `staging` (`.staging`), `production` (no suffix).
+by side: `development` (`com.jobbridge.app.dev`), `staging`
+(`com.jobbridge.app.staging`), `production` (`com.jobbridge.app`, no suffix).
+
+**`com.jobbridge.app` is a store identity.** It has never been published, which is
+the only reason the 2026-08-19 rename was possible at all — after the first upload
+the id is fixed, and changing it means a new listing with no upgrade path for
+anyone who already installed the app.
 
 `--flavor` picks the **Gradle** variant and `--dart-define=FLAVOR=` picks the
 **Dart** config - separate mechanisms that must name the same flavor.

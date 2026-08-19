@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/applications/data/application_repository.dart';
-import 'package:headhunter_app/src/features/applications/presentation/applications_screen.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
-import 'package:headhunter_app/src/features/discovery/data/discovery_repository.dart';
-import 'package:headhunter_app/src/features/discovery/domain/vacancy_detail.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/discovery/domain/vacancy_detail.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
 
 /// Opens one vacancy in full (§5.6).
 ///

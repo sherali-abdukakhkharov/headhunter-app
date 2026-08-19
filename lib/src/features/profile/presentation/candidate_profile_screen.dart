@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/profile/data/profile_controller.dart';
-import 'package:headhunter_app/src/features/profile/domain/candidate_profile.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
-import 'package:headhunter_app/src/features/profile/presentation/attachments_section.dart';
-import 'package:headhunter_app/src/features/profile/presentation/history_section.dart';
-import 'package:headhunter_app/src/features/profile/presentation/schema_field_widget.dart';
-import 'package:headhunter_app/src/features/profile/presentation/visibility_section.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/profile/data/profile_controller.dart';
+import 'package:jobbridge_app/src/features/profile/domain/candidate_profile.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/attachments_section.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/history_section.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/schema_field_widget.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/visibility_section.dart';
 
 /// The candidate profile (§5), rendered from the server's field schema.
 ///

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/storage/preferences_provider.dart';
-import 'package:headhunter_app/src/features/candidate_search/domain/search_filters.dart';
+import 'package:jobbridge_app/src/core/storage/preferences_provider.dart';
+import 'package:jobbridge_app/src/features/candidate_search/domain/search_filters.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_config_controller.g.dart';

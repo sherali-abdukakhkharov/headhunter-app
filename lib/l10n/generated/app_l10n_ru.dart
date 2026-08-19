@@ -9,7 +9,7 @@ class AppL10nRu extends AppL10n {
   AppL10nRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Повторить';

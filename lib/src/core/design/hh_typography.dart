@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
 
 /// The type scale, transcribed from the design document's Foundations section.
 ///

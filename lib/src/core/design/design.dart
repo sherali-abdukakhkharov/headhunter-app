@@ -1,4 +1,4 @@
-/// The Universal HeadHunter design system.
+/// The JobBridge design system.
 ///
 /// Implemented from the client's shipped design document. The three decisions
 /// the design says drive everything downstream, restated because they are easy

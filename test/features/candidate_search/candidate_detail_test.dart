@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/applications/domain/candidate_for_employer.dart';
-import 'package:headhunter_app/src/features/applications/presentation/exposure_explanation.dart';
-import 'package:headhunter_app/src/features/candidate_search/data/candidate_search_repository.dart';
-import 'package:headhunter_app/src/features/candidate_search/presentation/candidate_detail_screen.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
+import 'package:jobbridge_app/src/features/candidate_search/data/candidate_search_repository.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/candidate_detail_screen.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 
 /// §7.3's "View profile" — the screen where BR-09 **does** open.
 ///

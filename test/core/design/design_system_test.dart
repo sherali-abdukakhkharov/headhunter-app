@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// Guards the design decisions that are easy to erode one screen at a time.
 ///

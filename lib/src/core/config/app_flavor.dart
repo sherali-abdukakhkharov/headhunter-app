@@ -18,8 +18,8 @@ enum AppFlavor {
   development(
     apiBaseUrl: 'http://10.0.2.2:3001',
     appIdSuffix: '.dev',
-    displayName: 'HeadHunter Dev',
-    // Registered with BotFather 2026-08-05 against com.headhunter.app.dev and
+    displayName: 'JobBridge Dev',
+    // Registered with BotFather 2026-08-05 against com.jobbridge.app.dev and
     // this machine's debug signing certificate.
     telegramRedirectUri: 'https://app1562839855-login.tg.dev/tglogin',
   ),
@@ -42,8 +42,8 @@ enum AppFlavor {
   staging(
     apiBaseUrl: 'https://api.staging.headhunter.uz',
     appIdSuffix: '.staging',
-    displayName: 'HeadHunter Staging',
-    // Empty: com.headhunter.app.staging is not registered with BotFather yet,
+    displayName: 'JobBridge Staging',
+    // Empty: com.jobbridge.app.staging is not registered with BotFather yet,
     // and cannot be until it has its own signing keystore. Empty makes
     // `telegramSignInUnavailableReason` fail loudly at the button instead of
     // sending the user into a login that Telegram will silently refuse.
@@ -59,8 +59,8 @@ enum AppFlavor {
   production(
     apiBaseUrl: 'https://hh.qitmir.uz',
     appIdSuffix: '',
-    displayName: 'HeadHunter',
-    // Empty until com.headhunter.app is registered against the **Play App
+    displayName: 'JobBridge',
+    // Empty until com.jobbridge.app is registered against the **Play App
     // Signing** certificate, whose SHA-256 comes from the Play Console. The
     // current debug-signed production build is not the one that ships, so
     // registering its fingerprint would be registering a throwaway.
@@ -78,7 +78,7 @@ enum AppFlavor {
   /// `--dart-define=API_BASE_URL` overrides it - see `AppConfig.apiBaseUrl`.
   final String apiBaseUrl;
 
-  /// Suffix Gradle appends to `com.headhunter.app` for this flavor.
+  /// Suffix Gradle appends to `com.jobbridge.app` for this flavor.
   final String appIdSuffix;
 
   /// Launcher name and in-app title. Deliberately **not** localized: §2.4

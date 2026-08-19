@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/time/zoned_timestamp.dart';
-import 'package:headhunter_app/src/features/wallet/domain/wallet.dart';
+import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
 
 /// A Candidate Unlock this employer holds (§6.6, BR-16).
 ///

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/profile/domain/history_record.dart';
+import 'package:jobbridge_app/src/features/profile/domain/history_record.dart';
 
 /// The two bespoke record types (§5.1).
 ///

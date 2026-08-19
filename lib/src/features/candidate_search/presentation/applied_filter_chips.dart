@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/candidate_search/domain/search_filters.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/candidate_search/domain/search_filters.dart';
 
 /// The filters currently narrowing the search, each removable (§7.1).
 ///
