@@ -34,7 +34,7 @@ Open both at once in one editor window with
 |---|---|
 | [docs/SPEC.md](docs/SPEC.md) | The client specification. **Cite it** as §n, BR-nn, UAT-nn. |
 | [docs/SPEC_CHANGELOG.md](docs/SPEC_CHANGELOG.md) | What each client revision changed, and which delivered code it contradicts. Read before assuming a section still says what you remember. |
-| [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) | MVP sign-in is **Log in with Telegram**, not OTP. Read before touching auth. |
+| [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) | History only. Telegram login was deprecated 2026-08-05 and its client code **deleted 2026-08-19**. Read only if someone proposes reviving it. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Design decisions: role shell, localization, forms, offline. Read before adding a feature. |
 | [PLAN.md](PLAN.md) | Milestones in dependency order, mapped to BR/UAT. |
 | [TODO.md](TODO.md) | Working checklist and what is blocked on whom. |
@@ -87,8 +87,12 @@ and a green test suite both missed.
   never computes a total, a balance or an amount payable (§12.3.1).
 - **Sign-in is phone + OTP** (§4.1, UAT-01), which satisfies BR-01 by
   construction: verifying the code is what makes the number verified. Telegram
-  login was tried and **deprecated 2026-08-05** — the code is kept and still
-  works, but nothing calls it ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
+  login was tried, **deprecated 2026-08-05**, and its client code **removed
+  2026-08-19** — it applied the Kotlin Gradle Plugin, which future Flutter
+  versions will refuse, and pulled a community fork of Telegram's SDK onto the
+  path that guards every account, for a feature nothing called. The backend's
+  `POST /auth/telegram` still exists and still works; the client can no longer
+  reach it ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
 - **There is no SMS provider yet.** The backend issues a fixed code set by
   `OTP_STATIC_CODE` (currently `666666`), substituted at the point a random code
   would be generated and nowhere else — so TTL, resend delay, attempt limits and
@@ -307,16 +311,19 @@ consideration, until asked.** Android only.
 
 - Do not edit anything under `ios/`, and do not touch
   `IPHONEOS_DEPLOYMENT_TARGET`.
-- `ios-build.yml` is **`workflow_dispatch`-only** — it no longer runs on push. It
-  would fail anyway: `telegram_login` needs iOS 15 and the project stays at 13.
+- `ios-build.yml` is **`workflow_dispatch`-only** — it no longer runs on push.
+  The reason it would have failed anyway is gone: `telegram_login` needed iOS 15
+  against the project's 13, and it was removed on 2026-08-19. Whether the iOS
+  build now passes is **untested**, and testing it is not worth doing while iOS is
+  out of scope.
 - **Nothing catches iOS compile breakage now.** That is accepted.
 - Keep Dart cross-platform regardless. No Android-only concessions in `lib/` —
   they cost more to undo than they save.
 
 Background, if this ever reverses: iOS cannot be built on this Windows machine
 (Xcode is macOS-only), an installable `.ipa` needs a Mac and an Apple Developer
-account, and Telegram login additionally needs a bundle id + Apple Team ID
-registered with BotFather (docs/TELEGRAM_LOGIN.md).
+account. (Telegram login also needed a bundle id + Apple Team ID registered with
+BotFather, but that dependency is gone — see docs/TELEGRAM_LOGIN.md.)
 
 ## Backend contract
 

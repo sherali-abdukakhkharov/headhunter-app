@@ -293,69 +293,6 @@ void main() {
 
   // Deprecated 2026-08-05 but kept working; see docs/TELEGRAM_LOGIN.md. These
   // stay so the path cannot rot silently while nothing calls it.
-  group('signInWithTelegram (deprecated)', () {
-    test('parses the session the backend returns', () async {
-      final h = build(body: successBody);
-
-      final session = await h.repo.signInWithTelegram('id-token');
-
-      expect(session.accessToken, 'access-1');
-      expect(session.refreshToken, 'refresh-1');
-      expect(session.expiresInSeconds, 900);
-      expect(session.grantedRoles, {AppRole.candidate});
-      expect(session.active, AppRole.candidate);
-      expect(session.isNewUser, isTrue);
-    });
-
-    test('posts the id token to /auth/telegram', () async {
-      final h = build(body: successBody);
-      await h.repo.signInWithTelegram('id-token');
-
-      expect(h.adapter.captured?.path, '/auth/telegram');
-      expect(h.adapter.captured?.method, 'POST');
-      expect(
-        (h.adapter.captured?.data as Map?)?['idToken'],
-        'id-token',
-      );
-    });
-
-    test('is flagged skipAuth, so a 401 is not read as expiry', () async {
-      // No session exists yet. Without the flag the auth interceptor treats a
-      // 401 as an expired access token, tries to refresh, fails, clears the
-      // token store and reports an auth failure - turning "Telegram rejected
-      // your token" into a spurious sign-out.
-      final h = build(body: successBody);
-      await h.repo.signInWithTelegram('id-token');
-
-      expect(
-        h.adapter.captured?.extra[AuthInterceptor.skipAuthFlag],
-        isTrue,
-      );
-    });
-
-    test('surfaces a refusal as ApiException, not a DioException', () async {
-      // The BR-01 path: the backend refuses a login carrying no
-      // Telegram-verified phone number. Its message is already localized via
-      // x-lang, so the screen renders it directly.
-      final h = build(statusCode: 422, body: '{"message":"Phone required"}');
-
-      await expectLater(
-        h.repo.signInWithTelegram('id-token'),
-        throwsA(
-          isA<ApiException>().having((e) => e.statusCode, 'statusCode', 422),
-        ),
-      );
-    });
-
-    test('an empty body is an ApiException, not a null dereference', () async {
-      final h = build(body: '');
-
-      await expectLater(
-        h.repo.signInWithTelegram('id-token'),
-        throwsA(isA<ApiException>()),
-      );
-    });
-  });
 
   group('AuthSession', () {
     test('drops a role this client version does not know', () {

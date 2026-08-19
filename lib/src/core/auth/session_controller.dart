@@ -9,7 +9,6 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/auth_events.dart';
 import 'package:jobbridge_app/src/core/storage/preferences_provider.dart';
 import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
-import 'package:jobbridge_app/src/features/auth/data/telegram_sign_in.dart';
 import 'package:jobbridge_app/src/features/auth/domain/auth_session.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -29,7 +28,8 @@ part 'session_controller.g.dart';
 /// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
 /// number and the code sent to it, and takes the roles and tokens from the
 /// response.
-/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
+/// Telegram login was the deprecated predecessor. Its client code was removed
+/// on 2026-08-19 — see docs/TELEGRAM_LOGIN.md.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with
@@ -151,34 +151,6 @@ class SessionController extends _$SessionController {
     final session = await ref
         .read(authRepositoryProvider)
         .verifyOtp(phone: phone, code: code);
-
-    await _adopt(session);
-  }
-
-  /// Signs in with Telegram.
-  ///
-  /// **Deprecated 2026-08-05** in favour of [signInWithOtp] (§4.1, UAT-01).
-  /// Nothing calls this; it is kept with its tests because the flow is correct
-  /// and re-enabling it is cheaper than rebuilding it. See
-  /// docs/TELEGRAM_LOGIN.md.
-  ///
-  /// Obtains a signed ID token from Telegram, exchanges it for a session, and
-  /// stores the token pair. **The app decides nothing about identity** — it
-  /// forwards Telegram's assertion, and the backend decides who this is after
-  /// verifying the signature against Telegram's JWKS.
-  ///
-  /// Rethrows so the calling screen can render the failure:
-  /// - [TelegramSignInCancelled] — the user backed out; show nothing.
-  /// - [TelegramSignInFailure] — Telegram or the SDK failed; the screen maps
-  ///   `kind` to localized copy.
-  /// - [ApiException] — the server refused, and its `message` is already
-  ///   localized. This is the path a login with no Telegram-verified phone
-  ///   number takes, because BR-01 admits no account without one.
-  Future<void> signInWithTelegram() async {
-    final idToken = await ref.read(telegramSignInProvider).obtainIdToken();
-    final session = await ref
-        .read(authRepositoryProvider)
-        .signInWithTelegram(idToken);
 
     await _adopt(session);
   }
