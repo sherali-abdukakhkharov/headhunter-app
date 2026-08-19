@@ -206,7 +206,7 @@ class _ProfileState extends ConsumerState<_Profile> {
                 ),
                 // The ring's hole is painted, not transparent, so it has to be
                 // told what it sits on — here the scaffold rather than a card.
-                surfaceColor: HhColors.sand100,
+                surfaceColor: HhColors.surfaceMuted,
               ),
 
               const SizedBox(height: HhSpace.xl),

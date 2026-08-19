@@ -40,7 +40,11 @@ abstract final class HhTheme {
       useMaterial3: true,
       colorScheme: scheme,
       fontFamily: HhTypography.family,
-      scaffoldBackgroundColor: HhColors.sand100,
+      // The colour every phone frame in the design document is drawn on.
+      // Corrected 2026-08-19: the app had been painting sand100, which is both
+      // a real palette colour and the canvas paper the artboards sit on - see
+      // the note on HhColors.sand100.
+      scaffoldBackgroundColor: HhColors.surfaceMuted,
       splashFactory: InkSparkle.splashFactory,
 
       textTheme: TextTheme(

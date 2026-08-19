@@ -572,6 +572,23 @@ void main() {
     expect(HhTheme.light.brightness, Brightness.light);
   });
 
+  test('screens are painted on the colour the design draws them on', () {
+    // Corrected 2026-08-19. The app had been painting sand100, which is both a
+    // real palette swatch *and* the canvas paper the artboards sit on — so it
+    // looked defensible and was wrong. Every phone frame in the design document
+    // draws its screen on surfaceMuted.
+    //
+    // Asserted against the literal value as well as the token, so repointing
+    // the token cannot quietly satisfy this test.
+    expect(HhTheme.light.scaffoldBackgroundColor, HhColors.surfaceMuted);
+    expect(HhTheme.light.scaffoldBackgroundColor, const Color(0xFFF7F8FA));
+    expect(
+      HhTheme.light.scaffoldBackgroundColor,
+      isNot(HhColors.sand100),
+      reason: 'sand100 is the design canvas, not the app background',
+    );
+  });
+
   testWidgets('completeness ring reports its value to screen readers', (
     tester,
   ) async {

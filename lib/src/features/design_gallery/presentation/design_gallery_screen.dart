@@ -257,7 +257,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           percent: 72,
           title: "Profil to'ldirilgan",
           subtitle: 'Rezyume va til darajasi qoldi',
-          surfaceColor: HhColors.sand100,
+          surfaceColor: HhColors.surfaceMuted,
         ),
 
         // --- Cards --------------------------------------------------------

@@ -54,17 +54,21 @@ abstract final class HhColors {
 
   static const sand300 = Color(0xFFE2D9C6);
 
-  /// App background — **and this may be the wrong token for that job.**
+  /// Sand-100 from the design's foundations page — **and not the app
+  /// background**, though it was until 2026-08-19.
   ///
-  /// It is a real palette colour: the design's foundations page swatches it as
-  /// sand-100. But every phone frame in the design document draws its screen on
-  /// [surfaceMuted] (`#F7F8FA`), and `#EFEBE4` appears there only as the canvas
-  /// paper the artboards sit on and as that one swatch. So the app may have
-  /// adopted the paper colour as its background.
+  /// It is a real palette colour, swatched as sand-100. It is *also*
+  /// `body{background:#EFEBE4}` in the design document: the paper the artboards
+  /// are laid out on. The app had adopted the paper as its screen colour.
   ///
-  /// Left as it is deliberately: changing it repaints every screen in the
-  /// product, which is a change that wants its own commit and a look on a real
-  /// device rather than a quiet edit inside a feature. Recorded in TODO.md.
+  /// Every phone frame in that document draws its screen on [surfaceMuted]
+  /// instead — 30 uses against 4 for this one, and of those 4 the only one
+  /// *inside* an artboard is the swatch itself.
+  ///
+  /// So `scaffoldBackgroundColor` is [surfaceMuted] now. This stays in the ramp
+  /// because it is a documented palette value, and the lesson stays with it: a
+  /// colour's presence in a design file is not evidence of its role — check
+  /// whether it appears inside an artboard or around one, and count.
   static const sand100 = Color(0xFFEFEBE4);
 
   /// Subtle raised surface on white cards.
@@ -108,8 +112,15 @@ abstract final class HhColors {
   /// other, which is why they sit this close: the difference says open-or-shut
   /// before a word is read, without either row shouting.
   ///
-  /// It is also the background the design's phone frames are drawn on — see the
-  /// note on [sand100], which is what the app currently paints instead.
+  /// **And it is the app background**, which is the bigger of its two jobs:
+  /// every phone frame in the design document draws its screen on this. See the
+  /// note on [sand100] for what the app painted before 2026-08-19 and why that
+  /// was wrong.
+  ///
+  /// One consequence worth knowing: `HhCompletenessRing` paints its own hole
+  /// rather than leaving it transparent, so any ring sitting directly on a
+  /// screen must be passed `surfaceColor: surfaceMuted`. A ring on a white card
+  /// keeps the default.
   static const surfaceMuted = Color(0xFFF7F8FA);
 
   /// Disabled control background.

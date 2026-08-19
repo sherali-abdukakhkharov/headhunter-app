@@ -80,7 +80,7 @@ decision or on the backend.
 
 ## M0 - Foundations *(done)*
 
-- [x] Flutter 3.44.8, Riverpod 3 + go_router + dio, `com.headhunter.app`
+- [x] Flutter 3.44.8, Riverpod 3 + go_router + dio, `com.jobbridge.app` (was `com.headhunter.app` until the 2026-08-19 rename)
 - [x] Feature-first `lib/src/{core,features,shared}` layout
 - [x] `ApiException` mapping; repositories never leak `DioException`
 - [x] Riverpod auto-retry disabled (endless-spinner fix) + error-first rendering
@@ -126,15 +126,19 @@ emulator against the design document, with 18 tests pinning the rules.
       Nomzodlar · Xabarlar · Kompaniya) and makes the **balance chip** the entry
       point instead, in the app bar of surfaces where Coins get spent. So no
       cap to renegotiate and no tab to add — `CoinBalanceChip` is that widget
-- [?] **The app may be painting the canvas colour as its screen background.**
-      `scaffoldBackgroundColor` is `sand100` (`#EFEBE4`), which the design's
-      foundations page does swatch as sand-100 — but every phone frame in the
-      design document draws its screen on `#F7F8FA`, and `#EFEBE4` appears
-      there only as that swatch and as the canvas paper the artboards sit on.
-      `surfaceMuted` now holds `#F7F8FA` and is used for the drawn contact rows.
-      **Not changed**: it repaints every screen in the product, which wants its
-      own commit and a look on a device rather than a quiet edit inside a
-      feature. One line in `hh_theme.dart` when someone decides
+- [x] **The app was painting the canvas colour as its screen background** —
+      **corrected 2026-08-19.** `scaffoldBackgroundColor` was `sand100`
+      (`#EFEBE4`), which the design's foundations page *does* swatch as sand-100 —
+      and which is also `body{background:#EFEBE4}`, the paper the artboards are
+      laid out on. That double role is why it looked defensible. Every phone frame
+      in the document draws its screen on `#F7F8FA`: 30 uses against 4, and of
+      those 4 the only one *inside* an artboard is the swatch itself.
+      Now `HhColors.surfaceMuted`, with a test asserting it against the literal
+      value as well as the token, so repointing the token cannot satisfy it. Two
+      `HhCompletenessRing` call sites moved with it — the ring paints its own hole
+      rather than leaving it transparent, so a ring sitting on a screen has to be
+      told the screen's colour. **Not yet seen on a device**, which is the one
+      check this change really wants
 - [x] Verified at the design's QA case — 320pt at 2.0x, no overflow anywhere
 - [ ] **Category photography** - five 3:2 masters (1620x1080), one per §2.1
       category, subject inside the middle 60% vertically so one file survives
