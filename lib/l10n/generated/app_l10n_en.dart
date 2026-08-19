@@ -1435,4 +1435,83 @@ class AppL10nEn extends AppL10n {
   @override
   String get invitationAlreadyAnswered =>
       'This invitation has already been answered';
+
+  @override
+  String get commonChoose => 'Choose';
+
+  @override
+  String get invitationSendTitle => 'Send invitation';
+
+  @override
+  String get invitationSend => 'Send';
+
+  @override
+  String get invitationSendFree =>
+      'Sending is free. Contact details open only if the candidate accepts.';
+
+  @override
+  String get invitationToVacancy => 'To a vacancy';
+
+  @override
+  String get invitationVacancyLabel => 'Choose a vacancy';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'No open vacancies';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'An invitation can only point at an active vacancy. You can still send a general work invitation.';
+
+  @override
+  String get invitationOccupation => 'Occupation';
+
+  @override
+  String get invitationRegion => 'Region';
+
+  @override
+  String get invitationDistrict => 'District';
+
+  @override
+  String get invitationNegotiable => 'Pay is negotiable';
+
+  @override
+  String get invitationSalaryFrom => 'Pay from';
+
+  @override
+  String get invitationSalaryTo => 'Pay to';
+
+  @override
+  String get invitationSalaryPeriod => 'Per';
+
+  @override
+  String get invitationSchedule => 'Schedule';
+
+  @override
+  String get invitationScheduleHint => 'For example: six days a week, mornings';
+
+  @override
+  String get invitationMessageLabel => 'Message (optional)';
+
+  @override
+  String get invitationMessageHint =>
+      'What you would like the candidate to know';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return '$remaining of $limit invitations left today';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return 'Resets at $at';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Today’s invitations are used up';
+
+  @override
+  String get invitationAlreadySentTitle => 'Already invited';
+
+  @override
+  String get invitationSentConfirm => 'Invitation sent';
 }

@@ -191,6 +191,59 @@ final class SentInvitationsFamily extends $Family
   String toString() => r'sentInvitationsProvider';
 }
 
+/// Today's remaining invitations, or null on a server without the cap.
+///
+/// Watched by the send screen rather than fetched once, so sending — which
+/// invalidates it — redraws the counter.
+
+@ProviderFor(invitationQuota)
+final invitationQuotaProvider = InvitationQuotaProvider._();
+
+/// Today's remaining invitations, or null on a server without the cap.
+///
+/// Watched by the send screen rather than fetched once, so sending — which
+/// invalidates it — redraws the counter.
+
+final class InvitationQuotaProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<InvitationQuota?>,
+          InvitationQuota?,
+          FutureOr<InvitationQuota?>
+        >
+    with $FutureModifier<InvitationQuota?>, $FutureProvider<InvitationQuota?> {
+  /// Today's remaining invitations, or null on a server without the cap.
+  ///
+  /// Watched by the send screen rather than fetched once, so sending — which
+  /// invalidates it — redraws the counter.
+  InvitationQuotaProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'invitationQuotaProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$invitationQuotaHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<InvitationQuota?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<InvitationQuota?> create(Ref ref) {
+    return invitationQuota(ref);
+  }
+}
+
+String _$invitationQuotaHash() => r'8dcc40a12e9355afa5b58d2a4f63c5a877aac457';
+
 /// §7.4's invitation counts for one vacancy.
 
 @ProviderFor(invitationCounts)

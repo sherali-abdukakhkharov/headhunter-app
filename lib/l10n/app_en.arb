@@ -1858,5 +1858,114 @@
   "invitationAlreadyAnswered": "This invitation has already been answered",
   "@invitationAlreadyAnswered": {
     "description": "Title over the server's refusal in the response sheet. §8.2's `invitation.final` and `invitation.response_not_allowed` both mean the invitation moved elsewhere — usually another device — so the sentence explains the refusal rather than blaming the tap."
+  },
+  "commonChoose": "Choose",
+  "@commonChoose": {
+    "description": "Placeholder in a read-only field that opens a picker."
+  },
+  "invitationSendTitle": "Send invitation",
+  "@invitationSendTitle": {
+    "description": "Screen title for the compose form. Deliberately different wording from invitationSend, the button, so the two are distinguishable."
+  },
+  "invitationSend": "Send",
+  "@invitationSend": {
+    "description": "The submit button on the compose form."
+  },
+  "invitationSendFree": "Sending is free. Contact details open only if the candidate accepts.",
+  "@invitationSendFree": {
+    "description": "States the resolution of the section 8.2 contradiction where the employer will act on it. Worth saying explicitly: an employer who thinks inviting costs Coins will not invite, and section 7.4 own example needs dozens of invitations."
+  },
+  "invitationToVacancy": "To a vacancy",
+  "@invitationToVacancy": {
+    "description": "One of the two invitation shapes; the other is invitationGeneral."
+  },
+  "invitationVacancyLabel": "Choose a vacancy",
+  "@invitationVacancyLabel": {
+    "description": "Label above the list of the employer open vacancies."
+  },
+  "invitationNoOpenVacancyTitle": "No open vacancies",
+  "@invitationNoOpenVacancyTitle": {
+    "description": "Only open vacancies may carry an invitation (BR-06) — the server refuses the rest with invitation.vacancy_not_open."
+  },
+  "invitationNoOpenVacancyBody": "An invitation can only point at an active vacancy. You can still send a general work invitation.",
+  "@invitationNoOpenVacancyBody": {
+    "description": "A notice rather than an error, because the general shape is a way forward that needs nothing published."
+  },
+  "invitationOccupation": "Occupation",
+  "@invitationOccupation": {
+    "description": "Required on a general invitation — it is what makes the invitation about something."
+  },
+  "invitationRegion": "Region",
+  "@invitationRegion": {
+    "description": "Optional on a general invitation."
+  },
+  "invitationDistrict": "District",
+  "@invitationDistrict": {
+    "description": "Optional, and scoped to the chosen region — districts are children of the region dictionary, not a type of their own."
+  },
+  "invitationNegotiable": "Pay is negotiable",
+  "@invitationNegotiable": {
+    "description": "Excludes a range rather than qualifying one: a negotiable figure and a stated one are different answers."
+  },
+  "invitationSalaryFrom": "Pay from",
+  "@invitationSalaryFrom": {
+    "description": "Lower bound, in som."
+  },
+  "invitationSalaryTo": "Pay to",
+  "@invitationSalaryTo": {
+    "description": "Upper bound, in som."
+  },
+  "invitationSalaryPeriod": "Per",
+  "@invitationSalaryPeriod": {
+    "description": "A payment_period dictionary id — per month, per day, per shift."
+  },
+  "invitationSchedule": "Schedule",
+  "@invitationSchedule": {
+    "description": "Free text by design: a general invitation is a message, and the structured version of a schedule is what publishing a vacancy is for."
+  },
+  "invitationScheduleHint": "For example: six days a week, mornings",
+  "@invitationScheduleHint": {
+    "description": "Hint under the schedule field."
+  },
+  "invitationMessageLabel": "Message (optional)",
+  "@invitationMessageLabel": {
+    "description": "The employer own words, shown to the candidate verbatim and never translated. Marked optional in the label."
+  },
+  "invitationMessageHint": "What you would like the candidate to know",
+  "@invitationMessageHint": {
+    "description": "Hint under the message field."
+  },
+  "invitationQuotaRemaining": "{remaining} of {limit} invitations left today",
+  "@invitationQuotaRemaining": {
+    "description": "The daily cap, entirely the server figures (section 12.3.1). `limit` is the effective total — the client deliberately does not model a free tier and a purchased one, so a future purchase raises the number and this string is already correct.",
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "invitationQuotaResets": "Resets at {at}",
+  "@invitationQuotaResets": {
+    "description": "A calendar boundary in the platform time zone, not a rolling window — \"it resets at midnight\" is something an employer can plan a day around.",
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "invitationQuotaSpentTitle": "Today’s invitations are used up",
+  "@invitationQuotaSpentTitle": {
+    "description": "Warning-toned rather than an error: the employer did nothing wrong and the remedy is a clock."
+  },
+  "invitationAlreadySentTitle": "Already invited",
+  "@invitationAlreadySentTitle": {
+    "description": "The server invitation.already_invited — a fact rather than a failure. One open invitation per candidate per vacancy; answering frees the slot."
+  },
+  "invitationSentConfirm": "Invitation sent",
+  "@invitationSentConfirm": {
+    "description": "Confirmation after a successful send. A transient toast rather than an inline banner, unlike the unlock, and the difference is deliberate: an unlock carries figures somebody may want to read twice, while this carries none — the invitation itself is now in the sent list, which is where it belongs."
   }
 }

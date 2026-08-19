@@ -1447,4 +1447,83 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get invitationAlreadyAnswered => 'На это приглашение уже ответили';
+
+  @override
+  String get commonChoose => 'Выбрать';
+
+  @override
+  String get invitationSendTitle => 'Отправить приглашение';
+
+  @override
+  String get invitationSend => 'Отправить';
+
+  @override
+  String get invitationSendFree =>
+      'Отправка бесплатна. Контактные данные откроются только если кандидат примет приглашение.';
+
+  @override
+  String get invitationToVacancy => 'На вакансию';
+
+  @override
+  String get invitationVacancyLabel => 'Выберите вакансию';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Нет открытых вакансий';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Приглашение можно привязать только к активной вакансии. Общее приглашение на работу отправить всё равно можно.';
+
+  @override
+  String get invitationOccupation => 'Профессия';
+
+  @override
+  String get invitationRegion => 'Регион';
+
+  @override
+  String get invitationDistrict => 'Район';
+
+  @override
+  String get invitationNegotiable => 'Оплата по договорённости';
+
+  @override
+  String get invitationSalaryFrom => 'Оплата от';
+
+  @override
+  String get invitationSalaryTo => 'Оплата до';
+
+  @override
+  String get invitationSalaryPeriod => 'За период';
+
+  @override
+  String get invitationSchedule => 'График';
+
+  @override
+  String get invitationScheduleHint =>
+      'Например: шесть дней в неделю, по утрам';
+
+  @override
+  String get invitationMessageLabel => 'Сообщение (необязательно)';
+
+  @override
+  String get invitationMessageHint => 'Что вы хотите сообщить кандидату';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Осталось $remaining из $limit приглашений на сегодня';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return 'Обновится в $at';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Приглашения на сегодня закончились';
+
+  @override
+  String get invitationAlreadySentTitle => 'Приглашение уже отправлено';
+
+  @override
+  String get invitationSentConfirm => 'Приглашение отправлено';
 }

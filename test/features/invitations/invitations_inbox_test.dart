@@ -9,7 +9,9 @@ import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.d
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invitation_quota.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invite_outcome.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitations_inbox_screen.dart';
 
 /// §8.2's candidate inbox (UAT-07).
@@ -33,7 +35,7 @@ class _FakeInvitations implements InvitationRepository {
   }
 
   @override
-  Future<Invitation> invite({
+  Future<InviteOutcome> invite({
     required String candidateUserId,
     String? vacancyId,
     String? occupationId,
@@ -46,6 +48,10 @@ class _FakeInvitations implements InvitationRepository {
     String? scheduleNote,
     String? message,
   }) => throw UnsupportedError('the candidate inbox must not send invitations');
+
+  @override
+  Future<InvitationQuota?> quota() =>
+      throw UnsupportedError('a quota belongs to an employer, not a candidate');
 
   @override
   Future<List<Invitation>> sent({String? vacancyId, String? status}) =>

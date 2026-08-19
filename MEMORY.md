@@ -975,6 +975,69 @@ The rule: if a reason code's *remedy* changes, that is a different reason, so gi
 it a different code. Rewriting the old one's copy destroys the ability to serve
 both servers and quietly invalidates whatever pinned it.
 
+### 2026-08-19 - A spec that argues with itself answers its own question
+Follows the entry below, and is the part worth remembering: the §8.2 question was
+settled not by the server but by **reading the rest of the specification.**
+
+§8.2 said an employer must hold a Candidate Unlock and "an invitation **may then**
+be attached to an active vacancy". Two other places disagree:
+
+- **§7.3** lists the candidate card's actions as "View profile, Save, and Send
+  invitation" — two of which are unambiguously free — in the sentence immediately
+  after the one saying phone, e-mail and CV are locked. The section separates the
+  locked *data* from the free *action*.
+- **§7.4**, the client's own worked example, fills **20 openings** by sending
+  invitations. Filling 20 takes far more than 20 invitations; at 2 Coins each that
+  is over a million som before a single reply, and the 10-Coin registration bonus
+  covers five people. The example the client wrote does not work under the strict
+  reading of the sentence the client also wrote.
+
+So the question stopped being "which document wins, spec or code" and became "one
+word against two sections and a running server". The client confirmed the lenient
+reading in a sentence.
+
+**The habit worth keeping: before escalating a contradiction between the spec and
+the code, look for the spec contradicting itself.** A revised document has new
+prose stitched into old, and the seam is usually where a sentence lists four
+things and quietly acquires a fifth. §8.2's sentence lists contact, CV, chat and
+interview — all genuinely gated — and the invitation got swept in beside them.
+
+The follow-on is also worth recording: **the answer created a new problem the spec
+had no rule for at all.** Sending free and uncapped let a verified employer send
+an unbounded number, and neither §8.2 nor the service had a limit. The remedy is a
+cap, and the cap belongs to the server rather than to Dart — the client said extra
+invitations may be purchasable later, and a quota that can be bought is a balance
+(§12.3.1). So the client renders `{remaining, limit, resetsAt}` and holds no
+number: `limit` is the *effective* total, deliberately not free-plus-purchased, so
+a future purchase raises it with no client release and no arithmetic here.
+
+**An absent quota must block nothing.** A 404 means "this server has no cap", and
+a form disabled by a counter that failed to load would refuse sends the API
+accepts — a false refusal, not a cautious one. Same discipline as gating the unlock
+on a reason code: render what the server can say, invent nothing.
+
+### 2026-08-19 - A structured error's figures are in `details`, not at the top
+The backend's 409 for the invitation quota carries `limit` and `resetsAt` so a
+screen can refresh its counter without a second request or a regular expression
+over localized prose. The client's first attempt read them as `data['limit']` and
+`data['resetsAt']`, which would have compiled, passed every test with a fixture
+the client wrote itself, and silently produced nulls against the real server.
+
+The body is `{statusCode, code, message, details: {...}}`, and the nesting is
+deliberate: `localized.exception.ts` says a key spread beside `statusCode`,
+`code` or `message` would eventually collide with one of them, and that `params`
+stay out of the body entirely because they are written to read well inside a
+sentence rather than to be consumed.
+
+Two things to carry:
+
+1. **Read the backend's exception filter, not the throw site**, when parsing an
+   error body. The throw site shows *which* figures exist; only the filter shows
+   *where* they land.
+2. **A fixture the client author invents cannot catch this class of bug.** The
+   test passes because the fake produces the shape the parser expects. This one
+   was caught by reading the server, which is the only place the shape is decided.
+
 ### 2026-08-19 - When the spec and the server disagree about money, ask
 §8.2 as revised reads "the employer must have a Candidate Unlock entitlement for
 that candidate. An invitation **may then** be attached to an active vacancy or

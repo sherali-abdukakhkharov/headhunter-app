@@ -2548,6 +2548,150 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'This invitation has already been answered'**
   String get invitationAlreadyAnswered;
+
+  /// Placeholder in a read-only field that opens a picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get commonChoose;
+
+  /// Screen title for the compose form. Deliberately different wording from invitationSend, the button, so the two are distinguishable.
+  ///
+  /// In en, this message translates to:
+  /// **'Send invitation'**
+  String get invitationSendTitle;
+
+  /// The submit button on the compose form.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get invitationSend;
+
+  /// States the resolution of the section 8.2 contradiction where the employer will act on it. Worth saying explicitly: an employer who thinks inviting costs Coins will not invite, and section 7.4 own example needs dozens of invitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending is free. Contact details open only if the candidate accepts.'**
+  String get invitationSendFree;
+
+  /// One of the two invitation shapes; the other is invitationGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'To a vacancy'**
+  String get invitationToVacancy;
+
+  /// Label above the list of the employer open vacancies.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a vacancy'**
+  String get invitationVacancyLabel;
+
+  /// Only open vacancies may carry an invitation (BR-06) — the server refuses the rest with invitation.vacancy_not_open.
+  ///
+  /// In en, this message translates to:
+  /// **'No open vacancies'**
+  String get invitationNoOpenVacancyTitle;
+
+  /// A notice rather than an error, because the general shape is a way forward that needs nothing published.
+  ///
+  /// In en, this message translates to:
+  /// **'An invitation can only point at an active vacancy. You can still send a general work invitation.'**
+  String get invitationNoOpenVacancyBody;
+
+  /// Required on a general invitation — it is what makes the invitation about something.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation'**
+  String get invitationOccupation;
+
+  /// Optional on a general invitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get invitationRegion;
+
+  /// Optional, and scoped to the chosen region — districts are children of the region dictionary, not a type of their own.
+  ///
+  /// In en, this message translates to:
+  /// **'District'**
+  String get invitationDistrict;
+
+  /// Excludes a range rather than qualifying one: a negotiable figure and a stated one are different answers.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay is negotiable'**
+  String get invitationNegotiable;
+
+  /// Lower bound, in som.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from'**
+  String get invitationSalaryFrom;
+
+  /// Upper bound, in som.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay to'**
+  String get invitationSalaryTo;
+
+  /// A payment_period dictionary id — per month, per day, per shift.
+  ///
+  /// In en, this message translates to:
+  /// **'Per'**
+  String get invitationSalaryPeriod;
+
+  /// Free text by design: a general invitation is a message, and the structured version of a schedule is what publishing a vacancy is for.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get invitationSchedule;
+
+  /// Hint under the schedule field.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: six days a week, mornings'**
+  String get invitationScheduleHint;
+
+  /// The employer own words, shown to the candidate verbatim and never translated. Marked optional in the label.
+  ///
+  /// In en, this message translates to:
+  /// **'Message (optional)'**
+  String get invitationMessageLabel;
+
+  /// Hint under the message field.
+  ///
+  /// In en, this message translates to:
+  /// **'What you would like the candidate to know'**
+  String get invitationMessageHint;
+
+  /// The daily cap, entirely the server figures (section 12.3.1). `limit` is the effective total — the client deliberately does not model a free tier and a purchased one, so a future purchase raises the number and this string is already correct.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} of {limit} invitations left today'**
+  String invitationQuotaRemaining(int remaining, int limit);
+
+  /// A calendar boundary in the platform time zone, not a rolling window — "it resets at midnight" is something an employer can plan a day around.
+  ///
+  /// In en, this message translates to:
+  /// **'Resets at {at}'**
+  String invitationQuotaResets(String at);
+
+  /// Warning-toned rather than an error: the employer did nothing wrong and the remedy is a clock.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s invitations are used up'**
+  String get invitationQuotaSpentTitle;
+
+  /// The server invitation.already_invited — a fact rather than a failure. One open invitation per candidate per vacancy; answering frees the slot.
+  ///
+  /// In en, this message translates to:
+  /// **'Already invited'**
+  String get invitationAlreadySentTitle;
+
+  /// Confirmation after a successful send. A transient toast rather than an inline banner, unlike the unlock, and the difference is deliberate: an unlock carries figures somebody may want to read twice, while this carries none — the invitation itself is now in the sent list, which is where it belongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation sent'**
+  String get invitationSentConfirm;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

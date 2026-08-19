@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/network/interceptors/idempotency_interceptor.dart';
+import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invitation_quota.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invite_outcome.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -91,7 +95,7 @@ class InvitationRepository {
   /// is the same pair the unique index uses — a general invitation and a
   /// vacancy invitation to the same person are two intents and must not share a
   /// key.
-  Future<Invitation> invite({
+  Future<InviteOutcome> invite({
     required String candidateUserId,
     String? vacancyId,
     String? occupationId,
@@ -136,10 +140,54 @@ class InvitationRepository {
 
       final invitation = _one(response.data);
       await _prefs.remove(storageKey);
-      return invitation;
+      return InviteSent(invitation);
     } on DioException catch (e) {
+      // Both refusals that change what the screen offers are **409**, so they
+      // are told apart by `code` and not by status. Reading the status alone
+      // here would conflate "today's cap is used up" with "you already invited
+      // this person" — two states with different remedies and different words.
+      final outcome = _refusal(e);
+      if (outcome != null) return outcome;
+
       throw ApiException.fromDioException(e);
     }
+  }
+
+  /// The two 409s that are outcomes rather than errors, or null for anything
+  /// else.
+  ///
+  /// The idempotency key is deliberately **left in place** on both. A quota
+  /// refusal is retryable tomorrow with the same intent, and `already_invited`
+  /// means the invitation the key belongs to may well exist — clearing the key
+  /// in either case would let a later retry mint a second one.
+  InviteOutcome? _refusal(DioException e) {
+    if (e.response?.statusCode != 409) return null;
+
+    final data = e.response?.data;
+    if (data is! Map) return null;
+
+    final message = ApiException.fromDioException(e).message;
+
+    // The figures live in a nested `details` object, **not** at the top level
+    // of the error body. The backend spreads nothing: a key spread beside
+    // `statusCode`, `code` and `message` would eventually collide with one of
+    // them, and `params` — which read well inside a sentence — deliberately
+    // stay out of the body. So `details` is the opt-in place a client reads a
+    // number instead of parsing localized prose.
+    final details = data['details'];
+
+    return switch (data['code']) {
+      'invitation.daily_limit_reached' => InviteQuotaReached(
+        message,
+        limit: details is Map ? (details['limit'] as num?)?.toInt() : null,
+        resetsAt: switch (details) {
+          {'resetsAt': final String at} => ZonedTimestamp.parse(at),
+          _ => null,
+        },
+      ),
+      'invitation.already_invited' => InviteAlreadySent(message),
+      _ => null,
+    };
   }
 
   /// `GET /invitations/sent` — what this employer has sent (§8.2).
@@ -184,6 +232,46 @@ class InvitationRepository {
       };
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /invitations/quota` — how many invitations are left today (§8.2).
+  ///
+  /// ## Null means "this server has no quota", and that is not an error
+  ///
+  /// The cap is being added by the backend; today's server does not have this
+  /// route. A 404 therefore answers "no quota here" rather than "something
+  /// broke", and the screen shows no counter and blocks nothing.
+  ///
+  /// That is the same discipline that let the unlock ship ahead of its gate:
+  /// the client renders what the server can say and invents nothing. The day
+  /// the quota deploys the counter appears with no client release and no flag
+  /// anybody has to remember — and until then the send button is correct,
+  /// because **the server is the only thing that may refuse a send.** A client
+  /// that guessed a limit would refuse sends the API would have accepted.
+  ///
+  /// A malformed body is treated the same way as a 404, deliberately: a counter
+  /// is an affordance, and failing to draw one must never be what stops an
+  /// employer from working.
+  Future<InvitationQuota?> quota() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/invitations/quota',
+      );
+
+      final data = response.data;
+      if (data == null) return null;
+
+      return InvitationQuota.fromJson(data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
+      throw ApiException.fromDioException(e);
+    } on Object catch (error) {
+      // FormatException from a timestamp without an offset, or a type error
+      // from a field that is not an int. Neither should cost the employer the
+      // screen.
+      debugPrint('[invitations] quota ignored, unreadable: $error');
+      return null;
     }
   }
 
@@ -304,6 +392,14 @@ Future<List<Invitation>> sentInvitations(
   vacancyId: vacancyId,
   status: status,
 );
+
+/// Today's remaining invitations, or null on a server without the cap.
+///
+/// Watched by the send screen rather than fetched once, so sending — which
+/// invalidates it — redraws the counter.
+@riverpod
+Future<InvitationQuota?> invitationQuota(Ref ref) async =>
+    (await ref.watch(invitationRepositoryProvider.future)).quota();
 
 /// §7.4's invitation counts for one vacancy.
 @riverpod

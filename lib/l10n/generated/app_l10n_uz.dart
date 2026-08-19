@@ -1432,6 +1432,85 @@ class AppL10nUz extends AppL10n {
   @override
   String get invitationAlreadyAnswered =>
       'Bu taklifga allaqachon javob berilgan';
+
+  @override
+  String get commonChoose => 'Tanlash';
+
+  @override
+  String get invitationSendTitle => 'Taklif yuborish';
+
+  @override
+  String get invitationSend => 'Yuborish';
+
+  @override
+  String get invitationSendFree =>
+      'Yuborish bepul. Aloqa ma\'lumotlari faqat nomzod qabul qilsa ochiladi.';
+
+  @override
+  String get invitationToVacancy => 'Vakansiyaga';
+
+  @override
+  String get invitationVacancyLabel => 'Vakansiyani tanlang';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Ochiq vakansiya yo\'q';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Taklif faqat faol vakansiyaga bog\'lanishi mumkin. Umumiy ish taklifini hozir ham yuborishingiz mumkin.';
+
+  @override
+  String get invitationOccupation => 'Kasb';
+
+  @override
+  String get invitationRegion => 'Viloyat';
+
+  @override
+  String get invitationDistrict => 'Tuman';
+
+  @override
+  String get invitationNegotiable => 'To\'lov kelishiladi';
+
+  @override
+  String get invitationSalaryFrom => 'To\'lov (dan)';
+
+  @override
+  String get invitationSalaryTo => 'To\'lov (gacha)';
+
+  @override
+  String get invitationSalaryPeriod => 'Davr';
+
+  @override
+  String get invitationSchedule => 'Ish vaqti';
+
+  @override
+  String get invitationScheduleHint => 'Masalan: haftada olti kun, ertalab';
+
+  @override
+  String get invitationMessageLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationMessageHint =>
+      'Nomzod bilishi kerak deb hisoblagan narsangiz';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Bugun $limit taklifdan $remaining tasi qoldi';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return '$at da yangilanadi';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Bugungi takliflar tugadi';
+
+  @override
+  String get invitationAlreadySentTitle => 'Allaqachon taklif qilingan';
+
+  @override
+  String get invitationSentConfirm => 'Taklif yuborildi';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2860,6 +2939,85 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get invitationAlreadyAnswered =>
       'Бу таклифга аллақачон жавоб берилган';
+
+  @override
+  String get commonChoose => 'Танлаш';
+
+  @override
+  String get invitationSendTitle => 'Таклиф юбориш';
+
+  @override
+  String get invitationSend => 'Юбориш';
+
+  @override
+  String get invitationSendFree =>
+      'Юбориш бепул. Алоқа маълумотлари фақат номзод қабул қилса очилади.';
+
+  @override
+  String get invitationToVacancy => 'Вакансияга';
+
+  @override
+  String get invitationVacancyLabel => 'Вакансияни танланг';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Очиқ вакансия йўқ';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Таклиф фақат фаол вакансияга боғланиши мумкин. Умумий иш таклифини ҳозир ҳам юборишингиз мумкин.';
+
+  @override
+  String get invitationOccupation => 'Касб';
+
+  @override
+  String get invitationRegion => 'Вилоят';
+
+  @override
+  String get invitationDistrict => 'Туман';
+
+  @override
+  String get invitationNegotiable => 'Тўлов келишилади';
+
+  @override
+  String get invitationSalaryFrom => 'Тўлов (дан)';
+
+  @override
+  String get invitationSalaryTo => 'Тўлов (гача)';
+
+  @override
+  String get invitationSalaryPeriod => 'Давр';
+
+  @override
+  String get invitationSchedule => 'Иш вақти';
+
+  @override
+  String get invitationScheduleHint => 'Масалан: ҳафтада олти кун, эрталаб';
+
+  @override
+  String get invitationMessageLabel => 'Хабар (мажбурий эмас)';
+
+  @override
+  String get invitationMessageHint =>
+      'Номзод билиши керак деб ҳисоблаган нарсангиз';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Бугун $limit таклифдан $remaining таси қолди';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return '$at да янгиланади';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Бугунги таклифлар тугади';
+
+  @override
+  String get invitationAlreadySentTitle => 'Аллақачон таклиф қилинган';
+
+  @override
+  String get invitationSentConfirm => 'Таклиф юборилди';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4290,4 +4448,83 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get invitationAlreadyAnswered =>
       'Bu taklifga allaqachon javob berilgan';
+
+  @override
+  String get commonChoose => 'Tanlash';
+
+  @override
+  String get invitationSendTitle => 'Taklif yuborish';
+
+  @override
+  String get invitationSend => 'Yuborish';
+
+  @override
+  String get invitationSendFree =>
+      'Yuborish bepul. Aloqa ma\'lumotlari faqat nomzod qabul qilsa ochiladi.';
+
+  @override
+  String get invitationToVacancy => 'Vakansiyaga';
+
+  @override
+  String get invitationVacancyLabel => 'Vakansiyani tanlang';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Ochiq vakansiya yo\'q';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Taklif faqat faol vakansiyaga bog\'lanishi mumkin. Umumiy ish taklifini hozir ham yuborishingiz mumkin.';
+
+  @override
+  String get invitationOccupation => 'Kasb';
+
+  @override
+  String get invitationRegion => 'Viloyat';
+
+  @override
+  String get invitationDistrict => 'Tuman';
+
+  @override
+  String get invitationNegotiable => 'To\'lov kelishiladi';
+
+  @override
+  String get invitationSalaryFrom => 'To\'lov (dan)';
+
+  @override
+  String get invitationSalaryTo => 'To\'lov (gacha)';
+
+  @override
+  String get invitationSalaryPeriod => 'Davr';
+
+  @override
+  String get invitationSchedule => 'Ish vaqti';
+
+  @override
+  String get invitationScheduleHint => 'Masalan: haftada olti kun, ertalab';
+
+  @override
+  String get invitationMessageLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationMessageHint =>
+      'Nomzod bilishi kerak deb hisoblagan narsangiz';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Bugun $limit taklifdan $remaining tasi qoldi';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return '$at da yangilanadi';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Bugungi takliflar tugadi';
+
+  @override
+  String get invitationAlreadySentTitle => 'Allaqachon taklif qilingan';
+
+  @override
+  String get invitationSentConfirm => 'Taklif yuborildi';
 }

@@ -99,7 +99,7 @@ after M11 while being delivered before M8.
 | M4 | Employer profile + verification status | after M1 |
 | M5 | Vacancy create/edit + statuses (employer) | after M2 + M4 |
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
-| M7 | Candidate search + invitations + shortlists (employer) | search done; **invitations: candidate half done** 2026-08-19, employer half next — see the §8.2 question below |
+| M7 | Candidate search + invitations + shortlists (employer) | search done; **invitations: inbox and send done** 2026-08-19 — sent list and §7.4 counts remain |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
 | M8 | Chat + interviews | after M6 + M7 **+ M12** (§9.1 gates employer-initiated chat on the unlock) |
@@ -292,7 +292,17 @@ and stay that way. What changed is everything downstream of a card:
   new codes would replace one wrong sentence with another and lose the mutation
   tests that pin it. It moves with M12, in the same change as the codes.
 
-### Ask the client this too — §8.2's "then"
+### §8.2's "then" — asked and answered, 2026-08-19
+
+**Answered: sending an invitation is free.** The client confirmed the lenient
+reading the same day, and a daily cap replaces the price — 30 per employer per
+day, server configuration, with extra invitations possibly purchasable later. The
+question and its reasoning are kept below because the *shape* of it generalises.
+
+**Two things the client still owes the specification**, neither of them code:
+§8.2's "may then" contradicts §7.3 and §7.4 and should be reworded, and the cap
+itself belongs in the document — §8.2 says nothing about invitation volume today,
+which is how an unbounded free action got as far as being built.
 
 Discovered while building the invitation inbox on 2026-08-19, and it is the same
 *shape* as the §11.1 question above rather than a duplicate of it.

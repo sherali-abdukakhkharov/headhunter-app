@@ -620,7 +620,19 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       context until the candidate **accepts**, at which point the code becomes
       `accepted_invitation` and contact opens. The gate is acceptance, not
       payment. §8.2's prose disagrees; see the item below it
-- [!] **§8.2 as revised says unlock *then* invite, and the server does not.**
+- [x] ~~**§8.2 says unlock *then* invite, and the server does not**~~ —
+      **answered by the client 2026-08-19: sending is free.** What settled it was
+      not the server but the specification arguing with itself. §7.3 lists "Send
+      invitation" beside "View profile" and "Save" — two explicitly free actions —
+      in the sentence right after the one saying phone, e-mail and CV are locked.
+      And §7.4, the client's own worked example, fills **20 openings** by sending
+      invitations in step 6; filling 20 takes far more than 20 invitations, and at
+      2 Coins each the employer would spend over a million som before a single
+      reply, with the 10-Coin registration bonus covering five people. §8.2's
+      "then" is one word against two sections and a running server. Recorded for
+      the client as a spec correction, not a code change. The original note is
+      kept below because the reasoning generalises.
+- [-] ~~**§8.2 as revised says unlock *then* invite, and the server does not.**~~
       The sentence reads "To initiate direct contact … the employer must have a
       Candidate Unlock entitlement for that candidate. An invitation **may then**
       be attached to an active vacancy or sent as a general work invitation." The
@@ -637,6 +649,30 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       employer should not pay to be declined. *Blocks nothing today: the
       candidate inbox is unaffected either way, and the employer's send screen
       is the one that would carry the gate.*
+- [x] **A daily invitation cap, server-owned, 2026-08-19.** With sending free
+      and uncapped, a verified employer could send an unbounded number — no limit
+      existed in the service or in the specification. The client asked for a daily
+      cap and said extra invitations may become **purchasable** later, which is
+      what settled ownership: the moment a quota can be bought it is a balance,
+      and §12.3.1 puts balances on the server. So the client holds **no number**
+      and refuses no send on its own authority.
+      The backend shipped it the same day: `GET /invitations/quota` returning
+      `{remaining, limit, resetsAt}`, `EMPLOYER_DAILY_INVITATION_LIMIT` defaulting
+      to **30**, and a 409 `invitation.daily_limit_reached`. Two shapes worth
+      keeping: `limit` is the **effective** total rather than free-plus-purchased,
+      so the client models no tiers and a future purchase raises the number with no
+      client release; and the day is a **calendar** day in `PLATFORM_TIME_ZONE`,
+      because "it resets at midnight" is something an employer can plan around and
+      "one more in 7 hours 22 minutes" is not.
+      **An absent quota blocks nothing.** A 404 or an unreadable body means "this
+      server has no cap" — no counter, nothing disabled — because a form disabled
+      by a counter that failed to load would refuse sends the API accepts. Pinned
+      and mutation-verified both ways: hard-coding 30 fails the fixture whose limit
+      is 47, and treating an absent quota as blocked fails the no-quota test.
+      **The 409's figures are in a nested `details` object, not at the top level**
+      — caught before shipping by reading `localized.exception.ts`, which spreads
+      nothing on purpose so a key cannot collide with `statusCode`, `code` or
+      `message`
 - [x] **Candidate invitation inbox (§8.2, UAT-07's second half), 2026-08-19.**
       Three actions rendered from the status rather than as a fixed row of three,
       so an answered invitation offers nothing and one already at
@@ -664,12 +700,41 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       needs 330 of a 360pt card's 298. It is a `Wrap` now — a badge is icon plus
       word, so truncating it would put the state back on colour alone. Pinned at
       the design's own QA case, 320pt at 2.0x, and mutation-verified
-- [ ] **Employer send + sent list (UAT-07's first half).** `POST /invitations`,
-      `GET /invitations/sent` with the server's own `vacancyId`/`status`
-      filters, and `GET /invitations/counts/:vacancyId` for §7.4's invited and
-      accepted counts. The repository covers all three already. What is left is
-      the two screens and the §8.2 question above, which is where the gate would
-      go if the answer is "pay first"
+- [x] **Employer send, 2026-08-19.** `POST /invitations` behind a compose
+      screen with §8.2's two shapes on a segmented control, reached from §7.3's
+      candidate profile. **No price and no unlock on the screen**, swept by a test
+      for "coin", "unlock", "uzs" and "top up" — and it says sending is free,
+      because an employer who thinks inviting costs Coins will not invite.
+      Only **open** vacancies are offered (BR-06): the server refuses the rest
+      with `invitation.vacancy_not_open`, and an employer with none gets a notice
+      rather than an error, because the general shape needs nothing published.
+      Switching shape clears the other shape's binding, so `shape_invalid` is
+      unreachable rather than merely unlikely; negotiable pay discards a typed
+      range rather than qualifying it.
+      Two of the server's refusals are **outcomes rather than exceptions**, since
+      they change what the screen offers: the quota 409 and `already_invited`.
+      Both share status 409 and are told apart by `code`, not by status — reading
+      the status alone would conflate "not today" with "you already did this", two
+      states with different remedies.
+      Not offered where a send would *fail* rather than merely be declined:
+      `not_verified_employer` (BR-03, and the exposure notice already routes there)
+      and `hidden_by_candidate` (BR-02 — the server will not accept an invitation
+      to somebody the employer could not have found)
+- [ ] **Employer sent list + §7.4 counts.** `GET /invitations/sent` with the
+      server's own `vacancyId`/`status` filters — unlike the ledger's, these are
+      real server-side filters, so a filtered list is complete rather than
+      filtered-over-what-was-loaded — and `GET /invitations/counts/:vacancyId` for
+      §7.4's invited and accepted counts. Repository and providers are built; the
+      screens are not
+- [ ] **The candidate card carries no invitation status.** Unlike the vacancy
+      card, which carries `applicationStatus` so Apply is offered exactly when
+      valid (BR-07), `CandidateCard` has `isSaved` and `isShortlisted` and nothing
+      about invitations — so a search result cannot show "already invited" and the
+      employer learns it from the 409. Handled honestly for now (that refusal
+      reads as a fact, not a failure), and cross-referencing `/invitations/sent`
+      would fix it client-side, except that endpoint is unpaged and returns an
+      employer's whole history. Worth one backend ask covering both: a
+      `candidateUserId` filter, or the status on the card
 - [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
       to hang off, which is `GET /vacancies/:id/shortlist`
 

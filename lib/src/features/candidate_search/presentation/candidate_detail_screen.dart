@@ -11,6 +11,8 @@ import 'package:jobbridge_app/src/features/candidate_search/data/candidate_searc
 import 'package:jobbridge_app/src/features/candidate_search/presentation/protected_contact_card.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invite_outcome.dart';
+import 'package:jobbridge_app/src/features/invitations/presentation/compose_invitation_screen.dart';
 import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
@@ -120,6 +122,26 @@ class _ProfileState extends ConsumerState<_Profile> {
   Unlock? _justUnlocked;
 
   CandidateForEmployer get _candidate => widget.candidate;
+
+  /// Whether §7.3's "Send invitation" is worth offering on this profile.
+  ///
+  /// Excluded on exactly the two reasons a send would fail rather than merely
+  /// be declined:
+  ///
+  /// - `not_verified_employer` — BR-03, which the server enforces on
+  ///   `POST /invitations` too. The exposure notice already routes to
+  ///   verification, so a button that 403s would be a worse second route there.
+  /// - `hidden_by_candidate` — the candidate left search, and BR-02 means the
+  ///   server will not accept an invitation to somebody the employer could not
+  ///   have found.
+  ///
+  /// Everything else is invitable, including a candidate who has already
+  /// applied: an employer may well want to invite them to a *different*
+  /// vacancy, and §8.2 puts no interaction condition on sending.
+  bool get _canInvite => !const {
+    'not_verified_employer',
+    'hidden_by_candidate',
+  }.contains(_candidate.exposureReason);
 
   @override
   Widget build(BuildContext context) {
@@ -240,15 +262,45 @@ class _ProfileState extends ConsumerState<_Profile> {
           ),
         ),
 
-        // §6.6 and UAT-17 both want the cost visible before the decision, and
-        // it comes from the wallet rather than a constant — §10.5 can reprice
-        // an unlock while the app is installed. No price means no bar, rather
-        // than a bar labelled with a guess.
-        if (canOfferUnlock && wallet != null)
-          _UnlockBar(
-            label: l10n.unlockContact(coins),
-            onPressed: () => _unlock(wallet),
-          ),
+        // §3.1's sticky action area. Two actions can live here and they are
+        // ordered by consequence rather than by price: the unlock is primary
+        // where it is offered because it is the decision that costs something
+        // and §6.6 wants the cost visible at the moment of choosing, and the
+        // invitation is primary where there is nothing to unlock, because then
+        // it is the only thing an employer can do from this screen.
+        _ActionBar(
+          children: [
+            // §6.6 and UAT-17 both want the cost visible before the decision,
+            // and it comes from the wallet rather than a constant — §10.5 can
+            // reprice an unlock while the app is installed. No price means no
+            // button, rather than one labelled with a guess.
+            if (canOfferUnlock && wallet != null)
+              HhButton(
+                label: l10n.unlockContact(coins),
+                onPressed: () => _unlock(wallet),
+              ),
+
+            // Free (§7.3, and the client's 2026-08-19 answer), so it is offered
+            // regardless of the balance and regardless of whether an unlock is
+            // available. **Not offered to an unverified employer**: BR-03 makes
+            // the server refuse it, and `not_verified_employer` is the code
+            // that says so — the notice above already routes them to
+            // verification, so a button that 403s would be a second, worse
+            // route to the same place. A candidate who left search is not
+            // invitable either.
+            if (_canInvite)
+              if (canOfferUnlock)
+                HhButton.secondary(
+                  label: l10n.invitationSendTitle,
+                  onPressed: _invite,
+                )
+              else
+                HhButton(
+                  label: l10n.invitationSendTitle,
+                  onPressed: _invite,
+                ),
+          ],
+        ),
       ],
     );
   }
@@ -275,6 +327,30 @@ class _ProfileState extends ConsumerState<_Profile> {
     ref.invalidate(searchCandidateProvider(_candidate.candidateUserId));
   }
 
+  /// Opens §8.2's compose form, and refreshes what the server will now say.
+  ///
+  /// The profile is refetched on a successful send for the same reason the
+  /// unlock refetches it: acceptance is what opens contact, so the *server*
+  /// decides what this screen shows next, and an invitation that is merely sent
+  /// changes `exposureReason` not at all. Refetching costs one request and
+  /// cannot disagree with the rule.
+  Future<void> _invite() async {
+    final outcome = await showComposeInvitation(
+      context,
+      candidateUserId: _candidate.candidateUserId,
+      candidateName: _candidate.fullName,
+    );
+
+    if (outcome is! InviteSent || !mounted) return;
+
+    ref.invalidate(searchCandidateProvider(_candidate.candidateUserId));
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppL10n.of(context).invitationSentConfirm)),
+    );
+  }
+
   /// BR-03's destination.
   ///
   /// The employer profile is a shell tab rather than a pushed route, so this
@@ -286,29 +362,43 @@ class _ProfileState extends ConsumerState<_Profile> {
   }
 }
 
-/// The sticky priced action, at the design's 52px control height.
-class _UnlockBar extends StatelessWidget {
-  const _UnlockBar({required this.label, required this.onPressed});
+/// The sticky action area, at the design's 52px control height (§3.1).
+///
+/// Was `_UnlockBar` and held one priced button. It holds a list now because a
+/// free action landed beside the paid one, and hiding the free one behind an
+/// app-bar icon would have made §7.3's "Send invitation" the least discoverable
+/// of the three actions that section lists.
+class _ActionBar extends StatelessWidget {
+  const _ActionBar({required this.children});
 
-  final String label;
-  final VoidCallback onPressed;
+  final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(HhSpace.gutter),
-    decoration: const BoxDecoration(
-      color: HhColors.white,
-      boxShadow: HhElevation.sheet,
-    ),
-    child: SafeArea(
-      top: false,
-      child: HhButton(
-        label: label,
-        iconPath: HhIconPath.coin,
-        onPressed: onPressed,
+  Widget build(BuildContext context) {
+    // Nothing to offer means no bar at all, rather than an empty strip with a
+    // shadow — which reads as a rendering failure at the bottom of the screen.
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(HhSpace.gutter),
+      decoration: const BoxDecoration(
+        color: HhColors.white,
+        boxShadow: HhElevation.sheet,
       ),
-    ),
-  );
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final (i, child) in children.indexed) ...[
+              if (i > 0) const SizedBox(height: HhSpace.sm),
+              child,
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /// Why contact is closed, when spending Coins is not what would open it.
