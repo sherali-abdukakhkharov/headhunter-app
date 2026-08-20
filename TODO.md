@@ -1414,10 +1414,62 @@ paywall that is not theirs.
       battery to answer "nothing yet" on a product whose users are often on
       prepaid data. The app bar carries an explicit refresh meanwhile, and a
       notification tap will reuse this route rather than introducing one
-- [ ] Interview display by type + confirm / request another time (§8.3).
-      **`GET /interviews/mine` carries `@RequireRole('candidate')`**, so the
-      candidate half is buildable today and the employer half is the contract
-      gap already filed under M7's dashboard ask
+- [x] **Interview display by type + confirm / request another time, 2026-08-20**
+      — §8.3's candidate half (UAT-09).
+      **It lives on the application, not in a list of its own.** §8.3 hangs an
+      interview off an application and that is where a candidate looks: the
+      stage badge already says "Interview", and the card says *when*, *what
+      kind* and *where*. A destination of its own would need a sixth bottom-nav
+      tab (the design caps it at five) or a third segment on the applications
+      tab — and "Собеседования" does not fit a third of 360pt on one line, the
+      same measurement that kept §8.2's status filter off `HhSegmented`.
+      **One request for a list of any length.** `GET /interviews/mine` returns
+      every interview across every application, grouped by `applicationId` in
+      Dart; an application with no interview — the common case — costs no
+      request and renders nothing.
+      Four things are load-bearing:
+      1. **`hasPassed` compares instants, never wall clocks.** The wall clock
+         carries the platform's +05:00, so comparing it to `now` is five hours
+         out for a candidate abroad — in the direction that *hides* an interview
+         they have already missed. Pinned by a fixture whose instant is in the
+         past while its wall clock is still in the future, and
+         mutation-verified.
+      2. **A passed time is said, not hidden, and stays answerable.** The record
+         of what was arranged is what a candidate who missed one needs to see,
+         and the server still accepts a response — refusing here would be the
+         client deciding on the employer's behalf that it is too late.
+      3. **The phone type needed a sentence of its own**, because it is the one
+         type with no detail field: the number is the candidate's own and
+         already verified (BR-01), which is exactly why the employer was never
+         asked to retype it, and without the line the card would be a time and a
+         word.
+      4. **A meeting link is copied, not opened.** `url_launcher` would be a new
+         dependency against pubspec.yaml's load-bearing bounds, and the browser
+         takes a URL from the clipboard exactly as the dialler takes a number —
+         the same answer the contact block already gives.
+      Asking for another time **requires saying which time**, though the server
+      takes the note as optional: "the candidate wants another time" with nothing
+      attached is a message the employer cannot act on, so the interview stalls
+      with each side waiting for the other. Same judgement as §8.2's "Request
+      details". Confirming takes an optional note and says the answer is
+      changeable, because §8.3's only ending is the employer cancelling
+- [x] **The candidate's application row now says which job it is, 2026-08-20** —
+      found while placing the interview card. `Application` carries a
+      `vacancyId` and no title, so the row had been rendering a stage badge and
+      *nothing else*: a list of bare badges, and an interview card reading
+      "Tuesday 14:00, in person, at this address" underneath one would have been
+      unusable. The posting is fetched per row, the same treatment an §8.2
+      invitation's subject gets, and a 404 reads as "no longer available" rather
+      than as a fault
+- [ ] **The employer's half of §8.3** — schedule, reschedule, cancel. All three
+      routes exist (`POST /applications/:id/interviews`, `PUT /interviews/:id`,
+      `POST /interviews/:id/cancel`) and so does the employer's per-application
+      list, `GET /applications/:id/interviews`, which is open to **both** sides.
+      So this is ordinary client work, and the note that used to sit here was
+      too pessimistic: what is missing is only the **aggregate** list —
+      `GET /interviews/mine` is candidate-only, which is why §6.2's dashboard
+      shows the three counts it can answer instead of a placeholder where "5
+      interviews" would go. That blocks a metric, not a screen
 - [ ] **Deep links switch role before navigating** where required *(moved here
       from M9 - routing infrastructure, not a notification feature)*
 - [x] **The chat screens and the new badges have been looked at, 2026-08-20** —

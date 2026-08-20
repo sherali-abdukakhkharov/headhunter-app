@@ -1896,6 +1896,89 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get chatOpenAction => 'Xabar yuborish';
+
+  @override
+  String get interviewTitle => 'Suhbat';
+
+  @override
+  String get interviewStatusScheduled => 'Belgilangan';
+
+  @override
+  String get interviewStatusConfirmed => 'Tasdiqlangan';
+
+  @override
+  String get interviewStatusRescheduleRequested => 'Boshqa vaqt so\'raldi';
+
+  @override
+  String get interviewStatusCancelled => 'Bekor qilingan';
+
+  @override
+  String get interviewTypePhone => 'Telefon orqali';
+
+  @override
+  String get interviewTypeInPerson => 'Yuzma-yuz';
+
+  @override
+  String get interviewTypeExternalLink => 'Video havola';
+
+  @override
+  String get interviewPhoneNote =>
+      'Ish beruvchi profilingizdagi raqamga qo\'ng\'iroq qiladi.';
+
+  @override
+  String get interviewWhere => 'Manzil';
+
+  @override
+  String get interviewLink => 'Havola';
+
+  @override
+  String get interviewInstructions => 'Ish beruvchidan';
+
+  @override
+  String get interviewYourReply => 'Sizning javobingiz';
+
+  @override
+  String get interviewPassed => 'Bu vaqt allaqachon o\'tib ketgan.';
+
+  @override
+  String get interviewCancelledNotice =>
+      'Bu suhbatni ish beruvchi bekor qildi.';
+
+  @override
+  String get interviewConfirm => 'Tasdiqlash';
+
+  @override
+  String get interviewRequestAnother => 'Boshqa vaqt so\'rash';
+
+  @override
+  String get interviewConfirmTitle => 'Bu vaqtni tasdiqlaysizmi?';
+
+  @override
+  String get interviewConfirmBody =>
+      'Ish beruvchi vaqt sizga qulay ekanini ko\'radi. Keyinchalik biror narsa o\'zgarsa, boshqa vaqt so\'rashingiz mumkin.';
+
+  @override
+  String get interviewRescheduleTitle => 'Boshqa vaqt so\'rash';
+
+  @override
+  String get interviewRescheduleBody =>
+      'Ish beruvchi yangi vaqt belgilamaguncha suhbat kuchda qoladi va u quyida yozganingizni ko\'radi.';
+
+  @override
+  String get interviewNoteLabel => 'Qaysi vaqtlar sizga qulay';
+
+  @override
+  String get interviewNoteHint =>
+      'Shu hafta tushdan keyin yoki juma kuni ertalab';
+
+  @override
+  String get interviewReplyNoteLabel => 'Izoh (majburiy emas)';
+
+  @override
+  String get interviewReplyNoteHint => 'O\'n daqiqa oldin yetib boraman';
+
+  @override
+  String get interviewNotAllowed => 'Bu suhbat holati o\'zgargan';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3786,6 +3869,87 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get chatOpenAction => 'Хабар юбориш';
+
+  @override
+  String get interviewTitle => 'Суҳбат';
+
+  @override
+  String get interviewStatusScheduled => 'Белгиланган';
+
+  @override
+  String get interviewStatusConfirmed => 'Тасдиқланган';
+
+  @override
+  String get interviewStatusRescheduleRequested => 'Бошқа вақт сўралди';
+
+  @override
+  String get interviewStatusCancelled => 'Бекор қилинган';
+
+  @override
+  String get interviewTypePhone => 'Телефон орқали';
+
+  @override
+  String get interviewTypeInPerson => 'Юзма-юз';
+
+  @override
+  String get interviewTypeExternalLink => 'Видео ҳавола';
+
+  @override
+  String get interviewPhoneNote =>
+      'Иш берувчи профилингиздаги рақамга қўнғироқ қилади.';
+
+  @override
+  String get interviewWhere => 'Манзил';
+
+  @override
+  String get interviewLink => 'Ҳавола';
+
+  @override
+  String get interviewInstructions => 'Иш берувчидан';
+
+  @override
+  String get interviewYourReply => 'Сизнинг жавобингиз';
+
+  @override
+  String get interviewPassed => 'Бу вақт аллақачон ўтиб кетган.';
+
+  @override
+  String get interviewCancelledNotice => 'Бу суҳбатни иш берувчи бекор қилди.';
+
+  @override
+  String get interviewConfirm => 'Тасдиқлаш';
+
+  @override
+  String get interviewRequestAnother => 'Бошқа вақт сўраш';
+
+  @override
+  String get interviewConfirmTitle => 'Бу вақтни тасдиқлайсизми?';
+
+  @override
+  String get interviewConfirmBody =>
+      'Иш берувчи вақт сизга қулай эканини кўради. Кейинчалик бирор нарса ўзгарса, бошқа вақт сўрашингиз мумкин.';
+
+  @override
+  String get interviewRescheduleTitle => 'Бошқа вақт сўраш';
+
+  @override
+  String get interviewRescheduleBody =>
+      'Иш берувчи янги вақт белгиламагунча суҳбат кучда қолади ва у қуйида ёзганингизни кўради.';
+
+  @override
+  String get interviewNoteLabel => 'Қайси вақтлар сизга қулай';
+
+  @override
+  String get interviewNoteHint => 'Шу ҳафта тушдан кейин ёки жума куни эрталаб';
+
+  @override
+  String get interviewReplyNoteLabel => 'Изоҳ (мажбурий эмас)';
+
+  @override
+  String get interviewReplyNoteHint => 'Ўн дақиқа олдин етиб бораман';
+
+  @override
+  String get interviewNotAllowed => 'Бу суҳбат ҳолати ўзгарган';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5680,4 +5844,87 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get chatOpenAction => 'Xabar yuborish';
+
+  @override
+  String get interviewTitle => 'Suhbat';
+
+  @override
+  String get interviewStatusScheduled => 'Belgilangan';
+
+  @override
+  String get interviewStatusConfirmed => 'Tasdiqlangan';
+
+  @override
+  String get interviewStatusRescheduleRequested => 'Boshqa vaqt so\'raldi';
+
+  @override
+  String get interviewStatusCancelled => 'Bekor qilingan';
+
+  @override
+  String get interviewTypePhone => 'Telefon orqali';
+
+  @override
+  String get interviewTypeInPerson => 'Yuzma-yuz';
+
+  @override
+  String get interviewTypeExternalLink => 'Video havola';
+
+  @override
+  String get interviewPhoneNote =>
+      'Ish beruvchi profilingizdagi raqamga qo\'ng\'iroq qiladi.';
+
+  @override
+  String get interviewWhere => 'Manzil';
+
+  @override
+  String get interviewLink => 'Havola';
+
+  @override
+  String get interviewInstructions => 'Ish beruvchidan';
+
+  @override
+  String get interviewYourReply => 'Sizning javobingiz';
+
+  @override
+  String get interviewPassed => 'Bu vaqt allaqachon o\'tib ketgan.';
+
+  @override
+  String get interviewCancelledNotice =>
+      'Bu suhbatni ish beruvchi bekor qildi.';
+
+  @override
+  String get interviewConfirm => 'Tasdiqlash';
+
+  @override
+  String get interviewRequestAnother => 'Boshqa vaqt so\'rash';
+
+  @override
+  String get interviewConfirmTitle => 'Bu vaqtni tasdiqlaysizmi?';
+
+  @override
+  String get interviewConfirmBody =>
+      'Ish beruvchi vaqt sizga qulay ekanini ko\'radi. Keyinchalik biror narsa o\'zgarsa, boshqa vaqt so\'rashingiz mumkin.';
+
+  @override
+  String get interviewRescheduleTitle => 'Boshqa vaqt so\'rash';
+
+  @override
+  String get interviewRescheduleBody =>
+      'Ish beruvchi yangi vaqt belgilamaguncha suhbat kuchda qoladi va u quyida yozganingizni ko\'radi.';
+
+  @override
+  String get interviewNoteLabel => 'Qaysi vaqtlar sizga qulay';
+
+  @override
+  String get interviewNoteHint =>
+      'Shu hafta tushdan keyin yoki juma kuni ertalab';
+
+  @override
+  String get interviewReplyNoteLabel => 'Izoh (majburiy emas)';
+
+  @override
+  String get interviewReplyNoteHint => 'O\'n daqiqa oldin yetib boraman';
+
+  @override
+  String get interviewNotAllowed => 'Bu suhbat holati o\'zgargan';
 }

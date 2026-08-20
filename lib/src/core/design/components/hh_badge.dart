@@ -185,6 +185,54 @@ class HhBadge extends StatelessWidget {
     : tone = HhTone.neutral,
       iconPath = HhIconPath.arrowLeft;
 
+  // --- Interview · Suhbat vaqti (4 states) ---------------------------------
+
+  /// Scheduled — **waiting on the candidate to answer** (§8.3).
+  ///
+  /// Warning-toned because the tone means "waiting on a person", and here that
+  /// person is whoever is reading it: the candidate owes an answer, and the
+  /// employer is waiting for one. A calendar rather than a clock: the clock
+  /// means *a reviewer holds it*, and nobody is reviewing an interview — it has
+  /// a date, which is the whole point of the object.
+  const HhBadge.interviewScheduled({required this.label, super.key})
+    : tone = HhTone.warning,
+      iconPath = HhIconPath.calendar;
+
+  /// Confirmed — a **person** agreed, the same check-circle as
+  /// [HhBadge.applicationHired] and [HhBadge.invitationAccepted].
+  ///
+  /// **Not terminal**, which is the one thing about this state worth
+  /// remembering: §8.3 lets a candidate who confirmed and then found a clash
+  /// ask for another time, so the badge is a good outcome and not an ending.
+  const HhBadge.interviewConfirmed({required this.label, super.key})
+    : tone = HhTone.success,
+      iconPath = HhIconPath.checkCircle;
+
+  /// Another time requested — **the candidate asked, so it waits on the
+  /// employer.**
+  ///
+  /// The same question-mark and warning tone as
+  /// [HhBadge.invitationDetailsRequested], because it is the same fact about a
+  /// different object: one side asked something and the other holds it. Nothing
+  /// is wrong, and the interview is not off.
+  const HhBadge.interviewRescheduleRequested({
+    required this.label,
+    super.key,
+  }) : tone = HhTone.warning,
+       iconPath = HhIconPath.helpCircle;
+
+  /// Cancelled — the employer called it off (§8.3).
+  ///
+  /// Neutral and the same arrow as [HhBadge.invitationDeclined] and
+  /// [HhBadge.applicationWithdrawn]: the party whose choice it was has stepped
+  /// away. Deliberately **not** error-toned even though it is unwelcome news to
+  /// a candidate — a cancelled interview is not a rejected application, the
+  /// application carries its own stage, and painting this red would tell
+  /// somebody they had lost something the badge cannot know they lost.
+  const HhBadge.interviewCancelled({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.arrowLeft;
+
   // --- Conversation · Suhbat (2 states) ------------------------------------
 
   /// Read-only — the hiring interaction ended, so the thread is history (§9.1).

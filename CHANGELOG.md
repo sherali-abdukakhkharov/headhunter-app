@@ -25,6 +25,18 @@ build 3 as an upgrade.
 
 ### Added
 
+- **Interviews (§8.3), the candidate's side** — the time, the kind, where to go
+  or the link to join, whatever the employer wrote to prepare you, and the two
+  answers: confirm, or ask for another time. It appears on the application the
+  interview belongs to, which is where the stage badge already says "Interview".
+  Asking for another time asks *which* time, because "another time please" with
+  nothing attached leaves both sides waiting for the other. Confirming is not
+  final — if something changes you can still ask.
+  A meeting link is **copyable** rather than tappable: opening one would mean a
+  new dependency, and the browser takes a URL from the clipboard exactly as the
+  dialler takes a phone number.
+- The candidate's application rows now say **which job** they are for. They had
+  been showing a stage badge and nothing else.
 - **Chat (§9.1)** — the Messages tab in both shells, and the thread behind it:
   history, a composer, sent/read state, attachments you can open, blocking with
   its reason, and reporting a message into the queue M10 reviews. One screen
@@ -55,8 +67,10 @@ build 3 as an upgrade.
 - `HhCheckboxRow` and `HhRadioRow` take an optional `description`, the second
   line `HhSwitchRow` already had. The control aligns to the label rather than to
   the middle of a two-line block.
-- The status vocabulary gains two badges for a conversation — read-only and
-  blocked — and `HhUnreadPill` for a count. All three are in `/_design`.
+- The status vocabulary gains four badges for an interview — scheduled,
+  confirmed, another-time-asked, cancelled — two for a conversation
+  (read-only, blocked), and `HhUnreadPill` for a count. All seven are in
+  `/_design`.
 - One date format for the whole app. `invitationStamp` and a private copy in the
   account screen became `wallClockStamp` in `lib/src/shared/format/`; chat was
   the third caller, and three copies of a date format are three ways to date one

@@ -102,7 +102,7 @@ after M11 while being delivered before M8.
 | M7 | Candidate search + invitations + shortlists (employer) | **done** — search §7.1–§7.3, invitations (inbox and send 2026-08-19, sent list and §7.4 counts 2026-08-20) and the per-vacancy shortlist (2026-08-20). Two carried notes in TODO.md, both backend asks rather than client work: `candidateName` on a sent invitation, and an invitation state on `CandidateCard` |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
-| M8 | Chat + interviews | **§9.1's chat done** 2026-08-20 — conversation list, thread, sent/read, block, report, read-only history, and both roles' Messages tab from one screen. §9.1's revised gate is the *same* question §8.2's "then" raised, answered the same lenient way: the client holds no copy of the rule and renders the server's refusal. Open: §8.3's interviews (the employer's list is a contract gap), deep links, and an attachment **send** — blocked on a `file_purpose` code, not on a screen |
+| M8 | Chat + interviews | **§9.1's chat and §8.3's candidate half done** 2026-08-20 — conversation list, thread, sent/read, block, report, read-only history, both roles' Messages tab from one screen; and the interview card on the application it belongs to, with confirm / ask-for-another-time. §9.1's revised gate is the *same* question §8.2's "then" raised, answered the same lenient way: the client holds no copy of the rule and renders the server's refusal. Open: §8.3's **employer** half (ordinary work — the routes exist), deep links, and an attachment **send** — blocked on a `file_purpose` code, not on a screen |
 | M9 | Notifications + push | **last feature milestone** - after M10 |
 | M10 | Admin module (now including §10.5 wallet/payment administration) | after M4 + M5 + M12 |
 | M11 | Hardening: performance, accessibility, offline, acceptance | last |
@@ -481,11 +481,17 @@ second instance of one spec contradiction rather than as a second question.
   `delivered`**: it is a property of push (M9), and a field set with `createdAt`
   would be a fabricated answer.
 - [done 2026-08-20] Report and block; read-only history for closed interactions.
-- Interview scheduling display by type (phone / in-person / external link),
-  instructions, and confirm / request-another-time. The candidate half is
-  buildable now; the employer's list is a **contract gap** —
-  `GET /interviews/mine` is candidate-only, so §6.2's third header metric cannot
-  be built at all.
+- [done 2026-08-20] Interview display by type (phone / in-person / external
+  link), instructions, and confirm / request-another-time — §8.3's **candidate**
+  half. It renders on the application the interview belongs to rather than in a
+  list of its own, and `hasPassed` compares instants rather than wall clocks,
+  which is the one comparison in this feature that can cost somebody a job.
+- The employer's half of §8.3 — schedule, reschedule, cancel. Ordinary client
+  work: all three routes exist, and `GET /applications/:id/interviews` is open to
+  both sides. What is genuinely missing is only the **aggregate** list, since
+  `GET /interviews/mine` is candidate-only — so §6.2's third header metric ("5
+  interviews") cannot be built, and the dashboard shows the three counts it can
+  answer instead of a placeholder.
 - **Deep links, including the role switch before navigating** (ARCHITECTURE.md
   §3). Moved here from M9: routing infrastructure that chat and share-a-vacancy
   both need, and it must not sit behind the deferred notifications milestone.

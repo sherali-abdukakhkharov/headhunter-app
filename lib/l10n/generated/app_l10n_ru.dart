@@ -1914,4 +1914,87 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get chatOpenAction => 'Отправить сообщение';
+
+  @override
+  String get interviewTitle => 'Собеседование';
+
+  @override
+  String get interviewStatusScheduled => 'Назначено';
+
+  @override
+  String get interviewStatusConfirmed => 'Подтверждено';
+
+  @override
+  String get interviewStatusRescheduleRequested => 'Просят другое время';
+
+  @override
+  String get interviewStatusCancelled => 'Отменено';
+
+  @override
+  String get interviewTypePhone => 'По телефону';
+
+  @override
+  String get interviewTypeInPerson => 'Личная встреча';
+
+  @override
+  String get interviewTypeExternalLink => 'Видеосвязь';
+
+  @override
+  String get interviewPhoneNote =>
+      'Работодатель позвонит на номер из вашего профиля.';
+
+  @override
+  String get interviewWhere => 'Где';
+
+  @override
+  String get interviewLink => 'Ссылка';
+
+  @override
+  String get interviewInstructions => 'От работодателя';
+
+  @override
+  String get interviewYourReply => 'Ваш ответ';
+
+  @override
+  String get interviewPassed => 'Это время уже прошло.';
+
+  @override
+  String get interviewCancelledNotice =>
+      'Работодатель отменил это собеседование.';
+
+  @override
+  String get interviewConfirm => 'Подтвердить';
+
+  @override
+  String get interviewRequestAnother => 'Попросить другое время';
+
+  @override
+  String get interviewConfirmTitle => 'Подтвердить это время?';
+
+  @override
+  String get interviewConfirmBody =>
+      'Работодатель увидит, что время вам подходит. Если что-то изменится, вы всё равно сможете попросить другое время.';
+
+  @override
+  String get interviewRescheduleTitle => 'Попросить другое время';
+
+  @override
+  String get interviewRescheduleBody =>
+      'Собеседование остаётся в силе, пока работодатель не назначит новое время, и он увидит то, что вы напишете ниже.';
+
+  @override
+  String get interviewNoteLabel => 'Какое время вам подходит';
+
+  @override
+  String get interviewNoteHint =>
+      'Любой день на этой неделе после обеда или утро пятницы';
+
+  @override
+  String get interviewReplyNoteLabel => 'Комментарий (необязательно)';
+
+  @override
+  String get interviewReplyNoteHint => 'Буду на месте на десять минут раньше';
+
+  @override
+  String get interviewNotAllowed => 'Статус собеседования изменился';
 }

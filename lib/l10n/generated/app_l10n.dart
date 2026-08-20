@@ -3346,6 +3346,162 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Send a message'**
   String get chatOpenAction;
+
+  /// §8.3's object, used as the fallback word for an interview type this build does not recognise. A newer server's fourth type still has a time and a status worth rendering, so the card says what the thing is rather than guessing which detail field to look for.
+  ///
+  /// In en, this message translates to:
+  /// **'Interview'**
+  String get interviewTitle;
+
+  /// §8.3: a time has been set and the candidate has not answered. Warning-toned because the tone means "waiting on a person", and that person is whoever is reading it.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get interviewStatusScheduled;
+
+  /// The candidate agreed to the time. Deliberately not an ending: §8.3 lets somebody who confirmed and then found a clash ask for another time, so the word is a good outcome rather than a closed door.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get interviewStatusConfirmed;
+
+  /// The candidate asked for a different time, so it waits on the employer. Kept short because it shares a row with a full date at 320pt: "Another time requested" does not fit and a badge must never be the thing that truncates.
+  ///
+  /// In en, this message translates to:
+  /// **'Another time asked'**
+  String get interviewStatusRescheduleRequested;
+
+  /// The employer called it off — §8.3's only ending. Neutral rather than red: a cancelled interview is not a rejected application, and the application carries its own stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get interviewStatusCancelled;
+
+  /// §8.3's phone interview. The only type with no detail field of its own, which is why the word matters: without it the card would show a time and nothing else.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone call'**
+  String get interviewTypePhone;
+
+  /// §8.3's in-person interview. Carries an address, which the server requires for this type and forbids for the others.
+  ///
+  /// In en, this message translates to:
+  /// **'In person'**
+  String get interviewTypeInPerson;
+
+  /// §8.3's external-link interview. "Video link" rather than "online": §2.4 puts a built-in video engine out of scope, so this is somebody else's meeting URL and the word should not imply the app hosts it.
+  ///
+  /// In en, this message translates to:
+  /// **'Video link'**
+  String get interviewTypeExternalLink;
+
+  /// Shown on a phone interview because it is the one type with nothing else to show. It also answers the question it raises: BR-01 already verified the number, which is exactly why the employer was never asked to retype it.
+  ///
+  /// In en, this message translates to:
+  /// **'The employer will call the number on your profile.'**
+  String get interviewPhoneNote;
+
+  /// Label above an in-person interview's address.
+  ///
+  /// In en, this message translates to:
+  /// **'Where'**
+  String get interviewWhere;
+
+  /// Label above an external-link interview's URL. Copyable rather than tappable: opening it needs url_launcher, and pubspec.yaml's version bounds are load-bearing — the browser takes it from the clipboard, exactly as the dialler takes a phone number.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get interviewLink;
+
+  /// Label above §8.3's "documents or preparation notes". Named for whose words they are, because they are never translated (§2.4) and "bring your diploma" is the sentence that must survive whole.
+  ///
+  /// In en, this message translates to:
+  /// **'From the employer'**
+  String get interviewInstructions;
+
+  /// Label above the note the candidate sent with their answer, played back to them.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reply'**
+  String get interviewYourReply;
+
+  /// Said rather than hidden: an interview whose time has gone by is still the record of what was arranged, and somebody who missed one needs to see that they did. The actions stay on offer, because the server still accepts them and refusing here would be the client deciding on the employer's behalf that it is too late.
+  ///
+  /// In en, this message translates to:
+  /// **'This time has already passed.'**
+  String get interviewPassed;
+
+  /// Names who did it, because §8.3 gives cancelling to the employer alone and a candidate reading "cancelled" would otherwise wonder whether they had done it themselves.
+  ///
+  /// In en, this message translates to:
+  /// **'The employer called this interview off.'**
+  String get interviewCancelledNotice;
+
+  /// §8.3's first candidate response. The filled button where it is offered, because it is the answer that lets the interview happen.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get interviewConfirm;
+
+  /// §8.3's second candidate response. A real alternative rather than a lesser one, so it is a secondary button and never hidden — a candidate who cannot make the time must not have to hunt for the way to say so.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for another time'**
+  String get interviewRequestAnother;
+
+  /// The confirm sheet's heading. A question, not "Are you sure?" — and no warning about finality, because confirming is not final: §8.3 lets a candidate who confirms and then finds a clash ask for another time.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm this time?'**
+  String get interviewConfirmTitle;
+
+  /// Says what the employer will see, which is the part the candidate is actually deciding about, and then removes the fear that stops people confirming: the answer is changeable.
+  ///
+  /// In en, this message translates to:
+  /// **'The employer will see that the time suits you. If something changes later you can still ask for another time.'**
+  String get interviewConfirmBody;
+
+  /// The reschedule sheet's heading, the same words as the button that opened it.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for another time'**
+  String get interviewRescheduleTitle;
+
+  /// Sets the expectation that asking does not cancel anything — a candidate who thinks it does will not ask, and will miss the interview instead.
+  ///
+  /// In en, this message translates to:
+  /// **'The interview stays booked until the employer sets a new time, and they will see what you write below.'**
+  String get interviewRescheduleBody;
+
+  /// Required, though the server takes it as optional. "The candidate wants another time" with no time attached is a message the employer cannot act on, so the interview stalls while each side waits for the other. Same judgement as the invitation sheet's "Request details".
+  ///
+  /// In en, this message translates to:
+  /// **'Which times suit you'**
+  String get interviewNoteLabel;
+
+  /// A hint that shows what the field is for. Somebody shown an empty box writes "I can't make it"; somebody shown this writes something the employer can book.
+  ///
+  /// In en, this message translates to:
+  /// **'Any afternoon this week, or Friday morning'**
+  String get interviewNoteHint;
+
+  /// Marked optional in the label, because a confirmation owes no explanation and asking for one implies it does.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get interviewReplyNoteLabel;
+
+  /// Shows the field is for a courtesy rather than a justification.
+  ///
+  /// In en, this message translates to:
+  /// **'I will be there ten minutes early'**
+  String get interviewReplyNoteHint;
+
+  /// Heading over the server's refusal when the answer no longer applies — `interview.final` after a cancellation, or `interview.response_not_allowed` for saying the same thing twice. Both mean somebody moved first, which is a sentence that belongs beside the button that failed rather than in a toast four seconds later.
+  ///
+  /// In en, this message translates to:
+  /// **'This interview has moved on'**
+  String get interviewNotAllowed;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -6,6 +6,9 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
 import 'package:jobbridge_app/src/features/applications/domain/application.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/interviews/data/interview_repository.dart';
+import 'package:jobbridge_app/src/features/interviews/domain/interview.dart';
+import 'package:jobbridge_app/src/features/interviews/presentation/interview_card.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitations_inbox_screen.dart';
 
 /// The word for one of §8.1's eight application stages.
@@ -157,6 +160,22 @@ class _RowState extends ConsumerState<_Row> {
           children: [
             stageBadge(application.status, l10n),
 
+            // Which job this is. The row carried a stage badge and nothing else
+            // until §8.3 needed it: an interview card saying "Tuesday 14:00, in
+            // person, at this address" is unusable if the candidate cannot tell
+            // *which* application it belongs to, and a list of bare stage
+            // badges was not much better. `Application` carries only a
+            // `vacancyId`, so the posting is fetched per row — the same
+            // treatment, for the same reason, as an §8.2 invitation's subject.
+            const SizedBox(height: HhSpace.sm),
+            _VacancyLine(vacancyId: application.vacancyId),
+
+            // §8.3, from a single request for every interview this candidate
+            // has. Placed on the application because that is where an interview
+            // belongs and where a candidate looks: the stage badge above says
+            // "Interview", and this says when, what kind and where.
+            _Interviews(applicationId: application.id),
+
             if (application.rejectionReason case final reason?
                 when reason.isNotEmpty) ...[
               const SizedBox(height: HhSpace.md),
@@ -219,5 +238,81 @@ class _RowState extends ConsumerState<_Row> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+}
+
+/// Which vacancy an application is for.
+///
+/// Fetched per row because [Application] carries only a `vacancyId` — the same
+/// shape as an §8.2 invitation's subject, and handled the same way: a 404 is an
+/// ordinary outcome here rather than a fault, since a candidate must still be
+/// able to see what became of something they applied to after the posting
+/// closed (UAT-15 draws the same distinction on the feed).
+class _VacancyLine extends ConsumerWidget {
+  const _VacancyLine({required this.vacancyId});
+
+  final String vacancyId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final detail = ref.watch(vacancyDetailProvider(vacancyId));
+    final muted = HhTypography.caption.copyWith(color: HhColors.inkMuted);
+
+    return switch (detail) {
+      AsyncValue(hasError: true, :final error?) => Text(
+        error is ApiException && error.statusCode == 404
+            ? l10n.vacancyGoneTitle
+            : l10n.invitationVacancyUnavailable,
+        style: muted,
+      ),
+      AsyncData(:final value) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value.item.title ?? l10n.invitationVacancyUntitled,
+            style: HhTypography.subtitle.copyWith(fontSize: 15),
+          ),
+          if (value.item.employer.name case final name? when name.isNotEmpty)
+            Text(name, style: muted),
+        ],
+      ),
+      // A title still loading is a line of muted text, not a spinner: a card
+      // that reserves the space and fills it in reads better in a list than one
+      // flickering a progress indicator per row.
+      _ => Text(l10n.invitationVacancyLoading, style: muted),
+    };
+  }
+}
+
+/// This application's interviews (§8.3), or nothing.
+///
+/// Reads the grouped map rather than fetching per application: one request
+/// covers a list of any length, and an application with no interview — the
+/// common case — costs no request at all and renders nothing.
+///
+/// A failure renders nothing too, deliberately. The row's own job is §8.1's
+/// stage, and an error box about interviews inside every card would turn one
+/// failed request into a list that looks broken.
+class _Interviews extends ConsumerWidget {
+  const _Interviews({required this.applicationId});
+
+  final String applicationId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final grouped = ref.watch(myInterviewsByApplicationProvider).value;
+    final interviews = grouped?[applicationId] ?? const <Interview>[];
+    if (interviews.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      children: [
+        for (final interview in interviews)
+          Padding(
+            padding: const EdgeInsets.only(top: HhSpace.md),
+            child: InterviewCard(interview: interview),
+          ),
+      ],
+    );
   }
 }

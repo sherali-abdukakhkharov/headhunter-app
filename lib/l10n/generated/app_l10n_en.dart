@@ -1896,4 +1896,86 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get chatOpenAction => 'Send a message';
+
+  @override
+  String get interviewTitle => 'Interview';
+
+  @override
+  String get interviewStatusScheduled => 'Scheduled';
+
+  @override
+  String get interviewStatusConfirmed => 'Confirmed';
+
+  @override
+  String get interviewStatusRescheduleRequested => 'Another time asked';
+
+  @override
+  String get interviewStatusCancelled => 'Cancelled';
+
+  @override
+  String get interviewTypePhone => 'Phone call';
+
+  @override
+  String get interviewTypeInPerson => 'In person';
+
+  @override
+  String get interviewTypeExternalLink => 'Video link';
+
+  @override
+  String get interviewPhoneNote =>
+      'The employer will call the number on your profile.';
+
+  @override
+  String get interviewWhere => 'Where';
+
+  @override
+  String get interviewLink => 'Link';
+
+  @override
+  String get interviewInstructions => 'From the employer';
+
+  @override
+  String get interviewYourReply => 'Your reply';
+
+  @override
+  String get interviewPassed => 'This time has already passed.';
+
+  @override
+  String get interviewCancelledNotice =>
+      'The employer called this interview off.';
+
+  @override
+  String get interviewConfirm => 'Confirm';
+
+  @override
+  String get interviewRequestAnother => 'Ask for another time';
+
+  @override
+  String get interviewConfirmTitle => 'Confirm this time?';
+
+  @override
+  String get interviewConfirmBody =>
+      'The employer will see that the time suits you. If something changes later you can still ask for another time.';
+
+  @override
+  String get interviewRescheduleTitle => 'Ask for another time';
+
+  @override
+  String get interviewRescheduleBody =>
+      'The interview stays booked until the employer sets a new time, and they will see what you write below.';
+
+  @override
+  String get interviewNoteLabel => 'Which times suit you';
+
+  @override
+  String get interviewNoteHint => 'Any afternoon this week, or Friday morning';
+
+  @override
+  String get interviewReplyNoteLabel => 'Note (optional)';
+
+  @override
+  String get interviewReplyNoteHint => 'I will be there ten minutes early';
+
+  @override
+  String get interviewNotAllowed => 'This interview has moved on';
 }

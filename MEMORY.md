@@ -501,6 +501,35 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - `ZonedTimestamp` has a second failure mode, and it is a comparison
+The type's doc comment warns about *displaying* the wrong field: read
+`wallClock`, never `.toLocal()`. §8.3's interviews found the other half of the
+same trap, which nothing had written down: **comparing the wrong field.**
+
+`Interview.hasPassed` asks "has this interview already happened?". The obvious
+line is
+
+```dart
+scheduledAt.wallClock.isBefore(DateTime.now())   // wrong
+```
+
+and it is wrong by the whole platform offset. `wallClock` is a UTC-flagged
+`DateTime` whose *fields* are Tashkent's clock, so it reads five hours later than
+the instant it describes. Compared against a real `now`, an interview that
+finished an hour ago still looks an hour away — and the failure direction is the
+bad one: the app **hides** from a candidate that they missed something.
+
+The rule to carry: **`wallClock` is for rendering, `instant` is for arithmetic.**
+Ordering, elapsed time, "is it past", paging cursors — all `instant`. The
+chat repository's `before` cursor is the same call made correctly, from the other
+direction: it sends `instant.toUtc()` because a cursor is not a display value.
+
+The test that pins it needs a fixture where the two readings *disagree*, which
+means building the timestamp relative to the real clock: take
+`now - 1h` as the instant, add the +05:00 offset to get a wall clock four hours
+in the **future**, and format that with `+05:00`. A fixture with a fixed past
+date passes either way and pins nothing.
+
 ### 2026-08-20 - Gradle's "loopback connection" failure is AF_UNIX, not the sandbox
 Two entries in this file and one in TODO.md have blamed the agent sandbox for
 `java.io.IOException: Unable to establish loopback connection`. That was wrong,

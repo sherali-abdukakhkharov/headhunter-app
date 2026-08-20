@@ -364,6 +364,20 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           ],
         ),
         const SizedBox(height: HhSpace.md),
+        const _StateLabel('Suhbat vaqti · 4'),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            HhBadge.interviewScheduled(label: 'Belgilangan'),
+            HhBadge.interviewConfirmed(label: 'Tasdiqlangan'),
+            HhBadge.interviewRescheduleRequested(
+              label: "Boshqa vaqt so'ralgan",
+            ),
+            HhBadge.interviewCancelled(label: 'Bekor qilingan'),
+          ],
+        ),
+        const SizedBox(height: HhSpace.md),
         const _StateLabel('Suhbat · 2'),
         const Wrap(
           spacing: 8,
