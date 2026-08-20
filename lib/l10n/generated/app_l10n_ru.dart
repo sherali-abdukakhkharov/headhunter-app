@@ -1738,4 +1738,18 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get feedSavedUnfiltered => 'Сохранённые вакансии не фильтруются.';
+
+  @override
+  String get notesEmpty => 'Заметок пока нет.';
+
+  @override
+  String get notesNewLabel => 'Новая заметка';
+
+  @override
+  String get notesNewHint =>
+      'Просит 8м, возможно согласится на 6,5 — перезвонить в четверг';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.';
 }

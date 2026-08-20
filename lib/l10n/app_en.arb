@@ -2258,5 +2258,21 @@
   "feedSavedUnfiltered": "Saved vacancies are never filtered.",
   "@feedSavedUnfiltered": {
     "description": "Shown on the saved tab while filters are set. The other two feeds are the server choosing what to show; saved is a list the candidate curated, and a filter making a saved vacancy disappear from it reads as data loss rather than as narrowing."
+  },
+  "notesEmpty": "No notes yet.",
+  "@notesEmpty": {
+    "description": "An empty note list. Nothing to explain; nothing is wrong."
+  },
+  "notesNewLabel": "New note",
+  "@notesNewLabel": {
+    "description": "The API offers GET and POST and no edit or delete, so notes are append-only and the label says \"new\" rather than \"note\": a dated observation silently rewritten later is worse than two notes, because the first one is what the employer acted on."
+  },
+  "notesNewHint": "Asked for 8m, may take 6.5 — call back Thursday",
+  "@notesNewHint": {
+    "description": "A hint that shows what the field is *for*. A recruiter shown an empty box labelled \"note\" writes nothing; one shown this writes the thing they would have kept in their head."
+  },
+  "applicantsNoneAtStage": "Nobody is at this stage. Clear the filter to see every applicant.",
+  "@applicantsNoneAtStage": {
+    "description": "A stage with nobody in it is a different fact from a vacancy nobody applied to: one is fixed by clearing the filter, the other by waiting. Telling an employer looking at \"Hired\" that nobody has applied would be false."
   }
 }

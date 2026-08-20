@@ -3052,6 +3052,30 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Saved vacancies are never filtered.'**
   String get feedSavedUnfiltered;
+
+  /// An empty note list. Nothing to explain; nothing is wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet.'**
+  String get notesEmpty;
+
+  /// The API offers GET and POST and no edit or delete, so notes are append-only and the label says "new" rather than "note": a dated observation silently rewritten later is worse than two notes, because the first one is what the employer acted on.
+  ///
+  /// In en, this message translates to:
+  /// **'New note'**
+  String get notesNewLabel;
+
+  /// A hint that shows what the field is *for*. A recruiter shown an empty box labelled "note" writes nothing; one shown this writes the thing they would have kept in their head.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked for 8m, may take 6.5 — call back Thursday'**
+  String get notesNewHint;
+
+  /// A stage with nobody in it is a different fact from a vacancy nobody applied to: one is fixed by clearing the filter, the other by waiting. Telling an employer looking at "Hired" that nobody has applied would be false.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is at this stage. Clear the filter to see every applicant.'**
+  String get applicantsNoneAtStage;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

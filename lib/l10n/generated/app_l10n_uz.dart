@@ -1723,6 +1723,20 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get feedSavedUnfiltered => 'Saqlangan vakansiyalar filtrlanmaydi.';
+
+  @override
+  String get notesEmpty => 'Hozircha izoh yo\'q.';
+
+  @override
+  String get notesNewLabel => 'Yangi izoh';
+
+  @override
+  String get notesNewHint =>
+      '8m so\'radi, 6.5 ga rozi bo\'lishi mumkin — payshanba kuni qo\'ng\'iroq';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Bu bosqichda hech kim yo\'q. Hamma arizachini ko\'rish uchun filtrni tozalang.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3441,6 +3455,20 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get feedSavedUnfiltered => 'Сақланган вакансиялар филтрланмайди.';
+
+  @override
+  String get notesEmpty => 'Ҳозирча изоҳ йўқ.';
+
+  @override
+  String get notesNewLabel => 'Янги изоҳ';
+
+  @override
+  String get notesNewHint =>
+      '8m сўради, 6.5 га рози бўлиши мумкин — пайшанба куни қўнғироқ';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Бу босқичда ҳеч ким йўқ. Ҳамма аризачини кўриш учун филтрни тозаланг.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5162,4 +5190,18 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get feedSavedUnfiltered => 'Saqlangan vakansiyalar filtrlanmaydi.';
+
+  @override
+  String get notesEmpty => 'Hozircha izoh yo\'q.';
+
+  @override
+  String get notesNewLabel => 'Yangi izoh';
+
+  @override
+  String get notesNewHint =>
+      '8m so\'radi, 6.5 ga rozi bo\'lishi mumkin — payshanba kuni qo\'ng\'iroq';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Bu bosqichda hech kim yo\'q. Hamma arizachini ko\'rish uchun filtrni tozalang.';
 }

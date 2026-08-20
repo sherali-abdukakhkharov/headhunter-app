@@ -1724,4 +1724,17 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get feedSavedUnfiltered => 'Saved vacancies are never filtered.';
+
+  @override
+  String get notesEmpty => 'No notes yet.';
+
+  @override
+  String get notesNewLabel => 'New note';
+
+  @override
+  String get notesNewHint => 'Asked for 8m, may take 6.5 — call back Thursday';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Nobody is at this stage. Clear the filter to see every applicant.';
 }

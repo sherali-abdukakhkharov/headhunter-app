@@ -491,5 +491,9 @@
   "filtersUnavailableBody": "Tajriba, til va maoshning yuqori chegarasi bo'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.",
   "feedFilteredNote": "{count} filtr qo'llangan",
   "feedFilteredEmpty": "Bu filtrlarga mos vakansiya yo'q. Ularni kengaytirib ko'ring.",
-  "feedSavedUnfiltered": "Saqlangan vakansiyalar filtrlanmaydi."
+  "feedSavedUnfiltered": "Saqlangan vakansiyalar filtrlanmaydi.",
+  "notesEmpty": "Hozircha izoh yo'q.",
+  "notesNewLabel": "Yangi izoh",
+  "notesNewHint": "8m so'radi, 6.5 ga rozi bo'lishi mumkin — payshanba kuni qo'ng'iroq",
+  "applicantsNoneAtStage": "Bu bosqichda hech kim yo'q. Hamma arizachini ko'rish uchun filtrni tozalang."
 }

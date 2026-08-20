@@ -14,10 +14,17 @@ class EmployerApplicationsRepository {
   final Dio _dio;
 
   /// `GET /vacancies/:id/applications`
-  Future<List<Application>> forVacancy(String vacancyId) async {
+  /// [status] is the **server's** filter (§6.5), so a filtered list is
+  /// complete rather than filtered-over-what-was-loaded — the same distinction
+  /// the invitation sent list draws against the Coin ledger's client-side one.
+  Future<List<Application>> forVacancy(
+    String vacancyId, {
+    String? status,
+  }) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         '/vacancies/$vacancyId/applications',
+        queryParameters: {'status': ?status},
       );
       final items = response.data?['items'];
       if (items is! List) return const [];
@@ -123,10 +130,28 @@ class EmployerApplicationsRepository {
 EmployerApplicationsRepository employerApplicationsRepository(Ref ref) =>
     EmployerApplicationsRepository(ref.watch(dioProvider));
 
-/// Applications on one vacancy.
+/// Applications on one vacancy, optionally narrowed server-side (§6.5).
+///
+/// `status` is a named argument rather than a second positional one so the
+/// existing `vacancyApplicationsProvider(id)` call sites keep meaning "all of
+/// them" — which is what they meant before the filter existed.
 @riverpod
-Future<List<Application>> vacancyApplications(Ref ref, String vacancyId) =>
-    ref.watch(employerApplicationsRepositoryProvider).forVacancy(vacancyId);
+Future<List<Application>> vacancyApplications(
+  Ref ref,
+  String vacancyId, {
+  String? status,
+}) => ref
+    .watch(employerApplicationsRepositoryProvider)
+    .forVacancy(vacancyId, status: status);
+
+/// The employer's own private notes on one application (§7.3).
+///
+/// Private to the employer: the candidate never sees these, which is why the
+/// screen says so beside the field. A note is the one thing on the applicants
+/// screen written *by* the employer rather than read from the candidate.
+@riverpod
+Future<List<ApplicationNote>> applicationNotes(Ref ref, String applicationId) =>
+    ref.watch(employerApplicationsRepositoryProvider).notes(applicationId);
 
 /// §6.5's counts for one vacancy.
 @riverpod

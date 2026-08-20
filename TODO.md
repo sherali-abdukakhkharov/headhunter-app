@@ -630,8 +630,32 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       and nothing reconstructs one it withheld. Null is a normal answer, so
       the absence is stated rather than left blank, and `canViewFiles` false
       means the server sent no files at all
-- [ ] Employer application filters, and the internal-notes UI — the repository
-      has `notes`/`addNote`, no screen yet
+- [x] **Employer application filters and the private-note UI, 2026-08-20.** Both
+      halves had been sitting in the repository unused: `forVacancy` never sent
+      the `status` the endpoint accepts, and `notes`/`addNote` had no screen at
+      all.
+      **The stage filter is the server's**, so a filtered list is complete rather
+      than filtered-over-what-was-loaded — the same distinction the invitation
+      sent list draws against the Coin ledger's client-side one. Eight stages
+      plus "all" are chips rather than `HhSegmented`, which at 360pt would give
+      each of nine about 37pt.
+      `ApplicationStage.all` is new and drives the chips, so a ninth status
+      needs a label and nothing else. It includes the **exits**, `withdrawn`
+      among them: that one is the candidate's alone to set and still the thing an
+      employer wants to filter out. §8.1 also names a "vacancy-closed" stage and
+      the database has no such status — a vacancy closing does not rewrite its
+      applications — so it is deliberately absent.
+      **An empty stage reads differently from an empty vacancy**: one is fixed by
+      clearing the filter, the other by waiting, and telling an employer looking
+      at "Hired" that nobody has applied would be false.
+      A stage move invalidates the **filtered** list by name as well as the
+      unfiltered one, because moving somebody out of "Submitted" while that
+      filter is on removes a row from what is on screen.
+      The note sheet is **append-only**, matching an API that offers GET and POST
+      and no edit: a dated observation silently rewritten later is worse than two
+      notes, because the first one is what the employer acted on. It says the
+      candidate never sees it, because a recruiter who is not certain of that
+      writes nothing useful
 - [x] **Vacancy detail (§5.6)** — the candidate could browse a feed and apply
       but never open a vacancy to read it. Tapping a card opens it: employer
       and verification badge, pay, openings, deadline, the work window,
