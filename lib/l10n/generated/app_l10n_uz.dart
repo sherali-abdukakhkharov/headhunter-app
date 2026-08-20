@@ -1553,6 +1553,190 @@ class AppL10nUz extends AppL10n {
   @override
   String get candidateFileNoViewer =>
       'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
+
+  @override
+  String get dashboardActiveVacancies => 'Faol vakansiya';
+
+  @override
+  String get dashboardOpenPositions => 'Ochiq o\'rin';
+
+  @override
+  String get dashboardNewApplications => 'Yangi ariza';
+
+  @override
+  String get dashboardAttention => 'Sizning e\'tiboringiz kerak';
+
+  @override
+  String get dashboardAttentionClear => 'Sizdan kutilayotgan ish yo\'q.';
+
+  @override
+  String get dashboardVerificationTitle => 'Tasdiqlash tugallanmagan';
+
+  @override
+  String get dashboardVacancyRejected => 'O\'zgartirish talab qilinadi';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count ta ariza ko\'rib chiqilmagan';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count ta saqlangan nomzod';
+  }
+
+  @override
+  String get dashboardHiring => 'Ishga qabul jarayoni';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$openings dan $hired';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Ishga olindi $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Taklif yuborildi $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Qolgan $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Hamyon';
+
+  @override
+  String get accountTitle => 'Hisob va xavfsizlik';
+
+  @override
+  String get accountDevices => 'Kirgan qurilmalar';
+
+  @override
+  String get accountDevicesBody =>
+      'Tanimagan qurilmani ko\'rsangiz, uning seansini tugating.';
+
+  @override
+  String get accountDeviceUnknown => 'Nomsiz qurilma';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Oxirgi foydalanish: $at';
+  }
+
+  @override
+  String get accountThisDevice => 'Bu qurilma';
+
+  @override
+  String get accountRevoke => 'Seansni tugatish';
+
+  @override
+  String get accountRevokeTitle => 'Bu seansni tugatilsinmi?';
+
+  @override
+  String get accountRevokeBody =>
+      'O\'sha qurilma qaytadan kirishi kerak bo\'ladi.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Bu qurilmadan chiqilsinmi?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'Bu — siz foydalanayotgan qurilma. Hozir hisobdan chiqarilasiz.';
+
+  @override
+  String get accountRevokeAll => 'Barcha seanslarni tugatish';
+
+  @override
+  String get accountRevokeAllTitle => 'Barcha seanslar tugatilsinmi?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Barcha qurilmalar, shu qurilma ham, hisobdan chiqariladi.';
+
+  @override
+  String get accountDelete => 'Hisobni o\'chirish';
+
+  @override
+  String get accountDeleteBody =>
+      'Profilingiz, arizalaringiz va xabarlaringiz o\'chiriladi. Bu qaytarib bo\'lmaydi.';
+
+  @override
+  String get accountDeleteAction => 'O\'chirishni so\'rash';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Hisobni o\'chirish so\'ralsinmi?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'Hisobingizni o\'chirishni boshlaymiz. Buni ilovadan qaytarib bo\'lmaydi.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'O\'chirish so\'raldi';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'So\'rovingiz qayd etildi. Keyin nima bo\'lishini qo\'llab-quvvatlash xizmati aytadi.';
+
+  @override
+  String get filtersRegion => 'Viloyat yoki tuman';
+
+  @override
+  String get filtersEmploymentType => 'Bandlik turi';
+
+  @override
+  String get filtersWorkFormat => 'Ish formati';
+
+  @override
+  String get filtersShift => 'Smena';
+
+  @override
+  String get filtersSalaryFrom => 'Maosh, dan';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Maoshi kelishilgan vakansiyalar ham ko\'rsatiladi.';
+
+  @override
+  String get filtersPublishedFrom => 'Chop etilgan, dan';
+
+  @override
+  String get filtersUnavailableTitle => 'Uchta filtr hozircha mavjud emas';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Tajriba, til va maoshning yuqori chegarasi bo\'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count filtr qo\'llangan';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Bu filtrlarga mos vakansiya yo\'q. Ularni kengaytirib ko\'ring.';
+
+  @override
+  String get feedSavedUnfiltered => 'Saqlangan vakansiyalar filtrlanmaydi.';
+
+  @override
+  String get notesEmpty => 'Hozircha izoh yo\'q.';
+
+  @override
+  String get notesNewLabel => 'Yangi izoh';
+
+  @override
+  String get notesNewHint =>
+      '8m so\'radi, 6.5 ga rozi bo\'lishi mumkin — payshanba kuni qo\'ng\'iroq';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Bu bosqichda hech kim yo\'q. Hamma arizachini ko\'rish uchun filtrni tozalang.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3102,6 +3286,189 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get candidateFileNoViewer =>
       'Бу телефонда бу файлни оча оладиган илова йўқ.';
+
+  @override
+  String get dashboardActiveVacancies => 'Фаол вакансия';
+
+  @override
+  String get dashboardOpenPositions => 'Очиқ ўрин';
+
+  @override
+  String get dashboardNewApplications => 'Янги ариза';
+
+  @override
+  String get dashboardAttention => 'Сизнинг эътиборингиз керак';
+
+  @override
+  String get dashboardAttentionClear => 'Сиздан кутилаётган иш йўқ.';
+
+  @override
+  String get dashboardVerificationTitle => 'Тасдиқлаш тугалланмаган';
+
+  @override
+  String get dashboardVacancyRejected => 'Ўзгартириш талаб қилинади';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count та ариза кўриб чиқилмаган';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count та сақланган номзод';
+  }
+
+  @override
+  String get dashboardHiring => 'Ишга қабул жараёни';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$openings дан $hired';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Ишга олинди $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Таклиф юборилди $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Қолган $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Ҳамён';
+
+  @override
+  String get accountTitle => 'Ҳисоб ва хавфсизлик';
+
+  @override
+  String get accountDevices => 'Кирган қурилмалар';
+
+  @override
+  String get accountDevicesBody =>
+      'Танимаган қурилмани кўрсангиз, унинг сеансини тугатинг.';
+
+  @override
+  String get accountDeviceUnknown => 'Номсиз қурилма';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Охирги фойдаланиш: $at';
+  }
+
+  @override
+  String get accountThisDevice => 'Бу қурилма';
+
+  @override
+  String get accountRevoke => 'Сеансни тугатиш';
+
+  @override
+  String get accountRevokeTitle => 'Бу сеанс тугатилсинми?';
+
+  @override
+  String get accountRevokeBody => 'Ўша қурилма қайтадан кириши керак бўлади.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Бу қурилмадан чиқилсинми?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'Бу — сиз фойдаланаётган қурилма. Ҳозир ҳисобдан чиқариласиз.';
+
+  @override
+  String get accountRevokeAll => 'Барча сеансларни тугатиш';
+
+  @override
+  String get accountRevokeAllTitle => 'Барча сеанслар тугатилсинми?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Барча қурилмалар, шу қурилма ҳам, ҳисобдан чиқарилади.';
+
+  @override
+  String get accountDelete => 'Ҳисобни ўчириш';
+
+  @override
+  String get accountDeleteBody =>
+      'Профилингиз, аризаларингиз ва хабарларингиз ўчирилади. Бу қайтариб бўлмайди.';
+
+  @override
+  String get accountDeleteAction => 'Ўчиришни сўраш';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Ҳисобни ўчириш сўралсинми?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'Ҳисобингизни ўчиришни бошлаймиз. Буни иловадан қайтариб бўлмайди.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'Ўчириш сўралди';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'Сўровингиз қайд этилди. Кейин нима бўлишини қўллаб-қувватлаш хизмати айтади.';
+
+  @override
+  String get filtersRegion => 'Вилоят ёки туман';
+
+  @override
+  String get filtersEmploymentType => 'Бандлик тури';
+
+  @override
+  String get filtersWorkFormat => 'Иш формати';
+
+  @override
+  String get filtersShift => 'Смена';
+
+  @override
+  String get filtersSalaryFrom => 'Маош, дан';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Маоши келишилган вакансиялар ҳам кўрсатилади.';
+
+  @override
+  String get filtersPublishedFrom => 'Чоп этилган, дан';
+
+  @override
+  String get filtersUnavailableTitle => 'Учта филтр ҳозирча мавжуд эмас';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Тажриба, тил ва маошнинг юқори чегараси бўйича ҳозирча филтрлаш мумкин эмас. Қолгани ишлайди.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count филтр қўлланган';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Бу филтрларга мос вакансия йўқ. Уларни кенгайтириб кўринг.';
+
+  @override
+  String get feedSavedUnfiltered => 'Сақланган вакансиялар филтрланмайди.';
+
+  @override
+  String get notesEmpty => 'Ҳозирча изоҳ йўқ.';
+
+  @override
+  String get notesNewLabel => 'Янги изоҳ';
+
+  @override
+  String get notesNewHint =>
+      '8m сўради, 6.5 га рози бўлиши мумкин — пайшанба куни қўнғироқ';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Бу босқичда ҳеч ким йўқ. Ҳамма аризачини кўриш учун филтрни тозаланг.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4653,4 +5020,188 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get candidateFileNoViewer =>
       'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
+
+  @override
+  String get dashboardActiveVacancies => 'Faol vakansiya';
+
+  @override
+  String get dashboardOpenPositions => 'Ochiq o\'rin';
+
+  @override
+  String get dashboardNewApplications => 'Yangi ariza';
+
+  @override
+  String get dashboardAttention => 'Sizning e\'tiboringiz kerak';
+
+  @override
+  String get dashboardAttentionClear => 'Sizdan kutilayotgan ish yo\'q.';
+
+  @override
+  String get dashboardVerificationTitle => 'Tasdiqlash tugallanmagan';
+
+  @override
+  String get dashboardVacancyRejected => 'O\'zgartirish talab qilinadi';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count ta ariza ko\'rib chiqilmagan';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count ta saqlangan nomzod';
+  }
+
+  @override
+  String get dashboardHiring => 'Ishga qabul jarayoni';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$openings dan $hired';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Ishga olindi $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Taklif yuborildi $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Qolgan $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Hamyon';
+
+  @override
+  String get accountTitle => 'Hisob va xavfsizlik';
+
+  @override
+  String get accountDevices => 'Kirgan qurilmalar';
+
+  @override
+  String get accountDevicesBody =>
+      'Tanimagan qurilmani ko\'rsangiz, uning seansini tugating.';
+
+  @override
+  String get accountDeviceUnknown => 'Nomsiz qurilma';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Oxirgi foydalanish: $at';
+  }
+
+  @override
+  String get accountThisDevice => 'Bu qurilma';
+
+  @override
+  String get accountRevoke => 'Seansni tugatish';
+
+  @override
+  String get accountRevokeTitle => 'Bu seansni tugatilsinmi?';
+
+  @override
+  String get accountRevokeBody =>
+      'O\'sha qurilma qaytadan kirishi kerak bo\'ladi.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Bu qurilmadan chiqilsinmi?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'Bu — siz foydalanayotgan qurilma. Hozir hisobdan chiqarilasiz.';
+
+  @override
+  String get accountRevokeAll => 'Barcha seanslarni tugatish';
+
+  @override
+  String get accountRevokeAllTitle => 'Barcha seanslar tugatilsinmi?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Barcha qurilmalar, shu qurilma ham, hisobdan chiqariladi.';
+
+  @override
+  String get accountDelete => 'Hisobni o\'chirish';
+
+  @override
+  String get accountDeleteBody =>
+      'Profilingiz, arizalaringiz va xabarlaringiz o\'chiriladi. Bu qaytarib bo\'lmaydi.';
+
+  @override
+  String get accountDeleteAction => 'O\'chirishni so\'rash';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Hisobni o\'chirish so\'ralsinmi?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'Hisobingizni o\'chirishni boshlaymiz. Buni ilovadan qaytarib bo\'lmaydi.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'O\'chirish so\'raldi';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'So\'rovingiz qayd etildi. Keyin nima bo\'lishini qo\'llab-quvvatlash xizmati aytadi.';
+
+  @override
+  String get filtersRegion => 'Viloyat yoki tuman';
+
+  @override
+  String get filtersEmploymentType => 'Bandlik turi';
+
+  @override
+  String get filtersWorkFormat => 'Ish formati';
+
+  @override
+  String get filtersShift => 'Smena';
+
+  @override
+  String get filtersSalaryFrom => 'Maosh, dan';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Maoshi kelishilgan vakansiyalar ham ko\'rsatiladi.';
+
+  @override
+  String get filtersPublishedFrom => 'Chop etilgan, dan';
+
+  @override
+  String get filtersUnavailableTitle => 'Uchta filtr hozircha mavjud emas';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Tajriba, til va maoshning yuqori chegarasi bo\'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count filtr qo\'llangan';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Bu filtrlarga mos vakansiya yo\'q. Ularni kengaytirib ko\'ring.';
+
+  @override
+  String get feedSavedUnfiltered => 'Saqlangan vakansiyalar filtrlanmaydi.';
+
+  @override
+  String get notesEmpty => 'Hozircha izoh yo\'q.';
+
+  @override
+  String get notesNewLabel => 'Yangi izoh';
+
+  @override
+  String get notesNewHint =>
+      '8m so\'radi, 6.5 ga rozi bo\'lishi mumkin — payshanba kuni qo\'ng\'iroq';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Bu bosqichda hech kim yo\'q. Hamma arizachini ko\'rish uchun filtrni tozalang.';
 }

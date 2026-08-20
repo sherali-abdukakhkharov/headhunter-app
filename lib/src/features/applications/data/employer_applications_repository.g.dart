@@ -60,12 +60,20 @@ final class EmployerApplicationsRepositoryProvider
 String _$employerApplicationsRepositoryHash() =>
     r'f87ed6faa12917788689b43cc832728ac9cd2909';
 
-/// Applications on one vacancy.
+/// Applications on one vacancy, optionally narrowed server-side (§6.5).
+///
+/// `status` is a named argument rather than a second positional one so the
+/// existing `vacancyApplicationsProvider(id)` call sites keep meaning "all of
+/// them" — which is what they meant before the filter existed.
 
 @ProviderFor(vacancyApplications)
 final vacancyApplicationsProvider = VacancyApplicationsFamily._();
 
-/// Applications on one vacancy.
+/// Applications on one vacancy, optionally narrowed server-side (§6.5).
+///
+/// `status` is a named argument rather than a second positional one so the
+/// existing `vacancyApplicationsProvider(id)` call sites keep meaning "all of
+/// them" — which is what they meant before the filter existed.
 
 final class VacancyApplicationsProvider
     extends
@@ -77,10 +85,14 @@ final class VacancyApplicationsProvider
     with
         $FutureModifier<List<Application>>,
         $FutureProvider<List<Application>> {
-  /// Applications on one vacancy.
+  /// Applications on one vacancy, optionally narrowed server-side (§6.5).
+  ///
+  /// `status` is a named argument rather than a second positional one so the
+  /// existing `vacancyApplicationsProvider(id)` call sites keep meaning "all of
+  /// them" — which is what they meant before the filter existed.
   VacancyApplicationsProvider._({
     required VacancyApplicationsFamily super.from,
-    required String super.argument,
+    required (String, {String? status}) super.argument,
   }) : super(
          retry: null,
          name: r'vacancyApplicationsProvider',
@@ -96,7 +108,7 @@ final class VacancyApplicationsProvider
   String toString() {
     return r'vacancyApplicationsProvider'
         ''
-        '($argument)';
+        '$argument';
   }
 
   @$internal
@@ -107,8 +119,8 @@ final class VacancyApplicationsProvider
 
   @override
   FutureOr<List<Application>> create(Ref ref) {
-    final argument = this.argument as String;
-    return vacancyApplications(ref, argument);
+    final argument = this.argument as (String, {String? status});
+    return vacancyApplications(ref, argument.$1, status: argument.status);
   }
 
   @override
@@ -123,12 +135,20 @@ final class VacancyApplicationsProvider
 }
 
 String _$vacancyApplicationsHash() =>
-    r'b17f75fe9ee1e8e885b5dc911e28e51cee392565';
+    r'2b985f689c27f948637726dcc7825b58eef1745a';
 
-/// Applications on one vacancy.
+/// Applications on one vacancy, optionally narrowed server-side (§6.5).
+///
+/// `status` is a named argument rather than a second positional one so the
+/// existing `vacancyApplicationsProvider(id)` call sites keep meaning "all of
+/// them" — which is what they meant before the filter existed.
 
 final class VacancyApplicationsFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<List<Application>>, String> {
+    with
+        $FunctionalFamilyOverride<
+          FutureOr<List<Application>>,
+          (String, {String? status})
+        > {
   VacancyApplicationsFamily._()
     : super(
         retry: null,
@@ -138,13 +158,126 @@ final class VacancyApplicationsFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Applications on one vacancy.
+  /// Applications on one vacancy, optionally narrowed server-side (§6.5).
+  ///
+  /// `status` is a named argument rather than a second positional one so the
+  /// existing `vacancyApplicationsProvider(id)` call sites keep meaning "all of
+  /// them" — which is what they meant before the filter existed.
 
-  VacancyApplicationsProvider call(String vacancyId) =>
-      VacancyApplicationsProvider._(argument: vacancyId, from: this);
+  VacancyApplicationsProvider call(String vacancyId, {String? status}) =>
+      VacancyApplicationsProvider._(
+        argument: (vacancyId, status: status),
+        from: this,
+      );
 
   @override
   String toString() => r'vacancyApplicationsProvider';
+}
+
+/// The employer's own private notes on one application (§7.3).
+///
+/// Private to the employer: the candidate never sees these, which is why the
+/// screen says so beside the field. A note is the one thing on the applicants
+/// screen written *by* the employer rather than read from the candidate.
+
+@ProviderFor(applicationNotes)
+final applicationNotesProvider = ApplicationNotesFamily._();
+
+/// The employer's own private notes on one application (§7.3).
+///
+/// Private to the employer: the candidate never sees these, which is why the
+/// screen says so beside the field. A note is the one thing on the applicants
+/// screen written *by* the employer rather than read from the candidate.
+
+final class ApplicationNotesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<ApplicationNote>>,
+          List<ApplicationNote>,
+          FutureOr<List<ApplicationNote>>
+        >
+    with
+        $FutureModifier<List<ApplicationNote>>,
+        $FutureProvider<List<ApplicationNote>> {
+  /// The employer's own private notes on one application (§7.3).
+  ///
+  /// Private to the employer: the candidate never sees these, which is why the
+  /// screen says so beside the field. A note is the one thing on the applicants
+  /// screen written *by* the employer rather than read from the candidate.
+  ApplicationNotesProvider._({
+    required ApplicationNotesFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'applicationNotesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$applicationNotesHash();
+
+  @override
+  String toString() {
+    return r'applicationNotesProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<ApplicationNote>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<ApplicationNote>> create(Ref ref) {
+    final argument = this.argument as String;
+    return applicationNotes(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ApplicationNotesProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$applicationNotesHash() => r'3fe7c1616e8d8fc1642c9291c9e87b1d65db6b18';
+
+/// The employer's own private notes on one application (§7.3).
+///
+/// Private to the employer: the candidate never sees these, which is why the
+/// screen says so beside the field. A note is the one thing on the applicants
+/// screen written *by* the employer rather than read from the candidate.
+
+final class ApplicationNotesFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<ApplicationNote>>, String> {
+  ApplicationNotesFamily._()
+    : super(
+        retry: null,
+        name: r'applicationNotesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// The employer's own private notes on one application (§7.3).
+  ///
+  /// Private to the employer: the candidate never sees these, which is why the
+  /// screen says so beside the field. A note is the one thing on the applicants
+  /// screen written *by* the employer rather than read from the candidate.
+
+  ApplicationNotesProvider call(String applicationId) =>
+      ApplicationNotesProvider._(argument: applicationId, from: this);
+
+  @override
+  String toString() => r'applicationNotesProvider';
 }
 
 /// §6.5's counts for one vacancy.

@@ -1555,4 +1555,186 @@ class AppL10nEn extends AppL10n {
   @override
   String get candidateFileNoViewer =>
       'No app on this phone can open this file.';
+
+  @override
+  String get dashboardActiveVacancies => 'Active vacancies';
+
+  @override
+  String get dashboardOpenPositions => 'Open positions';
+
+  @override
+  String get dashboardNewApplications => 'New applications';
+
+  @override
+  String get dashboardAttention => 'Needs your attention';
+
+  @override
+  String get dashboardAttentionClear => 'Nothing is waiting on you.';
+
+  @override
+  String get dashboardVerificationTitle => 'Verification is not complete';
+
+  @override
+  String get dashboardVacancyRejected => 'Changes are required';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count applications not yet reviewed';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count saved candidates';
+  }
+
+  @override
+  String get dashboardHiring => 'Hiring progress';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$hired of $openings';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Hired $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Invited $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Remaining $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Wallet';
+
+  @override
+  String get accountTitle => 'Account and security';
+
+  @override
+  String get accountDevices => 'Signed-in devices';
+
+  @override
+  String get accountDevicesBody =>
+      'If you see a device you do not recognise, end its session.';
+
+  @override
+  String get accountDeviceUnknown => 'Unnamed device';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Last used $at';
+  }
+
+  @override
+  String get accountThisDevice => 'This device';
+
+  @override
+  String get accountRevoke => 'End session';
+
+  @override
+  String get accountRevokeTitle => 'End this session?';
+
+  @override
+  String get accountRevokeBody => 'That device will have to sign in again.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Sign out of this device?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'This is the device you are using. You will be signed out now.';
+
+  @override
+  String get accountRevokeAll => 'End all sessions';
+
+  @override
+  String get accountRevokeAllTitle => 'End every session?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Every device will be signed out, including this one.';
+
+  @override
+  String get accountDelete => 'Delete account';
+
+  @override
+  String get accountDeleteBody =>
+      'Your profile, applications and messages will be removed. This cannot be undone.';
+
+  @override
+  String get accountDeleteAction => 'Request deletion';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Request account deletion?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'We will start removing your account. You will not be able to undo this from the app.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'Deletion requested';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'Your request has been recorded. Support can tell you what happens next.';
+
+  @override
+  String get filtersRegion => 'Region or district';
+
+  @override
+  String get filtersEmploymentType => 'Employment type';
+
+  @override
+  String get filtersWorkFormat => 'Work format';
+
+  @override
+  String get filtersShift => 'Shift';
+
+  @override
+  String get filtersSalaryFrom => 'Pay from';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Vacancies with negotiable pay are still shown.';
+
+  @override
+  String get filtersPublishedFrom => 'Published from';
+
+  @override
+  String get filtersUnavailableTitle => 'Three filters are not available yet';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count filters applied';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'No vacancies match these filters. Try widening them.';
+
+  @override
+  String get feedSavedUnfiltered => 'Saved vacancies are never filtered.';
+
+  @override
+  String get notesEmpty => 'No notes yet.';
+
+  @override
+  String get notesNewLabel => 'New note';
+
+  @override
+  String get notesNewHint => 'Asked for 8m, may take 6.5 — call back Thursday';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'Nobody is at this stage. Clear the filter to see every applicant.';
 }

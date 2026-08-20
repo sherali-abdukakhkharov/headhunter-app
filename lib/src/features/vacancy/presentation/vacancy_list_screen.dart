@@ -95,19 +95,10 @@ class _ListState extends ConsumerState<_List> {
   }
 
   Future<void> _create() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final router = GoRouter.of(context);
     setState(() => _creating = true);
 
     try {
-      final created = await ref.read(vacancyRepositoryProvider).create();
-      ref.invalidate(myVacanciesProvider);
-      router.go('${Routes.employerVacancies}/${created.id}');
-    } on ApiException catch (e) {
-      // BR-03 is checked at creation as well as at submit, so this is where an
-      // unverified employer finds out — before filling in a form, which is the
-      // whole point of the server checking twice.
-      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+      await createVacancyAndOpen(context, ref);
     } finally {
       if (mounted) setState(() => _creating = false);
     }
@@ -158,5 +149,30 @@ class _Row extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Creates an empty draft and opens its editor (§6.3).
+///
+/// Shared by the vacancy list and §6.2's dashboard, because the interesting
+/// part is not the two lines of navigation: **BR-03 is checked at creation as
+/// well as at submit**, so this is where an unverified employer finds out —
+/// before filling in a form, which is the whole point of the server checking
+/// twice. Two copies of that refusal path would eventually word it differently.
+///
+/// Returns false when the server refused, so a caller can leave its button
+/// enabled.
+Future<bool> createVacancyAndOpen(BuildContext context, WidgetRef ref) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final router = GoRouter.of(context);
+
+  try {
+    final created = await ref.read(vacancyRepositoryProvider).create();
+    ref.invalidate(myVacanciesProvider);
+    router.go('${Routes.employerVacancies}/${created.id}');
+    return true;
+  } on ApiException catch (e) {
+    messenger.showSnackBar(SnackBar(content: Text(e.message)));
+    return false;
   }
 }

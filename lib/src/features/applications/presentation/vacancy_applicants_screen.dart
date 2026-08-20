@@ -7,6 +7,7 @@ import 'package:jobbridge_app/src/features/applications/data/employer_applicatio
 import 'package:jobbridge_app/src/features/applications/domain/application.dart';
 import 'package:jobbridge_app/src/features/applications/domain/application_stage.dart';
 import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/application_notes_sheet.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
@@ -16,15 +17,43 @@ import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.
 import 'package:jobbridge_app/src/features/invitations/presentation/sent_invitations_screen.dart';
 
 /// Applications on one vacancy, for the employer (§6.5, §8.1).
-class VacancyApplicantsScreen extends ConsumerWidget {
+///
+/// ## The status filter is the server's
+///
+/// `GET /vacancies/{id}/applications` takes `status`, so a filtered list is
+/// **complete** rather than filtered-over-what-was-loaded — the same
+/// distinction the invitation sent list draws against the Coin ledger's
+/// client-side filter. That is why choosing a stage re-requests instead of
+/// running `where` over the loaded page.
+///
+/// Eight stages plus "all" are **chips, not `HhSegmented`**: segments divide
+/// the width equally and clip to one line, which at 360pt would give each of
+/// nine about 37pt.
+class VacancyApplicantsScreen extends ConsumerStatefulWidget {
   const VacancyApplicantsScreen({required this.vacancyId, super.key});
 
   final String vacancyId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VacancyApplicantsScreen> createState() =>
+      _VacancyApplicantsScreenState();
+}
+
+class _VacancyApplicantsScreenState
+    extends ConsumerState<VacancyApplicantsScreen> {
+  /// Null is "all", and deliberately not a ninth status: the server's absent
+  /// parameter means unfiltered, so the client's absent value should too.
+  String? _status;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final applications = ref.watch(vacancyApplicationsProvider(vacancyId));
+    final vacancyId = widget.vacancyId;
+    final provider = vacancyApplicationsProvider(
+      vacancyId,
+      status: _status,
+    );
+    final applications = ref.watch(provider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.vacancyApplicants)),
@@ -32,6 +61,17 @@ class VacancyApplicantsScreen extends ConsumerWidget {
         child: Column(
           children: [
             _Counts(vacancyId: vacancyId),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: HhSpace.gutter,
+              ),
+              child: _StageFilter(
+                status: _status,
+                onChanged: (next) => setState(() => _status = next),
+              ),
+            ),
+            const SizedBox(height: HhSpace.md),
 
             Expanded(
               child: switch (applications) {
@@ -43,14 +83,22 @@ class VacancyApplicantsScreen extends ConsumerWidget {
                         ? error.message
                         : l10n.stateErrorBody,
                     retryLabel: l10n.commonRetry,
-                    onRetry: () => ref.invalidate(
-                      vacancyApplicationsProvider(vacancyId),
-                    ),
+                    onRetry: () => ref.invalidate(provider),
                   ),
                 ),
                 AsyncData(:final value) when value.isEmpty => HhEmptyState(
                   title: l10n.stateEmptyTitle,
-                  message: l10n.vacancyApplicantsEmpty,
+                  // A stage with nobody in it is a different fact from a
+                  // vacancy nobody applied to: one is fixed by clearing the
+                  // filter, the other by waiting. Telling an employer looking
+                  // at "Hired" that nobody has applied would be false.
+                  message: _status == null
+                      ? l10n.vacancyApplicantsEmpty
+                      : l10n.applicantsNoneAtStage,
+                  actionLabel: _status == null ? null : l10n.filtersReset,
+                  onAction: _status == null
+                      ? null
+                      : () => setState(() => _status = null),
                 ),
                 AsyncData(:final value) => ListView.builder(
                   padding: const EdgeInsets.all(HhSpace.gutter),
@@ -58,6 +106,7 @@ class VacancyApplicantsScreen extends ConsumerWidget {
                   itemBuilder: (context, index) => _ApplicantRow(
                     application: value[index],
                     vacancyId: vacancyId,
+                    status: _status,
                   ),
                 ),
                 _ => const Center(child: CircularProgressIndicator()),
@@ -209,11 +258,55 @@ class _Invitations extends StatelessWidget {
   }
 }
 
+/// §8.1's eight stages plus "all", as chips.
+class _StageFilter extends StatelessWidget {
+  const _StageFilter({required this.status, required this.onChanged});
+
+  final String? status;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    // Driven off the server's own status list, so a ninth stage needs a label
+    // and nothing else.
+    final options = <(String?, String)>[
+      (null, l10n.invitationFilterAll),
+      for (final code in ApplicationStage.all) (code, stageLabel(code, l10n)),
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final (index, (code, label)) in options.indexed) ...[
+            if (index > 0) const SizedBox(width: HhSpace.sm),
+            HhFilterChip(
+              label: label,
+              selected: code == status,
+              onTap: () => onChanged(code),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _ApplicantRow extends ConsumerStatefulWidget {
-  const _ApplicantRow({required this.application, required this.vacancyId});
+  const _ApplicantRow({
+    required this.application,
+    required this.vacancyId,
+    required this.status,
+  });
 
   final Application application;
   final String vacancyId;
+
+  /// The filter in force, so a stage move invalidates the list the employer is
+  /// actually looking at rather than the unfiltered one.
+  final String? status;
 
   @override
   ConsumerState<_ApplicantRow> createState() => _ApplicantRowState();
@@ -258,6 +351,16 @@ class _ApplicantRowState extends ConsumerState<_ApplicantRow> {
                       label: stageLabel(stage, l10n),
                       onPressed: _busy ? null : () => _move(stage),
                     ),
+                  // §7.3's private note. Beside the stage moves because it is
+                  // the same kind of act — what the employer does *about* this
+                  // application rather than what the candidate sent.
+                  HhButton.text(
+                    label: l10n.notesTitle,
+                    onPressed: () => showApplicationNotes(
+                      context,
+                      applicationId: application.id,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -276,8 +379,17 @@ class _ApplicantRowState extends ConsumerState<_ApplicantRow> {
           .read(employerApplicationsRepositoryProvider)
           .moveStage(widget.application.id, stage);
 
-      // Both: the row's badge and §6.5's counts, which a hire changes.
+      // Three things: the list the employer is looking at, the unfiltered one
+      // behind it, and §6.5's counts, which a hire changes. The filtered list
+      // is invalidated by name because a stage move can remove a row from it —
+      // moving somebody out of "Submitted" while that filter is on.
       ref
+        ..invalidate(
+          vacancyApplicationsProvider(
+            widget.vacancyId,
+            status: widget.status,
+          ),
+        )
         ..invalidate(vacancyApplicationsProvider(widget.vacancyId))
         ..invalidate(vacancyApplicationCountsProvider(widget.vacancyId));
     } on ApiException catch (e) {

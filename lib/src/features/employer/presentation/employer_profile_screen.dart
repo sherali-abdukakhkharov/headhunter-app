@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/account/presentation/account_entry_row.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_picker.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
@@ -166,6 +167,13 @@ class _Form extends ConsumerWidget {
                 // Only once a profile exists: verification verifies something,
                 // and there is nothing to verify before the first save.
                 if (!state.isNew) VerificationCard(dirty: state.isDirty),
+
+                const SizedBox(height: HhSpace.sectionGap),
+
+                // Sessions, sign-out and BR-14. The same row the candidate
+                // profile carries: §2.3 makes the role a runtime switch, so
+                // whichever shell somebody is in has to reach the account.
+                const AccountEntryRow(),
 
                 const SizedBox(height: HhSpace.xxl),
               ],

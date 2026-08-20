@@ -1568,4 +1568,188 @@ class AppL10nRu extends AppL10n {
   @override
   String get candidateFileNoViewer =>
       'На этом телефоне нет приложения, которое откроет этот файл.';
+
+  @override
+  String get dashboardActiveVacancies => 'Активные вакансии';
+
+  @override
+  String get dashboardOpenPositions => 'Открытых мест';
+
+  @override
+  String get dashboardNewApplications => 'Новые заявки';
+
+  @override
+  String get dashboardAttention => 'Требует вашего внимания';
+
+  @override
+  String get dashboardAttentionClear => 'Ничего не ждёт вашего решения.';
+
+  @override
+  String get dashboardVerificationTitle => 'Проверка не завершена';
+
+  @override
+  String get dashboardVacancyRejected => 'Требуются изменения';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return 'Не рассмотрено заявок: $count';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return 'Сохранённых кандидатов: $count';
+  }
+
+  @override
+  String get dashboardHiring => 'Ход найма';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$hired из $openings';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Приняты $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Приглашены $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Осталось $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Кошелёк';
+
+  @override
+  String get accountTitle => 'Аккаунт и безопасность';
+
+  @override
+  String get accountDevices => 'Устройства с активным входом';
+
+  @override
+  String get accountDevicesBody =>
+      'Если видите незнакомое устройство — завершите его сеанс.';
+
+  @override
+  String get accountDeviceUnknown => 'Устройство без имени';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Последний вход: $at';
+  }
+
+  @override
+  String get accountThisDevice => 'Это устройство';
+
+  @override
+  String get accountRevoke => 'Завершить сеанс';
+
+  @override
+  String get accountRevokeTitle => 'Завершить этот сеанс?';
+
+  @override
+  String get accountRevokeBody =>
+      'На этом устройстве потребуется войти заново.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Выйти на этом устройстве?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'Это устройство, которым вы пользуетесь. Сейчас вы выйдете из аккаунта.';
+
+  @override
+  String get accountRevokeAll => 'Завершить все сеансы';
+
+  @override
+  String get accountRevokeAllTitle => 'Завершить все сеансы?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Из аккаунта выйдут все устройства, включая это.';
+
+  @override
+  String get accountDelete => 'Удаление аккаунта';
+
+  @override
+  String get accountDeleteBody =>
+      'Ваш профиль, заявки и сообщения будут удалены. Отменить это нельзя.';
+
+  @override
+  String get accountDeleteAction => 'Запросить удаление';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Запросить удаление аккаунта?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'Мы начнём удаление вашего аккаунта. Отменить это из приложения будет нельзя.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'Удаление запрошено';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка.';
+
+  @override
+  String get filtersRegion => 'Область или район';
+
+  @override
+  String get filtersEmploymentType => 'Тип занятости';
+
+  @override
+  String get filtersWorkFormat => 'Формат работы';
+
+  @override
+  String get filtersShift => 'Смена';
+
+  @override
+  String get filtersSalaryFrom => 'Оплата от';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Вакансии с оплатой по договорённости тоже показываются.';
+
+  @override
+  String get filtersPublishedFrom => 'Опубликовано с';
+
+  @override
+  String get filtersUnavailableTitle => 'Три фильтра пока недоступны';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Пока нельзя фильтровать по опыту, языку и верхней границе оплаты. Остальное работает.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return 'Применено фильтров: $count';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Под эти фильтры вакансий нет. Попробуйте расширить их.';
+
+  @override
+  String get feedSavedUnfiltered => 'Сохранённые вакансии не фильтруются.';
+
+  @override
+  String get notesEmpty => 'Заметок пока нет.';
+
+  @override
+  String get notesNewLabel => 'Новая заметка';
+
+  @override
+  String get notesNewHint =>
+      'Просит 8м, возможно согласится на 6,5 — перезвонить в четверг';
+
+  @override
+  String get applicantsNoneAtStage =>
+      'На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.';
 }

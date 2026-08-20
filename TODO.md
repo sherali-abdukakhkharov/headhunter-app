@@ -323,7 +323,12 @@ working destinations rather than dead ends.
       keeps the tokens (correct) but there is no "we cannot reach the server,
       retry" state, so the user sees sign-in and has no way to say *try again*.
       Needs a `SessionState` case; §12.4 asks for explicit offline state
-- [ ] **Role switch does not tell the server** — `POST /auth/active-role`
+- [x] ~~**Role switch does not tell the server**~~ — it does, and has for a
+      while: `SessionController._publishActiveRole` calls
+      `AuthRepository.switchActiveRole` on every switch and stores the access
+      token it returns. The note below is kept because the failure it describes is
+      the reason the call exists.
+- [-] ~~**Role switch does not tell the server** — `POST /auth/active-role`~~
       returns an access token carrying the new role, and the app does not call
       it. Harmless today because nothing is role-authorized yet; **it becomes a
       403 the moment M2+ adds an endpoint that checks the acting role**
@@ -334,10 +339,39 @@ working destinations rather than dead ends.
       the per-role explanations are still M1's
 - [~] Role switcher in the profile area — `switchRoleAndGo` is done and exercised
       from `/_dev`; it needs its product entry point once the profile area exists
-- [ ] Sessions screen: list, sign out, terminate all
+- [x] **Account and security screen, 2026-08-20.** §4.2's session list with
+      per-device revoke and terminate-all, BR-14's deletion request, and — the
+      part that turned out to matter most — **a sign-out an ordinary user can
+      reach.** It existed only in the dev-tools screen and the blocked-account
+      screen, so a signed-in user had no way out of the app at all.
+      Four decisions worth keeping:
+      **Revoking the current device is offered rather than hidden.** It is the
+      same thing as signing out, and hiding the row would leave somebody looking
+      at a list of their devices unable to act on the one in their hand. The
+      confirmation is worded as signing out, and the tokens are cleared locally
+      afterwards so the redirect chain moves rather than waiting for the next
+      request to fail.
+      **Terminate-all says "including this one".** "Every device" is a phrase
+      most people read as "every *other* device", and the surprise would arrive
+      after the action.
+      **Deletion is a request, and no date is printed.** The server returns
+      `purgeAfter: null` while the retention period is an open client question,
+      so the screen points at support instead — a made-up date is the kind of
+      promise that ends up in a complaint.
+      **The sign-out button survives a failed list.** A screen that can only
+      fail traps whoever came here to leave, and signing out of this device needs
+      no list.
+      Reached from a row at the end of *both* profile screens, because §2.3 makes
+      the role a runtime switch and whichever shell somebody is in has to reach
+      the account. A row rather than an icon: neither profile screen has an app
+      bar, and the glyph set has no gear — `lock` already means "restricted" in
+      five places and `shieldCheck` means verification
 - [x] Blocked-account notice explaining the restriction (BR-10) — reason shown
       verbatim, sign-out available; verified on device
-- [ ] Account deletion request with confirmation
+- [x] ~~Account deletion request with confirmation~~ — done 2026-08-20, on the
+      account screen above. Worth noting *why* it moved up the list: an app that
+      lets people create an account has to let them delete it from inside the
+      app, which makes it a store-review gate rather than a feature
 - [x] ~~Real session acquisition, replacing `signInAsDevelopmentRole`~~ — done.
       `signInAsDevelopmentRole` stays, gated on the flavor: it is how the
       redirect chain is exercised without a network
@@ -507,7 +541,27 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Worker count `>= 1` (BR-05) — the server enforces it; the schema's
       `validation.min` is not yet applied client-side, so it costs a round trip
 - [ ] Seasonal/agricultural flow (UAT-10) — needs a seasonal category to walk
-- [ ] Employer dashboard widgets (§6.2) — the Home tab is still a placeholder
+- [x] **Employer dashboard (§6.2, E-07/E-08), 2026-08-20.** The Home tab was a
+      placeholder; it is now the dashboard, and five of §6.2's seven widgets are
+      live: active vacancies and open positions, new applications, candidates to
+      review, hiring progress, and the wallet tile — which had been built since
+      M12 with nowhere to live.
+      **Pending work comes before the metrics**, because the design says why: "a
+      recruiter opens this app to act, not to read numbers." The rows are ordered
+      by how stuck the employer is — BR-03 verification first, since nothing else
+      works without it; then a vacancy a moderator sent back, the only item whose
+      timing the employer does not control; then unread applicants; then saved
+      candidates, which is a nudge.
+      Three figures are computed rather than fetched, and each has a trap:
+      **open positions** sums `worker_count` and a vacancy that states none
+      contributes nothing rather than one; **new applications** is absent (an em
+      dash) until *every* per-vacancy count has arrived, because a zero that
+      becomes 34 was wrong rather than stale; **invited** on the meter counts
+      only non-terminal invitations, since the three segments add up to the
+      openings and somebody already hired must not appear twice.
+      New design-system component: `HhMeter`, a segmented bar whose legend is not
+      optional — a stacked bar is colour alone by construction, so each segment
+      carries a swatch, a word **and** its figure
 
 ## M6 - Discovery and applications *(candidate half done)*
 
@@ -527,7 +581,45 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Vacancy **detail** screen — the feed card is built, the full
       `GET /discovery/vacancies/:id` view with requirements, Share and Report
       is not
-- [ ] Vacancy filters per §5.5 — the repository takes them, no filter UI yet
+- [x] **Vacancy filters (§5.5), 2026-08-20.** The repository had taken filters
+      since M6 and nothing ever sent any. Six of §5.5's nine now work —
+      occupation, region/district, employment type, work format, shift and
+      publication date — plus the lower half of the pay range, persisted between
+      sessions the way the employer's search config is.
+      Four decisions worth keeping:
+      **Saved is never filtered.** The other two feeds are the server choosing
+      what to show; saved is a list the candidate curated, and an occupation
+      filter making a saved vacancy vanish from it reads as data loss. The tab
+      says so while filters are set, because otherwise it reads as the filters
+      having stopped working.
+      **A filtered empty feed says something different** from an empty one: one
+      is fixed by widening the filters, the other by waiting for employers to
+      publish, and telling somebody with four filters set that there are no
+      vacancies would simply be false.
+      **The pay note is on screen**: a negotiable vacancy *passes* a pay floor,
+      which is the server's rule and would otherwise read as a broken filter.
+      **The feed watches the filters rather than keying on them**, so all eight
+      existing `invalidate` call sites keep working — none of them would know
+      which filter set to name. That needs [FeedFilters] to have a deep `==`,
+      which is tested.
+      One thing found while building it: `FeedFilters.fromJson` reads **locally
+      stored** data, not a server response, so a field of the wrong type is an
+      older build's format rather than a contract violation. Every field is read
+      defensively; a cast would have lost the whole set over one renamed key
+- [!] **Backend ask: three of §5.5's nine vacancy filters have no query
+      parameter.** `FeedQueryDto` accepts `occupationIds`, `category`,
+      `regionId`, `districtId`, `employmentTypeIds`, `workFormatIds`,
+      `shiftIds`, `salaryFrom` and `publishedFrom` — and nothing for
+      **experience**, **language**, or the pay range's **upper bound**, all three
+      of which §5.5 lists by name.
+      They are deliberately not modelled and not offered: a filter a candidate
+      can set and the server ignores is worse than one that was never there,
+      because the result list looks like an answer. The filter screen says which
+      three are missing rather than leaving somebody hunting for a control, and
+      that notice is deleted the day the parameters exist.
+      Worth pairing with the employer side, which already filters candidates on
+      experience and language (§7.1) — so the shapes exist, on the other
+      resource
 - [ ] Deadline-expired / closed vacancy rendering (UAT-15)
 - [x] Employer: applications per vacancy, stage moves and §6.5's
       hired-vs-required counts. **Stage moves are forward only, skipping
@@ -538,8 +630,32 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       and nothing reconstructs one it withheld. Null is a normal answer, so
       the absence is stated rather than left blank, and `canViewFiles` false
       means the server sent no files at all
-- [ ] Employer application filters, and the internal-notes UI — the repository
-      has `notes`/`addNote`, no screen yet
+- [x] **Employer application filters and the private-note UI, 2026-08-20.** Both
+      halves had been sitting in the repository unused: `forVacancy` never sent
+      the `status` the endpoint accepts, and `notes`/`addNote` had no screen at
+      all.
+      **The stage filter is the server's**, so a filtered list is complete rather
+      than filtered-over-what-was-loaded — the same distinction the invitation
+      sent list draws against the Coin ledger's client-side one. Eight stages
+      plus "all" are chips rather than `HhSegmented`, which at 360pt would give
+      each of nine about 37pt.
+      `ApplicationStage.all` is new and drives the chips, so a ninth status
+      needs a label and nothing else. It includes the **exits**, `withdrawn`
+      among them: that one is the candidate's alone to set and still the thing an
+      employer wants to filter out. §8.1 also names a "vacancy-closed" stage and
+      the database has no such status — a vacancy closing does not rewrite its
+      applications — so it is deliberately absent.
+      **An empty stage reads differently from an empty vacancy**: one is fixed by
+      clearing the filter, the other by waiting, and telling an employer looking
+      at "Hired" that nobody has applied would be false.
+      A stage move invalidates the **filtered** list by name as well as the
+      unfiltered one, because moving somebody out of "Submitted" while that
+      filter is on removes a row from what is on screen.
+      The note sheet is **append-only**, matching an API that offers GET and POST
+      and no edit: a dated observation silently rewritten later is worse than two
+      notes, because the first one is what the employer acted on. It says the
+      candidate never sees it, because a recruiter who is not certain of that
+      writes nothing useful
 - [x] **Vacancy detail (§5.6)** — the candidate could browse a feed and apply
       but never open a vacancy to read it. Tapping a card opens it: employer
       and verification badge, pay, openings, deadline, the work window,
@@ -744,6 +860,22 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       `sent` would have looked right until the first reply and then counted
       downwards. Both halves are watched independently, so a vacancy whose
       invitation counts 404 still shows its hiring progress
+- [!] **Backend ask: two routes §6.2's dashboard needs.** Neither blocks the
+      screen, which ships without them, and both are one request each:
+      1. **`GET /employers/me/dashboard`** — a summary. The dashboard currently
+         fans out **two requests per active vacancy**
+         (`/vacancies/{id}/applications/counts` and `/invitations/counts/{id}`)
+         because there is no aggregate anywhere. Fine for the handful an employer
+         runs at once, wrong in principle, and it is the client doing arithmetic
+         that a single query would do better. When it lands the screen loses the
+         fan-out and nothing else about it changes.
+      2. **An employer's interview list.** `GET /interviews/mine` carries
+         `@RequireRole('candidate')`, so there is no route an employer may call —
+         which means the design's third header metric ("5 Suhbat") cannot be
+         built at all. **Not a client gap, a contract gap**, and §6.2 lists
+         Interviews as one of its seven widgets. Until it exists the header shows
+         the three counts that *are* answerable rather than a placeholder where a
+         number should be
 - [!] **Backend ask, one request covering three gaps in `/invitations`.** All
       three are the same shape — the employer's side of §8.2 can say *what* was
       sent and not *to whom*:
@@ -947,7 +1079,10 @@ money and is enabled by a constant somebody has to remember.
       the kind is a word plus a glyph. What *is* held to the badge rule is the
       amount: `+5` and `−2` carry the sign, so credit and debit never rest on
       green versus grey
-- [ ] **The §6.2 dashboard tile has no dashboard yet.** `WalletTile` is built
+- [x] ~~**The §6.2 dashboard tile has no dashboard yet.**~~ — it does now, as
+      of 2026-08-20. Kept below because the reasoning about *where* it lives still
+      applies.
+- [-] ~~**The §6.2 dashboard tile has no dashboard yet.**~~ `WalletTile` is built
       and lives in the wallet feature, but the employer home tab is still M5's
       placeholder, so it currently sits on the company tab. The dashboard places
       the same widget rather than growing a second copy

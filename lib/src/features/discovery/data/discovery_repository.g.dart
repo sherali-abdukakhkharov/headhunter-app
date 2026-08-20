@@ -119,7 +119,7 @@ final class VacancyFeedProvider
   }
 }
 
-String _$vacancyFeedHash() => r'ff02685e577256f788b11ba99fc62040b84ec517';
+String _$vacancyFeedHash() => r'043dafc4da0a466d1ad54f8704fd2ed32ade79d4';
 
 /// One feed's contents.
 

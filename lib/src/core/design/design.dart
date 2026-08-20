@@ -25,6 +25,7 @@ export 'components/hh_card.dart';
 export 'components/hh_category_band.dart';
 export 'components/hh_chip.dart';
 export 'components/hh_conditional_field.dart';
+export 'components/hh_meter.dart';
 export 'components/hh_progress.dart';
 export 'components/hh_selection.dart';
 export 'components/hh_states.dart';

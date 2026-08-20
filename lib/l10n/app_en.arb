@@ -2023,5 +2023,256 @@
   "candidateFileNoViewer": "No app on this phone can open this file.",
   "@candidateFileNoViewer": {
     "description": "Shown when an attachment downloaded fine and nothing installed can display it. Its own message rather than a generic failure: the bytes arrived and the server allowed it, so \"check your connection\" would send an employer looking in the wrong place. The remedy is on the device."
+  },
+  "dashboardActiveVacancies": "Active vacancies",
+  "@dashboardActiveVacancies": {
+    "description": "Header metric on section 6.2's dashboard. Counted from `isOpenForApplications`, which the server computes from the status *and* the deadline — so a vacancy that is active with yesterday's deadline is correctly not counted."
+  },
+  "dashboardOpenPositions": "Open positions",
+  "@dashboardOpenPositions": {
+    "description": "Section 6.2's \"total open positions\": the worker counts of the active vacancies added up. A vacancy that states no worker count contributes nothing rather than one."
+  },
+  "dashboardNewApplications": "New applications",
+  "@dashboardNewApplications": {
+    "description": "Applications still at `submitted` — nobody has opened them. Shown as an em dash while any per-vacancy count is still in flight, because a zero that becomes 34 a moment later was a wrong number rather than a stale one."
+  },
+  "dashboardAttention": "Needs your attention",
+  "@dashboardAttention": {
+    "description": "Heading over the dashboard's pending work. It comes before the metrics because the design says why: \"a recruiter opens this app to act, not to read numbers.\""
+  },
+  "dashboardAttentionClear": "Nothing is waiting on you.",
+  "@dashboardAttentionClear": {
+    "description": "Shown when the pending list is empty. Deliberately a plain positive line rather than an empty state with an illustration: an empty queue is the good outcome here, and drawing it as absence would read as a failure to load."
+  },
+  "dashboardVerificationTitle": "Verification is not complete",
+  "@dashboardVerificationTitle": {
+    "description": "The first pending row, and it outranks the rest: BR-03 means an unverified employer cannot publish a vacancy, search candidates or buy an unlock, so nothing else on the screen works until it is done."
+  },
+  "dashboardVacancyRejected": "Changes are required",
+  "@dashboardVacancyRejected": {
+    "description": "A vacancy a moderator sent back (section 6.4). Ranked above unread applicants because it is the only item on the list whose timing the employer does not control."
+  },
+  "dashboardUnreviewed": "{count} applications not yet reviewed",
+  "@dashboardUnreviewed": {
+    "description": "One pending row per vacancy with applications still at `submitted`.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardSavedCandidates": "{count} saved candidates",
+  "@dashboardSavedCandidates": {
+    "description": "Section 6.2's \"candidates to review\". Last in the pending list because it is a nudge rather than a blockage — nobody is waiting on it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardHiring": "Hiring progress",
+  "@dashboardHiring": {
+    "description": "Heading over one meter per open vacancy, tracking section 7.4's counts against the target."
+  },
+  "dashboardHiredOf": "{hired} of {openings}",
+  "@dashboardHiredOf": {
+    "description": "Hires against the worker count (section 6.5). Absent when the vacancy states no worker count, because a denominator nobody set is not a target to measure against.",
+    "placeholders": {
+      "hired": {
+        "type": "int"
+      },
+      "openings": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMeterHired": "Hired {count}",
+  "@dashboardMeterHired": {
+    "description": "Legend for the meter's first segment. The figure is in the label because an 8pt bar cannot be read off, and the design's own rule is that status is never colour alone.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMeterInvited": "Invited {count}",
+  "@dashboardMeterInvited": {
+    "description": "Legend for the meter's second segment, and it counts invitations still **in the air** rather than every invitation ever sent: the three segments add up to the openings, so they have to be disjoint, and somebody already hired must not be counted twice. Non-terminal statuses only — the same set the candidate's inbox uses to decide whether an invitation can still be answered.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMeterRemaining": "Remaining {count}",
+  "@dashboardMeterRemaining": {
+    "description": "Legend for the unfilled part of the meter. Drawn by *not* drawing it — the track showing through is the remainder — so this label is the only thing that names it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardWallet": "Wallet",
+  "@dashboardWallet": {
+    "description": "Heading over section 6.2's wallet widget. The Top up action it also asks for is M13 and blocked on merchant credentials, so the tile shows the balance and its som value and leads to the ledger."
+  },
+  "accountTitle": "Account and security",
+  "@accountTitle": {
+    "description": "The one screen where somebody acts on the account rather than on the work: signed-in devices (section 4.2), signing out, and requesting deletion (BR-14)."
+  },
+  "accountDevices": "Signed-in devices",
+  "@accountDevices": {
+    "description": "Section 4.2's session list."
+  },
+  "accountDevicesBody": "If you see a device you do not recognise, end its session.",
+  "@accountDevicesBody": {
+    "description": "Says what the list is *for*. A list of devices with no instruction is a list most people scroll past; the reason to read it is that one of the rows might not be theirs."
+  },
+  "accountDeviceUnknown": "Unnamed device",
+  "@accountDeviceUnknown": {
+    "description": "A session whose device name and platform are both absent — an older build sent neither. Named rather than blank, because three empty lines read as a rendering failure rather than as missing data."
+  },
+  "accountLastUsed": "Last used {at}",
+  "@accountLastUsed": {
+    "description": "The wall clock the platform recorded, never converted to the device's zone: a session opened abroad would otherwise be dated in the wrong one (section 8.3).",
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "accountThisDevice": "This device",
+  "@accountThisDevice": {
+    "description": "Marks the row belonging to the phone in the reader's hand. The server decides it by comparing against the presented token, so it is not derivable client-side — and it is the one field that must not be wrong, because revoking that row signs the reader out."
+  },
+  "accountRevoke": "End session",
+  "@accountRevoke": {
+    "description": "Revokes one device. The verb, not \"Remove\": the device is not being removed from anything, its sign-in is being ended."
+  },
+  "accountRevokeTitle": "End this session?",
+  "@accountRevokeTitle": {
+    "description": "Confirmation for revoking another device."
+  },
+  "accountRevokeBody": "That device will have to sign in again.",
+  "@accountRevokeBody": {
+    "description": "States the consequence rather than asking for confirmation twice. Nothing is lost — the session ends, the account does not."
+  },
+  "accountRevokeCurrentTitle": "Sign out of this device?",
+  "@accountRevokeCurrentTitle": {
+    "description": "Revoking the current session *is* signing out, so the confirmation says so rather than repeating \"end session\" — a reader who taps it should not be surprised by what happens next."
+  },
+  "accountRevokeCurrentBody": "This is the device you are using. You will be signed out now.",
+  "@accountRevokeCurrentBody": {
+    "description": "The row is not hidden: somebody looking at a list of their devices must be able to act on the one in their hand. So the consequence is spelled out instead."
+  },
+  "accountRevokeAll": "End all sessions",
+  "@accountRevokeAll": {
+    "description": "Section 4.2's terminate-all. Offered only when more than one device is signed in — with one, it is the same button as Sign out under a longer name."
+  },
+  "accountRevokeAllTitle": "End every session?",
+  "@accountRevokeAllTitle": {
+    "description": "Confirmation for terminate-all."
+  },
+  "accountRevokeAllBody": "Every device will be signed out, including this one.",
+  "@accountRevokeAllBody": {
+    "description": "\"Including this one\" is the load-bearing half: \"every device\" is a phrase most people read as \"every *other* device\", and the surprise arrives after the action rather than before it."
+  },
+  "accountDelete": "Delete account",
+  "@accountDelete": {
+    "description": "BR-14. A section heading, and the section exists because an app that lets people create an account has to let them delete it from inside the app."
+  },
+  "accountDeleteBody": "Your profile, applications and messages will be removed. This cannot be undone.",
+  "@accountDeleteBody": {
+    "description": "Says what is lost before the button rather than after it. Deliberately no date: the server sends `purgeAfter: null` because the retention period is an open client question, so naming one would be promising something nobody has agreed."
+  },
+  "accountDeleteAction": "Request deletion",
+  "@accountDeleteAction": {
+    "description": "\"Request\", because that is what BR-14 does: the account moves to `deletion_requested` and a status-history row is written. Nothing is purged as the button is released, and a label saying \"Delete\" would describe a different operation."
+  },
+  "accountDeleteConfirmTitle": "Request account deletion?",
+  "@accountDeleteConfirmTitle": {
+    "description": "Confirmation for BR-14."
+  },
+  "accountDeleteConfirmBody": "We will start removing your account. You will not be able to undo this from the app.",
+  "@accountDeleteConfirmBody": {
+    "description": "\"Not from the app\" rather than \"not at all\": the request is a status change an administrator can see (section 10), so claiming it is absolutely final would be a stronger promise than the system makes."
+  },
+  "accountDeleteRequestedTitle": "Deletion requested",
+  "@accountDeleteRequestedTitle": {
+    "description": "Shown in place of the button once BR-14 has been recorded."
+  },
+  "accountDeleteRequestedBody": "Your request has been recorded. Support can tell you what happens next.",
+  "@accountDeleteRequestedBody": {
+    "description": "Points at support rather than at a date, because the server returns `purgeAfter: null` and there is no retention period to quote yet."
+  },
+  "filtersRegion": "Region or district",
+  "@filtersRegion": {
+    "description": "One place, not a set: the feed query takes a single `regionId`. Both are ids in the **region** dictionary, since districts are its children (section 5.1) rather than a type of their own, so choosing a district sets `regionId` to it."
+  },
+  "filtersEmploymentType": "Employment type",
+  "@filtersEmploymentType": {
+    "description": "One of section 5.5's nine filters. Multi-select."
+  },
+  "filtersWorkFormat": "Work format",
+  "@filtersWorkFormat": {
+    "description": "One of section 5.5's nine filters. Multi-select."
+  },
+  "filtersShift": "Shift",
+  "@filtersShift": {
+    "description": "One of section 5.5's nine filters. Multi-select."
+  },
+  "filtersSalaryFrom": "Pay from",
+  "@filtersSalaryFrom": {
+    "description": "The lower half of section 5.5's pay range. There is no upper half: the feed query has no parameter for it, and a control that does nothing to the list is worse than one that is absent."
+  },
+  "filtersSalaryNegotiableNote": "Vacancies with negotiable pay are still shown.",
+  "@filtersSalaryNegotiableNote": {
+    "description": "The server's rule, stated where somebody would otherwise conclude the filter is broken: a negotiable vacancy passes a pay floor because it has not said no to the figure, and excluding it would hide much of the seasonal work."
+  },
+  "filtersPublishedFrom": "Published from",
+  "@filtersPublishedFrom": {
+    "description": "Section 5.5's publication date. Matched on or after, and sent as `YYYY-MM-DD` — the server compares against the date it published in its own zone, so the client must not turn this into an instant."
+  },
+  "filtersUnavailableTitle": "Three filters are not available yet",
+  "@filtersUnavailableTitle": {
+    "description": "Says out loud what section 5.5 lists and the API cannot do, rather than leaving somebody hunting for a control that is not there. Removed the day the query parameters exist."
+  },
+  "filtersUnavailableBody": "Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.",
+  "@filtersUnavailableBody": {
+    "description": "Names the three rather than apologising generically, and says the rest works — otherwise a reader has no way to tell which of the controls above to trust."
+  },
+  "feedFilteredNote": "{count} filters applied",
+  "@feedFilteredNote": {
+    "description": "Shown above a filtered feed. A set of ids counts once however many it holds — three occupations is one narrowing decision, and a badge reading 5 for one row of chips tells nobody anything.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "feedFilteredEmpty": "No vacancies match these filters. Try widening them.",
+  "@feedFilteredEmpty": {
+    "description": "A filtered feed with no results is a different fact from an empty feed: one is fixed by changing the filters, the other by waiting for employers to publish. Telling somebody with four filters set that there are no vacancies would simply be false."
+  },
+  "feedSavedUnfiltered": "Saved vacancies are never filtered.",
+  "@feedSavedUnfiltered": {
+    "description": "Shown on the saved tab while filters are set. The other two feeds are the server choosing what to show; saved is a list the candidate curated, and a filter making a saved vacancy disappear from it reads as data loss rather than as narrowing."
+  },
+  "notesEmpty": "No notes yet.",
+  "@notesEmpty": {
+    "description": "An empty note list. Nothing to explain; nothing is wrong."
+  },
+  "notesNewLabel": "New note",
+  "@notesNewLabel": {
+    "description": "The API offers GET and POST and no edit or delete, so notes are append-only and the label says \"new\" rather than \"note\": a dated observation silently rewritten later is worse than two notes, because the first one is what the employer acted on."
+  },
+  "notesNewHint": "Asked for 8m, may take 6.5 — call back Thursday",
+  "@notesNewHint": {
+    "description": "A hint that shows what the field is *for*. A recruiter shown an empty box labelled \"note\" writes nothing; one shown this writes the thing they would have kept in their head."
+  },
+  "applicantsNoneAtStage": "Nobody is at this stage. Clear the filter to see every applicant.",
+  "@applicantsNoneAtStage": {
+    "description": "A stage with nobody in it is a different fact from a vacancy nobody applied to: one is fixed by clearing the filter, the other by waiting. Telling an employer looking at \"Hired\" that nobody has applied would be false."
   }
 }

@@ -2764,6 +2764,318 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'No app on this phone can open this file.'**
   String get candidateFileNoViewer;
+
+  /// Header metric on section 6.2's dashboard. Counted from `isOpenForApplications`, which the server computes from the status *and* the deadline — so a vacancy that is active with yesterday's deadline is correctly not counted.
+  ///
+  /// In en, this message translates to:
+  /// **'Active vacancies'**
+  String get dashboardActiveVacancies;
+
+  /// Section 6.2's "total open positions": the worker counts of the active vacancies added up. A vacancy that states no worker count contributes nothing rather than one.
+  ///
+  /// In en, this message translates to:
+  /// **'Open positions'**
+  String get dashboardOpenPositions;
+
+  /// Applications still at `submitted` — nobody has opened them. Shown as an em dash while any per-vacancy count is still in flight, because a zero that becomes 34 a moment later was a wrong number rather than a stale one.
+  ///
+  /// In en, this message translates to:
+  /// **'New applications'**
+  String get dashboardNewApplications;
+
+  /// Heading over the dashboard's pending work. It comes before the metrics because the design says why: "a recruiter opens this app to act, not to read numbers."
+  ///
+  /// In en, this message translates to:
+  /// **'Needs your attention'**
+  String get dashboardAttention;
+
+  /// Shown when the pending list is empty. Deliberately a plain positive line rather than an empty state with an illustration: an empty queue is the good outcome here, and drawing it as absence would read as a failure to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is waiting on you.'**
+  String get dashboardAttentionClear;
+
+  /// The first pending row, and it outranks the rest: BR-03 means an unverified employer cannot publish a vacancy, search candidates or buy an unlock, so nothing else on the screen works until it is done.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is not complete'**
+  String get dashboardVerificationTitle;
+
+  /// A vacancy a moderator sent back (section 6.4). Ranked above unread applicants because it is the only item on the list whose timing the employer does not control.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes are required'**
+  String get dashboardVacancyRejected;
+
+  /// One pending row per vacancy with applications still at `submitted`.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications not yet reviewed'**
+  String dashboardUnreviewed(int count);
+
+  /// Section 6.2's "candidates to review". Last in the pending list because it is a nudge rather than a blockage — nobody is waiting on it.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} saved candidates'**
+  String dashboardSavedCandidates(int count);
+
+  /// Heading over one meter per open vacancy, tracking section 7.4's counts against the target.
+  ///
+  /// In en, this message translates to:
+  /// **'Hiring progress'**
+  String get dashboardHiring;
+
+  /// Hires against the worker count (section 6.5). Absent when the vacancy states no worker count, because a denominator nobody set is not a target to measure against.
+  ///
+  /// In en, this message translates to:
+  /// **'{hired} of {openings}'**
+  String dashboardHiredOf(int hired, int openings);
+
+  /// Legend for the meter's first segment. The figure is in the label because an 8pt bar cannot be read off, and the design's own rule is that status is never colour alone.
+  ///
+  /// In en, this message translates to:
+  /// **'Hired {count}'**
+  String dashboardMeterHired(int count);
+
+  /// Legend for the meter's second segment, and it counts invitations still **in the air** rather than every invitation ever sent: the three segments add up to the openings, so they have to be disjoint, and somebody already hired must not be counted twice. Non-terminal statuses only — the same set the candidate's inbox uses to decide whether an invitation can still be answered.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited {count}'**
+  String dashboardMeterInvited(int count);
+
+  /// Legend for the unfilled part of the meter. Drawn by *not* drawing it — the track showing through is the remainder — so this label is the only thing that names it.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining {count}'**
+  String dashboardMeterRemaining(int count);
+
+  /// Heading over section 6.2's wallet widget. The Top up action it also asks for is M13 and blocked on merchant credentials, so the tile shows the balance and its som value and leads to the ledger.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get dashboardWallet;
+
+  /// The one screen where somebody acts on the account rather than on the work: signed-in devices (section 4.2), signing out, and requesting deletion (BR-14).
+  ///
+  /// In en, this message translates to:
+  /// **'Account and security'**
+  String get accountTitle;
+
+  /// Section 4.2's session list.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed-in devices'**
+  String get accountDevices;
+
+  /// Says what the list is *for*. A list of devices with no instruction is a list most people scroll past; the reason to read it is that one of the rows might not be theirs.
+  ///
+  /// In en, this message translates to:
+  /// **'If you see a device you do not recognise, end its session.'**
+  String get accountDevicesBody;
+
+  /// A session whose device name and platform are both absent — an older build sent neither. Named rather than blank, because three empty lines read as a rendering failure rather than as missing data.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed device'**
+  String get accountDeviceUnknown;
+
+  /// The wall clock the platform recorded, never converted to the device's zone: a session opened abroad would otherwise be dated in the wrong one (section 8.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Last used {at}'**
+  String accountLastUsed(String at);
+
+  /// Marks the row belonging to the phone in the reader's hand. The server decides it by comparing against the presented token, so it is not derivable client-side — and it is the one field that must not be wrong, because revoking that row signs the reader out.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get accountThisDevice;
+
+  /// Revokes one device. The verb, not "Remove": the device is not being removed from anything, its sign-in is being ended.
+  ///
+  /// In en, this message translates to:
+  /// **'End session'**
+  String get accountRevoke;
+
+  /// Confirmation for revoking another device.
+  ///
+  /// In en, this message translates to:
+  /// **'End this session?'**
+  String get accountRevokeTitle;
+
+  /// States the consequence rather than asking for confirmation twice. Nothing is lost — the session ends, the account does not.
+  ///
+  /// In en, this message translates to:
+  /// **'That device will have to sign in again.'**
+  String get accountRevokeBody;
+
+  /// Revoking the current session *is* signing out, so the confirmation says so rather than repeating "end session" — a reader who taps it should not be surprised by what happens next.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of this device?'**
+  String get accountRevokeCurrentTitle;
+
+  /// The row is not hidden: somebody looking at a list of their devices must be able to act on the one in their hand. So the consequence is spelled out instead.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the device you are using. You will be signed out now.'**
+  String get accountRevokeCurrentBody;
+
+  /// Section 4.2's terminate-all. Offered only when more than one device is signed in — with one, it is the same button as Sign out under a longer name.
+  ///
+  /// In en, this message translates to:
+  /// **'End all sessions'**
+  String get accountRevokeAll;
+
+  /// Confirmation for terminate-all.
+  ///
+  /// In en, this message translates to:
+  /// **'End every session?'**
+  String get accountRevokeAllTitle;
+
+  /// "Including this one" is the load-bearing half: "every device" is a phrase most people read as "every *other* device", and the surprise arrives after the action rather than before it.
+  ///
+  /// In en, this message translates to:
+  /// **'Every device will be signed out, including this one.'**
+  String get accountRevokeAllBody;
+
+  /// BR-14. A section heading, and the section exists because an app that lets people create an account has to let them delete it from inside the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get accountDelete;
+
+  /// Says what is lost before the button rather than after it. Deliberately no date: the server sends `purgeAfter: null` because the retention period is an open client question, so naming one would be promising something nobody has agreed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile, applications and messages will be removed. This cannot be undone.'**
+  String get accountDeleteBody;
+
+  /// "Request", because that is what BR-14 does: the account moves to `deletion_requested` and a status-history row is written. Nothing is purged as the button is released, and a label saying "Delete" would describe a different operation.
+  ///
+  /// In en, this message translates to:
+  /// **'Request deletion'**
+  String get accountDeleteAction;
+
+  /// Confirmation for BR-14.
+  ///
+  /// In en, this message translates to:
+  /// **'Request account deletion?'**
+  String get accountDeleteConfirmTitle;
+
+  /// "Not from the app" rather than "not at all": the request is a status change an administrator can see (section 10), so claiming it is absolutely final would be a stronger promise than the system makes.
+  ///
+  /// In en, this message translates to:
+  /// **'We will start removing your account. You will not be able to undo this from the app.'**
+  String get accountDeleteConfirmBody;
+
+  /// Shown in place of the button once BR-14 has been recorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion requested'**
+  String get accountDeleteRequestedTitle;
+
+  /// Points at support rather than at a date, because the server returns `purgeAfter: null` and there is no retention period to quote yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request has been recorded. Support can tell you what happens next.'**
+  String get accountDeleteRequestedBody;
+
+  /// One place, not a set: the feed query takes a single `regionId`. Both are ids in the **region** dictionary, since districts are its children (section 5.1) rather than a type of their own, so choosing a district sets `regionId` to it.
+  ///
+  /// In en, this message translates to:
+  /// **'Region or district'**
+  String get filtersRegion;
+
+  /// One of section 5.5's nine filters. Multi-select.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment type'**
+  String get filtersEmploymentType;
+
+  /// One of section 5.5's nine filters. Multi-select.
+  ///
+  /// In en, this message translates to:
+  /// **'Work format'**
+  String get filtersWorkFormat;
+
+  /// One of section 5.5's nine filters. Multi-select.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift'**
+  String get filtersShift;
+
+  /// The lower half of section 5.5's pay range. There is no upper half: the feed query has no parameter for it, and a control that does nothing to the list is worse than one that is absent.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from'**
+  String get filtersSalaryFrom;
+
+  /// The server's rule, stated where somebody would otherwise conclude the filter is broken: a negotiable vacancy passes a pay floor because it has not said no to the figure, and excluding it would hide much of the seasonal work.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies with negotiable pay are still shown.'**
+  String get filtersSalaryNegotiableNote;
+
+  /// Section 5.5's publication date. Matched on or after, and sent as `YYYY-MM-DD` — the server compares against the date it published in its own zone, so the client must not turn this into an instant.
+  ///
+  /// In en, this message translates to:
+  /// **'Published from'**
+  String get filtersPublishedFrom;
+
+  /// Says out loud what section 5.5 lists and the API cannot do, rather than leaving somebody hunting for a control that is not there. Removed the day the query parameters exist.
+  ///
+  /// In en, this message translates to:
+  /// **'Three filters are not available yet'**
+  String get filtersUnavailableTitle;
+
+  /// Names the three rather than apologising generically, and says the rest works — otherwise a reader has no way to tell which of the controls above to trust.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.'**
+  String get filtersUnavailableBody;
+
+  /// Shown above a filtered feed. A set of ids counts once however many it holds — three occupations is one narrowing decision, and a badge reading 5 for one row of chips tells nobody anything.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} filters applied'**
+  String feedFilteredNote(int count);
+
+  /// A filtered feed with no results is a different fact from an empty feed: one is fixed by changing the filters, the other by waiting for employers to publish. Telling somebody with four filters set that there are no vacancies would simply be false.
+  ///
+  /// In en, this message translates to:
+  /// **'No vacancies match these filters. Try widening them.'**
+  String get feedFilteredEmpty;
+
+  /// Shown on the saved tab while filters are set. The other two feeds are the server choosing what to show; saved is a list the candidate curated, and a filter making a saved vacancy disappear from it reads as data loss rather than as narrowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved vacancies are never filtered.'**
+  String get feedSavedUnfiltered;
+
+  /// An empty note list. Nothing to explain; nothing is wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet.'**
+  String get notesEmpty;
+
+  /// The API offers GET and POST and no edit or delete, so notes are append-only and the label says "new" rather than "note": a dated observation silently rewritten later is worse than two notes, because the first one is what the employer acted on.
+  ///
+  /// In en, this message translates to:
+  /// **'New note'**
+  String get notesNewLabel;
+
+  /// A hint that shows what the field is *for*. A recruiter shown an empty box labelled "note" writes nothing; one shown this writes the thing they would have kept in their head.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked for 8m, may take 6.5 — call back Thursday'**
+  String get notesNewHint;
+
+  /// A stage with nobody in it is a different fact from a vacancy nobody applied to: one is fixed by clearing the filter, the other by waiting. Telling an employer looking at "Hired" that nobody has applied would be false.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is at this stage. Clear the filter to see every applicant.'**
+  String get applicantsNoneAtStage;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

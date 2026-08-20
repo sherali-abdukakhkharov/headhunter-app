@@ -383,6 +383,68 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         ),
 
         // --- Cards --------------------------------------------------------
+        const _Section('Ishga qabul o‘lchagichi'),
+        HhCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Call-markaz operatori', style: HhTypography.body),
+              const SizedBox(height: HhSpace.md),
+              const HhMeter(
+                total: 20,
+                segments: [
+                  HhMeterSegment(
+                    value: 7,
+                    color: HhColors.success,
+                    label: 'Ishga olindi 7',
+                  ),
+                  HhMeterSegment(
+                    value: 4,
+                    color: HhColors.accent500,
+                    label: 'Taklif yuborildi 4',
+                  ),
+                ],
+                remainderLabel: 'Qolgan 9',
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: HhSpace.sm),
+        // The two states worth eyeballing: no denominator, and more hires than
+        // openings — §6.5 allows both.
+        const HhCard(
+          child: HhMeter(
+            total: 0,
+            segments: [
+              HhMeterSegment(
+                value: 3,
+                color: HhColors.success,
+                label: 'Ishga olindi 3',
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: HhSpace.sm),
+        const HhCard(
+          child: HhMeter(
+            total: 10,
+            segments: [
+              HhMeterSegment(
+                value: 9,
+                color: HhColors.success,
+                label: 'Ishga olindi 9',
+              ),
+              HhMeterSegment(
+                value: 6,
+                color: HhColors.accent500,
+                label: 'Taklif yuborildi 6',
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: HhSpace.sectionGap),
+
         const _Section('Cards'),
         HhVacancyCard(
           title: 'Call-markaz operatori',

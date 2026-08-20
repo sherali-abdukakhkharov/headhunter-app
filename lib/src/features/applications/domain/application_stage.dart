@@ -4,10 +4,14 @@
 /// newer server is carried and displayed rather than crashing the list — the
 /// same rule as an unknown field kind.
 abstract final class ApplicationStage {
+  /// Where every application starts, and the one stage §6.2 counts: an
+  /// application still at `submitted` is one nobody has looked at.
+  static const String submitted = 'submitted';
+
   /// The hiring progression, in order. `rejected` and `withdrawn` are outside
   /// it because they are exits, not steps.
-  static const progression = [
-    'submitted',
+  static const List<String> progression = [
+    submitted,
     'viewed',
     'shortlisted',
     'interview',
@@ -24,6 +28,22 @@ abstract final class ApplicationStage {
     'offer',
     'hired',
     'rejected',
+  ];
+
+  /// All eight statuses the server stores, progression first then the exits.
+  ///
+  /// For a **filter**, where [progression] is for a state machine: an employer
+  /// narrowing a list needs the exits offered too, including `withdrawn`, which
+  /// is the candidate's alone to set and still the thing an employer wants to
+  /// filter out. Driving the chips off this means a ninth status added
+  /// server-side needs a label here and nothing else.
+  ///
+  /// §8.1 also names a "vacancy-closed" stage; the database has no such status,
+  /// so it is not here. A vacancy closing does not rewrite its applications.
+  static const List<String> all = [
+    ...progression,
+    'rejected',
+    'withdrawn',
   ];
 
   /// Stages nothing can move on from.
