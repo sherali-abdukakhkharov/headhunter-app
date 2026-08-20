@@ -1566,7 +1566,7 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get candidateFileNoViewer =>
+  String get fileNoViewer =>
       'На этом телефоне нет приложения, которое откроет этот файл.';
 
   @override
@@ -1777,4 +1777,141 @@ class AppL10nRu extends AppL10n {
   @override
   String get roleSelectionBoth =>
       'С обеими ролями один аккаунт хранит два отдельных пространства: ваш личный профиль и профиль компании, переключение — в профиле.';
+
+  @override
+  String get chatListEmpty =>
+      'Переписка открывается после взаимодействия по вакансии — отклика или принятого приглашения.';
+
+  @override
+  String get chatParticipantUnknown => 'Участник';
+
+  @override
+  String chatUnreadCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString';
+  }
+
+  @override
+  String chatUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count непрочитанных сообщений',
+      many: '$count непрочитанных сообщений',
+      few: '$count непрочитанных сообщения',
+      one: '$count непрочитанное сообщение',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNoMessages => 'Сообщений пока нет';
+
+  @override
+  String get chatAttachment => 'Вложение';
+
+  @override
+  String get chatReadOnly => 'Только чтение';
+
+  @override
+  String get chatBlocked => 'Заблокировано';
+
+  @override
+  String get chatBlockedByYou => 'Вы заблокировали';
+
+  @override
+  String get chatReadOnlyTitle => 'Эта переписка стала историей';
+
+  @override
+  String get chatReadOnlyBody =>
+      'Отклик или приглашение, с которого она началась, завершились, поэтому новые сообщения отправить нельзя. Всё написанное остаётся доступным для чтения.';
+
+  @override
+  String get chatBlockedTitle => 'Заблокировано';
+
+  @override
+  String get chatBlockedBody =>
+      'Другая сторона заблокировала эту переписку. Пока блокировка действует, писать не может никто, а сообщения остаются доступными для чтения.';
+
+  @override
+  String get chatBlockedByYouTitle => 'Вы заблокировали эту переписку';
+
+  @override
+  String get chatBlockedByYouBody =>
+      'Пока блокировка действует, писать не может ни одна сторона — включая вас. Чтобы снова писать, снимите блокировку сверху экрана.';
+
+  @override
+  String get chatUnblock => 'Разблокировать';
+
+  @override
+  String get chatUnblocked => 'Блокировка снята. Теперь можно писать.';
+
+  @override
+  String get chatBlockAction => 'Заблокировать';
+
+  @override
+  String get chatBlockTitle => 'Заблокировать эту переписку?';
+
+  @override
+  String get chatBlockBody =>
+      'Она станет доступной только для чтения для вас обоих — вы тоже не сможете писать. Сообщения останутся доступными, и модератор сможет их просмотреть.';
+
+  @override
+  String get chatBlockReasonLabel => 'Причина (необязательно)';
+
+  @override
+  String get chatBlockReasonHint => 'Для модератора, который это рассмотрит';
+
+  @override
+  String get chatReportTitle => 'Пожаловаться на это сообщение';
+
+  @override
+  String get chatReportBody =>
+      'Жалобу читает модератор и принимает решение. Блокировка переписки — отдельное действие, можно сделать и то и другое.';
+
+  @override
+  String get chatReportReasonLabel => 'Что с ним не так';
+
+  @override
+  String get chatReportReasonHint => 'Попросил заплатить за трудоустройство';
+
+  @override
+  String get chatReportSubmit => 'Отправить жалобу';
+
+  @override
+  String get chatReportDone => 'Жалоба отправлена. Модератор её рассмотрит.';
+
+  @override
+  String get chatComposerLabel => 'Сообщение';
+
+  @override
+  String get chatComposerHint => 'Напишите сообщение';
+
+  @override
+  String get chatSend => 'Отправить';
+
+  @override
+  String get chatSendRefusedTitle => 'Не отправлено';
+
+  @override
+  String get chatSent => 'Отправлено';
+
+  @override
+  String get chatRead => 'Прочитано';
+
+  @override
+  String get chatEarlier => 'Более ранние сообщения';
+
+  @override
+  String get chatThreadEmpty => 'Сообщений пока нет. Напишите первое.';
+
+  @override
+  String get chatThreadEmptyClosed =>
+      'До закрытия этой переписки сообщений не было.';
+
+  @override
+  String get chatOpenAction => 'Отправить сообщение';
 }

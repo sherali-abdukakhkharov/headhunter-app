@@ -14,6 +14,8 @@ import 'package:jobbridge_app/src/features/applications/presentation/vacancy_app
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:jobbridge_app/src/features/candidate_search/presentation/candidate_search_screen.dart';
 import 'package:jobbridge_app/src/features/candidate_search/presentation/vacancy_shortlist_screen.dart';
+import 'package:jobbridge_app/src/features/chat/presentation/conversation_thread_screen.dart';
+import 'package:jobbridge_app/src/features/chat/presentation/conversations_screen.dart';
 import 'package:jobbridge_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
@@ -163,9 +165,32 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               Routes.employerCompany => const EmployerProfileScreen(),
               Routes.employerVacancies => const VacancyListScreen(),
               Routes.employerCandidates => const CandidateSearchScreen(),
+              // §9.1's Messages tab is one screen in two shells. It is given
+              // its own tab path rather than the active role, because the
+              // thread is a child of *this* branch and the role can lag the
+              // location by a frame during a switch.
+              Routes.candidateMessages || Routes.employerMessages =>
+                ConversationsScreen(basePath: tab.path),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [
+              // §9.1. Nested inside the Messages tab, so a thread keeps the
+              // shell's nav bar and the back gesture returns to the list. Two
+              // registrations rather than one — the candidate shell and the
+              // employer shell each own their own path namespace — and the
+              // route **names** must differ for the same reason.
+              if (tab.path == Routes.candidateMessages ||
+                  tab.path == Routes.employerMessages)
+                GoRoute(
+                  path: ':id',
+                  name: tab.path == Routes.candidateMessages
+                      ? 'candidateConversation'
+                      : 'employerConversation',
+                  builder: (context, state) => ConversationThreadScreen(
+                    conversationId: state.pathParameters['id']!,
+                  ),
+                ),
+
               // Nested inside the tab, so the vacancy editor keeps the shell's
               // nav bar and the system back gesture returns to the list rather
               // than leaving the branch.

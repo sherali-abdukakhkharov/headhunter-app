@@ -9,7 +9,7 @@ import 'package:jobbridge_app/src/features/invitations/presentation/invitation_f
 
 /// What a **general** invitation says, resolved from ids (§8.2, BR-13).
 ///
-/// Shared by both sides of §8.2 for the same reason [invitationStamp] is: the
+/// Shared by both sides of §8.2 for the same reason `wallClockStamp` is: the
 /// candidate's inbox and the employer's sent list are two views of one
 /// resource, and an employer who cannot see what the candidate is reading has
 /// no way to answer a question about it.

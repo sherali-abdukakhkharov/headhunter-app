@@ -364,6 +364,20 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           ],
         ),
         const SizedBox(height: HhSpace.md),
+        const _StateLabel('Suhbat · 2'),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            HhBadge.conversationReadOnly(label: "Faqat o'qish"),
+            HhBadge.conversationBlocked(label: 'Bloklangan'),
+            // Not a status badge: a count carries its own meaning, so it takes
+            // no glyph. Shown here beside the two it appears with on a row.
+            HhUnreadPill(label: '3', semanticsLabel: "3 o'qilmagan"),
+          ],
+        ),
+        const SizedBox(height: HhSpace.md),
         const _StateLabel('Tasdiqlash · 5'),
         const Wrap(
           spacing: 8,

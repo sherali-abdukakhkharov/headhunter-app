@@ -102,7 +102,7 @@ after M11 while being delivered before M8.
 | M7 | Candidate search + invitations + shortlists (employer) | **done** — search §7.1–§7.3, invitations (inbox and send 2026-08-19, sent list and §7.4 counts 2026-08-20) and the per-vacancy shortlist (2026-08-20). Two carried notes in TODO.md, both backend asks rather than client work: `candidateName` on a sent invitation, and an invitation state on `CandidateCard` |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
-| M8 | Chat + interviews | after M6 + M7 **+ M12** (§9.1 gates employer-initiated chat on the unlock) |
+| M8 | Chat + interviews | **§9.1's chat done** 2026-08-20 — conversation list, thread, sent/read, block, report, read-only history, and both roles' Messages tab from one screen. §9.1's revised gate is the *same* question §8.2's "then" raised, answered the same lenient way: the client holds no copy of the rule and renders the server's refusal. Open: §8.3's interviews (the employer's list is a contract gap), deep links, and an attachment **send** — blocked on a `file_purpose` code, not on a screen |
 | M9 | Notifications + push | **last feature milestone** - after M10 |
 | M10 | Admin module (now including §10.5 wallet/payment administration) | after M4 + M5 + M12 |
 | M11 | Hardening: performance, accessibility, offline, acceptance | last |
@@ -463,15 +463,35 @@ this milestone are entitlement-driven, and **the candidate's side is not** — a
 candidate who applied can still be written to, and must not be shown a paywall
 that is not theirs.
 
-- Conversation list and thread; text plus approved attachments.
-- Sent / delivered / read indicators where the backend supplies them.
-- Report and block; read-only history for closed interactions.
+**How the gate was actually resolved, 2026-08-20.** The server does not
+implement that sentence: `HiringInteractionService` treats a live application as
+sufficient, exactly as it does for BR-09's contact exposure. That is the **same
+question** §8.2's "then" raised about invitations, and the client answered it in
+the lenient direction on 2026-08-19 — an application still opens contact. Chat
+follows, and the client keeps **no copy of the rule**: it calls the route and
+renders the 403. Gating harder than the API would tell an employer to pay for
+something the server would have given them free. Filed for the client as the
+second instance of one spec contradiction rather than as a second question.
+
+- [done 2026-08-20] Conversation list and thread; text plus **receiving**
+  attachments. Sending one is blocked on a `file_purpose` dictionary code, not
+  on a screen — the parsing and the bubble exist, and the purpose is server data
+  the client must not invent (§10.3).
+- [done 2026-08-20] Sent / read indicators. There is deliberately **no
+  `delivered`**: it is a property of push (M9), and a field set with `createdAt`
+  would be a fabricated answer.
+- [done 2026-08-20] Report and block; read-only history for closed interactions.
 - Interview scheduling display by type (phone / in-person / external link),
-  instructions, and confirm / request-another-time.
+  instructions, and confirm / request-another-time. The candidate half is
+  buildable now; the employer's list is a **contract gap** —
+  `GET /interviews/mine` is candidate-only, so §6.2's third header metric cannot
+  be built at all.
 - **Deep links, including the role switch before navigating** (ARCHITECTURE.md
   §3). Moved here from M9: routing infrastructure that chat and share-a-vacancy
   both need, and it must not sit behind the deferred notifications milestone.
-  Notification taps reuse it later rather than introducing it.
+  Notification taps reuse it later rather than introducing it — the thread route
+  is already the one a tap will open, which is also why the thread carries an
+  explicit refresh instead of a poll.
 
 ## M9 - Notifications
 

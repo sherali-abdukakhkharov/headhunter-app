@@ -1,0 +1,531 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/chat/data/chat_repository.dart';
+import 'package:jobbridge_app/src/features/chat/data/thread_controller.dart';
+import 'package:jobbridge_app/src/features/chat/domain/chat_message.dart';
+import 'package:jobbridge_app/src/features/chat/domain/chat_outcome.dart';
+import 'package:jobbridge_app/src/features/chat/domain/conversation.dart';
+import 'package:jobbridge_app/src/features/chat/presentation/chat_sheets.dart';
+import 'package:jobbridge_app/src/features/chat/presentation/message_bubble.dart';
+import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
+
+/// One conversation (§9.1): its history, and its composer while it is open.
+///
+/// ## The header and the messages are two providers, on purpose
+///
+/// They change for different reasons. Sending appends a message and leaves the
+/// header alone; blocking changes the header and appends nothing. One provider
+/// would re-fetch both on either, and the visible cost is the thread jumping
+/// back to the newest message every time somebody blocks.
+///
+/// ## The thread does not update itself, and that is a stated limitation
+///
+/// There is no poll. §9.2 gives message delivery to push (M9), and until that
+/// lands a timer asking every few seconds would drain a battery to answer
+/// "nothing yet" — on a product whose users are often on prepaid data. So the
+/// app bar carries an explicit refresh, and a notification tap will reuse the
+/// same route when M9 opens.
+///
+/// ## Read is marked on open, once
+///
+/// `PUT /read` is one timestamp per participant on the server, so it is
+/// idempotent and cheap. It runs from `initState` rather than from the build,
+/// so a rebuild does not re-send it, and the conversations list is invalidated
+/// afterwards so the tab's unread pill clears without the user going back to
+/// watch it happen.
+class ConversationThreadScreen extends ConsumerStatefulWidget {
+  const ConversationThreadScreen({required this.conversationId, super.key});
+
+  final String conversationId;
+
+  @override
+  ConsumerState<ConversationThreadScreen> createState() =>
+      _ConversationThreadScreenState();
+}
+
+class _ConversationThreadScreenState
+    extends ConsumerState<ConversationThreadScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Post-frame rather than inline: `initState` may not read a provider that
+    // could rebuild this widget, and marking read invalidates the list.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _markRead());
+  }
+
+  Future<void> _markRead() async {
+    try {
+      final repository = await ref.read(chatRepositoryProvider.future);
+      await repository.markRead(widget.conversationId);
+      if (!mounted) return;
+      ref
+        ..invalidate(conversationsProvider)
+        ..invalidate(conversationProvider(widget.conversationId));
+    } on ApiException catch (error) {
+      // Deliberately silent. Failing to mark a thread read costs an unread
+      // count that is one too high, and there is nothing the reader would do
+      // with an error about it — they came here to read, and the reading
+      // worked.
+      debugPrint('[chat] markRead failed: ${error.message}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final header = ref.watch(conversationProvider(widget.conversationId));
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          switch (header) {
+            AsyncData(:final value) =>
+              value.counterpartName ?? l10n.chatParticipantUnknown,
+            // Not the participant's name and not blank: a title that says
+            // "Messages" while the header loads is honest, and one that says a
+            // name before it arrives would have to change under the reader.
+            _ => l10n.navMessages,
+          },
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        actions: [
+          IconButton(
+            onPressed: _refresh,
+            tooltip: l10n.commonRetry,
+            icon: const HhIcon(HhIconPath.refresh, size: 21),
+          ),
+          if (header case AsyncData(:final value)) _BlockAction(value),
+        ],
+      ),
+      body: SafeArea(
+        child: switch (header) {
+          // Error first, before any loading arm: retry is off app-wide, so a
+          // failure is terminal and a spinner over it would be permanent.
+          AsyncValue(hasError: true, :final error?) => Padding(
+            padding: const EdgeInsets.all(HhSpace.gutter),
+            child: HhErrorState(
+              title: l10n.stateErrorTitle,
+              message: error is ApiException
+                  ? error.message
+                  : l10n.stateErrorBody,
+              retryLabel: l10n.commonRetry,
+              onRetry: _refresh,
+            ),
+          ),
+          AsyncData(:final value) => _Body(conversation: value),
+          _ => const Center(child: CircularProgressIndicator()),
+        },
+      ),
+    );
+  }
+
+  void _refresh() {
+    ref
+      ..invalidate(conversationProvider(widget.conversationId))
+      ..invalidate(conversationThreadProvider(widget.conversationId));
+    unawaited(_markRead());
+  }
+}
+
+/// The block / unblock control.
+///
+/// **Unblock is offered only where `blockedByMe`.** The route removes the
+/// caller's own block and cannot lift the other side's, so a control there
+/// would look like it clears a condition it cannot touch — the same rule
+/// `HhNotice`'s dismiss follows.
+class _BlockAction extends ConsumerWidget {
+  const _BlockAction(this.conversation);
+
+  final Conversation conversation;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+
+    if (conversation.isBlocked) {
+      if (!conversation.blockedByMe) return const SizedBox.shrink();
+
+      return TextButton(
+        onPressed: () => _unblock(context, ref),
+        child: Text(l10n.chatUnblock),
+      );
+    }
+
+    return IconButton(
+      onPressed: () => showBlockConversationSheet(context, conversation.id),
+      tooltip: l10n.chatBlockAction,
+      icon: const HhIcon(HhIconPath.xCircle, size: 21),
+    );
+  }
+
+  Future<void> _unblock(BuildContext context, WidgetRef ref) async {
+    final l10n = AppL10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      final repository = await ref.read(chatRepositoryProvider.future);
+      await repository.unblock(conversation.id);
+      ref
+        ..invalidate(conversationProvider(conversation.id))
+        ..invalidate(conversationsProvider);
+    } on ApiException catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+      return;
+    }
+
+    messenger.showSnackBar(SnackBar(content: Text(l10n.chatUnblocked)));
+  }
+}
+
+class _Body extends ConsumerWidget {
+  const _Body({required this.conversation});
+
+  final Conversation conversation;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final thread = ref.watch(conversationThreadProvider(conversation.id));
+
+    return Column(
+      children: [
+        Expanded(
+          child: switch (thread) {
+            AsyncValue(hasError: true, :final error?) => Padding(
+              padding: const EdgeInsets.all(HhSpace.gutter),
+              child: HhErrorState(
+                title: l10n.stateErrorTitle,
+                message: error is ApiException
+                    ? error.message
+                    : l10n.stateErrorBody,
+                retryLabel: l10n.commonRetry,
+                onRetry: () => ref.invalidate(
+                  conversationThreadProvider(conversation.id),
+                ),
+              ),
+            ),
+            AsyncData(:final value) when value.messages.isEmpty => Padding(
+              padding: const EdgeInsets.all(HhSpace.gutter),
+              child: HhEmptyState(
+                title: l10n.stateEmptyTitle,
+                message: conversation.canSend
+                    ? l10n.chatThreadEmpty
+                    : l10n.chatThreadEmptyClosed,
+              ),
+            ),
+            AsyncData(:final value) => _Messages(
+              conversation: conversation,
+              thread: value,
+            ),
+            _ => const Center(child: CircularProgressIndicator()),
+          },
+        ),
+
+        // §9.1's read-only rule, or the composer. Never both: an input on a
+        // thread that cannot accept one is a control that lies, and the notice
+        // is what says which of the two reasons applies.
+        if (conversation.canSend)
+          _Composer(conversation: conversation)
+        else
+          Padding(
+            padding: const EdgeInsets.all(HhSpace.gutter),
+            child: _ClosedNotice(conversation: conversation),
+          ),
+      ],
+    );
+  }
+}
+
+/// Why this thread takes no more messages, and what would change it.
+///
+/// Three sentences over two states, because the remedy differs: an ended
+/// interaction resumes on its own terms, a block set here is lifted here, and a
+/// block set by the other side is neither.
+class _ClosedNotice extends StatelessWidget {
+  const _ClosedNotice({required this.conversation});
+
+  final Conversation conversation;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    if (!conversation.isBlocked) {
+      // Expired rather than restricted: nothing was refused and nobody is at
+      // fault — the hiring interaction that opened the thread has ended, and
+      // §9.1 keeps the history readable on purpose.
+      return HhNotice.expired(
+        title: l10n.chatReadOnlyTitle,
+        message: l10n.chatReadOnlyBody,
+      );
+    }
+
+    return HhNotice.restricted(
+      title: conversation.blockedByMe
+          ? l10n.chatBlockedByYouTitle
+          : l10n.chatBlockedTitle,
+      message: conversation.blockedByMe
+          ? l10n.chatBlockedByYouBody
+          : l10n.chatBlockedBody,
+    );
+  }
+}
+
+/// The thread itself, newest at the bottom.
+///
+/// `reverse: true` rather than reversing the list: the model stays newest
+/// first, which is the order the server sends and the order the `before`
+/// cursor is derived from. Reversing the data would make the oldest message
+/// the first element in one place and the last in another, and the paging
+/// cursor is exactly what that confusion breaks.
+class _Messages extends ConsumerWidget {
+  const _Messages({required this.conversation, required this.thread});
+
+  final Conversation conversation;
+  final Thread thread;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final messages = thread.messages;
+
+    return ListView.builder(
+      reverse: true,
+      padding: const EdgeInsets.all(HhSpace.gutter),
+      // One extra row at the far end of the reversed list — visually the top —
+      // for the control that fetches older messages.
+      itemCount: messages.length + (thread.hasMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == messages.length) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: HhSpace.md),
+            child: HhButton.tertiary(
+              label: l10n.chatEarlier,
+              onPressed: () => ref
+                  .read(conversationThreadProvider(conversation.id).notifier)
+                  .loadEarlier(),
+            ),
+          );
+        }
+
+        final message = messages[index];
+        // A conversation has two participants and the server names the other
+        // one, so "not them" is "me" — no stored user id, and no second answer
+        // to who the caller is.
+        final mine = message.senderUserId != conversation.counterpartUserId;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // The separator sits above the first message of a day. In a
+            // reversed list the older neighbour is the *next* index, so a day
+            // change is detected against index + 1 — and the oldest row loaded
+            // always gets one, since there is nothing above it to compare with.
+            if (_startsADay(messages, index))
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: HhSpace.sm),
+                child: Center(
+                  child: Text(
+                    wallClockDay(message.createdAt.wallClock),
+                    style: HhTypography.meta.copyWith(
+                      color: HhColors.inkSubtle,
+                    ),
+                  ),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: MessageBubble(
+                message: message,
+                mine: mine,
+                // Reporting your own message would file a complaint about
+                // yourself; §9.1's queue is for the other kind.
+                onReport: mine
+                    ? null
+                    : () => _report(context, message),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static bool _startsADay(List<ChatMessage> messages, int index) {
+    if (index == messages.length - 1) return true;
+
+    return !isSameWallClockDay(
+      messages[index].createdAt.wallClock,
+      messages[index + 1].createdAt.wallClock,
+    );
+  }
+
+  Future<void> _report(BuildContext context, ChatMessage message) async {
+    final l10n = AppL10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    final filed = await showReportMessageSheet(
+      context,
+      conversationId: conversation.id,
+      message: message,
+    );
+
+    if (filed) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.chatReportDone)));
+    }
+  }
+}
+
+/// The composer (§9.1, §12.4).
+///
+/// ## A refused send keeps the draft
+///
+/// Both refusals — a block and the read-only 409 — leave the typed text where
+/// it is. Somebody who wrote three paragraphs into a thread that closed under
+/// them must be able to copy it out; clearing the field would be the app
+/// deleting their words to report its own failure.
+///
+/// ## Sending is refused locally only when there is nothing to send
+///
+/// The button is inert on an empty field and enabled otherwise. It is never
+/// disabled by a rule about *whether this person may chat*: that is the
+/// server's, and a client that guessed would refuse sends the API would have
+/// accepted.
+class _Composer extends ConsumerStatefulWidget {
+  const _Composer({required this.conversation});
+
+  final Conversation conversation;
+
+  @override
+  ConsumerState<_Composer> createState() => _ComposerState();
+}
+
+class _ComposerState extends ConsumerState<_Composer> {
+  final _body = TextEditingController();
+  bool _busy = false;
+  String? _refusal;
+
+  @override
+  void initState() {
+    super.initState();
+    _body.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _body.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final trimmed = _body.text.trim();
+
+    return Container(
+      padding: const EdgeInsets.all(HhSpace.gutter),
+      decoration: const BoxDecoration(
+        color: HhColors.white,
+        border: Border(top: HhBorders.card),
+      ),
+      child: Column(
+        children: [
+          if (_refusal case final refusal?) ...[
+            HhNotice.restricted(
+              title: l10n.chatSendRefusedTitle,
+              message: refusal,
+            ),
+            const SizedBox(height: HhSpace.md),
+          ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: HhTextField(
+                  label: l10n.chatComposerLabel,
+                  controller: _body,
+                  hintText: l10n.chatComposerHint,
+                  maxLines: 4,
+                  // The server's own ceiling (§9.1), so the field stops where
+                  // the API would have refused rather than after it.
+                  maxLength: 4000,
+                  enabled: !_busy,
+                ),
+              ),
+              const SizedBox(width: HhSpace.sm),
+              HhButton(
+                label: l10n.chatSend,
+                iconPath: HhIconPath.send,
+                expand: false,
+                compact: true,
+                loading: _busy,
+                onPressed: trimmed.isEmpty ? null : _send,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _send() async {
+    setState(() {
+      _busy = true;
+      _refusal = null;
+    });
+
+    final body = _body.text.trim();
+
+    try {
+      final repository = await ref.read(chatRepositoryProvider.future);
+      final outcome = await repository.send(
+        widget.conversation.id,
+        body: body,
+      );
+
+      if (!mounted) return;
+
+      switch (outcome) {
+        case MessageSent(:final message):
+          ref
+              .read(
+                conversationThreadProvider(widget.conversation.id).notifier,
+              )
+              .appendSent(message);
+          // The list's preview line and its ordering both changed.
+          ref.invalidate(conversationsProvider);
+          _body.clear();
+          setState(() => _busy = false);
+
+        case SendRefusedReadOnly(:final message) ||
+            SendRefusedBlocked(:final message):
+          // The header is now wrong on screen: `canSend` was true when it was
+          // fetched and the server has just said otherwise. Re-fetching it
+          // replaces the composer with the notice that explains which of the
+          // two happened — so the refusal is shown once, by the part of the
+          // screen that owns the state, rather than as a message beside an
+          // input that still invites another attempt.
+          ref
+            ..invalidate(conversationProvider(widget.conversation.id))
+            ..invalidate(conversationsProvider);
+          setState(() {
+            _refusal = message;
+            _busy = false;
+          });
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        setState(() {
+          _refusal = e.message;
+          _busy = false;
+        });
+      }
+    }
+  }
+}

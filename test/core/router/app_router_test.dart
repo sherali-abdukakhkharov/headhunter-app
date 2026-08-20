@@ -416,21 +416,32 @@ void main() {
     });
 
     testWidgets('tapping a destination moves to its route', (tester) async {
-      await settle(tester, const SessionActive(roles: {AppRole.candidate}));
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.candidate}),
+      );
 
       final context = tester.element(find.byType(HhBottomNav));
       final l10n = AppL10n.of(context);
 
+      expect(locationOf(result.router), Routes.candidateHome);
+
       await tester.tap(find.text(l10n.navMessages));
       await _pumpRoute(tester);
 
-      expect(find.byType(AppBar), findsOneWidget);
+      // The **location**, not the screen. This used to assert an app bar
+      // carrying the tab's title, which only ever worked because every tab it
+      // could reach was still a placeholder — the placeholder is the one screen
+      // in the app with its own app bar, and real tab screens have none (the
+      // bottom bar names the destination). So the assertion broke the moment
+      // §9.1's Messages tab became real, having tested the placeholder rather
+      // than the routing.
+      expect(locationOf(result.router), Routes.candidateMessages);
       expect(
-        find.descendant(
-          of: find.byType(AppBar),
-          matching: find.text(l10n.navMessages),
+        tester.widget<HhBottomNav>(find.byType(HhBottomNav)).currentIndex,
+        ShellTabs.candidate.indexWhere(
+          (t) => t.path == Routes.candidateMessages,
         ),
-        findsOneWidget,
       );
     });
   });

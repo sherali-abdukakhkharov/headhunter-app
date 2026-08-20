@@ -1097,13 +1097,14 @@ don't. What changed is what a card leads to.
       Candidate Unlock access", not merely until an interaction exists. Nothing
       to build on the candidate side; it changes what the *employer* side must
       show
-- [ ] **Download a candidate's files.** The list renders with the purpose
-      resolved as a word, but tapping does nothing: saving bytes to disk and
-      opening them needs `path_provider` and an opener, and adding packages
-      here has to be weighed against pubspec.yaml's load-bearing pins. Same
-      decision blocks a `tel:` link on the phone, which is why the contact
-      block offers **copy** instead — no new dependency, and the platform
-      dialler takes it from the clipboard
+- [x] ~~**Download a candidate's files.**~~ — **done 2026-08-20**, and the item
+      above ("Candidate attachments open, with no plugin") is the record of how:
+      `AttachmentOpener` plus thirty lines of the app's own Kotlin, no new
+      package and no second KGP entry. This entry was already stale when it was
+      read, which is the checklist rot MEMORY.md has an entry about.
+      The `tel:` half is **answered rather than open**: the contact block offers
+      **copy**, because the platform dialler takes a number from the clipboard
+      and no dependency is needed for that
 
 ## M12 - Employer wallet, Coins and Candidate Unlock *(client complete; the server has one change left)*
 
@@ -1314,22 +1315,121 @@ the design worth carrying into that work when it opens:
 - [ ] UAT-22 — the duplicated callback — demonstrated in the provider test
       environment, not argued
 
-## M8 - Chat and interviews *(now depends on M12)*
+## M8 - Chat and interviews *(§9.1 chat done 2026-08-20; interviews and deep links open)*
 
 §9.1 changed on 2026-08-10: employer-initiated chat is enabled only once that
 employer holds a Candidate Unlock for the candidate. **The candidate's side is
 not gated** — someone who applied can still write, and must never be shown a
 paywall that is not theirs.
 
-- [ ] Conversation list + thread; text and approved attachments
-- [ ] Sent / delivered / read indicators
-- [ ] Report and block; read-only closed conversations
-- [ ] Interview display by type + confirm / request another time
-- [ ] Idempotency key on message send
-- [ ] Employer entry points gated on the entitlement (§9.1); candidate entry
-      points deliberately not
+- [x] **Conversation list + thread, 2026-08-20.** The Messages tab in **both**
+      shells from one screen: `GET /conversations` is scoped by the caller's
+      active role on the server, so the screen has no role branch at all. Its
+      empty state is role-neutral for the same reason — two sentences chosen by
+      role would need this screen to hold an opinion §9.1's gate already holds
+      better.
+      The thread is a **child of whichever tab rendered the list**, so it keeps
+      the shell's nav bar and the back gesture. The path comes from the route
+      that built the screen rather than from the active role: the role and the
+      location can disagree for one frame during a switch, and a path built from
+      the role in that frame lands in the other shell.
+      Three things are load-bearing:
+      1. **"Mine" is derived from the counterpart, not a stored user id.** A
+         conversation has two participants and the server names the other one
+         per caller, so `senderUserId != counterpartUserId` is "mine".
+         `SessionActive` carries roles and a status and no id, and adding one so
+         a bubble could pick a side would put a second answer to "who am I" in
+         the app.
+      2. **The preview line has three cases, not two.** The server sends the
+         last message's *body*, and a message that carried only an attachment
+         has none — so "active but nothing to quote" is a real state and it is
+         not the same fact as a thread nobody has written in.
+      3. **The header and the messages are two providers.** Sending appends a
+         message and changes nothing in the header; blocking changes the header
+         and appends nothing. One provider would re-fetch both on either, and
+         the visible cost is the thread jumping to the newest message every time
+         somebody blocks
+- [x] **Sent / read indicators, 2026-08-20 — and no `delivered`.** §9.1 asks for
+      three and the server sends two, deliberately: delivery is a property of
+      push (M9), and a field set in the same statement as `createdAt` would be a
+      fabricated answer. So a message shows **sent** or **read** and never a
+      middle tick it cannot substantiate. Shown on **outgoing** messages only —
+      on an incoming one `isReadByRecipient` answers whether the reader has read
+      it, which they can see for themselves
+- [x] **Report and block; read-only closed conversations, 2026-08-20.** Blocking
+      states the consequence *before* the button: §9.1 makes it read-only for
+      both sides whoever set it, and somebody reaching for this control is often
+      reaching for a mute. Unblock is offered **only where `blockedByMe`** — the
+      route cannot lift the other side's, and a control that looks like it can
+      is worse than none.
+      Three closed states over two badges, because the remedy differs: an ended
+      interaction, a block by them, a block by you. A **live** thread carries no
+      badge at all — badging the default would make the exception invisible
+      among the rule.
+      Reporting is on **incoming messages only** (a complaint about your own
+      message is not what §9.1's queue is for), the reason is required because
+      the row has to be actionable by a moderator, and the sheet says that
+      nothing on screen changes — a report is filed, not applied
+- [x] **Idempotency key on message send, 2026-08-20**, and the scope of it is
+      the finding: **the key belongs to the draft, not to the conversation.**
+      The server answers the same key carrying a different body with 409
+      `idempotency.key_reused`, so a key held per conversation would survive a
+      send that died in flight and then refuse the *next* message the user
+      typed, permanently, naming nothing they did. The slot holds the draft
+      beside its key; the same text retried reuses it and different text mints a
+      new one. Cleared on success, so the same text typed twice is two messages
+      — a retry is only a retry while the first attempt was never confirmed.
+      Both halves are mutation-verified
+- [x] **Employer entry points gated on the entitlement (§9.1); candidate entry
+      points deliberately not** — 2026-08-20, and **the client holds no copy of
+      the gate.** §9.1's rule is `HiringInteractionService` on the server, the
+      same service that answers BR-09, so an employer who may read a phone
+      number and one who may send a message are the same employer by
+      construction. "Send a message" sits in the contact block of §7.3's
+      candidate profile, where that entitlement has already been evaluated; a
+      403 renders as the server's own sentence. Swept by a test in both screens
+      for "coin", "unlock", "UZS" and "top up": the way this regresses is a
+      well-meaning "top up to reply" landing on the candidate's screen
+- [!] **§9.1's revised gate and the server disagree, and it is the same question
+      already answered.** The 2026-08-10 revision says employer-initiated chat
+      needs a Candidate Unlock; `HiringInteractionService` treats a live
+      application as sufficient, exactly as it does for BR-09's contact
+      exposure. The client answered *that* in the lenient direction on
+      2026-08-19, and this is one question, not two — so chat follows it.
+      Gating harder than the API would tell an employer to pay for something the
+      server would have given them free. **Recorded for the client as the second
+      instance of the §8.2 "then" pattern**, not as a code change
+- [!] **Backend ask: a `file_purpose` code for a message attachment.** §9.1's
+      "approved attachments" work in one direction only. *Receiving* one is done
+      — a message's `downloadPath` is scoped to its conversation and
+      `AttachmentOpener` follows it verbatim. *Sending* one needs an upload to
+      `POST /files` with a `purpose`, and the dictionary has `cv`, `photo`,
+      `certificate` and `evidence`. None is a message attachment, and the
+      purpose is a dictionary row an admin edits at runtime (§10.3) — so
+      inventing a code here would be the client inventing server data. One row
+      and the composer grows a paperclip; the parsing and the bubble are already
+      built and tested
+- [ ] **The thread does not update itself.** No poll, on purpose: M9's push is
+      what makes it live, and a timer asking every few seconds would drain a
+      battery to answer "nothing yet" on a product whose users are often on
+      prepaid data. The app bar carries an explicit refresh meanwhile, and a
+      notification tap will reuse this route rather than introducing one
+- [ ] Interview display by type + confirm / request another time (§8.3).
+      **`GET /interviews/mine` carries `@RequireRole('candidate')`**, so the
+      candidate half is buildable today and the employer half is the contract
+      gap already filed under M7's dashboard ask
 - [ ] **Deep links switch role before navigating** where required *(moved here
       from M9 - routing infrastructure, not a notification feature)*
+- [ ] **Run the chat screens on a device.** Two overflow bugs were found by the
+      tests rather than by a device — the list row at 320pt/2.0x (138pt) and the
+      bubble's read receipt (18pt) — which is the same class MEMORY.md records
+      for the design gallery, caught earlier this time. The design-system
+      additions (`HhBadge.conversationReadOnly`, `.conversationBlocked`,
+      `HhUnreadPill`) are in `/_design` and **have not been seen on a screen**:
+      Gradle still cannot start in this environment (`Unable to establish
+      loopback connection`), so `flutter build apk` failed the same way it did
+      when `MainActivity.kt` was written. Nothing new is in `res/`, so AAPT2 is
+      not the risk here — the risk is purely visual
 
 ## M9 - Notifications *(deferred to last - client direction 2026-08-04)*
 

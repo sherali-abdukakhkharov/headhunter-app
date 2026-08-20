@@ -6,6 +6,7 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/account/data/account_repository.dart';
 import 'package:jobbridge_app/src/features/account/domain/user_session.dart';
+import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 import 'package:jobbridge_app/src/shared/widgets/refreshable_fill.dart';
 
 /// Opens the account screen.
@@ -167,7 +168,7 @@ class _SessionRowState extends ConsumerState<_SessionRow> {
                   // a session opened abroad would otherwise be dated in the
                   // wrong zone (§8.3).
                   l10n.accountLastUsed(
-                    _stamp(session.lastUsedAt.wallClock),
+                    wallClockStamp(session.lastUsedAt.wallClock),
                   ),
                   style: HhTypography.caption.copyWith(
                     color: HhColors.inkMuted,
@@ -408,15 +409,3 @@ Future<bool> _confirm(
 
   return result ?? false;
 }
-
-/// A timestamp as the platform recorded it, ISO-ordered.
-///
-/// The same treatment `invitationStamp` gives §8.2's dates, and for the same
-/// reason: §8.3's display policy is still open, so a wrong-looking date beats a
-/// plausible wrong one.
-String _stamp(DateTime wallClock) =>
-    '${wallClock.year.toString().padLeft(4, '0')}-'
-    '${wallClock.month.toString().padLeft(2, '0')}-'
-    '${wallClock.day.toString().padLeft(2, '0')} '
-    '${wallClock.hour.toString().padLeft(2, '0')}:'
-    '${wallClock.minute.toString().padLeft(2, '0')}';

@@ -8,10 +8,10 @@ import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_detail
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
-import 'package:jobbridge_app/src/features/invitations/presentation/invitation_format.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_response_sheet.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_status_badge.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/invitation_subject.dart';
+import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 
 /// The candidate's invitation inbox (§8.2, UAT-07).
 ///
@@ -102,7 +102,7 @@ class _InvitationCard extends StatelessWidget {
               children: [
                 invitationStatusBadge(invitation.status, l10n),
                 Text(
-                  invitationStamp(invitation.createdAt.wallClock),
+                  wallClockStamp(invitation.createdAt.wallClock),
                   style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
                 ),
               ],

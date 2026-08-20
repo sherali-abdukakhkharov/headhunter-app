@@ -245,6 +245,20 @@ is still true.
 - **Idempotency keys** are generated client-side, **persisted with the pending
   action**, and reused on retry (§12.4, BR-07). A key regenerated per attempt
   provides no protection at all.
+- **A key belongs to an *operation*, not to a place in the UI.** The backend
+  answers the same key carrying a *different* body with 409
+  `idempotency.key_reused` — deliberately, because two different operations
+  under one key means the client's key generation is broken. So the persisted
+  slot has to hold enough of the request to tell "the same thing again" from
+  "something new". A chat message (§9.1) is the case that makes this concrete:
+  a key held per conversation would survive a send that died in flight and then
+  refuse the *next* message the user typed, permanently, naming nothing they
+  did. `chat_repository.dart` stores the draft beside its key and mints a new
+  one when the draft differs. An invitation's key is scoped to
+  `(candidate, vacancy-or-occupation)` for the same reason.
+- **A key is cleared once the server answers, and not before.** After success
+  the same text typed again is a *second* message, not a retry: a retry is only
+  a retry while the first attempt was never confirmed.
 - **Offline state is explicit** (§12.4): show it, allow safe retry, and never
   silently queue a write that the user believes succeeded.
 - Errors are mapped once in `ApiException` and rendered from `.message`. Server
@@ -395,3 +409,59 @@ Not in v1: offline-first write queue beyond idempotent retry, background sync,
 biometric unlock, in-app CV editing/generation, saved-search alerts, and any
 client-side matching or ranking logic - ranking is the server's job (§7.3) so the
 two sides cannot disagree about it.
+
+---
+
+## 14. Chat and the §9.1 gate
+
+Numbered last rather than slotted beside §9, because CLAUDE.md, TODO.md and
+several doc comments cite the sections above by number, and renumbering them to
+put chat in reading order would silently break every one of those references.
+
+**The client holds no copy of the gate.** §9.1's "chat becomes available after
+an application, invitation, or other permitted hiring interaction" is answered by
+`HiringInteractionService` on the server — the *same* service that answers BR-09
+— so an employer who may read a phone number and one who may send a message are
+the same employer by construction. The client calls the route and renders the
+refusal.
+
+That matters because §9.1 as revised on 2026-08-10 says employer-initiated chat
+needs a Candidate Unlock, and the server treats a live application as sufficient.
+It is the **same question** the client already answered in the lenient direction
+on 2026-08-19 for contact exposure, and gating harder than the API would tell an
+employer to pay for something the server would have given them free. A client
+that re-derived the rule would be a second answer to it, and the wrong one would
+be the one nobody can see failing.
+
+Three consequences worth keeping:
+
+- **Two of the server's refusals are outcomes, not errors**, because they change
+  the *shape* of the screen rather than adding a sentence to it: 403
+  `chat.blocked` and 409 `chat.read_only` both remove the composer. They are
+  told apart by `code`, never by status — `idempotency.key_reused` is a 409 too,
+  and rendering that one as read-only would take the composer away over a client
+  bug and leave nobody able to discover it.
+- **"Mine" is derived from the counterpart, not from a stored user id.** A
+  conversation has two participants and the server names the other one per
+  caller, so `senderUserId != counterpartUserId` is "mine". `SessionActive`
+  carries roles and an account status and no id; adding one so a bubble could
+  pick a side would put a second answer to "who am I" into the app.
+- **There is no `delivered` state**, and the UI does not draw one. §9.1 asks for
+  sent / delivered / read; the server sends `isReadByRecipient` and nothing else,
+  because delivery is a property of push (M9) and a flag written in the same
+  statement as `createdAt` would be a fabricated answer.
+
+**The thread does not poll.** M9's push is what will make it live. Until then the
+app bar carries an explicit refresh: a timer asking every few seconds would drain
+a battery to answer "nothing yet", on a product whose users are often on prepaid
+data — and a notification tap will reuse the same route rather than introducing
+one.
+
+**Sending an attachment is not built, and the reason is a missing dictionary
+code, not a missing screen.** Receiving one works: a message's `downloadPath` is
+scoped to its conversation and `AttachmentOpener` follows it verbatim (§9). To
+*send* one, the client would upload to `POST /files` with a `purpose`, and the
+`file_purpose` dictionary has `cv`, `photo`, `certificate` and `evidence` — none
+of which is a message attachment. The purpose is a dictionary row an admin edits
+at runtime (§10.3), so inventing a code here would be the client inventing
+server data. See TODO.md for the ask.

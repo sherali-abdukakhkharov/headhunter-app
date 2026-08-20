@@ -1551,7 +1551,7 @@ class AppL10nUz extends AppL10n {
   }
 
   @override
-  String get candidateFileNoViewer =>
+  String get fileNoViewer =>
       'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
 
   @override
@@ -1762,6 +1762,140 @@ class AppL10nUz extends AppL10n {
   @override
   String get roleSelectionBoth =>
       'Ikkalasi tanlanganda bitta akkaunt ikkita alohida makonni saqlaydi: o\'z profilingiz va kompaniyangiz profili — almashtirish profilingizda.';
+
+  @override
+  String get chatListEmpty =>
+      'Suhbat ish bo\'yicha aloqa paydo bo\'lgach ochiladi — ariza yoki qabul qilingan taklif.';
+
+  @override
+  String get chatParticipantUnknown => 'Ishtirokchi';
+
+  @override
+  String chatUnreadCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString';
+  }
+
+  @override
+  String chatUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o\'qilmagan xabar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNoMessages => 'Hozircha xabar yo\'q';
+
+  @override
+  String get chatAttachment => 'Ilova';
+
+  @override
+  String get chatReadOnly => 'Faqat o\'qish';
+
+  @override
+  String get chatBlocked => 'Bloklangan';
+
+  @override
+  String get chatBlockedByYou => 'Siz bloklagansiz';
+
+  @override
+  String get chatReadOnlyTitle => 'Bu suhbat tarixga aylandi';
+
+  @override
+  String get chatReadOnlyBody =>
+      'U boshlangan ariza yoki taklif tugadi, shuning uchun yangi xabar yuborilmaydi. Mavjud xabarlar o\'qish uchun qoladi.';
+
+  @override
+  String get chatBlockedTitle => 'Bloklangan';
+
+  @override
+  String get chatBlockedBody =>
+      'Suhbatni ikkinchi tomon blokladi. Blok turgan vaqtda hech kim xabar yubora olmaydi, xabarlar esa o\'qish uchun qoladi.';
+
+  @override
+  String get chatBlockedByYouTitle => 'Siz bu suhbatni bloklagansiz';
+
+  @override
+  String get chatBlockedByYouBody =>
+      'Blok turgan vaqtda ikki tomon ham xabar yubora olmaydi — siz ham. Yana yozish uchun ekran yuqorisidagi blokni olib tashlang.';
+
+  @override
+  String get chatUnblock => 'Blokni olib tashlash';
+
+  @override
+  String get chatUnblocked => 'Blok olib tashlandi. Yana yozishingiz mumkin.';
+
+  @override
+  String get chatBlockAction => 'Bloklash';
+
+  @override
+  String get chatBlockTitle => 'Bu suhbatni bloklaysizmi?';
+
+  @override
+  String get chatBlockBody =>
+      'U ikkingiz uchun ham faqat o\'qish holatiga o\'tadi — siz ham yubora olmaysiz. Xabarlar o\'qish uchun qoladi va moderator ularni ko\'rib chiqishi mumkin.';
+
+  @override
+  String get chatBlockReasonLabel => 'Sabab (majburiy emas)';
+
+  @override
+  String get chatBlockReasonHint => 'Buni ko\'rib chiqadigan moderator uchun';
+
+  @override
+  String get chatReportTitle => 'Bu xabar ustidan shikoyat qilish';
+
+  @override
+  String get chatReportBody =>
+      'Shikoyatni moderator o\'qib, qaror qabul qiladi. Suhbatni bloklash — alohida amal, ikkalasini ham qilishingiz mumkin.';
+
+  @override
+  String get chatReportReasonLabel => 'Nimasi noto\'g\'ri';
+
+  @override
+  String get chatReportReasonHint => 'Ish uchun pul to\'lashimni so\'radi';
+
+  @override
+  String get chatReportSubmit => 'Shikoyatni yuborish';
+
+  @override
+  String get chatReportDone => 'Shikoyat yuborildi. Moderator ko\'rib chiqadi.';
+
+  @override
+  String get chatComposerLabel => 'Xabar';
+
+  @override
+  String get chatComposerHint => 'Xabar yozing';
+
+  @override
+  String get chatSend => 'Yuborish';
+
+  @override
+  String get chatSendRefusedTitle => 'Yuborilmadi';
+
+  @override
+  String get chatSent => 'Yuborildi';
+
+  @override
+  String get chatRead => 'O\'qilgan';
+
+  @override
+  String get chatEarlier => 'Oldingi xabarlar';
+
+  @override
+  String get chatThreadEmpty => 'Hozircha xabar yo\'q. Birinchisini yozing.';
+
+  @override
+  String get chatThreadEmptyClosed =>
+      'Bu suhbat yopilishidan oldin hech qanday xabar yuborilmagan.';
+
+  @override
+  String get chatOpenAction => 'Xabar yuborish';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3309,8 +3443,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   }
 
   @override
-  String get candidateFileNoViewer =>
-      'Бу телефонда бу файлни оча оладиган илова йўқ.';
+  String get fileNoViewer => 'Бу телефонда бу файлни оча оладиган илова йўқ.';
 
   @override
   String get dashboardActiveVacancies => 'Фаол вакансия';
@@ -3519,6 +3652,140 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get roleSelectionBoth =>
       'Иккаласи танланганда битта аккаунт иккита алоҳида маконни сақлайди: ўз профилингиз ва компаниянгиз профили — алмаштириш профилингизда.';
+
+  @override
+  String get chatListEmpty =>
+      'Суҳбат иш бўйича алоқа пайдо бўлгач очилади — ариза ёки қабул қилинган таклиф.';
+
+  @override
+  String get chatParticipantUnknown => 'Иштирокчи';
+
+  @override
+  String chatUnreadCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString';
+  }
+
+  @override
+  String chatUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та ўқилмаган хабар',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNoMessages => 'Ҳозирча хабар йўқ';
+
+  @override
+  String get chatAttachment => 'Илова';
+
+  @override
+  String get chatReadOnly => 'Фақат ўқиш';
+
+  @override
+  String get chatBlocked => 'Блокланган';
+
+  @override
+  String get chatBlockedByYou => 'Сиз блоклагансиз';
+
+  @override
+  String get chatReadOnlyTitle => 'Бу суҳбат тарихга айланди';
+
+  @override
+  String get chatReadOnlyBody =>
+      'У бошланган ариза ёки таклиф тугади, шунинг учун янги хабар юборилмайди. Мавжуд хабарлар ўқиш учун қолади.';
+
+  @override
+  String get chatBlockedTitle => 'Блокланган';
+
+  @override
+  String get chatBlockedBody =>
+      'Суҳбатни иккинчи томон блоклади. Блок турган вақтда ҳеч ким хабар юбора олмайди, хабарлар эса ўқиш учун қолади.';
+
+  @override
+  String get chatBlockedByYouTitle => 'Сиз бу суҳбатни блоклагансиз';
+
+  @override
+  String get chatBlockedByYouBody =>
+      'Блок турган вақтда икки томон ҳам хабар юбора олмайди — сиз ҳам. Яна ёзиш учун экран юқорисидаги блокни олиб ташланг.';
+
+  @override
+  String get chatUnblock => 'Блокни олиб ташлаш';
+
+  @override
+  String get chatUnblocked => 'Блок олиб ташланди. Яна ёзишингиз мумкин.';
+
+  @override
+  String get chatBlockAction => 'Блоклаш';
+
+  @override
+  String get chatBlockTitle => 'Бу суҳбатни блоклайсизми?';
+
+  @override
+  String get chatBlockBody =>
+      'У иккингиз учун ҳам фақат ўқиш ҳолатига ўтади — сиз ҳам юбора олмайсиз. Хабарлар ўқиш учун қолади ва модератор уларни кўриб чиқиши мумкин.';
+
+  @override
+  String get chatBlockReasonLabel => 'Сабаб (мажбурий эмас)';
+
+  @override
+  String get chatBlockReasonHint => 'Буни кўриб чиқадиган модератор учун';
+
+  @override
+  String get chatReportTitle => 'Бу хабар устидан шикоят қилиш';
+
+  @override
+  String get chatReportBody =>
+      'Шикоятни модератор ўқиб, қарор қабул қилади. Суҳбатни блоклаш — алоҳида амал, иккаласини ҳам қилишингиз мумкин.';
+
+  @override
+  String get chatReportReasonLabel => 'Нимаси нотўғри';
+
+  @override
+  String get chatReportReasonHint => 'Иш учун пул тўлашимни сўради';
+
+  @override
+  String get chatReportSubmit => 'Шикоятни юбориш';
+
+  @override
+  String get chatReportDone => 'Шикоят юборилди. Модератор кўриб чиқади.';
+
+  @override
+  String get chatComposerLabel => 'Хабар';
+
+  @override
+  String get chatComposerHint => 'Хабар ёзинг';
+
+  @override
+  String get chatSend => 'Юбориш';
+
+  @override
+  String get chatSendRefusedTitle => 'Юборилмади';
+
+  @override
+  String get chatSent => 'Юборилди';
+
+  @override
+  String get chatRead => 'Ўқилган';
+
+  @override
+  String get chatEarlier => 'Олдинги хабарлар';
+
+  @override
+  String get chatThreadEmpty => 'Ҳозирча хабар йўқ. Биринчисини ёзинг.';
+
+  @override
+  String get chatThreadEmptyClosed =>
+      'Бу суҳбат ёпилишидан олдин ҳеч қандай хабар юборилмаган.';
+
+  @override
+  String get chatOpenAction => 'Хабар юбориш';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5068,7 +5335,7 @@ class AppL10nUzLatn extends AppL10nUz {
   }
 
   @override
-  String get candidateFileNoViewer =>
+  String get fileNoViewer =>
       'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
 
   @override
@@ -5279,4 +5546,138 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get roleSelectionBoth =>
       'Ikkalasi tanlanganda bitta akkaunt ikkita alohida makonni saqlaydi: o\'z profilingiz va kompaniyangiz profili — almashtirish profilingizda.';
+
+  @override
+  String get chatListEmpty =>
+      'Suhbat ish bo\'yicha aloqa paydo bo\'lgach ochiladi — ariza yoki qabul qilingan taklif.';
+
+  @override
+  String get chatParticipantUnknown => 'Ishtirokchi';
+
+  @override
+  String chatUnreadCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString';
+  }
+
+  @override
+  String chatUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o\'qilmagan xabar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNoMessages => 'Hozircha xabar yo\'q';
+
+  @override
+  String get chatAttachment => 'Ilova';
+
+  @override
+  String get chatReadOnly => 'Faqat o\'qish';
+
+  @override
+  String get chatBlocked => 'Bloklangan';
+
+  @override
+  String get chatBlockedByYou => 'Siz bloklagansiz';
+
+  @override
+  String get chatReadOnlyTitle => 'Bu suhbat tarixga aylandi';
+
+  @override
+  String get chatReadOnlyBody =>
+      'U boshlangan ariza yoki taklif tugadi, shuning uchun yangi xabar yuborilmaydi. Mavjud xabarlar o\'qish uchun qoladi.';
+
+  @override
+  String get chatBlockedTitle => 'Bloklangan';
+
+  @override
+  String get chatBlockedBody =>
+      'Suhbatni ikkinchi tomon blokladi. Blok turgan vaqtda hech kim xabar yubora olmaydi, xabarlar esa o\'qish uchun qoladi.';
+
+  @override
+  String get chatBlockedByYouTitle => 'Siz bu suhbatni bloklagansiz';
+
+  @override
+  String get chatBlockedByYouBody =>
+      'Blok turgan vaqtda ikki tomon ham xabar yubora olmaydi — siz ham. Yana yozish uchun ekran yuqorisidagi blokni olib tashlang.';
+
+  @override
+  String get chatUnblock => 'Blokni olib tashlash';
+
+  @override
+  String get chatUnblocked => 'Blok olib tashlandi. Yana yozishingiz mumkin.';
+
+  @override
+  String get chatBlockAction => 'Bloklash';
+
+  @override
+  String get chatBlockTitle => 'Bu suhbatni bloklaysizmi?';
+
+  @override
+  String get chatBlockBody =>
+      'U ikkingiz uchun ham faqat o\'qish holatiga o\'tadi — siz ham yubora olmaysiz. Xabarlar o\'qish uchun qoladi va moderator ularni ko\'rib chiqishi mumkin.';
+
+  @override
+  String get chatBlockReasonLabel => 'Sabab (majburiy emas)';
+
+  @override
+  String get chatBlockReasonHint => 'Buni ko\'rib chiqadigan moderator uchun';
+
+  @override
+  String get chatReportTitle => 'Bu xabar ustidan shikoyat qilish';
+
+  @override
+  String get chatReportBody =>
+      'Shikoyatni moderator o\'qib, qaror qabul qiladi. Suhbatni bloklash — alohida amal, ikkalasini ham qilishingiz mumkin.';
+
+  @override
+  String get chatReportReasonLabel => 'Nimasi noto\'g\'ri';
+
+  @override
+  String get chatReportReasonHint => 'Ish uchun pul to\'lashimni so\'radi';
+
+  @override
+  String get chatReportSubmit => 'Shikoyatni yuborish';
+
+  @override
+  String get chatReportDone => 'Shikoyat yuborildi. Moderator ko\'rib chiqadi.';
+
+  @override
+  String get chatComposerLabel => 'Xabar';
+
+  @override
+  String get chatComposerHint => 'Xabar yozing';
+
+  @override
+  String get chatSend => 'Yuborish';
+
+  @override
+  String get chatSendRefusedTitle => 'Yuborilmadi';
+
+  @override
+  String get chatSent => 'Yuborildi';
+
+  @override
+  String get chatRead => 'O\'qilgan';
+
+  @override
+  String get chatEarlier => 'Oldingi xabarlar';
+
+  @override
+  String get chatThreadEmpty => 'Hozircha xabar yo\'q. Birinchisini yozing.';
+
+  @override
+  String get chatThreadEmptyClosed =>
+      'Bu suhbat yopilishidan oldin hech qanday xabar yuborilmagan.';
+
+  @override
+  String get chatOpenAction => 'Xabar yuborish';
 }

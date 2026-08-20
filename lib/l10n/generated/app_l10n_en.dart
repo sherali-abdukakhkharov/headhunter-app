@@ -1553,8 +1553,7 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get candidateFileNoViewer =>
-      'No app on this phone can open this file.';
+  String get fileNoViewer => 'No app on this phone can open this file.';
 
   @override
   String get dashboardActiveVacancies => 'Active vacancies';
@@ -1762,4 +1761,139 @@ class AppL10nEn extends AppL10n {
   @override
   String get roleSelectionBoth =>
       'With both, one account keeps two separate spaces: your own profile and your company\'s, switched from your profile.';
+
+  @override
+  String get chatListEmpty =>
+      'A conversation opens with a hiring interaction — an application, or an invitation that was accepted.';
+
+  @override
+  String get chatParticipantUnknown => 'Participant';
+
+  @override
+  String chatUnreadCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString';
+  }
+
+  @override
+  String chatUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread messages',
+      one: '$count unread message',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNoMessages => 'No messages yet';
+
+  @override
+  String get chatAttachment => 'Attachment';
+
+  @override
+  String get chatReadOnly => 'Read-only';
+
+  @override
+  String get chatBlocked => 'Blocked';
+
+  @override
+  String get chatBlockedByYou => 'You blocked this';
+
+  @override
+  String get chatReadOnlyTitle => 'This conversation is history';
+
+  @override
+  String get chatReadOnlyBody =>
+      'The application or invitation it came from has ended, so no new messages can be sent. Everything already here stays readable.';
+
+  @override
+  String get chatBlockedTitle => 'Blocked';
+
+  @override
+  String get chatBlockedBody =>
+      'The other person blocked this conversation. Nobody can send here while that stands, and the messages stay readable.';
+
+  @override
+  String get chatBlockedByYouTitle => 'You blocked this conversation';
+
+  @override
+  String get chatBlockedByYouBody =>
+      'Neither side can send while the block stands — including you. Unblock from the top of the screen to write again.';
+
+  @override
+  String get chatUnblock => 'Unblock';
+
+  @override
+  String get chatUnblocked => 'Unblocked. You can write again.';
+
+  @override
+  String get chatBlockAction => 'Block';
+
+  @override
+  String get chatBlockTitle => 'Block this conversation?';
+
+  @override
+  String get chatBlockBody =>
+      'It becomes read-only for both of you — you will not be able to send either. The messages stay readable, and a moderator can review them.';
+
+  @override
+  String get chatBlockReasonLabel => 'Reason (optional)';
+
+  @override
+  String get chatBlockReasonHint => 'For the moderator who reviews this';
+
+  @override
+  String get chatReportTitle => 'Report this message';
+
+  @override
+  String get chatReportBody =>
+      'A moderator reads the report and decides. Blocking the conversation is separate, and you can do both.';
+
+  @override
+  String get chatReportReasonLabel => 'What is wrong with it';
+
+  @override
+  String get chatReportReasonHint => 'Asked me to pay for the job';
+
+  @override
+  String get chatReportSubmit => 'Send report';
+
+  @override
+  String get chatReportDone => 'Report sent. A moderator will review it.';
+
+  @override
+  String get chatComposerLabel => 'Message';
+
+  @override
+  String get chatComposerHint => 'Write a message';
+
+  @override
+  String get chatSend => 'Send';
+
+  @override
+  String get chatSendRefusedTitle => 'Not sent';
+
+  @override
+  String get chatSent => 'Sent';
+
+  @override
+  String get chatRead => 'Read';
+
+  @override
+  String get chatEarlier => 'Earlier messages';
+
+  @override
+  String get chatThreadEmpty => 'No messages yet. Write the first one.';
+
+  @override
+  String get chatThreadEmptyClosed =>
+      'No messages were sent before this conversation closed.';
+
+  @override
+  String get chatOpenAction => 'Send a message';
 }

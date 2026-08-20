@@ -10,6 +10,7 @@ import 'package:jobbridge_app/src/features/applications/domain/candidate_for_emp
 import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
 import 'package:jobbridge_app/src/features/candidate_search/data/candidate_search_repository.dart';
 import 'package:jobbridge_app/src/features/candidate_search/presentation/protected_contact_card.dart';
+import 'package:jobbridge_app/src/features/chat/presentation/open_conversation.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invite_outcome.dart';
@@ -239,6 +240,7 @@ class _ProfileState extends ConsumerState<_Profile> {
                 // the truthful state either way.
                 email: null,
                 unlockCoins: canOfferUnlock ? coins : null,
+                onMessage: _message,
               ),
 
               // Only where a purchase is what opened it. An employer who spent
@@ -356,6 +358,32 @@ class _ProfileState extends ConsumerState<_Profile> {
   ///
   /// The employer profile is a shell tab rather than a pushed route, so this
   /// pops back to it instead of stacking a second copy on top of a candidate.
+  /// Opens §9.1's thread with this candidate and goes to it.
+  ///
+  /// The router is captured **before** the pop, the same rule
+  /// `_openVerification` follows: this screen is pushed on the root navigator,
+  /// so after popping the context that could find the router is gone. And the
+  /// pop comes first because the Messages tab is a shell branch — going there
+  /// while a candidate profile sits on top of the root navigator would leave
+  /// the thread hidden underneath it.
+  Future<void> _message() async {
+    final router = GoRouter.of(context);
+    final navigator = Navigator.of(context, rootNavigator: true);
+
+    final id = await openConversationWith(
+      context,
+      ref,
+      counterpartUserId: _candidate.candidateUserId,
+    );
+
+    // Null means §9.1 refused or the request failed, and either way the user
+    // has already been told in the server's own words. Nothing to go to.
+    if (id == null || !mounted) return;
+
+    navigator.popUntil((r) => r.isFirst);
+    router.go('${Routes.employerMessages}/$id');
+  }
+
   void _goToVerification() {
     // The router is captured before popping: this screen is pushed on the root
     // navigator, so by the time the pop lands its own context is gone.
@@ -616,7 +644,7 @@ class _FileRowState extends ConsumerState<_FileRow> {
       // message, because "check your connection" would send an employer looking
       // in the wrong place.
       messenger.showSnackBar(
-        SnackBar(content: Text(l10n.candidateFileNoViewer)),
+        SnackBar(content: Text(l10n.fileNoViewer)),
       );
     } on ApiException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));

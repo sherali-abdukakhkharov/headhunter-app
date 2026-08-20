@@ -33,6 +33,37 @@ Not for: things the code already says, or the milestone checklist (that is
 
 ## Architectural decisions
 
+### 2026-08-20 - §9.1's chat gate is the server's, and the revision is §8.2's "then" again
+The 2026-08-10 revision says employer-initiated chat is enabled only once the
+employer holds a Candidate Unlock. `HiringInteractionService` on the server
+disagrees: a live application is sufficient, exactly as it is for BR-09's contact
+exposure — same service, same three sources (application, accepted invitation,
+unlock).
+
+**Treated as one question already answered, not as a new one.** On 2026-08-19 the
+client answered the §8.2 version of this — is an invitation a *contact* action or
+a *request* to make contact? — in the lenient direction: an application still
+opens contact, sending an invitation is free. Chat is the same shape and follows
+the same answer. Filed for the client as the **second instance of one spec
+contradiction** rather than a second question to sit on.
+
+The reasoning that decides it, and the reason it is not close: gating in the
+client while the server does not would tell an employer to pay for something the
+API would have given them free. §12.3.1 puts money on the server, and this is a
+money decision wearing a feature's clothes.
+
+So `chat_repository.dart` keeps **no copy of the rule**: it calls the route and
+renders the 403 as `ChatNotPermitted`, carrying the server's own localized
+sentence. Where a screen offers the action only in places contact is already open
+(the contact block of §7.3's profile), that is a choice about **placement** — put
+the control where it will work rather than where it would mostly fail — and the
+authority is still the refusal.
+
+The generalisable rule, now on its second use: **when the specification argues
+with a running server about who may do something, the client renders the server
+and reports the contradiction.** A client that re-derives the rule is a second
+answer to it, and the wrong one is the one nobody can see failing.
+
 ### 2026-08-05 - iOS is out of scope. Do not work on it until asked
 Owner direction, explicit: **"never consider [iOS] until I ask it, because I don't
 want to support iOS for now."**
@@ -469,6 +500,63 @@ The in-app notification list has no push dependency and can be pulled forward at
 no cost if the client wants notification history earlier.
 
 ## Traps already paid for
+
+### 2026-08-20 - An idempotency key held per screen refuses the next message forever
+§12.4 says persist the key across retries, and MEMORY.md has said so since
+2026-08-04. What it did not say is what the key is a key *to*, and for chat the
+obvious answer is wrong in a way that only shows up after a failure.
+
+The backend answers the same key carrying a **different body** with 409
+`idempotency.key_reused` — deliberately, because two different operations under
+one key means the client's key generation is broken and saying so beats guessing.
+Now hold the key per conversation. A send dies with the request in flight, so the
+key is still on disk, correctly. The user shrugs and types something *else*. That
+request carries the stale key with a new body, earns `key_reused`, and keeps
+earning it — the conversation is permanently unsendable, over an error naming
+nothing the user did, and clearing app data is the only way out.
+
+So the persisted slot holds **the draft beside its key**: the same text retried
+reuses the key and the server replays the original message; different text mints a
+new one. And the slot is cleared **on success**, which is the other half — after a
+confirmed send, the same text typed again is a *second message*, not a retry. A
+retry is only a retry while the first attempt was never confirmed.
+
+The rule generalises: **a key belongs to an operation, so the slot must hold
+enough of the request to tell "the same thing again" from "something new."** An
+invitation's key is scoped to `(candidate, vacancy-or-occupation)` for exactly
+this reason; the unlock has no key at all, because `(employer, candidate)` is a
+primary key there and a retry is answered by the existing entitlement.
+
+Both halves are mutation-verified: keying on the conversation alone fails
+"different text after a failure mints a new key", and keeping the key past success
+fails "the same text sends twice".
+
+### 2026-08-20 - Two more overflows at 320pt / 2.0x, and a test found them this time
+MEMORY.md already records that a rule tested on one variant is tested nowhere, and
+that the design gallery needs a device. §9.1's chat added two more instances of
+the same class — and both were caught by a widget test at the design's own QA
+case, which is worth writing down because it is the cheaper half of that lesson.
+
+1. **The conversation row overflowed by 138pt.** A `Row` of `Expanded(name)` plus
+   a timestamp. `Expanded` looks like the fix and is the wrong child to shrink:
+   the stamp is a full ISO date *and* time, which at 2.0x is wider than the whole
+   card on its own, so the name shrank to nothing and the stamp still did not fit.
+2. **The message bubble's read receipt overflowed by 18pt.** `HH:MM` plus a glyph
+   plus "Read", inside a bubble capped at 78% of the width.
+
+Both fixes are the same one the §8.2 inbox card already paid for: **a `Wrap`, so
+the piece that cannot be truncated drops to its own line.** And the reason
+truncation is not on the table differs per case in a way worth keeping — a badge
+is icon *plus word*, so clipping the word puts the state back on colour alone; a
+clipped date is unreadable, and §8.3's display policy is open precisely so a
+wrong-*looking* date beats a plausible wrong one.
+
+The generalisable part: **any horizontal row whose children are all
+intrinsically-sized text will overflow at 2.0x on a 320pt screen, and `Expanded`
+on one of them does not save it.** Test the narrowest case with the longest
+plausible content and let the layout tell you; do not reason about it. The
+fixture matters — 960 physical pixels at devicePixelRatio 3 is 320 logical, and
+getting that wrong (640) makes the test fail at a width no phone has.
 
 ### 2026-08-20 - A checklist rots faster than the code it describes
 Continuing after a merge, six TODO.md entries described work that was already

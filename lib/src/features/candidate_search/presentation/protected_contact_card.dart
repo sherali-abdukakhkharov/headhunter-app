@@ -35,7 +35,15 @@ class ProtectedContactCard extends StatelessWidget {
     required this.email,
     super.key,
     this.unlockCoins,
+    this.onMessage,
   });
+
+  /// Opens §9.1's conversation with this candidate.
+  ///
+  /// Rendered **only in the unlocked state**, and only where a caller supplies
+  /// it — the candidate's own profile shows this card too, and there is nobody
+  /// there to message.
+  final VoidCallback? onMessage;
 
   /// The price, already localized as a Coin quantity, or null when the wallet
   /// has not answered.
@@ -131,6 +139,26 @@ class ProtectedContactCard extends StatelessWidget {
                 color: HhColors.inkDisabled,
                 strokeWidth: 2,
               ),
+            ),
+          ],
+
+          // §9.1's chat, offered where contact is already open — the same
+          // entitlement, from the same service on the server, so this is where
+          // it will work rather than where it would mostly fail. The gate is
+          // still the server's: the action renders a 403 as the server's
+          // sentence, so this placement is a choice about *offering*, never a
+          // second copy of the rule.
+          //
+          // Copy stays beside it. A message needs the other person to open the
+          // app; a phone number does not, and §9.1 does not make chat the way
+          // to reach somebody.
+          if (onMessage case final message? when _unlocked) ...[
+            const SizedBox(height: 13),
+            HhButton.tertiary(
+              label: l10n.chatOpenAction,
+              iconPath: HhIconPath.chat,
+              onPressed: message,
+              compact: true,
             ),
           ],
 

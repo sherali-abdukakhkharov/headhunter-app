@@ -2759,11 +2759,11 @@ abstract class AppL10n {
   /// **'{invited} invited, {accepted} accepted'**
   String invitationCounts(int invited, int accepted);
 
-  /// Shown when an attachment downloaded fine and nothing installed can display it. Its own message rather than a generic failure: the bytes arrived and the server allowed it, so "check your connection" would send an employer looking in the wrong place. The remedy is on the device.
+  /// Shown when an attachment downloaded fine and nothing installed can display it. Its own message rather than a generic failure: the bytes arrived and the server allowed it, so "check your connection" would send the reader looking in the wrong place. The remedy is on the device. Named for the file rather than for whose file it is — §9.1's chat attachments reach a candidate too, and the sentence is about the phone either way.
   ///
   /// In en, this message translates to:
   /// **'No app on this phone can open this file.'**
-  String get candidateFileNoViewer;
+  String get fileNoViewer;
 
   /// Header metric on section 6.2's dashboard. Counted from `isOpenForApplications`, which the server computes from the status *and* the deadline — so a vacancy that is active with yesterday's deadline is correctly not counted.
   ///
@@ -3118,6 +3118,234 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'With both, one account keeps two separate spaces: your own profile and your company\'s, switched from your profile.'**
   String get roleSelectionBoth;
+
+  /// §9.1's gate, stated as what fills the list rather than as what is missing. Deliberately role-neutral: one screen serves both sides, and picking the sentence by role would make this screen hold an opinion about §9.1 that the server already holds better.
+  ///
+  /// In en, this message translates to:
+  /// **'A conversation opens with a hiring interaction — an application, or an invitation that was accepted.'**
+  String get chatListEmpty;
+
+  /// A thread whose counterpart has no name to show. §7.3's permitted-name rule means an absent name is sometimes the correct answer rather than a load that failed, so the row still reads as a person instead of as a gap.
+  ///
+  /// In en, this message translates to:
+  /// **'Participant'**
+  String get chatParticipantUnknown;
+
+  /// The unread pill's numeral. A message rather than a Dart format string so the thousands separator follows the interface variant; the pill's shape carries the meaning, so there is no word here.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}'**
+  String chatUnreadCount(int count);
+
+  /// What a screen reader says for the unread pill. The pill itself is a numeral, and a reader hearing only "3" would not know three of what.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} unread message} other{{count} unread messages}}'**
+  String chatUnreadSemantics(int count);
+
+  /// The preview line of a thread that was opened and never written in. A real state: opening a conversation and sending one are two requests, and somebody can do the first and change their mind.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get chatNoMessages;
+
+  /// The preview line when the last message carried a file and no text. Three cases, not two: the server sends the last message's body, and a message with only an attachment has none — which is not the same fact as a thread nobody has written in.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment'**
+  String get chatAttachment;
+
+  /// Badge on a thread whose hiring interaction has ended (§9.1). The word says what the reader can still do, not what they cannot: the history stays readable on purpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only'**
+  String get chatReadOnly;
+
+  /// Badge on a thread the other side blocked. A separate word from read-only because it is undone by a different thing.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get chatBlocked;
+
+  /// Badge on a thread the reader blocked themselves. Same state, different sentence: only the person who set a block can lift it, so telling the two apart on the row is what makes the thread's own screen unsurprising.
+  ///
+  /// In en, this message translates to:
+  /// **'You blocked this'**
+  String get chatBlockedByYou;
+
+  /// §9.1: the interaction ended, so the thread no longer accepts messages. Not "closed" — closed reads as gone, and the messages are still here.
+  ///
+  /// In en, this message translates to:
+  /// **'This conversation is history'**
+  String get chatReadOnlyTitle;
+
+  /// Names the cause, because the remedy is not on this screen: what reopens the thread is the hiring interaction resuming, and somebody looking for a button needs to know there is not one.
+  ///
+  /// In en, this message translates to:
+  /// **'The application or invitation it came from has ended, so no new messages can be sent. Everything already here stays readable.'**
+  String get chatReadOnlyBody;
+
+  /// Notice heading on a thread the other side blocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get chatBlockedTitle;
+
+  /// Says that it applies to both sides, because §9.1 makes a block symmetrical whoever set it — and deliberately offers no action: this block is not the reader's to lift.
+  ///
+  /// In en, this message translates to:
+  /// **'The other person blocked this conversation. Nobody can send here while that stands, and the messages stay readable.'**
+  String get chatBlockedBody;
+
+  /// Notice heading on a thread the reader blocked.
+  ///
+  /// In en, this message translates to:
+  /// **'You blocked this conversation'**
+  String get chatBlockedByYouTitle;
+
+  /// "Including you" is the part worth saying: somebody reaching for a block often wants a mute, and §9.1 does not have one. It also names where the control is, since the notice deliberately does not carry it — a condition and the thing that clears it are two taps apart everywhere else in this app.
+  ///
+  /// In en, this message translates to:
+  /// **'Neither side can send while the block stands — including you. Unblock from the top of the screen to write again.'**
+  String get chatBlockedByYouBody;
+
+  /// Lifts the reader's own block. Offered only where they set it: the route cannot lift the other side's, and a control that looks like it can would be worse than none.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get chatUnblock;
+
+  /// Confirms the block was lifted, and says what changed as a result — "unblocked" alone leaves somebody looking for the composer to find out.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblocked. You can write again.'**
+  String get chatUnblocked;
+
+  /// Opens the block sheet, and the verb on its confirm button.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get chatBlockAction;
+
+  /// The block sheet's heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Block this conversation?'**
+  String get chatBlockTitle;
+
+  /// States the consequence before the button rather than asking "are you sure?". §9.1's block is symmetrical, and somebody reaching for it is often reaching for a mute — so the sheet says which one this is while there is still time to back out.
+  ///
+  /// In en, this message translates to:
+  /// **'It becomes read-only for both of you — you will not be able to send either. The messages stay readable, and a moderator can review them.'**
+  String get chatBlockBody;
+
+  /// Marked optional in the label. It is for the moderator who may review the thread, and requiring a justification from somebody blocking for their own safety gets the wrong answer typed in.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get chatBlockReasonLabel;
+
+  /// Says who reads it, which is the only thing that makes writing one worthwhile.
+  ///
+  /// In en, this message translates to:
+  /// **'For the moderator who reviews this'**
+  String get chatBlockReasonHint;
+
+  /// §9.1's report, filed into the same complaint queue M10 reviews vacancy reports through.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this message'**
+  String get chatReportTitle;
+
+  /// Sets the expectation that nothing changes on this screen — a report is filed, not applied — and points at the block, because somebody reporting harassment usually wants the messages to stop as well and would otherwise assume reporting did that.
+  ///
+  /// In en, this message translates to:
+  /// **'A moderator reads the report and decides. Blocking the conversation is separate, and you can do both.'**
+  String get chatReportBody;
+
+  /// Free text and required. Free because somebody objecting to a message should not have to find their objection on a list; required because the complaint lands in a queue as a row a moderator has to be able to act on.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong with it'**
+  String get chatReportReasonLabel;
+
+  /// A hint that shows what the field is for by naming a real thing that happens on job platforms. Somebody shown an empty box labelled "reason" writes nothing; somebody shown this writes what actually happened.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked me to pay for the job'**
+  String get chatReportReasonHint;
+
+  /// The verb on the confirm button, never "OK".
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get chatReportSubmit;
+
+  /// Confirms the filing and says what happens next, since nothing visible changes: the message stays where it was and the thread stays open, because §9.1 gives the outcome to a moderator rather than to the reporter.
+  ///
+  /// In en, this message translates to:
+  /// **'Report sent. A moderator will review it.'**
+  String get chatReportDone;
+
+  /// The composer's persistent label — every control in this design carries one.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get chatComposerLabel;
+
+  /// The composer's placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a message'**
+  String get chatComposerHint;
+
+  /// Sends the message. Inert only while there is nothing to send — never because of a rule about whether this person may chat, which is the server's to apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get chatSend;
+
+  /// Heading over the server's own refusal, beside the composer that failed. The sentence underneath is the server's, so there is exactly one wording of each refusal — and the draft is deliberately kept, because somebody who wrote three paragraphs into a thread that closed under them must be able to copy them out.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent'**
+  String get chatSendRefusedTitle;
+
+  /// On an outgoing message the other side has not read yet. §9.1 asks for sent / delivered / read and the server sends two of the three: delivery belongs to push (M9), and a flag written in the same statement as the timestamp would be a fabricated answer — so there is no middle state here.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get chatSent;
+
+  /// On an outgoing message the other side has read. Shown on outgoing messages only: on an incoming one the same field answers whether the reader has read it, which they can see for themselves.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get chatRead;
+
+  /// Fetches the page before the oldest message loaded. A control rather than an infinite scroll, so somebody on a metered connection decides when to spend the request.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier messages'**
+  String get chatEarlier;
+
+  /// An open thread with nothing in it — the state right after somebody opened the conversation from a candidate profile.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet. Write the first one.'**
+  String get chatThreadEmpty;
+
+  /// The same emptiness on a thread that can no longer take messages. A different fact and a different sentence: inviting somebody to write the first message where the composer is gone would be an instruction they cannot follow.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages were sent before this conversation closed.'**
+  String get chatThreadEmptyClosed;
+
+  /// §9.1's entry point, in the contact block of §7.3's candidate profile — the same entitlement that reveals a phone number is the one that opens chat, from the same service on the server. It sits beside copy rather than replacing it: a message needs the other person to open the app, and a phone number does not.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message'**
+  String get chatOpenAction;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -9,10 +9,10 @@ import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation_quota.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invite_outcome.dart';
-import 'package:jobbridge_app/src/features/invitations/presentation/invitation_format.dart';
 import 'package:jobbridge_app/src/features/vacancy/data/vacancy_repository.dart';
 import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
 import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_status.dart';
+import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 
 /// Opens §8.2's send-invitation form for one candidate.
 ///
@@ -383,7 +383,7 @@ class _QuotaCard extends StatelessWidget {
       return HhNotice.pending(
         title: l10n.invitationQuotaSpentTitle,
         message: l10n.invitationQuotaResets(
-          invitationStamp(quota.resetsAt.wallClock),
+          wallClockStamp(quota.resetsAt.wallClock),
         ),
       );
     }
@@ -399,7 +399,7 @@ class _QuotaCard extends StatelessWidget {
           const SizedBox(height: HhSpace.xs),
           Text(
             l10n.invitationQuotaResets(
-              invitationStamp(quota.resetsAt.wallClock),
+              wallClockStamp(quota.resetsAt.wallClock),
             ),
             style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
           ),

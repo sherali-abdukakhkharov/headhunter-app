@@ -25,6 +25,20 @@ build 3 as an upgrade.
 
 ### Added
 
+- **Chat (§9.1)** — the Messages tab in both shells, and the thread behind it:
+  history, a composer, sent/read state, attachments you can open, blocking with
+  its reason, and reporting a message into the queue M10 reviews. One screen
+  serves a candidate and an employer because the server scopes the list by the
+  caller's active role.
+  Two things a reader should know. **There is no "delivered" tick**: the server
+  sends read state and nothing else, because delivery belongs to push (M9) and a
+  flag written at the same moment as the timestamp would be a fabricated answer.
+  And **the thread does not refresh itself** — M9's push is what makes it live,
+  so the app bar carries an explicit refresh rather than a timer that would drain
+  a battery to answer "nothing yet".
+  Sending an attachment is not in this release: it needs a `file_purpose`
+  dictionary code for a message attachment, which is server data the client must
+  not invent. Receiving one works.
 - **The finished role-selection screen** (§2.3), the last step of registration.
   There is no separate sign-up — verifying an OTP creates the account and a new
   account holds no role — so this screen is where registering ends, and until now
@@ -41,6 +55,14 @@ build 3 as an upgrade.
 - `HhCheckboxRow` and `HhRadioRow` take an optional `description`, the second
   line `HhSwitchRow` already had. The control aligns to the label rather than to
   the middle of a two-line block.
+- The status vocabulary gains two badges for a conversation — read-only and
+  blocked — and `HhUnreadPill` for a count. All three are in `/_design`.
+- One date format for the whole app. `invitationStamp` and a private copy in the
+  account screen became `wallClockStamp` in `lib/src/shared/format/`; chat was
+  the third caller, and three copies of a date format are three ways to date one
+  event.
+- `candidateFileNoViewer` is now `fileNoViewer`. The sentence is about the phone,
+  not about whose file it is, and a chat attachment reaches a candidate too.
 
 ## 1.1.1 — 2026-08-20
 

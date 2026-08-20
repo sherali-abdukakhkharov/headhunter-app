@@ -185,6 +185,39 @@ class HhBadge extends StatelessWidget {
     : tone = HhTone.neutral,
       iconPath = HhIconPath.arrowLeft;
 
+  // --- Conversation · Suhbat (2 states) ------------------------------------
+
+  /// Read-only — the hiring interaction ended, so the thread is history (§9.1).
+  ///
+  /// The **same lock and the same neutral tone** as
+  /// [HhBadge.applicationVacancyClosed], because it is the same fact about a
+  /// different object: it is finished, nobody's turn, and still readable.
+  /// §9.1 is explicit that a closed interaction "remains in history" — so this
+  /// badge marks a thread that can be read and not written, never one that has
+  /// gone away.
+  const HhBadge.conversationReadOnly({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.lock;
+
+  /// Blocked — somebody stopped this conversation (§9.1).
+  ///
+  /// A different glyph from the badge above, because within one object type no
+  /// glyph repeats and these two are undone by different things: a block is
+  /// lifted, an ended interaction resumes. The x-circle carries its documented
+  /// meaning — a negative outcome with a reason attached, and the server takes
+  /// the reason for the moderator who reviews it.
+  ///
+  /// **Error-toned, and this is the one place the two-readers argument lands
+  /// differently from [HhBadge.invitationDeclined].** A decline is a choice
+  /// about an offer, so red would be the app disapproving of a decision it
+  /// asked somebody to make. A block is a *safety state*: §9.1 makes it
+  /// read-only for both sides whoever set it, and understating it would be the
+  /// worse mistake. Which side set it is carried by the **label**, not by the
+  /// tone — `blockedByMe` is what decides whether unblocking is even offered.
+  const HhBadge.conversationBlocked({required this.label, super.key})
+    : tone = HhTone.error,
+      iconPath = HhIconPath.xCircle;
+
   // --- Verification · Tasdiqlash (5 states) --------------------------------
 
   /// Not submitted.
@@ -298,6 +331,52 @@ class HhVerifiedMark extends StatelessWidget {
         ),
       ),
     ],
+  );
+}
+
+/// Unread count on a conversation row (§9.1).
+///
+/// Brand-toned rather than success or warning: unread mail is neither good news
+/// nor a problem, it is **something addressed to you**, which is what the brand
+/// accent is for elsewhere in the product.
+///
+/// A number and no glyph, for the same reason as [HhMatchPill]: the design
+/// system's "status is never colour alone" rule exists so a state cannot be
+/// conveyed by hue, and a numeral conveys itself. The [semanticsLabel] carries
+/// the word, so a screen reader hears "3 unread" rather than "3".
+class HhUnreadPill extends StatelessWidget {
+  const HhUnreadPill({
+    required this.label,
+    required this.semanticsLabel,
+    super.key,
+  });
+
+  /// The count, already localized — thousands separators follow the interface
+  /// variant, and a count is never punched in with a Dart format string.
+  final String label;
+
+  /// The count *with its word*, e.g. "3 unread".
+  final String semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: semanticsLabel,
+    child: Container(
+      constraints: const BoxConstraints(minWidth: 22),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: HhColors.brand600,
+        borderRadius: BorderRadius.circular(11),
+      ),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: HhTypography.badge.copyWith(
+          fontSize: 11.5,
+          color: HhColors.white,
+        ),
+      ),
+    ),
   );
 }
 
