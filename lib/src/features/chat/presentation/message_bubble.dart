@@ -89,7 +89,15 @@ class _MessageBubbleState extends ConsumerState<MessageBubble> {
                 ),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                // The bubble shrink-wraps, so `WrapAlignment.end` on the meta
+                // row below has no free space to distribute and cannot do this
+                // job — the Column's cross-axis alignment is what puts the
+                // stamp on the bubble's own side. Outgoing messages read to the
+                // right edge, incoming to the left, which is what makes the two
+                // sides legible before the colour is.
+                crossAxisAlignment: mine
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 children: [
                   if (message.body case final body? when body.isNotEmpty)
                     // Somebody's own words (§2.4): never translated, never

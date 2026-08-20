@@ -105,28 +105,38 @@ class _ConversationRow extends StatelessWidget {
           // policy is still open precisely so a wrong-*looking* date beats a
           // plausible wrong one. So it drops to its own line instead — the same
           // fix, for the same reason, as the §8.2 inbox card's badge row.
-          Wrap(
-            spacing: HhSpace.sm,
-            runSpacing: 2,
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                // A thread whose counterpart has no name still has to say what
-                // it is. §7.3's "permitted name" rule means an absent name is
-                // sometimes the correct answer, not a load that failed, so the
-                // row reads as a person rather than as a gap.
-                conversation.counterpartName ?? l10n.chatParticipantUnknown,
-                style: HhTypography.subtitle.copyWith(fontSize: 15),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (conversation.lastMessageAt case final at?)
+          //
+          // `width: double.infinity` is load-bearing and easy to lose: the
+          // Column around this is `crossAxisAlignment: start`, which hands its
+          // children *loose* constraints, so a bare Wrap shrink-wraps its
+          // content and `spaceBetween` has no free space to distribute. The
+          // stamp then sits hard against the name and the column of stamps
+          // comes out ragged, which reads as a bug rather than as a layout.
+          SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              spacing: HhSpace.sm,
+              runSpacing: 2,
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
                 Text(
-                  wallClockStamp(at.wallClock),
-                  style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
+                  // A thread whose counterpart has no name still has to say
+                  // what it is. §7.3's "permitted name" rule means an absent
+                  // name is sometimes the correct answer, not a load that
+                  // failed, so the row reads as a person rather than as a gap.
+                  conversation.counterpartName ?? l10n.chatParticipantUnknown,
+                  style: HhTypography.subtitle.copyWith(fontSize: 15),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-            ],
+                if (conversation.lastMessageAt case final at?)
+                  Text(
+                    wallClockStamp(at.wallClock),
+                    style: HhTypography.meta.copyWith(color: HhColors.inkMuted),
+                  ),
+              ],
+            ),
           ),
           const SizedBox(height: 5),
 

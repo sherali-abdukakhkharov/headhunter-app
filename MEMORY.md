@@ -501,6 +501,89 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - Gradle's "loopback connection" failure is AF_UNIX, not the sandbox
+Two entries in this file and one in TODO.md have blamed the agent sandbox for
+`java.io.IOException: Unable to establish loopback connection`. That was wrong,
+and the real cause is worth having written down because it also tells you which
+fixes cannot work.
+
+**It is the JVM, and it fails in six lines of Java:**
+
+```java
+java.nio.channels.Pipe.open();      // OK
+java.nio.channels.Selector.open();  // IOException: Unable to establish loopback connection
+```
+
+Caused by:
+
+```
+java.net.SocketException: Invalid argument: connect
+  at sun.nio.ch.UnixDomainSockets.connect0(Native Method)
+  at sun.nio.ch.PipeImpl$Initializer$LoopbackConnector.run
+```
+
+Since **JDK 21**, the selector's internal pipe on Windows is an **AF_UNIX socket
+pair** rather than a TCP loopback pair. On this machine AF_UNIX `bind` succeeds
+and AF_UNIX `connect` fails with `EINVAL`. TCP loopback is fine — listen and
+connect on `127.0.0.1` both work, from Java and from .NET — so every "check your
+firewall / hosts file / IPv6" instruction on the internet is aimed at the wrong
+layer.
+
+**What this rules out.** Gradle needs a `Selector` in the *client* JVM before it
+can talk to any daemon, so none of these help: `--no-daemon`,
+`org.gradle.daemon=false`, a smaller `-Xmx`, `-Djava.net.preferIPv4Stack=true`,
+`-Djava.io.tmpdir=<short path>`, `-Djdk.nio.channels.unixdomain.tmpdir=<...>`,
+or forcing the old selector with
+`-Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.WindowsSelectorProvider`.
+The last one *does* take effect — `WindowsSelectorImpl` appears in the stack —
+and then fails through the same `PipeImpl`. Verified on three JVMs: Android
+Studio's JBR 25, JBR 21.0.10 and Oracle JDK 21.0.11.
+
+**What would fix it**, in order of cost: a **reboot** (it built successfully
+earlier the same day, so the AF_UNIX stack changed state, not the project); or a
+**JDK 17**, where the selector pipe is still TCP — install one and point Flutter
+at it with `flutter config --jdk-dir "<path>"`.
+
+**And the consequence to state out loud: Android Studio cannot build either.** It
+runs the same Gradle on the same bundled JBR, so "just open it in the IDE" hits
+the identical wall. The Android emulator is unaffected — it boots fine and `adb
+devices` sees it; there is simply no APK to install on it.
+
+### 2026-08-20 - A device is not the only way to look at a screen
+With Gradle down and CLAUDE.md asking for a device run after any design-system
+change, the substitute that actually worked was rendering the real widget tree to
+PNGs and *looking* at them:
+
+```dart
+// setUpAll: without this every glyph is an Ahem box and the copy is unreadable
+final loader = FontLoader('Golos Text')
+  ..addFont(File('assets/fonts/GolosText-Variable.ttf').readAsBytes()
+      .then((b) => ByteData.view(Uint8List.fromList(b).buffer)));
+await loader.load();
+...
+await expectLater(find.byType(MaterialApp), matchesGoldenFile('_visual/x.png'));
+```
+
+Run with `flutter test <file> --update-goldens`, then open the PNGs. Set
+`debugShowCheckedModeBanner: false` or the banner sits over the app bar actions.
+
+**It found two bugs the widget tests could not.** Both were invisible to
+assertions because nothing overflowed and every `expect` passed:
+
+1. The conversation row's timestamps came out **ragged** — a `Wrap` with
+   `alignment: spaceBetween` inside a `crossAxisAlignment: start` Column
+   shrink-wraps, so there is no free space to distribute and the stamp sits hard
+   against the name. `SizedBox(width: double.infinity)` around the Wrap is the
+   fix, and the same trap applies to every `Wrap` alignment in this codebase.
+2. Message bubbles put their time and read receipt on the **left** of an
+   outgoing bubble, for the same shrink-wrap reason: `WrapAlignment.end` had
+   nothing to distribute. Fixed by the *Column's* `crossAxisAlignment`, chosen
+   per side, rather than by the Wrap.
+
+The harness itself is deliberately **not committed**: goldens are
+platform-specific and CI runs on Linux, so a committed PNG is a red build. Keep
+the recipe, not the files.
+
 ### 2026-08-20 - An idempotency key held per screen refuses the next message forever
 §12.4 says persist the key across retries, and MEMORY.md has said so since
 2026-08-04. What it did not say is what the key is a key *to*, and for chat the
@@ -1254,10 +1337,13 @@ For this rename they reported `com.jobbridge.app.dev`, `application-label:
 'JobBridge Dev'` and `launchable-activity: com.jobbridge.app.MainActivity` — the
 third being the one that proves the namespace and the Kotlin package agree.
 
-Note that Gradle cannot run inside this project's agent sandbox at all: it fails in
-about a second with `java.io.IOException: Unable to establish loopback connection`,
-before compiling anything. That is the environment, not the build — an Android
-build has to be run from a normal shell.
+Note that Gradle sometimes cannot run on this machine at all: it fails in about a
+second with `java.io.IOException: Unable to establish loopback connection`, before
+compiling anything. **This entry originally blamed the agent sandbox and that was
+wrong** — it fails identically with the sandbox disabled and from a plain shell.
+The cause is AF_UNIX, and running it "from a normal shell" is not the fix; see the
+trap entry of 2026-08-20 for the six-line reproduction and the two things that
+actually help.
 
 ### 2026-08-19 - A stale google-services.json is better than a hand-edited one
 The rename left `android/app/google-services.json` listing the old package names.

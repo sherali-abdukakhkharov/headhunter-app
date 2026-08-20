@@ -1420,16 +1420,43 @@ paywall that is not theirs.
       gap already filed under M7's dashboard ask
 - [ ] **Deep links switch role before navigating** where required *(moved here
       from M9 - routing infrastructure, not a notification feature)*
-- [ ] **Run the chat screens on a device.** Two overflow bugs were found by the
-      tests rather than by a device — the list row at 320pt/2.0x (138pt) and the
-      bubble's read receipt (18pt) — which is the same class MEMORY.md records
-      for the design gallery, caught earlier this time. The design-system
-      additions (`HhBadge.conversationReadOnly`, `.conversationBlocked`,
-      `HhUnreadPill`) are in `/_design` and **have not been seen on a screen**:
-      Gradle still cannot start in this environment (`Unable to establish
-      loopback connection`), so `flutter build apk` failed the same way it did
-      when `MainActivity.kt` was written. Nothing new is in `res/`, so AAPT2 is
-      not the risk here — the risk is purely visual
+- [x] **The chat screens and the new badges have been looked at, 2026-08-20** —
+      not on a device, but rendered from the real widget tree with the app's own
+      bundled font and inspected as images. MEMORY.md has the recipe; it is the
+      standing substitute while Gradle is down, and it is cheap enough to be
+      worth doing *before* a device run rather than instead of one.
+      **It found two bugs that every assertion passed through**, both the same
+      root cause — a `Wrap` inside a `crossAxisAlignment: start` Column
+      shrink-wraps, so its `alignment` has no free space to distribute:
+      1. the conversation rows' timestamps came out **ragged** instead of
+         right-aligned, which reads as a rendering fault rather than a layout;
+      2. an outgoing bubble put its time and read receipt on the **left**, so
+         the two sides of the conversation were told apart by colour alone.
+      Fixed, and the fixes are noted where the trap is: `SizedBox(width:
+      double.infinity)` for the row, the Column's own cross-axis alignment for
+      the bubble
+- [!] **Gradle cannot start on this machine, and it is not the sandbox.**
+      `flutter build apk` fails in a second with `Unable to establish loopback
+      connection`, with the sandbox off, from a plain shell, and on three JVMs.
+      The cause is the JDK: since JDK 21 the selector's internal pipe on Windows
+      is an **AF_UNIX socket pair**, and AF_UNIX `connect` on this machine
+      answers `EINVAL` while `bind` succeeds and TCP loopback works fine.
+      Reproduced in six lines of Java — see MEMORY.md, which also lists the seven
+      flags that *cannot* help and why.
+      **Android Studio hits the same wall**, since it runs the same Gradle on the
+      same bundled JBR. The emulator is fine — `headhunter_pixel` boots and `adb`
+      sees it; there is simply nothing to install on it.
+      Two fixes: a **reboot** (it built in 56s earlier the same day, so the state
+      changed rather than the project), or install a **JDK 17** — where the pipe
+      is still TCP — and `flutter config --jdk-dir "<path>"`
+- [ ] **Ask the designer about the composer's height** *(observation, not a
+      bug)*. §9.1 is one of the surfaces the design document never drew, and the
+      chat composer uses `HhTextField`'s multiline treatment: a persistent label
+      plus a `1.6 × 52pt` minimum box, so an empty composer is about 110pt tall.
+      That is the design system used exactly as written — every other multiline
+      field in the app looks the same — and a chat-specific control size would be
+      the one thing the "one control size for everyone" rule forbids. Worth a
+      drawn answer rather than a unilateral shrink
 
 ## M9 - Notifications *(deferred to last - client direction 2026-08-04)*
 
