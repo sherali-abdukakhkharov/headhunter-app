@@ -9,7 +9,7 @@ class AppL10nUz extends AppL10n {
   AppL10nUz([String locale = 'uz']) : super(locale);
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Qayta urinish';
@@ -176,6 +176,323 @@ class AppL10nUz extends AppL10n {
   String get profileSalaryNegotiable => 'Kelishuv asosida';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Yangilangan $date';
+  }
+
+  @override
+  String get profileFixField => 'To\'ldirish';
+
+  @override
+  String get profileVisibilityTitle => 'Sizni kim topa oladi';
+
+  @override
+  String get profileVisibilitySearchable => 'Qidiruvda ko\'rinadi';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Ish beruvchilar sizni nomzodlar qidiruvida topa oladi.';
+
+  @override
+  String get profileVisibilityHidden => 'Qidiruvdan yashirilgan';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Siz vakansiyalarni ko\'rishingiz va ariza yuborishingiz mumkin. Ish beruvchilar sizni topa olmaydi.';
+
+  @override
+  String get profileVisibilityAfterApply =>
+      'Ariza yuborgandan keyin ko\'rinadi';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
+  String get feedRecommended => 'Tavsiya etilgan';
+
+  @override
+  String get feedRecent => 'Yangi';
+
+  @override
+  String get feedSaved => 'Saqlangan';
+
+  @override
+  String get feedEmpty => 'Hozircha ko\'rsatadigan narsa yo\'q';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Tasdiqlangan ish beruvchi';
+
+  @override
+  String get vacancyNegotiablePay => 'To\'lov kelishiladi';
+
+  @override
+  String vacancyDeadline(String date) {
+    return '$date gacha ariza';
+  }
+
+  @override
+  String get vacancyApply => 'Ariza yuborish';
+
+  @override
+  String get vacancyApplied => 'Ariza yuborilgan';
+
+  @override
+  String get vacancyClosedToApplications => 'Arizalar qabul qilinmaydi';
+
+  @override
+  String get vacancySave => 'Saqlash';
+
+  @override
+  String get vacancySaved => 'Saqlangan';
+
+  @override
+  String get vacancyReport => 'Shikoyat';
+
+  @override
+  String get vacancyReportTitle => 'Vakansiya ustidan shikoyat';
+
+  @override
+  String get vacancyReportHint => 'Unda nima noto\'g\'ri?';
+
+  @override
+  String get vacancyReported => 'Rahmat. Moderator ko\'rib chiqadi.';
+
+  @override
+  String get applicationsMine => 'Sizning arizalaringiz';
+
+  @override
+  String get applicationsEmpty => 'Siz hali ariza yubormagansiz';
+
+  @override
+  String get applicationWithdraw => 'Qaytarib olish';
+
+  @override
+  String get applicationWithdrawTitle => 'Ariza qaytarib olinsinmi?';
+
+  @override
+  String get stageSubmitted => 'Yuborilgan';
+
+  @override
+  String get stageViewed => 'Ko\'rilgan';
+
+  @override
+  String get stageShortlisted => 'Short-listda';
+
+  @override
+  String get stageInterview => 'Suhbat';
+
+  @override
+  String get stageOffer => 'Taklif';
+
+  @override
+  String get stageHired => 'Qabul qilingan';
+
+  @override
+  String get stageRejected => 'Tanlanmadi';
+
+  @override
+  String get stageWithdrawn => 'Qaytarib olingan';
+
+  @override
+  String get vacancyMine => 'Sizning vakansiyalaringiz';
+
+  @override
+  String get vacancyNew => 'Yangi vakansiya';
+
+  @override
+  String get vacancyNone => 'Hozircha vakansiyalar yo\'q';
+
+  @override
+  String get vacancyUntitled => 'Nomsiz vakansiya';
+
+  @override
+  String get vacancyStatusDraft => 'Qoralama';
+
+  @override
+  String get vacancyStatusModeration => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get vacancyStatusActive => 'E\'lon qilingan';
+
+  @override
+  String get vacancyStatusPaused => 'To\'xtatilgan';
+
+  @override
+  String get vacancyStatusClosed => 'Yopilgan';
+
+  @override
+  String get vacancyStatusRejected => 'Rad etilgan';
+
+  @override
+  String get vacancySubmit => 'E\'lon qilishga yuborish';
+
+  @override
+  String get vacancyPause => 'To\'xtatish';
+
+  @override
+  String get vacancyResume => 'Davom ettirish';
+
+  @override
+  String get vacancyClose => 'Yopish';
+
+  @override
+  String get vacancyCloseTitle => 'Vakansiya yopilsinmi?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Yopish qaytarilmaydi. Vakansiya qidiruvdan chiqadi va tarixda qoladi.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count ta maydonni to\'ldiring',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Bu vakansiyani hozir tahrirlab bo\'lmaydi.';
+
+  @override
+  String get vacancyOpenForApplications => 'Arizalar qabul qilinmoqda';
+
+  @override
+  String get vacancyRestrictionTitle => 'Yosh va jins bo\'yicha cheklashlar';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Yosh va jins bo\'yicha cheklashlar asoslashni talab qiladi va har doim moderator tomonidan tekshiriladi.';
+
+  @override
+  String get employerChooseType => 'Siz qanday ish beruvchisiz?';
+
+  @override
+  String get employerTypeCompany => 'Tashkilot';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Tashkilot nomidan ishga oluvchi ro\'yxatdan o\'tgan biznes.';
+
+  @override
+  String get employerTypeIndividual => 'Jismoniy shaxs';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Uy yoki shaxsiy ish uchun odam yollaysiz.';
+
+  @override
+  String get employerTypeFixed =>
+      'Bir marta tanlanadi va keyin o\'zgartirib bo\'lmaydi.';
+
+  @override
+  String get employerDetails => 'Ish beruvchi ma\'lumotlari';
+
+  @override
+  String get employerLegalName => 'Rasmiy nomi';
+
+  @override
+  String get employerPublicName => 'Nomzodlarga ko\'rinadigan nom';
+
+  @override
+  String get employerFullName => 'To\'liq ismingiz';
+
+  @override
+  String get employerIndustry => 'Soha';
+
+  @override
+  String get employerContactPerson => 'Aloqa uchun shaxs';
+
+  @override
+  String get employerContactPhone => 'Aloqa telefoni';
+
+  @override
+  String get employerRegion => 'Viloyat';
+
+  @override
+  String get employerDistrict => 'Tuman yoki shahar';
+
+  @override
+  String get employerAddress => 'Manzil';
+
+  @override
+  String get employerDescription => 'Tavsif';
+
+  @override
+  String get employerVerification => 'Tasdiqlash';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Yuborilmagan';
+
+  @override
+  String get employerVerificationUnderReview => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get employerVerificationVerified => 'Tasdiqlangan';
+
+  @override
+  String get employerVerificationRejected => 'Rad etilgan';
+
+  @override
+  String get employerVerificationChangesRequired => 'Tuzatish talab qilinadi';
+
+  @override
+  String get employerSubmitVerification => 'Tasdiqlashga yuborish';
+
+  @override
+  String get employerEvidence => 'Kerakli hujjatlar';
+
+  @override
+  String get employerEvidenceRequired => 'Majburiy';
+
+  @override
+  String get employerEvidenceOptional => 'Ixtiyoriy';
+
+  @override
+  String get employerCannotPublish =>
+      'Vakansiya joylash va nomzod taklif qilish uchun profilni to\'ldiring va tasdiqdan o\'ting.';
+
+  @override
+  String get employerCanPublish =>
+      'Siz vakansiya joylashingiz va nomzodlarni taklif qilishingiz mumkin.';
+
+  @override
+  String get employerSaveFirst =>
+      'Tasdiqlashga yuborishdan oldin ma\'lumotlarni saqlang.';
+
+  @override
+  String get attachmentsTitle => 'Hujjatlar';
+
+  @override
+  String get attachmentUpload => 'Yuklash';
+
+  @override
+  String get attachmentReplace => 'Almashtirish';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Yuklanmoqda… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Hech narsa yuklanmagan';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Fayl $limit MB dan katta.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return '$types formatidagi faylni tanlang.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Fayl o\'chirilsinmi?';
+
+  @override
   String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
 
   @override
@@ -316,6 +633,926 @@ class AppL10nUz extends AppL10n {
   @override
   String get authSignInUnavailable =>
       'Bu versiyada Telegram orqali kirish mavjud emas.';
+
+  @override
+  String get vacancyApplicants => 'Arizalar';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Hozircha arizalar yo\'q';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$required tadan $hired tasi qabul qilindi';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired tasi qabul qilindi';
+  }
+
+  @override
+  String get applicationMoveTo => 'Bosqichga o\'tkazish';
+
+  @override
+  String get applicationRejectReason => 'Sabab (nomzod ko\'radi)';
+
+  @override
+  String get candidatePhoneHidden => 'Telefon mavjud emas';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Nomzodning maxfiylik sozlamalari ish beruvchi uni qachon ko\'rishini belgilaydi.';
+
+  @override
+  String get candidateFilesHidden => 'Fayllar mavjud emas';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Profil $percent% to’ldirilgan';
+  }
+
+  @override
+  String get notesTitle => 'Shaxsiy eslatmalar';
+
+  @override
+  String get notesHint => 'Ularni faqat siz ko’rasiz';
+
+  @override
+  String get notesAdd => 'Eslatma qo’shish';
+
+  @override
+  String get searchCandidates => 'Nomzodlar qidiruvi';
+
+  @override
+  String get searchRun => 'Qidirish';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta nomzod',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ nomzod';
+  }
+
+  @override
+  String get searchNoResults => 'Bu filtrlar bo’yicha hech kim topilmadi';
+
+  @override
+  String get searchSaved => 'Saqlangan nomzodlar';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Moslik $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years yil tajriba',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Short-listga';
+
+  @override
+  String get searchShortlisted => 'Short-listda';
+
+  @override
+  String get filtersTitle => 'Filtrlar';
+
+  @override
+  String get filtersApply => 'Filtrlarni qo’llash';
+
+  @override
+  String get filtersReset => 'Tozalash';
+
+  @override
+  String get filtersEdit => 'Filtrlar';
+
+  @override
+  String get filtersClearAll => 'Hammasini tozalash';
+
+  @override
+  String get filtersNone => 'Filtrsiz — qidiruvga ochiq barcha nomzodlar';
+
+  @override
+  String get filtersBlockedTitle => 'Hozircha qidirib bo’lmaydi';
+
+  @override
+  String get filtersOccupation => 'Kasb';
+
+  @override
+  String get filtersSkills => 'Ko’nikmalar';
+
+  @override
+  String get filtersExperience => 'Tajriba';
+
+  @override
+  String get filtersLanguages => 'Tillar';
+
+  @override
+  String get filtersEducation => 'Ta’lim';
+
+  @override
+  String get filtersLocation => 'Joylashuv';
+
+  @override
+  String get filtersPreferences => 'Ish shartlari';
+
+  @override
+  String get filtersAvailability => 'Ishga tayyorlik';
+
+  @override
+  String get filtersAttributes => 'Qo’shimcha talablar';
+
+  @override
+  String get filtersProfile => 'Profil';
+
+  @override
+  String get filtersRestrictions => 'Cheklovlar';
+
+  @override
+  String get filtersSort => 'Saralash';
+
+  @override
+  String get filterOccupations => 'Kasblar';
+
+  @override
+  String get filterPrimaryOnly => 'Faqat asosiy kasb';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Nomzodning barcha kasblari emas, asosiysi hisobga olinadi';
+
+  @override
+  String get filterOccupationLevels => 'Kasbiy daraja';
+
+  @override
+  String get filterCurrentOccupations => 'Hozirgi yoki oxirgi lavozim';
+
+  @override
+  String get filterSkills => 'Ko’nikmalar';
+
+  @override
+  String get filterMatchMode => 'Moslik';
+
+  @override
+  String get filterMatchAny => 'Har qanday';
+
+  @override
+  String get filterMatchAll => 'Barchasi';
+
+  @override
+  String get filterMinLevel => 'Eng past daraja';
+
+  @override
+  String get filterLevelAny => 'Har qanday daraja';
+
+  @override
+  String get filterExperienceYearsMin => 'Jami yillar, kamida';
+
+  @override
+  String get filterOccupationExperience => 'Shu kasbda yillar, kamida';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Avval kasbni tanlang';
+
+  @override
+  String get filterLanguages => 'Tillar';
+
+  @override
+  String get filterLanguageCertificate => 'Sertifikat talab qilinadi';
+
+  @override
+  String get filterEducationLevels => 'Ta’lim darajasi';
+
+  @override
+  String get filterSpecializations => 'Mutaxassislik';
+
+  @override
+  String get filterRegion => 'Viloyat';
+
+  @override
+  String get filterDistricts => 'Tumanlar';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Avval viloyatni tanlang';
+
+  @override
+  String get filterWillingToRelocate => 'Ko’chib o’tishga tayyor';
+
+  @override
+  String get filterWillingToTravel => 'Xizmat safarlariga tayyor';
+
+  @override
+  String get filterProximityDistrict => 'Shu tumanga yaqin';
+
+  @override
+  String get filterProximityHint => '“Eng yaqin” saralashi uchun';
+
+  @override
+  String get filterEmploymentTypes => 'Bandlik turi';
+
+  @override
+  String get filterWorkFormats => 'Ish formati';
+
+  @override
+  String get filterShifts => 'Smena';
+
+  @override
+  String get filterSalaryMin => 'Maosh (dan)';
+
+  @override
+  String get filterSalaryMax => 'Maosh (gacha)';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Ko’proq kutayotgan nomzod chiqarib tashlanadi. Kelishiladigan kutish esa mos keladi.';
+
+  @override
+  String get filterAvailableBy => 'Ishga tayyor (sana)';
+
+  @override
+  String get filterAvailableImmediately => 'Darhol ishga tayyor';
+
+  @override
+  String get filterAttributes => 'Guvohnoma, transport va asboblar';
+
+  @override
+  String get filterCrewSizeMin => 'Kamida shuncha kishilik brigada';
+
+  @override
+  String get filterMinCompleteness => 'Profil to’ldirilishi, kamida (%)';
+
+  @override
+  String get filterUpdatedSince => 'Yangilangan (sanadan)';
+
+  @override
+  String get filterAgeMin => 'Yosh (dan)';
+
+  @override
+  String get filterAgeMax => 'Yosh (gacha)';
+
+  @override
+  String get filterGender => 'Jins';
+
+  @override
+  String get filterJustification => 'Cheklov asosi';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Yosh yoki jins bo’yicha filtr uchun asos ko’rsatilishi shart. Har bir foydalanish qayd etiladi.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Faqat ish haqiqatan talab qilgan holatda.';
+
+  @override
+  String get sortMatch => 'Mosligi bo’yicha';
+
+  @override
+  String get sortRecent => 'Yangilanishi bo’yicha';
+
+  @override
+  String get sortExperience => 'Tajribasi bo’yicha';
+
+  @override
+  String get sortSalary => 'Kutilgan maosh bo’yicha';
+
+  @override
+  String get sortProximity => 'Yaqinligi bo’yicha';
+
+  @override
+  String get commonLoadMore => 'Yana ko’rsatish';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Nomzod topish';
+
+  @override
+  String get searchScopedToVacancy => 'Filtrlar vakansiyadan olindi';
+
+  @override
+  String get candidateProfileTitle => 'Nomzod';
+
+  @override
+  String get candidateViewProfile => 'Profilni ochish';
+
+  @override
+  String get candidateContact => 'Aloqa';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return '$date dan tayyor';
+  }
+
+  @override
+  String get candidateAttachments => 'Ilovalar';
+
+  @override
+  String get candidateNoFiles => 'Nomzod hech narsa yuklamagan';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'Nomzodning telefon raqami ko’rsatilmagan.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Kompaniyangiz tasdiqlangach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Nomzod vakansiyangizga ariza bergach yoki taklifni qabul qilgach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Nomzod profilini qidiruvdan yashirgan. U vakansiyalaringizni ko’ra oladi va ariza bera oladi.';
+
+  @override
+  String get searchSavedEmpty => 'Saqlangan nomzodlar yo’q';
+
+  @override
+  String get commonCopy => 'Nusxalash';
+
+  @override
+  String get commonCopied => 'Nusxalandi';
+
+  @override
+  String get vacancyDetailTitle => 'Vakansiya';
+
+  @override
+  String get vacancyDescription => 'Ish haqida';
+
+  @override
+  String get vacancyRequirements => 'Talablar';
+
+  @override
+  String get vacancyMandatory => 'Majburiy';
+
+  @override
+  String get vacancyPreferred => 'Ma’qul';
+
+  @override
+  String get vacancyGoneTitle => 'Bu vakansiya endi mavjud emas';
+
+  @override
+  String get vacancyGoneBody =>
+      'U yopilgan, to\'ldirilgan yoki muddati o\'tgan bo\'lishi mumkin.';
+
+  @override
+  String get vacancyReportReason => 'Bu vakansiyada nima noto\'g\'ri?';
+
+  @override
+  String get vacancyReportSend => 'Yuborish';
+
+  @override
+  String get commonYes => 'Ha';
+
+  @override
+  String get commonNo => 'Yo\'q';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o\'rin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return '$date dan';
+  }
+
+  @override
+  String get walletTitle => 'Hamyon';
+
+  @override
+  String get walletBalanceLabel => 'Balans';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString so\'m';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'m';
+  }
+
+  @override
+  String get walletPrices => 'Bugungi narxlar';
+
+  @override
+  String get walletCoinPriceLabel => '1 Coin';
+
+  @override
+  String get walletUnlockPriceLabel => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Ro\'yxatdan o\'tish bonusi berildi: $date';
+  }
+
+  @override
+  String get walletTopUp => 'To\'ldirish';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'To\'ldirish hozircha mavjud emas. U Payme va CLICK qo\'llab-quvvatlashi bilan birga keladi.';
+
+  @override
+  String get walletActivity => 'So\'nggi operatsiyalar';
+
+  @override
+  String get walletActivityEmpty =>
+      'Bu hamyonda hali hech qanday harakat bo\'lmagan. Kirim ham, chiqim ham shu yerda ko\'rinadi va biror yozuv hech qachon o\'chirilmaydi.';
+
+  @override
+  String get walletShowMore => 'Ko\'proq ko\'rsatish';
+
+  @override
+  String get walletLoadingMore => 'Yana yuklanmoqda…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Balans $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Ro\'yxatdan o\'tish bonusi';
+
+  @override
+  String get walletKindTopUp => 'To\'ldirish';
+
+  @override
+  String get walletKindCandidateUnlock => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String get walletKindAdminAdjustment => 'Administrator tuzatishi';
+
+  @override
+  String get walletKindReversal => 'Qaytarish';
+
+  @override
+  String get walletKindOther => 'Hamyon operatsiyasi';
+
+  @override
+  String get walletCorrection => 'Tuzatish';
+
+  @override
+  String get walletBalanceUnavailable => 'Balans mavjud emas';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Kontaktni ochish — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Kontaktni ochish';
+
+  @override
+  String get unlockCost => 'Narxi';
+
+  @override
+  String get unlockBalanceNow => 'Sizning balansingiz';
+
+  @override
+  String get unlockBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get unlockConfirm => 'Tasdiqlash';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Telefon, e-mail va rezyume ochiladi, suhbatni ham boshlashingiz mumkin. Bir marta yechiladi — keyinroq bu nomzodga qaytish bepul.';
+
+  @override
+  String get unlockDone => 'Kontaktlar ochildi';
+
+  @override
+  String get unlockAlready => 'Allaqachon ochilgan — hech narsa yechilmadi';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return '$date da ochilgan';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Ochish uchun to\'ldiring';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Nomzod bilan hozir bog\'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi.';
+
+  @override
+  String get contactLockedTitle => 'Himoyalangan ma\'lumotlar';
+
+  @override
+  String get contactUnlockedTitle => 'Aloqa ma\'lumotlari';
+
+  @override
+  String get contactPhone => 'Telefon raqami';
+
+  @override
+  String get contactEmail => 'E-pochta';
+
+  @override
+  String get contactCv => 'Rezyume fayli';
+
+  @override
+  String get contactCvLocked => 'PDF · qulflangan';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins bitta yangi nomzodning kontakti, rezyumesi va yozishmasini ochadi. Bir marta ochilgan nomzod uchun qayta to\'lov olinmaydi.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Tasdiqlashga o\'tish';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins yechildi · balans $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Coin yetarli emas';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString so\'m · 1 Coin = $priceString so\'m';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins bitta yangi nomzod kontaktini ochadi. Nomzodlarni qidirish va profilni ko\'rish bepul.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Amallar tarixi';
+
+  @override
+  String get walletHistoryAll => 'Barchasi';
+
+  @override
+  String get walletHistoryIncoming => 'To\'ldirish';
+
+  @override
+  String get walletHistoryOutgoing => 'Sarflangan';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Bu turdagi amal hozircha yo\'q. Hamyonda yozilgan hammasini ko\'rish uchun filtrni olib tashlang.';
+
+  @override
+  String get walletDetailTitle => 'Amal tafsiloti';
+
+  @override
+  String get walletDetailSection => 'Tafsilot';
+
+  @override
+  String get walletDetailReason => 'Sabab';
+
+  @override
+  String get walletDetailWhen => 'Sana va vaqt';
+
+  @override
+  String get walletDetailAmountUzs => 'To\'langan summa';
+
+  @override
+  String get walletDetailEffect => 'Balansga ta\'siri';
+
+  @override
+  String get walletDetailBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get walletDetailReference => 'Ma\'lumot raqami';
+
+  @override
+  String get walletDetailSupportTitle => 'Bu yozuvda nimadir noto\'g\'rimi?';
+
+  @override
+  String get walletDetailSupport =>
+      'Qo\'llab-quvvatlash xizmatiga murojaat qilib, yuqoridagi ma\'lumot raqamini ko\'rsating. Bu tarixdagi hech bir yozuvni o\'zgartirish yoki o\'chirish mumkin emas, shuning uchun siz ko\'rgan yozuvni ular ham xuddi shunday ko\'radi.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Bu yozuv oldingisini tuzatadi. Asl yozuv tarixda qoladi — tuzatishlar qo\'shiladi, ustidan yozilmaydi.';
+
+  @override
+  String get navInvitations => 'Takliflar';
+
+  @override
+  String get invitationSent => 'Yuborilgan';
+
+  @override
+  String get invitationDetailsRequested => 'Batafsil so\'ralgan';
+
+  @override
+  String get invitationAccepted => 'Qabul qilingan';
+
+  @override
+  String get invitationDeclined => 'Rad etilgan';
+
+  @override
+  String get invitationAccept => 'Qabul qilish';
+
+  @override
+  String get invitationDecline => 'Rad etish';
+
+  @override
+  String get invitationRequestDetails => 'Savol berish';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Sizni vakansiyaga taklif qilgan ish beruvchilar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationGeneral => 'Umumiy taklif';
+
+  @override
+  String get invitationOpenVacancy => 'Vakansiyani ochish';
+
+  @override
+  String get invitationVacancyLoading => 'Vakansiya yuklanmoqda…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Vakansiyani yuklab bo\'lmadi.';
+
+  @override
+  String get invitationVacancyUntitled => 'Vakansiya';
+
+  @override
+  String get invitationYourReply => 'Sizning javobingiz';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString so\'m';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mdan';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mgacha';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Bu taklif qabul qilinsinmi?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Qabul qilsangiz, telefon raqamingiz, e-pochtangiz va rezyumeingiz shu ish beruvchiga ko\'rinadi. Buni ortga qaytarib bo\'lmaydi.';
+
+  @override
+  String get invitationDeclineTitle => 'Bu taklif rad etilsinmi?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Aloqa ma\'lumotlaringiz yopiq qoladi. Rad etishni ortga qaytarib bo\'lmaydi, lekin ish beruvchi keyinroq yana taklif qilishi mumkin.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Ish beruvchiga savol berish';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Keyin ham qabul qilish yoki rad etish mumkin. Qabul qilmaguningizcha aloqa ma\'lumotlaringiz yopiq qoladi.';
+
+  @override
+  String get invitationQuestionLabel => 'Savolingiz';
+
+  @override
+  String get invitationQuestionHint =>
+      'Masalan: ish aynan qayerda va qachon boshlanadi?';
+
+  @override
+  String get invitationNoteLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationNoteHint =>
+      'Ish beruvchi bilishi kerak deb hisoblagan narsangiz.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'Bu taklifga allaqachon javob berilgan';
+
+  @override
+  String get commonChoose => 'Tanlash';
+
+  @override
+  String get invitationSendTitle => 'Taklif yuborish';
+
+  @override
+  String get invitationSend => 'Yuborish';
+
+  @override
+  String get invitationSendFree =>
+      'Yuborish bepul. Aloqa ma\'lumotlari faqat nomzod qabul qilsa ochiladi.';
+
+  @override
+  String get invitationToVacancy => 'Vakansiyaga';
+
+  @override
+  String get invitationVacancyLabel => 'Vakansiyani tanlang';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Ochiq vakansiya yo\'q';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Taklif faqat faol vakansiyaga bog\'lanishi mumkin. Umumiy ish taklifini hozir ham yuborishingiz mumkin.';
+
+  @override
+  String get invitationOccupation => 'Kasb';
+
+  @override
+  String get invitationRegion => 'Viloyat';
+
+  @override
+  String get invitationDistrict => 'Tuman';
+
+  @override
+  String get invitationNegotiable => 'To\'lov kelishiladi';
+
+  @override
+  String get invitationSalaryFrom => 'To\'lov (dan)';
+
+  @override
+  String get invitationSalaryTo => 'To\'lov (gacha)';
+
+  @override
+  String get invitationSalaryPeriod => 'Davr';
+
+  @override
+  String get invitationSchedule => 'Ish vaqti';
+
+  @override
+  String get invitationScheduleHint => 'Masalan: haftada olti kun, ertalab';
+
+  @override
+  String get invitationMessageLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationMessageHint =>
+      'Nomzod bilishi kerak deb hisoblagan narsangiz';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Bugun $limit taklifdan $remaining tasi qoldi';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return '$at da yangilanadi';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Bugungi takliflar tugadi';
+
+  @override
+  String get invitationAlreadySentTitle => 'Allaqachon taklif qilingan';
+
+  @override
+  String get invitationSentConfirm => 'Taklif yuborildi';
+
+  @override
+  String get invitationsSentTitle => 'Yuborilgan takliflar';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Siz taklif qilgan nomzodlar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Bu holatda taklif yo\'q. Yuborilganlarning hammasini ko\'rish uchun filtrni tozalang.';
+
+  @override
+  String get invitationsSentForVacancy => 'Faqat bu vakansiya';
+
+  @override
+  String get invitationFilterAll => 'Hammasi';
+
+  @override
+  String get invitationYourMessage => 'Siz yozgan xabar';
+
+  @override
+  String get invitationCandidateReply => 'Nomzodning javobi';
+
+  @override
+  String get invitationContactOpenTitle => 'Aloqa ma\'lumotlari ochiq';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to\'lov kerak emas.';
+
+  @override
+  String get invitationOpenCandidate => 'Nomzodni ko\'rish';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited ta taklif yuborilgan, $accepted tasi qabul qilingan';
+  }
+
+  @override
+  String get candidateFileNoViewer =>
+      'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -323,7 +1560,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   AppL10nUzCyrl() : super('uz_Cyrl');
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Қайта уриниш';
@@ -489,6 +1726,322 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get profileSalaryNegotiable => 'Келишув асосида';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Янгиланган $date';
+  }
+
+  @override
+  String get profileFixField => 'Тўлдириш';
+
+  @override
+  String get profileVisibilityTitle => 'Сизни ким топа олади';
+
+  @override
+  String get profileVisibilitySearchable => 'Қидирувда кўринади';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Иш берувчилар сизни номзодлар қидирувида топа олади.';
+
+  @override
+  String get profileVisibilityHidden => 'Қидирувдан яширилган';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Сиз вакансияларни кўришингиз ва ариза юборишингиз мумкин. Иш берувчилар сизни топа олмайди.';
+
+  @override
+  String get profileVisibilityAfterApply => 'Ариза юборгандан кейин кўринади';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Профилингизни фақат сиз ариза юборган вакансия эгалари кўради.';
+
+  @override
+  String get feedRecommended => 'Тавсия этилган';
+
+  @override
+  String get feedRecent => 'Янги';
+
+  @override
+  String get feedSaved => 'Сақланган';
+
+  @override
+  String get feedEmpty => 'Ҳозирча кўрсатадиган нарса йўқ';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Тасдиқланган иш берувчи';
+
+  @override
+  String get vacancyNegotiablePay => 'Тўлов келишилади';
+
+  @override
+  String vacancyDeadline(String date) {
+    return '$date гача ариза';
+  }
+
+  @override
+  String get vacancyApply => 'Ариза юбориш';
+
+  @override
+  String get vacancyApplied => 'Ариза юборилган';
+
+  @override
+  String get vacancyClosedToApplications => 'Аризалар қабул қилинмайди';
+
+  @override
+  String get vacancySave => 'Сақлаш';
+
+  @override
+  String get vacancySaved => 'Сақланган';
+
+  @override
+  String get vacancyReport => 'Шикоят';
+
+  @override
+  String get vacancyReportTitle => 'Вакансия устидан шикоят';
+
+  @override
+  String get vacancyReportHint => 'Унда нима нотўғри?';
+
+  @override
+  String get vacancyReported => 'Раҳмат. Модератор кўриб чиқади.';
+
+  @override
+  String get applicationsMine => 'Сизнинг аризаларингиз';
+
+  @override
+  String get applicationsEmpty => 'Сиз ҳали ариза юбормагансиз';
+
+  @override
+  String get applicationWithdraw => 'Қайтариб олиш';
+
+  @override
+  String get applicationWithdrawTitle => 'Ариза қайтариб олинсинми?';
+
+  @override
+  String get stageSubmitted => 'Юборилган';
+
+  @override
+  String get stageViewed => 'Кўрилган';
+
+  @override
+  String get stageShortlisted => 'Шорт-листда';
+
+  @override
+  String get stageInterview => 'Суҳбат';
+
+  @override
+  String get stageOffer => 'Таклиф';
+
+  @override
+  String get stageHired => 'Қабул қилинган';
+
+  @override
+  String get stageRejected => 'Танланмади';
+
+  @override
+  String get stageWithdrawn => 'Қайтариб олинган';
+
+  @override
+  String get vacancyMine => 'Сизнинг вакансияларингиз';
+
+  @override
+  String get vacancyNew => 'Янги вакансия';
+
+  @override
+  String get vacancyNone => 'Ҳозирча вакансиялар йўқ';
+
+  @override
+  String get vacancyUntitled => 'Номсиз вакансия';
+
+  @override
+  String get vacancyStatusDraft => 'Қоралама';
+
+  @override
+  String get vacancyStatusModeration => 'Кўриб чиқилмоқда';
+
+  @override
+  String get vacancyStatusActive => 'Эълон қилинган';
+
+  @override
+  String get vacancyStatusPaused => 'Тўхтатилган';
+
+  @override
+  String get vacancyStatusClosed => 'Ёпилган';
+
+  @override
+  String get vacancyStatusRejected => 'Рад этилган';
+
+  @override
+  String get vacancySubmit => 'Эълон қилишга юбориш';
+
+  @override
+  String get vacancyPause => 'Тўхтатиш';
+
+  @override
+  String get vacancyResume => 'Давом эттириш';
+
+  @override
+  String get vacancyClose => 'Ёпиш';
+
+  @override
+  String get vacancyCloseTitle => 'Вакансия ёпилсинми?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Ёпиш қайтарилмайди. Вакансия қидирувдан чиқади ва тарихда қолади.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Яна $count та майдонни тўлдиринг',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Бу вакансияни ҳозир таҳрирлаб бўлмайди.';
+
+  @override
+  String get vacancyOpenForApplications => 'Аризалар қабул қилинмоқда';
+
+  @override
+  String get vacancyRestrictionTitle => 'Ёш ва жинс бўйича чеклашлар';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Ёш ва жинс бўйича чеклашлар асослашни талаб қилади ва ҳар доим модератор томонидан текширилади.';
+
+  @override
+  String get employerChooseType => 'Сиз қандай иш берувчисиз?';
+
+  @override
+  String get employerTypeCompany => 'Ташкилот';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Ташкилот номидан ишга олувчи рўйхатдан ўтган бизнес.';
+
+  @override
+  String get employerTypeIndividual => 'Жисмоний шахс';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Уй ёки шахсий иш учун одам ёллайсиз.';
+
+  @override
+  String get employerTypeFixed =>
+      'Бир марта танланади ва кейин ўзгартириб бўлмайди.';
+
+  @override
+  String get employerDetails => 'Иш берувчи маълумотлари';
+
+  @override
+  String get employerLegalName => 'Расмий номи';
+
+  @override
+  String get employerPublicName => 'Номзодларга кўринадиган ном';
+
+  @override
+  String get employerFullName => 'Тўлиқ исмингиз';
+
+  @override
+  String get employerIndustry => 'Соҳа';
+
+  @override
+  String get employerContactPerson => 'Алоқа учун шахс';
+
+  @override
+  String get employerContactPhone => 'Алоқа телефони';
+
+  @override
+  String get employerRegion => 'Вилоят';
+
+  @override
+  String get employerDistrict => 'Туман ёки шаҳар';
+
+  @override
+  String get employerAddress => 'Манзил';
+
+  @override
+  String get employerDescription => 'Тавсиф';
+
+  @override
+  String get employerVerification => 'Тасдиқлаш';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Юборилмаган';
+
+  @override
+  String get employerVerificationUnderReview => 'Кўриб чиқилмоқда';
+
+  @override
+  String get employerVerificationVerified => 'Тасдиқланган';
+
+  @override
+  String get employerVerificationRejected => 'Рад этилган';
+
+  @override
+  String get employerVerificationChangesRequired => 'Тузатиш талаб қилинади';
+
+  @override
+  String get employerSubmitVerification => 'Тасдиқлашга юбориш';
+
+  @override
+  String get employerEvidence => 'Керакли ҳужжатлар';
+
+  @override
+  String get employerEvidenceRequired => 'Мажбурий';
+
+  @override
+  String get employerEvidenceOptional => 'Ихтиёрий';
+
+  @override
+  String get employerCannotPublish =>
+      'Вакансия жойлаш ва номзод таклиф қилиш учун профилни тўлдиринг ва тасдиқдан ўтинг.';
+
+  @override
+  String get employerCanPublish =>
+      'Сиз вакансия жойлашингиз ва номзодларни таклиф қилишингиз мумкин.';
+
+  @override
+  String get employerSaveFirst =>
+      'Тасдиқлашга юборишдан олдин маълумотларни сақланг.';
+
+  @override
+  String get attachmentsTitle => 'Ҳужжатлар';
+
+  @override
+  String get attachmentUpload => 'Юклаш';
+
+  @override
+  String get attachmentReplace => 'Алмаштириш';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Юкланмоқда… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Ҳеч нарса юкланмаган';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Файл $limit МБ дан катта.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return '$types форматидаги файлни танланг.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Файл ўчирилсинми?';
+
+  @override
   String get historyDeleteTitle => 'Ёзув ўчирилсинми?';
 
   @override
@@ -629,6 +2182,926 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get authSignInUnavailable =>
       'Бу версияда Telegram орқали кириш мавжуд эмас.';
+
+  @override
+  String get vacancyApplicants => 'Аризалар';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Ҳозирча аризалар йўқ';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$required тадан $hired таси қабул қилинди';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired таси қабул қилинди';
+  }
+
+  @override
+  String get applicationMoveTo => 'Босқичга ўтказиш';
+
+  @override
+  String get applicationRejectReason => 'Сабаб (номзод кўради)';
+
+  @override
+  String get candidatePhoneHidden => 'Телефон мавжуд эмас';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Номзоднинг махфийлик созламалари иш берувчи уни қачон кўришини белгилайди.';
+
+  @override
+  String get candidateFilesHidden => 'Файллар мавжуд эмас';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Профил $percent% тўлдирилган';
+  }
+
+  @override
+  String get notesTitle => 'Шахсий эслатмалар';
+
+  @override
+  String get notesHint => 'Уларни фақат сиз кўрасиз';
+
+  @override
+  String get notesAdd => 'Эслатма қўшиш';
+
+  @override
+  String get searchCandidates => 'Номзодлар қидируви';
+
+  @override
+  String get searchRun => 'Қидириш';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та номзод',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ номзод';
+  }
+
+  @override
+  String get searchNoResults => 'Бу фильтрлар бўйича ҳеч ким топилмади';
+
+  @override
+  String get searchSaved => 'Сақланган номзодлар';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Мослик $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years йил тажриба',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Шорт-листга';
+
+  @override
+  String get searchShortlisted => 'Шорт-листда';
+
+  @override
+  String get filtersTitle => 'Филтрлар';
+
+  @override
+  String get filtersApply => 'Филтрларни қўллаш';
+
+  @override
+  String get filtersReset => 'Тозалаш';
+
+  @override
+  String get filtersEdit => 'Филтрлар';
+
+  @override
+  String get filtersClearAll => 'Ҳаммасини тозалаш';
+
+  @override
+  String get filtersNone => 'Филтрсиз — қидирувга очиқ барча номзодлар';
+
+  @override
+  String get filtersBlockedTitle => 'Ҳозирча қидириб бўлмайди';
+
+  @override
+  String get filtersOccupation => 'Касб';
+
+  @override
+  String get filtersSkills => 'Кўникмалар';
+
+  @override
+  String get filtersExperience => 'Тажриба';
+
+  @override
+  String get filtersLanguages => 'Тиллар';
+
+  @override
+  String get filtersEducation => 'Таълим';
+
+  @override
+  String get filtersLocation => 'Жойлашув';
+
+  @override
+  String get filtersPreferences => 'Иш шартлари';
+
+  @override
+  String get filtersAvailability => 'Ишга тайёрлик';
+
+  @override
+  String get filtersAttributes => 'Қўшимча талаблар';
+
+  @override
+  String get filtersProfile => 'Профил';
+
+  @override
+  String get filtersRestrictions => 'Чекловлар';
+
+  @override
+  String get filtersSort => 'Саралаш';
+
+  @override
+  String get filterOccupations => 'Касблар';
+
+  @override
+  String get filterPrimaryOnly => 'Фақат асосий касб';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Номзоднинг барча касблари эмас, асосийси ҳисобга олинади';
+
+  @override
+  String get filterOccupationLevels => 'Касбий даража';
+
+  @override
+  String get filterCurrentOccupations => 'Ҳозирги ёки охирги лавозим';
+
+  @override
+  String get filterSkills => 'Кўникмалар';
+
+  @override
+  String get filterMatchMode => 'Мослик';
+
+  @override
+  String get filterMatchAny => 'Ҳар қандай';
+
+  @override
+  String get filterMatchAll => 'Барчаси';
+
+  @override
+  String get filterMinLevel => 'Энг паст даража';
+
+  @override
+  String get filterLevelAny => 'Ҳар қандай даража';
+
+  @override
+  String get filterExperienceYearsMin => 'Жами йиллар, камида';
+
+  @override
+  String get filterOccupationExperience => 'Шу касбда йиллар, камида';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Аввал касбни танланг';
+
+  @override
+  String get filterLanguages => 'Тиллар';
+
+  @override
+  String get filterLanguageCertificate => 'Сертификат талаб қилинади';
+
+  @override
+  String get filterEducationLevels => 'Таълим даражаси';
+
+  @override
+  String get filterSpecializations => 'Мутахассислик';
+
+  @override
+  String get filterRegion => 'Вилоят';
+
+  @override
+  String get filterDistricts => 'Туманлар';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Аввал вилоятни танланг';
+
+  @override
+  String get filterWillingToRelocate => 'Кўчиб ўтишга тайёр';
+
+  @override
+  String get filterWillingToTravel => 'Хизмат сафарларига тайёр';
+
+  @override
+  String get filterProximityDistrict => 'Шу туманга яқин';
+
+  @override
+  String get filterProximityHint => '«Энг яқин» саралаши учун';
+
+  @override
+  String get filterEmploymentTypes => 'Бандлик тури';
+
+  @override
+  String get filterWorkFormats => 'Иш формати';
+
+  @override
+  String get filterShifts => 'Смена';
+
+  @override
+  String get filterSalaryMin => 'Маош (дан)';
+
+  @override
+  String get filterSalaryMax => 'Маош (гача)';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Кўпроқ кутаётган номзод чиқариб ташланади. Келишиладиган кутиш эса мос келади.';
+
+  @override
+  String get filterAvailableBy => 'Ишга тайёр (сана)';
+
+  @override
+  String get filterAvailableImmediately => 'Дарҳол ишга тайёр';
+
+  @override
+  String get filterAttributes => 'Гувоҳнома, транспорт ва асбоблар';
+
+  @override
+  String get filterCrewSizeMin => 'Камида шунча кишилик бригада';
+
+  @override
+  String get filterMinCompleteness => 'Профил тўлдирилиши, камида (%)';
+
+  @override
+  String get filterUpdatedSince => 'Янгиланган (санадан)';
+
+  @override
+  String get filterAgeMin => 'Ёш (дан)';
+
+  @override
+  String get filterAgeMax => 'Ёш (гача)';
+
+  @override
+  String get filterGender => 'Жинс';
+
+  @override
+  String get filterJustification => 'Чеклов асоси';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Ёш ёки жинс бўйича филтр учун асос кўрсатилиши шарт. Ҳар бир фойдаланиш қайд этилади.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Фақат иш ҳақиқатан талаб қилган ҳолатда.';
+
+  @override
+  String get sortMatch => 'Мослиги бўйича';
+
+  @override
+  String get sortRecent => 'Янгиланиши бўйича';
+
+  @override
+  String get sortExperience => 'Тажрибаси бўйича';
+
+  @override
+  String get sortSalary => 'Кутилган маош бўйича';
+
+  @override
+  String get sortProximity => 'Яқинлиги бўйича';
+
+  @override
+  String get commonLoadMore => 'Яна кўрсатиш';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Номзод топиш';
+
+  @override
+  String get searchScopedToVacancy => 'Филтрлар вакансиядан олинди';
+
+  @override
+  String get candidateProfileTitle => 'Номзод';
+
+  @override
+  String get candidateViewProfile => 'Профилни очиш';
+
+  @override
+  String get candidateContact => 'Алоқа';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return '$date дан тайёр';
+  }
+
+  @override
+  String get candidateAttachments => 'Иловалар';
+
+  @override
+  String get candidateNoFiles => 'Номзод ҳеч нарса юкламаган';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'Номзоднинг телефон рақами кўрсатилмаган.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Компаниянгиз тасдиқлангач алоқа маълумотлари очилади.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Номзод вакансиянгизга ариза бергач ёки таклифни қабул қилгач алоқа маълумотлари очилади.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Номзод профилини қидирувдан яширган. У вакансияларингизни кўра олади ва ариза бера олади.';
+
+  @override
+  String get searchSavedEmpty => 'Сақланган номзодлар йўқ';
+
+  @override
+  String get commonCopy => 'Нусхалаш';
+
+  @override
+  String get commonCopied => 'Нусхаланди';
+
+  @override
+  String get vacancyDetailTitle => 'Вакансия';
+
+  @override
+  String get vacancyDescription => 'Иш ҳақида';
+
+  @override
+  String get vacancyRequirements => 'Талаблар';
+
+  @override
+  String get vacancyMandatory => 'Мажбурий';
+
+  @override
+  String get vacancyPreferred => 'Маъқул';
+
+  @override
+  String get vacancyGoneTitle => 'Бу вакансия энди мавжуд эмас';
+
+  @override
+  String get vacancyGoneBody =>
+      'У ёпилган, тўлдирилган ёки муддати ўтган бўлиши мумкин.';
+
+  @override
+  String get vacancyReportReason => 'Бу вакансияда нима нотўғри?';
+
+  @override
+  String get vacancyReportSend => 'Юбориш';
+
+  @override
+  String get commonYes => 'Ҳа';
+
+  @override
+  String get commonNo => 'Йўқ';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та ўрин',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return '$date дан';
+  }
+
+  @override
+  String get walletTitle => 'Ҳамён';
+
+  @override
+  String get walletBalanceLabel => 'Баланс';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString сўм';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўм';
+  }
+
+  @override
+  String get walletPrices => 'Бугунги нархлар';
+
+  @override
+  String get walletCoinPriceLabel => '1 Coin';
+
+  @override
+  String get walletUnlockPriceLabel => 'Номзод контактларини очиш';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Рўйхатдан ўтиш бонуси берилди: $date';
+  }
+
+  @override
+  String get walletTopUp => 'Тўлдириш';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'Тўлдириш ҳозирча мавжуд эмас. У Payme ва CLICK қўллаб-қувватлаши билан бирга келади.';
+
+  @override
+  String get walletActivity => 'Сўнгги операциялар';
+
+  @override
+  String get walletActivityEmpty =>
+      'Бу ҳамёнда ҳали ҳеч қандай ҳаракат бўлмаган. Кирим ҳам, чиқим ҳам шу ерда кўринади ва бирор ёзув ҳеч қачон ўчирилмайди.';
+
+  @override
+  String get walletShowMore => 'Кўпроқ кўрсатиш';
+
+  @override
+  String get walletLoadingMore => 'Яна юкланмоқда…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Баланс $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Рўйхатдан ўтиш бонуси';
+
+  @override
+  String get walletKindTopUp => 'Тўлдириш';
+
+  @override
+  String get walletKindCandidateUnlock => 'Номзод контактларини очиш';
+
+  @override
+  String get walletKindAdminAdjustment => 'Администратор тузатиши';
+
+  @override
+  String get walletKindReversal => 'Қайтариш';
+
+  @override
+  String get walletKindOther => 'Ҳамён операцияси';
+
+  @override
+  String get walletCorrection => 'Тузатиш';
+
+  @override
+  String get walletBalanceUnavailable => 'Баланс мавжуд эмас';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Контактни очиш — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Контактни очиш';
+
+  @override
+  String get unlockCost => 'Нархи';
+
+  @override
+  String get unlockBalanceNow => 'Сизнинг балансингиз';
+
+  @override
+  String get unlockBalanceAfter => 'Кейинги баланс';
+
+  @override
+  String get unlockConfirm => 'Тасдиқлаш';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Телефон, e-mail ва резюме очилади, суҳбатни ҳам бошлашингиз мумкин. Бир марта ечилади — кейинроқ бу номзодга қайтиш бепул.';
+
+  @override
+  String get unlockDone => 'Контактлар очилди';
+
+  @override
+  String get unlockAlready => 'Аллақачон очилган — ҳеч нарса ечилмади';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return '$date да очилган';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Очиш учун тўлдиринг';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Номзод билан ҳозир боғланиш учун контактларни очинг. Агар у сизнинг вакансиянгизга ариза юборса ёки таклифни қабул қилса, улар бепул ҳам очилади.';
+
+  @override
+  String get contactLockedTitle => 'Ҳимояланган маълумотлар';
+
+  @override
+  String get contactUnlockedTitle => 'Алоқа маълумотлари';
+
+  @override
+  String get contactPhone => 'Телефон рақами';
+
+  @override
+  String get contactEmail => 'Е-почта';
+
+  @override
+  String get contactCv => 'Резюме файли';
+
+  @override
+  String get contactCvLocked => 'PDF · қулфланган';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins битта янги номзоднинг контакти, резюмеси ва ёзишмасини очади. Бир марта очилган номзод учун қайта тўлов олинмайди.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Тасдиқлашга ўтиш';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins ечилди · баланс $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Coin етарли эмас';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString сўм · 1 Coin = $priceString сўм';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins битта янги номзод контактини очади. Номзодларни қидириш ва профилни кўриш бепул.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Амаллар тарихи';
+
+  @override
+  String get walletHistoryAll => 'Барчаси';
+
+  @override
+  String get walletHistoryIncoming => 'Тўлдириш';
+
+  @override
+  String get walletHistoryOutgoing => 'Сарфланган';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Бу турдаги амал ҳозирча йўқ. Ҳамёнда ёзилган ҳаммасини кўриш учун филтрни олиб ташланг.';
+
+  @override
+  String get walletDetailTitle => 'Амал тафсилоти';
+
+  @override
+  String get walletDetailSection => 'Тафсилот';
+
+  @override
+  String get walletDetailReason => 'Сабаб';
+
+  @override
+  String get walletDetailWhen => 'Сана ва вақт';
+
+  @override
+  String get walletDetailAmountUzs => 'Тўланган сумма';
+
+  @override
+  String get walletDetailEffect => 'Балансга таъсири';
+
+  @override
+  String get walletDetailBalanceAfter => 'Кейинги баланс';
+
+  @override
+  String get walletDetailReference => 'Маълумот рақами';
+
+  @override
+  String get walletDetailSupportTitle => 'Бу ёзувда нимадир нотўғрими?';
+
+  @override
+  String get walletDetailSupport =>
+      'Қўллаб-қувватлаш хизматига мурожаат қилиб, юқоридаги маълумот рақамини кўрсатинг. Бу тарихдаги ҳеч бир ёзувни ўзгартириш ёки ўчириш мумкин эмас, шунинг учун сиз кўрган ёзувни улар ҳам худди шундай кўради.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Бу ёзув олдингисини тузатади. Асл ёзув тарихда қолади — тузатишлар қўшилади, устидан ёзилмайди.';
+
+  @override
+  String get navInvitations => 'Таклифлар';
+
+  @override
+  String get invitationSent => 'Юборилган';
+
+  @override
+  String get invitationDetailsRequested => 'Батафсил сўралган';
+
+  @override
+  String get invitationAccepted => 'Қабул қилинган';
+
+  @override
+  String get invitationDeclined => 'Рад этилган';
+
+  @override
+  String get invitationAccept => 'Қабул қилиш';
+
+  @override
+  String get invitationDecline => 'Рад этиш';
+
+  @override
+  String get invitationRequestDetails => 'Савол бериш';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Сизни вакансияга таклиф қилган иш берувчилар шу ерда кўринади.';
+
+  @override
+  String get invitationGeneral => 'Умумий таклиф';
+
+  @override
+  String get invitationOpenVacancy => 'Вакансияни очиш';
+
+  @override
+  String get invitationVacancyLoading => 'Вакансия юкланмоқда…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Вакансияни юклаб бўлмади.';
+
+  @override
+  String get invitationVacancyUntitled => 'Вакансия';
+
+  @override
+  String get invitationYourReply => 'Сизнинг жавобингиз';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString сўм';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўмдан';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўмгача';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Бу таклиф қабул қилинсинми?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Қабул қилсангиз, телефон рақамингиз, э-почтангиз ва резюмеингиз шу иш берувчига кўринади. Буни ортга қайтариб бўлмайди.';
+
+  @override
+  String get invitationDeclineTitle => 'Бу таклиф рад этилсинми?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Алоқа маълумотларингиз ёпиқ қолади. Рад этишни ортга қайтариб бўлмайди, лекин иш берувчи кейинроқ яна таклиф қилиши мумкин.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Иш берувчига савол бериш';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Кейин ҳам қабул қилиш ёки рад этиш мумкин. Қабул қилмагунингизча алоқа маълумотларингиз ёпиқ қолади.';
+
+  @override
+  String get invitationQuestionLabel => 'Саволингиз';
+
+  @override
+  String get invitationQuestionHint =>
+      'Масалан: иш айнан қаерда ва қачон бошланади?';
+
+  @override
+  String get invitationNoteLabel => 'Хабар (мажбурий эмас)';
+
+  @override
+  String get invitationNoteHint =>
+      'Иш берувчи билиши керак деб ҳисоблаган нарсангиз.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'Бу таклифга аллақачон жавоб берилган';
+
+  @override
+  String get commonChoose => 'Танлаш';
+
+  @override
+  String get invitationSendTitle => 'Таклиф юбориш';
+
+  @override
+  String get invitationSend => 'Юбориш';
+
+  @override
+  String get invitationSendFree =>
+      'Юбориш бепул. Алоқа маълумотлари фақат номзод қабул қилса очилади.';
+
+  @override
+  String get invitationToVacancy => 'Вакансияга';
+
+  @override
+  String get invitationVacancyLabel => 'Вакансияни танланг';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Очиқ вакансия йўқ';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Таклиф фақат фаол вакансияга боғланиши мумкин. Умумий иш таклифини ҳозир ҳам юборишингиз мумкин.';
+
+  @override
+  String get invitationOccupation => 'Касб';
+
+  @override
+  String get invitationRegion => 'Вилоят';
+
+  @override
+  String get invitationDistrict => 'Туман';
+
+  @override
+  String get invitationNegotiable => 'Тўлов келишилади';
+
+  @override
+  String get invitationSalaryFrom => 'Тўлов (дан)';
+
+  @override
+  String get invitationSalaryTo => 'Тўлов (гача)';
+
+  @override
+  String get invitationSalaryPeriod => 'Давр';
+
+  @override
+  String get invitationSchedule => 'Иш вақти';
+
+  @override
+  String get invitationScheduleHint => 'Масалан: ҳафтада олти кун, эрталаб';
+
+  @override
+  String get invitationMessageLabel => 'Хабар (мажбурий эмас)';
+
+  @override
+  String get invitationMessageHint =>
+      'Номзод билиши керак деб ҳисоблаган нарсангиз';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Бугун $limit таклифдан $remaining таси қолди';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return '$at да янгиланади';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Бугунги таклифлар тугади';
+
+  @override
+  String get invitationAlreadySentTitle => 'Аллақачон таклиф қилинган';
+
+  @override
+  String get invitationSentConfirm => 'Таклиф юборилди';
+
+  @override
+  String get invitationsSentTitle => 'Юборилган таклифлар';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Сиз таклиф қилган номзодлар шу ерда кўринади.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Бу ҳолатда таклиф йўқ. Юборилганларнинг ҳаммасини кўриш учун филтрни тозаланг.';
+
+  @override
+  String get invitationsSentForVacancy => 'Фақат бу вакансия';
+
+  @override
+  String get invitationFilterAll => 'Ҳаммаси';
+
+  @override
+  String get invitationYourMessage => 'Сиз ёзган хабар';
+
+  @override
+  String get invitationCandidateReply => 'Номзоднинг жавоби';
+
+  @override
+  String get invitationContactOpenTitle => 'Алоқа маълумотлари очиқ';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Номзод таклифни қабул қилди — телефон, е-почта ва резюме унинг профилида. Бунинг учун тўлов керак эмас.';
+
+  @override
+  String get invitationOpenCandidate => 'Номзодни кўриш';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited та таклиф юборилган, $accepted таси қабул қилинган';
+  }
+
+  @override
+  String get candidateFileNoViewer =>
+      'Бу телефонда бу файлни оча оладиган илова йўқ.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -636,7 +3109,7 @@ class AppL10nUzLatn extends AppL10nUz {
   AppL10nUzLatn() : super('uz_Latn');
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Qayta urinish';
@@ -803,6 +3276,323 @@ class AppL10nUzLatn extends AppL10nUz {
   String get profileSalaryNegotiable => 'Kelishuv asosida';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Yangilangan $date';
+  }
+
+  @override
+  String get profileFixField => 'To\'ldirish';
+
+  @override
+  String get profileVisibilityTitle => 'Sizni kim topa oladi';
+
+  @override
+  String get profileVisibilitySearchable => 'Qidiruvda ko\'rinadi';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Ish beruvchilar sizni nomzodlar qidiruvida topa oladi.';
+
+  @override
+  String get profileVisibilityHidden => 'Qidiruvdan yashirilgan';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'Siz vakansiyalarni ko\'rishingiz va ariza yuborishingiz mumkin. Ish beruvchilar sizni topa olmaydi.';
+
+  @override
+  String get profileVisibilityAfterApply =>
+      'Ariza yuborgandan keyin ko\'rinadi';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Profilingizni faqat siz ariza yuborgan vakansiya egalari ko\'radi.';
+
+  @override
+  String get feedRecommended => 'Tavsiya etilgan';
+
+  @override
+  String get feedRecent => 'Yangi';
+
+  @override
+  String get feedSaved => 'Saqlangan';
+
+  @override
+  String get feedEmpty => 'Hozircha ko\'rsatadigan narsa yo\'q';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Tasdiqlangan ish beruvchi';
+
+  @override
+  String get vacancyNegotiablePay => 'To\'lov kelishiladi';
+
+  @override
+  String vacancyDeadline(String date) {
+    return '$date gacha ariza';
+  }
+
+  @override
+  String get vacancyApply => 'Ariza yuborish';
+
+  @override
+  String get vacancyApplied => 'Ariza yuborilgan';
+
+  @override
+  String get vacancyClosedToApplications => 'Arizalar qabul qilinmaydi';
+
+  @override
+  String get vacancySave => 'Saqlash';
+
+  @override
+  String get vacancySaved => 'Saqlangan';
+
+  @override
+  String get vacancyReport => 'Shikoyat';
+
+  @override
+  String get vacancyReportTitle => 'Vakansiya ustidan shikoyat';
+
+  @override
+  String get vacancyReportHint => 'Unda nima noto\'g\'ri?';
+
+  @override
+  String get vacancyReported => 'Rahmat. Moderator ko\'rib chiqadi.';
+
+  @override
+  String get applicationsMine => 'Sizning arizalaringiz';
+
+  @override
+  String get applicationsEmpty => 'Siz hali ariza yubormagansiz';
+
+  @override
+  String get applicationWithdraw => 'Qaytarib olish';
+
+  @override
+  String get applicationWithdrawTitle => 'Ariza qaytarib olinsinmi?';
+
+  @override
+  String get stageSubmitted => 'Yuborilgan';
+
+  @override
+  String get stageViewed => 'Ko\'rilgan';
+
+  @override
+  String get stageShortlisted => 'Short-listda';
+
+  @override
+  String get stageInterview => 'Suhbat';
+
+  @override
+  String get stageOffer => 'Taklif';
+
+  @override
+  String get stageHired => 'Qabul qilingan';
+
+  @override
+  String get stageRejected => 'Tanlanmadi';
+
+  @override
+  String get stageWithdrawn => 'Qaytarib olingan';
+
+  @override
+  String get vacancyMine => 'Sizning vakansiyalaringiz';
+
+  @override
+  String get vacancyNew => 'Yangi vakansiya';
+
+  @override
+  String get vacancyNone => 'Hozircha vakansiyalar yo\'q';
+
+  @override
+  String get vacancyUntitled => 'Nomsiz vakansiya';
+
+  @override
+  String get vacancyStatusDraft => 'Qoralama';
+
+  @override
+  String get vacancyStatusModeration => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get vacancyStatusActive => 'E\'lon qilingan';
+
+  @override
+  String get vacancyStatusPaused => 'To\'xtatilgan';
+
+  @override
+  String get vacancyStatusClosed => 'Yopilgan';
+
+  @override
+  String get vacancyStatusRejected => 'Rad etilgan';
+
+  @override
+  String get vacancySubmit => 'E\'lon qilishga yuborish';
+
+  @override
+  String get vacancyPause => 'To\'xtatish';
+
+  @override
+  String get vacancyResume => 'Davom ettirish';
+
+  @override
+  String get vacancyClose => 'Yopish';
+
+  @override
+  String get vacancyCloseTitle => 'Vakansiya yopilsinmi?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Yopish qaytarilmaydi. Vakansiya qidiruvdan chiqadi va tarixda qoladi.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count ta maydonni to\'ldiring',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'Bu vakansiyani hozir tahrirlab bo\'lmaydi.';
+
+  @override
+  String get vacancyOpenForApplications => 'Arizalar qabul qilinmoqda';
+
+  @override
+  String get vacancyRestrictionTitle => 'Yosh va jins bo\'yicha cheklashlar';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Yosh va jins bo\'yicha cheklashlar asoslashni talab qiladi va har doim moderator tomonidan tekshiriladi.';
+
+  @override
+  String get employerChooseType => 'Siz qanday ish beruvchisiz?';
+
+  @override
+  String get employerTypeCompany => 'Tashkilot';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Tashkilot nomidan ishga oluvchi ro\'yxatdan o\'tgan biznes.';
+
+  @override
+  String get employerTypeIndividual => 'Jismoniy shaxs';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Uy yoki shaxsiy ish uchun odam yollaysiz.';
+
+  @override
+  String get employerTypeFixed =>
+      'Bir marta tanlanadi va keyin o\'zgartirib bo\'lmaydi.';
+
+  @override
+  String get employerDetails => 'Ish beruvchi ma\'lumotlari';
+
+  @override
+  String get employerLegalName => 'Rasmiy nomi';
+
+  @override
+  String get employerPublicName => 'Nomzodlarga ko\'rinadigan nom';
+
+  @override
+  String get employerFullName => 'To\'liq ismingiz';
+
+  @override
+  String get employerIndustry => 'Soha';
+
+  @override
+  String get employerContactPerson => 'Aloqa uchun shaxs';
+
+  @override
+  String get employerContactPhone => 'Aloqa telefoni';
+
+  @override
+  String get employerRegion => 'Viloyat';
+
+  @override
+  String get employerDistrict => 'Tuman yoki shahar';
+
+  @override
+  String get employerAddress => 'Manzil';
+
+  @override
+  String get employerDescription => 'Tavsif';
+
+  @override
+  String get employerVerification => 'Tasdiqlash';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Yuborilmagan';
+
+  @override
+  String get employerVerificationUnderReview => 'Ko\'rib chiqilmoqda';
+
+  @override
+  String get employerVerificationVerified => 'Tasdiqlangan';
+
+  @override
+  String get employerVerificationRejected => 'Rad etilgan';
+
+  @override
+  String get employerVerificationChangesRequired => 'Tuzatish talab qilinadi';
+
+  @override
+  String get employerSubmitVerification => 'Tasdiqlashga yuborish';
+
+  @override
+  String get employerEvidence => 'Kerakli hujjatlar';
+
+  @override
+  String get employerEvidenceRequired => 'Majburiy';
+
+  @override
+  String get employerEvidenceOptional => 'Ixtiyoriy';
+
+  @override
+  String get employerCannotPublish =>
+      'Vakansiya joylash va nomzod taklif qilish uchun profilni to\'ldiring va tasdiqdan o\'ting.';
+
+  @override
+  String get employerCanPublish =>
+      'Siz vakansiya joylashingiz va nomzodlarni taklif qilishingiz mumkin.';
+
+  @override
+  String get employerSaveFirst =>
+      'Tasdiqlashga yuborishdan oldin ma\'lumotlarni saqlang.';
+
+  @override
+  String get attachmentsTitle => 'Hujjatlar';
+
+  @override
+  String get attachmentUpload => 'Yuklash';
+
+  @override
+  String get attachmentReplace => 'Almashtirish';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Yuklanmoqda… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Hech narsa yuklanmagan';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'Fayl $limit MB dan katta.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return '$types formatidagi faylni tanlang.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Fayl o\'chirilsinmi?';
+
+  @override
   String get historyDeleteTitle => 'Yozuv o\'chirilsinmi?';
 
   @override
@@ -943,4 +3733,924 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get authSignInUnavailable =>
       'Bu versiyada Telegram orqali kirish mavjud emas.';
+
+  @override
+  String get vacancyApplicants => 'Arizalar';
+
+  @override
+  String get vacancyApplicantsEmpty => 'Hozircha arizalar yo\'q';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$required tadan $hired tasi qabul qilindi';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired tasi qabul qilindi';
+  }
+
+  @override
+  String get applicationMoveTo => 'Bosqichga o\'tkazish';
+
+  @override
+  String get applicationRejectReason => 'Sabab (nomzod ko\'radi)';
+
+  @override
+  String get candidatePhoneHidden => 'Telefon mavjud emas';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'Nomzodning maxfiylik sozlamalari ish beruvchi uni qachon ko\'rishini belgilaydi.';
+
+  @override
+  String get candidateFilesHidden => 'Fayllar mavjud emas';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Profil $percent% to’ldirilgan';
+  }
+
+  @override
+  String get notesTitle => 'Shaxsiy eslatmalar';
+
+  @override
+  String get notesHint => 'Ularni faqat siz ko’rasiz';
+
+  @override
+  String get notesAdd => 'Eslatma qo’shish';
+
+  @override
+  String get searchCandidates => 'Nomzodlar qidiruvi';
+
+  @override
+  String get searchRun => 'Qidirish';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta nomzod',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ nomzod';
+  }
+
+  @override
+  String get searchNoResults => 'Bu filtrlar bo’yicha hech kim topilmadi';
+
+  @override
+  String get searchSaved => 'Saqlangan nomzodlar';
+
+  @override
+  String searchMatch(int percent) {
+    return 'Moslik $percent%';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years yil tajriba',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Short-listga';
+
+  @override
+  String get searchShortlisted => 'Short-listda';
+
+  @override
+  String get filtersTitle => 'Filtrlar';
+
+  @override
+  String get filtersApply => 'Filtrlarni qo’llash';
+
+  @override
+  String get filtersReset => 'Tozalash';
+
+  @override
+  String get filtersEdit => 'Filtrlar';
+
+  @override
+  String get filtersClearAll => 'Hammasini tozalash';
+
+  @override
+  String get filtersNone => 'Filtrsiz — qidiruvga ochiq barcha nomzodlar';
+
+  @override
+  String get filtersBlockedTitle => 'Hozircha qidirib bo’lmaydi';
+
+  @override
+  String get filtersOccupation => 'Kasb';
+
+  @override
+  String get filtersSkills => 'Ko’nikmalar';
+
+  @override
+  String get filtersExperience => 'Tajriba';
+
+  @override
+  String get filtersLanguages => 'Tillar';
+
+  @override
+  String get filtersEducation => 'Ta’lim';
+
+  @override
+  String get filtersLocation => 'Joylashuv';
+
+  @override
+  String get filtersPreferences => 'Ish shartlari';
+
+  @override
+  String get filtersAvailability => 'Ishga tayyorlik';
+
+  @override
+  String get filtersAttributes => 'Qo’shimcha talablar';
+
+  @override
+  String get filtersProfile => 'Profil';
+
+  @override
+  String get filtersRestrictions => 'Cheklovlar';
+
+  @override
+  String get filtersSort => 'Saralash';
+
+  @override
+  String get filterOccupations => 'Kasblar';
+
+  @override
+  String get filterPrimaryOnly => 'Faqat asosiy kasb';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Nomzodning barcha kasblari emas, asosiysi hisobga olinadi';
+
+  @override
+  String get filterOccupationLevels => 'Kasbiy daraja';
+
+  @override
+  String get filterCurrentOccupations => 'Hozirgi yoki oxirgi lavozim';
+
+  @override
+  String get filterSkills => 'Ko’nikmalar';
+
+  @override
+  String get filterMatchMode => 'Moslik';
+
+  @override
+  String get filterMatchAny => 'Har qanday';
+
+  @override
+  String get filterMatchAll => 'Barchasi';
+
+  @override
+  String get filterMinLevel => 'Eng past daraja';
+
+  @override
+  String get filterLevelAny => 'Har qanday daraja';
+
+  @override
+  String get filterExperienceYearsMin => 'Jami yillar, kamida';
+
+  @override
+  String get filterOccupationExperience => 'Shu kasbda yillar, kamida';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Avval kasbni tanlang';
+
+  @override
+  String get filterLanguages => 'Tillar';
+
+  @override
+  String get filterLanguageCertificate => 'Sertifikat talab qilinadi';
+
+  @override
+  String get filterEducationLevels => 'Ta’lim darajasi';
+
+  @override
+  String get filterSpecializations => 'Mutaxassislik';
+
+  @override
+  String get filterRegion => 'Viloyat';
+
+  @override
+  String get filterDistricts => 'Tumanlar';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Avval viloyatni tanlang';
+
+  @override
+  String get filterWillingToRelocate => 'Ko’chib o’tishga tayyor';
+
+  @override
+  String get filterWillingToTravel => 'Xizmat safarlariga tayyor';
+
+  @override
+  String get filterProximityDistrict => 'Shu tumanga yaqin';
+
+  @override
+  String get filterProximityHint => '“Eng yaqin” saralashi uchun';
+
+  @override
+  String get filterEmploymentTypes => 'Bandlik turi';
+
+  @override
+  String get filterWorkFormats => 'Ish formati';
+
+  @override
+  String get filterShifts => 'Smena';
+
+  @override
+  String get filterSalaryMin => 'Maosh (dan)';
+
+  @override
+  String get filterSalaryMax => 'Maosh (gacha)';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'Ko’proq kutayotgan nomzod chiqarib tashlanadi. Kelishiladigan kutish esa mos keladi.';
+
+  @override
+  String get filterAvailableBy => 'Ishga tayyor (sana)';
+
+  @override
+  String get filterAvailableImmediately => 'Darhol ishga tayyor';
+
+  @override
+  String get filterAttributes => 'Guvohnoma, transport va asboblar';
+
+  @override
+  String get filterCrewSizeMin => 'Kamida shuncha kishilik brigada';
+
+  @override
+  String get filterMinCompleteness => 'Profil to’ldirilishi, kamida (%)';
+
+  @override
+  String get filterUpdatedSince => 'Yangilangan (sanadan)';
+
+  @override
+  String get filterAgeMin => 'Yosh (dan)';
+
+  @override
+  String get filterAgeMax => 'Yosh (gacha)';
+
+  @override
+  String get filterGender => 'Jins';
+
+  @override
+  String get filterJustification => 'Cheklov asosi';
+
+  @override
+  String get filterRestrictionRequired =>
+      'Yosh yoki jins bo’yicha filtr uchun asos ko’rsatilishi shart. Har bir foydalanish qayd etiladi.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Faqat ish haqiqatan talab qilgan holatda.';
+
+  @override
+  String get sortMatch => 'Mosligi bo’yicha';
+
+  @override
+  String get sortRecent => 'Yangilanishi bo’yicha';
+
+  @override
+  String get sortExperience => 'Tajribasi bo’yicha';
+
+  @override
+  String get sortSalary => 'Kutilgan maosh bo’yicha';
+
+  @override
+  String get sortProximity => 'Yaqinligi bo’yicha';
+
+  @override
+  String get commonLoadMore => 'Yana ko’rsatish';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Nomzod topish';
+
+  @override
+  String get searchScopedToVacancy => 'Filtrlar vakansiyadan olindi';
+
+  @override
+  String get candidateProfileTitle => 'Nomzod';
+
+  @override
+  String get candidateViewProfile => 'Profilni ochish';
+
+  @override
+  String get candidateContact => 'Aloqa';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return '$date dan tayyor';
+  }
+
+  @override
+  String get candidateAttachments => 'Ilovalar';
+
+  @override
+  String get candidateNoFiles => 'Nomzod hech narsa yuklamagan';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'Nomzodning telefon raqami ko’rsatilmagan.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Kompaniyangiz tasdiqlangach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Nomzod vakansiyangizga ariza bergach yoki taklifni qabul qilgach aloqa ma’lumotlari ochiladi.';
+
+  @override
+  String get candidateExposureHidden =>
+      'Nomzod profilini qidiruvdan yashirgan. U vakansiyalaringizni ko’ra oladi va ariza bera oladi.';
+
+  @override
+  String get searchSavedEmpty => 'Saqlangan nomzodlar yo’q';
+
+  @override
+  String get commonCopy => 'Nusxalash';
+
+  @override
+  String get commonCopied => 'Nusxalandi';
+
+  @override
+  String get vacancyDetailTitle => 'Vakansiya';
+
+  @override
+  String get vacancyDescription => 'Ish haqida';
+
+  @override
+  String get vacancyRequirements => 'Talablar';
+
+  @override
+  String get vacancyMandatory => 'Majburiy';
+
+  @override
+  String get vacancyPreferred => 'Ma’qul';
+
+  @override
+  String get vacancyGoneTitle => 'Bu vakansiya endi mavjud emas';
+
+  @override
+  String get vacancyGoneBody =>
+      'U yopilgan, to\'ldirilgan yoki muddati o\'tgan bo\'lishi mumkin.';
+
+  @override
+  String get vacancyReportReason => 'Bu vakansiyada nima noto\'g\'ri?';
+
+  @override
+  String get vacancyReportSend => 'Yuborish';
+
+  @override
+  String get commonYes => 'Ha';
+
+  @override
+  String get commonNo => 'Yo\'q';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o\'rin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return '$date dan';
+  }
+
+  @override
+  String get walletTitle => 'Hamyon';
+
+  @override
+  String get walletBalanceLabel => 'Balans';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString so\'m';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'m';
+  }
+
+  @override
+  String get walletPrices => 'Bugungi narxlar';
+
+  @override
+  String get walletCoinPriceLabel => '1 Coin';
+
+  @override
+  String get walletUnlockPriceLabel => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Ro\'yxatdan o\'tish bonusi berildi: $date';
+  }
+
+  @override
+  String get walletTopUp => 'To\'ldirish';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'To\'ldirish hozircha mavjud emas. U Payme va CLICK qo\'llab-quvvatlashi bilan birga keladi.';
+
+  @override
+  String get walletActivity => 'So\'nggi operatsiyalar';
+
+  @override
+  String get walletActivityEmpty =>
+      'Bu hamyonda hali hech qanday harakat bo\'lmagan. Kirim ham, chiqim ham shu yerda ko\'rinadi va biror yozuv hech qachon o\'chirilmaydi.';
+
+  @override
+  String get walletShowMore => 'Ko\'proq ko\'rsatish';
+
+  @override
+  String get walletLoadingMore => 'Yana yuklanmoqda…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Balans $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coin',
+      one: '$count Coin',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Ro\'yxatdan o\'tish bonusi';
+
+  @override
+  String get walletKindTopUp => 'To\'ldirish';
+
+  @override
+  String get walletKindCandidateUnlock => 'Nomzod kontaktlarini ochish';
+
+  @override
+  String get walletKindAdminAdjustment => 'Administrator tuzatishi';
+
+  @override
+  String get walletKindReversal => 'Qaytarish';
+
+  @override
+  String get walletKindOther => 'Hamyon operatsiyasi';
+
+  @override
+  String get walletCorrection => 'Tuzatish';
+
+  @override
+  String get walletBalanceUnavailable => 'Balans mavjud emas';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Kontaktni ochish — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Kontaktni ochish';
+
+  @override
+  String get unlockCost => 'Narxi';
+
+  @override
+  String get unlockBalanceNow => 'Sizning balansingiz';
+
+  @override
+  String get unlockBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get unlockConfirm => 'Tasdiqlash';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Telefon, e-mail va rezyume ochiladi, suhbatni ham boshlashingiz mumkin. Bir marta yechiladi — keyinroq bu nomzodga qaytish bepul.';
+
+  @override
+  String get unlockDone => 'Kontaktlar ochildi';
+
+  @override
+  String get unlockAlready => 'Allaqachon ochilgan — hech narsa yechilmadi';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return '$date da ochilgan';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Ochish uchun to\'ldiring';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Nomzod bilan hozir bog\'lanish uchun kontaktlarni oching. Agar u sizning vakansiyangizga ariza yuborsa yoki taklifni qabul qilsa, ular bepul ham ochiladi.';
+
+  @override
+  String get contactLockedTitle => 'Himoyalangan ma\'lumotlar';
+
+  @override
+  String get contactUnlockedTitle => 'Aloqa ma\'lumotlari';
+
+  @override
+  String get contactPhone => 'Telefon raqami';
+
+  @override
+  String get contactEmail => 'E-pochta';
+
+  @override
+  String get contactCv => 'Rezyume fayli';
+
+  @override
+  String get contactCvLocked => 'PDF · qulflangan';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins bitta yangi nomzodning kontakti, rezyumesi va yozishmasini ochadi. Bir marta ochilgan nomzod uchun qayta to\'lov olinmaydi.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Tasdiqlashga o\'tish';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins yechildi · balans $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Coin yetarli emas';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString so\'m · 1 Coin = $priceString so\'m';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins bitta yangi nomzod kontaktini ochadi. Nomzodlarni qidirish va profilni ko\'rish bepul.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Amallar tarixi';
+
+  @override
+  String get walletHistoryAll => 'Barchasi';
+
+  @override
+  String get walletHistoryIncoming => 'To\'ldirish';
+
+  @override
+  String get walletHistoryOutgoing => 'Sarflangan';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'Bu turdagi amal hozircha yo\'q. Hamyonda yozilgan hammasini ko\'rish uchun filtrni olib tashlang.';
+
+  @override
+  String get walletDetailTitle => 'Amal tafsiloti';
+
+  @override
+  String get walletDetailSection => 'Tafsilot';
+
+  @override
+  String get walletDetailReason => 'Sabab';
+
+  @override
+  String get walletDetailWhen => 'Sana va vaqt';
+
+  @override
+  String get walletDetailAmountUzs => 'To\'langan summa';
+
+  @override
+  String get walletDetailEffect => 'Balansga ta\'siri';
+
+  @override
+  String get walletDetailBalanceAfter => 'Keyingi balans';
+
+  @override
+  String get walletDetailReference => 'Ma\'lumot raqami';
+
+  @override
+  String get walletDetailSupportTitle => 'Bu yozuvda nimadir noto\'g\'rimi?';
+
+  @override
+  String get walletDetailSupport =>
+      'Qo\'llab-quvvatlash xizmatiga murojaat qilib, yuqoridagi ma\'lumot raqamini ko\'rsating. Bu tarixdagi hech bir yozuvni o\'zgartirish yoki o\'chirish mumkin emas, shuning uchun siz ko\'rgan yozuvni ular ham xuddi shunday ko\'radi.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'Bu yozuv oldingisini tuzatadi. Asl yozuv tarixda qoladi — tuzatishlar qo\'shiladi, ustidan yozilmaydi.';
+
+  @override
+  String get navInvitations => 'Takliflar';
+
+  @override
+  String get invitationSent => 'Yuborilgan';
+
+  @override
+  String get invitationDetailsRequested => 'Batafsil so\'ralgan';
+
+  @override
+  String get invitationAccepted => 'Qabul qilingan';
+
+  @override
+  String get invitationDeclined => 'Rad etilgan';
+
+  @override
+  String get invitationAccept => 'Qabul qilish';
+
+  @override
+  String get invitationDecline => 'Rad etish';
+
+  @override
+  String get invitationRequestDetails => 'Savol berish';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Sizni vakansiyaga taklif qilgan ish beruvchilar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationGeneral => 'Umumiy taklif';
+
+  @override
+  String get invitationOpenVacancy => 'Vakansiyani ochish';
+
+  @override
+  String get invitationVacancyLoading => 'Vakansiya yuklanmoqda…';
+
+  @override
+  String get invitationVacancyUnavailable => 'Vakansiyani yuklab bo\'lmadi.';
+
+  @override
+  String get invitationVacancyUntitled => 'Vakansiya';
+
+  @override
+  String get invitationYourReply => 'Sizning javobingiz';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString so\'m';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mdan';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mgacha';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Bu taklif qabul qilinsinmi?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Qabul qilsangiz, telefon raqamingiz, e-pochtangiz va rezyumeingiz shu ish beruvchiga ko\'rinadi. Buni ortga qaytarib bo\'lmaydi.';
+
+  @override
+  String get invitationDeclineTitle => 'Bu taklif rad etilsinmi?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Aloqa ma\'lumotlaringiz yopiq qoladi. Rad etishni ortga qaytarib bo\'lmaydi, lekin ish beruvchi keyinroq yana taklif qilishi mumkin.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Ish beruvchiga savol berish';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'Keyin ham qabul qilish yoki rad etish mumkin. Qabul qilmaguningizcha aloqa ma\'lumotlaringiz yopiq qoladi.';
+
+  @override
+  String get invitationQuestionLabel => 'Savolingiz';
+
+  @override
+  String get invitationQuestionHint =>
+      'Masalan: ish aynan qayerda va qachon boshlanadi?';
+
+  @override
+  String get invitationNoteLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationNoteHint =>
+      'Ish beruvchi bilishi kerak deb hisoblagan narsangiz.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'Bu taklifga allaqachon javob berilgan';
+
+  @override
+  String get commonChoose => 'Tanlash';
+
+  @override
+  String get invitationSendTitle => 'Taklif yuborish';
+
+  @override
+  String get invitationSend => 'Yuborish';
+
+  @override
+  String get invitationSendFree =>
+      'Yuborish bepul. Aloqa ma\'lumotlari faqat nomzod qabul qilsa ochiladi.';
+
+  @override
+  String get invitationToVacancy => 'Vakansiyaga';
+
+  @override
+  String get invitationVacancyLabel => 'Vakansiyani tanlang';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'Ochiq vakansiya yo\'q';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'Taklif faqat faol vakansiyaga bog\'lanishi mumkin. Umumiy ish taklifini hozir ham yuborishingiz mumkin.';
+
+  @override
+  String get invitationOccupation => 'Kasb';
+
+  @override
+  String get invitationRegion => 'Viloyat';
+
+  @override
+  String get invitationDistrict => 'Tuman';
+
+  @override
+  String get invitationNegotiable => 'To\'lov kelishiladi';
+
+  @override
+  String get invitationSalaryFrom => 'To\'lov (dan)';
+
+  @override
+  String get invitationSalaryTo => 'To\'lov (gacha)';
+
+  @override
+  String get invitationSalaryPeriod => 'Davr';
+
+  @override
+  String get invitationSchedule => 'Ish vaqti';
+
+  @override
+  String get invitationScheduleHint => 'Masalan: haftada olti kun, ertalab';
+
+  @override
+  String get invitationMessageLabel => 'Xabar (majburiy emas)';
+
+  @override
+  String get invitationMessageHint =>
+      'Nomzod bilishi kerak deb hisoblagan narsangiz';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return 'Bugun $limit taklifdan $remaining tasi qoldi';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return '$at da yangilanadi';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Bugungi takliflar tugadi';
+
+  @override
+  String get invitationAlreadySentTitle => 'Allaqachon taklif qilingan';
+
+  @override
+  String get invitationSentConfirm => 'Taklif yuborildi';
+
+  @override
+  String get invitationsSentTitle => 'Yuborilgan takliflar';
+
+  @override
+  String get invitationsSentEmpty =>
+      'Siz taklif qilgan nomzodlar shu yerda ko\'rinadi.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'Bu holatda taklif yo\'q. Yuborilganlarning hammasini ko\'rish uchun filtrni tozalang.';
+
+  @override
+  String get invitationsSentForVacancy => 'Faqat bu vakansiya';
+
+  @override
+  String get invitationFilterAll => 'Hammasi';
+
+  @override
+  String get invitationYourMessage => 'Siz yozgan xabar';
+
+  @override
+  String get invitationCandidateReply => 'Nomzodning javobi';
+
+  @override
+  String get invitationContactOpenTitle => 'Aloqa ma\'lumotlari ochiq';
+
+  @override
+  String get invitationContactOpenBody =>
+      'Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to\'lov kerak emas.';
+
+  @override
+  String get invitationOpenCandidate => 'Nomzodni ko\'rish';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited ta taklif yuborilgan, $accepted tasi qabul qilingan';
+  }
+
+  @override
+  String get candidateFileNoViewer =>
+      'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
 }

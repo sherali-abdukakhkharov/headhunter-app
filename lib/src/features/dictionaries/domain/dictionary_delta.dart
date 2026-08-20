@@ -1,4 +1,4 @@
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 
 /// What `GET /dictionaries/{type}` returns: either the whole set, or only what
 /// changed since a revision the client already has.

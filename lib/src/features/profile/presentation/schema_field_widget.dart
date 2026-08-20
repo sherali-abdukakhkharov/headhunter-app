@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_picker.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
-import 'package:headhunter_app/src/features/profile/presentation/leveled_field_editor.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_picker.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/leveled_field_editor.dart';
 
 /// Renders one schema field, chosen by [SchemaField.kind].
 ///

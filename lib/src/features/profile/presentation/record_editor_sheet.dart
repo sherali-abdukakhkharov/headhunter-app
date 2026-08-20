@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// Opens a bottom sheet holding one draft record, and returns it on save.
 ///
@@ -141,69 +141,3 @@ TextEditingController seededController(String text) =>
         selection: TextSelection.collapsed(offset: text.length),
       ),
     );
-
-/// A read-only field that opens a date picker and emits ISO `yyyy-MM-dd`.
-///
-/// ISO on the wire, always: the value is data, not display. §8.3's display
-/// policy for dates and times is still open, and a localized format invented
-/// here would have to be undone when it lands.
-class IsoDateField extends StatelessWidget {
-  const IsoDateField({
-    required this.label,
-    required this.value,
-    required this.onChanged,
-    super.key,
-    this.enabled = true,
-  });
-
-  final String label;
-  final String? value;
-  final ValueChanged<String?> onChanged;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-
-    return HhTextField(
-      label: label,
-      readOnly: true,
-      enabled: enabled,
-      hintText: l10n.profileDateHint,
-      trailingIconPath: HhIconPath.calendar,
-      controller: TextEditingController(text: value ?? ''),
-      onTap: enabled ? () => _pick(context) : null,
-      onTrailingTap: enabled ? () => _pick(context) : null,
-    );
-  }
-
-  Future<void> _pick(BuildContext context) async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _parse(value) ?? now,
-      firstDate: DateTime(now.year - 80),
-      // A future start date is nonsense for work history, but the server owns
-      // that rule and says so in its own words. Clamping here would only ever
-      // be wrong in a way the user cannot read.
-      lastDate: DateTime(now.year + 10),
-    );
-
-    if (picked == null) return;
-
-    onChanged(
-      '${picked.year.toString().padLeft(4, '0')}-'
-      '${picked.month.toString().padLeft(2, '0')}-'
-      '${picked.day.toString().padLeft(2, '0')}',
-    );
-  }
-
-  static DateTime? _parse(String? value) {
-    if (value == null) return null;
-    try {
-      return DateTime.parse(value);
-    } on FormatException {
-      return null;
-    }
-  }
-}

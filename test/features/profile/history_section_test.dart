@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
-import 'package:headhunter_app/src/features/profile/data/history_repository.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
-import 'package:headhunter_app/src/features/profile/domain/history_record.dart';
-import 'package:headhunter_app/src/features/profile/presentation/history_section.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/profile/data/history_repository.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/features/profile/domain/history_record.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/history_section.dart';
 
 /// The bespoke profile sections (§5.1).
 ///
@@ -184,6 +184,32 @@ void main() {
       );
 
       expect(find.text('2025-06-01 — Present'), findsOneWidget);
+    });
+
+    // Found by running it. The server accepts `isCurrent: false` with no end
+    // date, and it is the combination the editor produces most easily — leave
+    // the end blank and do not tick the box. Rendering that as "Present" is the
+    // card asserting the role is ongoing over a record that says it is not.
+    testWidgets('a role with no end and not current claims no end at all', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const ExperienceSection(path: '/x'),
+        history: _FakeHistory(
+          experience: const [
+            ExperienceRecord(
+              id: 'rec-1',
+              roleTitle: 'Terimchi',
+              startedOn: '2025-06-01',
+              isCurrent: false,
+            ),
+          ],
+        ),
+      );
+
+      expect(find.text('2025-06-01'), findsOneWidget);
+      expect(find.textContaining('Present'), findsNothing);
     });
 
     testWidgets('a failed load shows the error state, not a spinner', (

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/auth/token_store.dart';
+import 'package:jobbridge_app/src/core/auth/token_store.dart';
 
 /// Exchanges a refresh token for a new pair, or returns null if the server
 /// refused.

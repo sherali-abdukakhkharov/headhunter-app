@@ -3,24 +3,31 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/auth/session_controller.dart';
-import 'package:headhunter_app/src/core/auth/session_state.dart';
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
-import 'package:headhunter_app/src/core/router/shell_tabs.dart';
-import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
-import 'package:headhunter_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
-import 'package:headhunter_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
-import 'package:headhunter_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
-import 'package:headhunter_app/src/features/health/presentation/health_screen.dart';
-import 'package:headhunter_app/src/features/onboarding/presentation/onboarding_screen.dart';
-import 'package:headhunter_app/src/features/onboarding/presentation/role_selection_screen.dart';
-import 'package:headhunter_app/src/features/profile/presentation/candidate_profile_screen.dart';
-import 'package:headhunter_app/src/features/shell/presentation/blocked_account_screen.dart';
-import 'package:headhunter_app/src/features/shell/presentation/role_shell.dart';
-import 'package:headhunter_app/src/features/shell/presentation/shell_placeholder_screen.dart';
-import 'package:headhunter_app/src/features/shell/presentation/splash_screen.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
+import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
+import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/candidate_search_screen.dart';
+import 'package:jobbridge_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
+import 'package:jobbridge_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
+import 'package:jobbridge_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
+import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_feed_screen.dart';
+import 'package:jobbridge_app/src/features/employer/presentation/employer_profile_screen.dart';
+import 'package:jobbridge_app/src/features/health/presentation/health_screen.dart';
+import 'package:jobbridge_app/src/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:jobbridge_app/src/features/onboarding/presentation/role_selection_screen.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/candidate_profile_screen.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/blocked_account_screen.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/role_shell.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/shell_placeholder_screen.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/splash_screen.dart';
+import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_editor_screen.dart';
+import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_list_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -148,8 +155,35 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
             // milestone that owns them.
             builder: (context, state) => switch (tab.path) {
               Routes.candidateProfile => const CandidateProfileScreen(),
+              Routes.candidateVacancies => const VacancyFeedScreen(),
+              Routes.candidateApplications => const ApplicationsScreen(),
+              Routes.employerCompany => const EmployerProfileScreen(),
+              Routes.employerVacancies => const VacancyListScreen(),
+              Routes.employerCandidates => const CandidateSearchScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
+            routes: [
+              // Nested inside the tab, so the vacancy editor keeps the shell's
+              // nav bar and the system back gesture returns to the list rather
+              // than leaving the branch.
+              if (tab.path == Routes.employerVacancies)
+                GoRoute(
+                  path: ':id',
+                  name: 'employerVacancy',
+                  builder: (context, state) => VacancyEditorScreen(
+                    id: state.pathParameters['id']!,
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: 'applicants',
+                      name: 'vacancyApplicants',
+                      builder: (context, state) => VacancyApplicantsScreen(
+                        vacancyId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ),
         ],
       ),

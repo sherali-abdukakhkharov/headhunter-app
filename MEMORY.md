@@ -470,6 +470,131 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - A test asserting a token is *absent* must strip comments first
+Three times in one day, in three different files:
+
+- `expect(xml.contains('<monochrome'), isFalse)` failed because the file's own
+  comment explains why the element is absent.
+- `expect(paths.contains('external'), isFalse)` failed because the comment says
+  "deliberately not `<external-path>`".
+- `expect(kotlin.contains('FLAG_GRANT_WRITE_URI_PERMISSION'), isFalse)` failed
+  because the code above it says "never FLAG_GRANT_WRITE_URI_PERMISSION".
+
+The pattern is structural, not careless: **the better the file documents why
+something is missing, the more certainly a naive absence check fails.** And the
+failure is the confusing kind — the assertion is correct, the file is correct, and
+the test is red.
+
+`_code(path)` in `attachment_opener_test.dart` strips `<!-- -->`, `/* */` and
+`//` before matching, and every absence assertion goes through it. Presence
+assertions do not need it, which is why the mistake keeps hiding: half the
+assertions in the same test are fine without it.
+
+### 2026-08-20 - Two brand rules that interact, and the one that lost silently
+The design's mark has a **20pt floor for the pair** (below it the 1.6-unit gap
+closes and the two figures fuse) and, separately, "in the horizontal lockup the
+mark's height equals the wordmark's cap height". Both are reasonable. Together
+they are a trap: Golos Text's cap height is about 0.72em, so a 23pt wordmark - the
+design's own default - derives a **19.2pt mark**, which is under the floor. The
+lockup rendered a single figure and looked entirely plausible doing it.
+
+Three things to carry:
+
+1. **When two rules from a design constrain the same number, compute the boundary
+   before trusting either.** Nothing announced the collision; the widget did what
+   both rules said and produced a mark with one person in it.
+2. **The specimen was the arbiter.** The document draws 21 x 18 beside 23pt type,
+   which implies a cap height of 18.08/23 = 0.786em rather than the textbook 0.72.
+   Reading the number off the drawing reproduced the drawing; deriving it from
+   typographic convention did not.
+3. **What caught it was a test about something else.** "On navy the word stays
+   white while the mark goes turquoise" failed, because a solo mark has no
+   turquoise figure - the two-tone assertion is what noticed the missing person.
+   A test for the *colour rule* found a *size* bug, which is an argument for
+   asserting the rule rather than the pixels.
+
+The lockup now asserts `markWidth >= pairFloor` rather than degrading, because a
+lockup is defined with the pair in both specimens.
+
+### 2026-08-20 - An Android launcher icon needs no rasteriser, and no PNGs
+There is no ImageMagick, Inkscape or rsvg on this machine (`convert` resolves to
+Windows' filesystem converter, which is a fine trap of its own), so the launcher
+icon is **vector all the way down**:
+
+- `mipmap-anydpi-v26/ic_launcher.xml` - `<adaptive-icon>`, navy background layer,
+  arch foreground layer.
+- `mipmap-anydpi/ic_launcher.xml` - a plain `<vector>` for **API 24 and 25**,
+  which predate adaptive icons. `anydpi` outranks the density qualifiers and
+  `anydpi-v26` is excluded below 26, so each API level gets the right one. That is
+  the same precedence rule every adaptive-icon setup already depends on, used one
+  level further down.
+- Flutter's five default `ic_launcher.png` files are **deleted**. Left in place
+  they are unreachable and still ship, so any tool that bypasses `anydpi` shows
+  the Flutter logo.
+
+Two details that would have been silent bugs:
+
+- **Android's `<vector>` viewport has no origin**, where the designer's export is
+  cropped to the ink with `viewBox="4.5 6.2 23 19.8"`. The crop is carried as an
+  inner `<group android:translateX="-4.5" android:translateY="-6.2">` so the path
+  data stays **byte-identical to the design document** and can be diffed against
+  it. Pre-multiplying the coordinates would have saved two lines and made the
+  mark unverifiable.
+- **`<vector>` has no `<circle>`.** The two heads are circles in the source and
+  become two-arc paths here.
+
+And the reason there is a test for all of it: `flutter analyze` does not read
+Android XML, `flutter test` does not build it, and an off-centre icon looks
+plausible until it is beside another app's on a home screen. So
+`test/core/design/brand_test.dart` reads the drawables, applies the transforms and
+asserts the centring, the 48%/56% ratios, the locked 23 : 19.8 aspect and the
+safe-zone diagonal. **It is arithmetic nothing else in the toolchain checks.**
+
+### 2026-08-20 - A rule tested on one variant is a rule tested nowhere
+`HhButton.text` shipped without wrapping its label. Every filled variant puts the
+label in a `Flexible`, which is what makes §08.2's "the box grows with the label,
+it never clips it" true — the box grows in *height* because the text is allowed to
+wrap. The text variant had a bare `Text`, so it took its intrinsic width and the
+`Row` overflowed: **190pt at 320 wide and 2.0x text scale**, on a button reading
+"View candidate" inside a card.
+
+The part worth remembering is not the missing widget. It is that
+`design_system_test.dart` **already had a test for exactly this rule** —
+"a control grows with the text scale instead of clipping" — and it only ever built
+the filled button. A green suite therefore said the rule held when it held for one
+of six variants.
+
+Two habits follow:
+
+- **When a design rule is stated for a component, test it across the component's
+  variants, not on the default one.** The neighbouring test in that file
+  ("every button variant builds without asserting") was already written as a loop
+  over all variants, for the same reason — it just checked a different thing.
+  The rule test is now a loop too.
+- **The 320pt x 2.0x case has now caught four defects**, and this is the first
+  one the design-system tests could have caught themselves. Nothing about it is
+  visible at 1.0x in English, which is the width and language a mockup is drawn
+  at and the width a hand-written test defaults to. Keep pinning feature screens
+  at 320pt with the longest label the screen can hold.
+
+### 2026-08-20 - "Invited" is every status, and `byStatus.sent` is the plausible wrong answer
+§7.4 step 7 tracks "invited, accepted, interviewed, and hired counts against the
+target". `GET /invitations/counts/:vacancyId` answers with `byStatus`, and the
+obvious reading of "invited" is `byStatus['sent']`. It is wrong: `sent` is the
+count of invitations **nobody has answered yet**, so the number would have looked
+correct until the first reply and then counted *downwards* as replies arrived.
+
+A candidate who accepted was still invited. So invited is the **sum of every
+status**, which has a second benefit: it counts a status this build has never
+heard of, which is why `countsForVacancy` returns the server's map rather than a
+typed pair of ints.
+
+This is the failure mode to watch for in any status-bucketed count: the bucket
+named like the whole is usually the bucket of *unresolved* members of it. The test
+that pins it uses a fixture where the two readings differ (`{sent: 3, accepted: 5,
+declined: 2}` — 10, not 3), because a fixture where nobody has answered passes
+either way.
+
 ### 2026-08-04 - Three Android flavor traps, in the order they fire
 Adding the three flavors of §12.1 hit three separate walls. All of them fail at
 Gradle *configuration* time, so none of them is visible from Dart.
@@ -610,6 +735,104 @@ touching the design system.
 3. **A hand-rolled `Stack` progress bar laid out to zero height** and was
    invisible on device. Replaced with a themed `LinearProgressIndicator`.
 
+### 2026-08-07 - `google-services.json` was committed and tripped GitHub
+It reached `origin` and GitHub's secret scanner mailed an alert within a
+minute. Removed from history by collapsing the commit, force-pushed, and the
+file is now in `android/.gitignore` next to the keystore.
+
+**What made it a mistake was not the key's severity.** That key is an Android
+client key: it ships inside every APK, anyone can extract it, and Google's own
+documentation says it is not a secret. The mistake was ignoring this
+repository's existing convention — `key.properties`, `*.jks` and `*.keystore`
+are all ignored, so anything credential-shaped belongs with them. `git
+check-ignore` was actually run, answered "not ignored", and that answer was
+read as permission rather than as the warning it was.
+
+Two things worth carrying:
+
+- **A force-push is not the remedy.** GitHub can retain unreachable blobs and
+  a commit stays reachable by its SHA for a while, so rewriting history only
+  tidies the branch. The exposure closes when the key is **restricted** in the
+  Google Cloud console to the three package names plus the debug and upload
+  signing SHA-1s, or regenerated. That is an owner action, not a repo action.
+- **One `google-services.json` covers all three flavors.** All three uploaded
+  files were snapshots of the same project (`headhunter-app-b463f`); the
+  largest carries `com.headhunter.app`, `.dev` and `.staging`, and the Gradle
+  plugin selects the client matching the build's applicationId. There is no
+  per-flavor file to place.
+
+### 2026-08-07 - Adding one plugin cost three toolchain fixes
+`file_picker` is the first plugin added since the toolchain moved to **AGP
+9.0.1**, and it failed three different ways before building. Recorded because
+the next plugin will hit the same wall.
+
+1. **`file_picker` 11 does not compile its Kotlin under AGP 9.** Its
+   `android/build.gradle` skips applying KGP when
+   `isAgp9OrAbove`, expecting AGP's *built-in* Kotlin — but
+   `android/gradle.properties` sets `android.builtInKotlin=false`. Neither
+   compiler runs, the plugin class is never produced, and the failure surfaces
+   as `GeneratedPluginRegistrant.java: cannot find symbol FilePickerPlugin`,
+   which reads like a stale generated file. It is not; `flutter clean` does
+   nothing.
+2. **`android.builtInKotlin=true` is not the escape.** It makes
+   `telegram_login` — which applies `kotlin-android` unconditionally — fail
+   with "This results in a build failure when applying the kotlin-android
+   plugin". So the flag cannot move while that dependency is present, and
+   CLAUDE.md says to keep it.
+   The resolution was **`file_picker` 10.3.3**, which applies KGP
+   unconditionally and therefore matches how `telegram_login` already builds.
+3. **Then the JVM targets disagreed**: the plugin declares Kotlin `1.8` while
+   AGP compiles its Java at `11`, and Kotlin 2.x refuses the mismatch. Fixed in
+   `android/build.gradle.kts` with a `subprojects` block pinning **both** sides
+   to 17. Raising only Kotlin just flips the error to "11 vs 17", and setting
+   `tasks.withType<JavaCompile>` does nothing because AGP configures javac from
+   its own `compileOptions` extension — it has to be set there.
+
+The pins in `pubspec.yaml` were unaffected: the lockfile diff was four added
+packages and no version changes. That was checked, not assumed.
+
+### 2026-08-07 - `HhButton` in a `Row` collapses the section to zero height
+`expand` defaults to **true**, which sets `width: double.infinity`. A `Row`
+gives its children unbounded width, and the combination throws
+`RenderFlex children have non-zero flex but incoming width constraints are
+unbounded` — but only into the layout phase. On the device nothing crashed:
+the whole attachments section painted its heading, its label and its empty
+state on top of each other at one offset, with the button missing entirely.
+
+`HhButton.text` already defaults to `expand: false`; the other constructors do
+not. **Pass `expand: false` on any `HhButton` inside a `Row`** — the button's
+own doc comment says so, and this is the second time the design system's
+expand-by-default has produced an invisible layout rather than an error
+(see the `Container.alignment` entry above).
+
+Worth noting how it was found: a widget test reproduced it in seconds with the
+real exception, after two rounds of guessing from screenshots. A screenshot
+shows that layout is wrong; only the test says why.
+
+### 2026-08-07 - A card asserted "Present" over a record that denied it
+Found by adding a work-experience record on a device, not by the suite.
+
+`ExperienceRecord` has both `isCurrent` and `endedOn`, and the obvious reading is
+that they are two ways of saying the same thing — so the first version of the
+card collapsed them:
+
+```dart
+final end = record.isCurrent ? l10n.experiencePresent
+                             : record.endedOn ?? l10n.experiencePresent;
+```
+
+The server accepts **three** combinations, not two. `isCurrent: false` with a
+null `endedOn` is legitimate — a role that ended on a date the candidate did not
+supply — and it is the combination the editor produces most easily, because
+leaving the end date blank and not ticking the box is the path of least effort.
+The card then printed "Present" over a record that explicitly says it is not
+current.
+
+The tests missed it because they covered `isCurrent: true` and
+`isCurrent: false` *with* an end date — the two cases that come to mind when you
+believe there are only two. **When two fields can express the same fact, count
+the combinations the server accepts rather than the ones the feature is about.**
+
 ### 2026-08-04 - Riverpod 3 auto-retry produced an endless spinner
 Riverpod 3 retries a failing provider with exponential backoff, and **while
 retrying the state is `AsyncLoading` that merely carries the error**. The health
@@ -636,6 +859,490 @@ at 4.0.3 → holds `flutter_riverpod` at 3.3.2 → pins `riverpod_lint` to 3.1.4
 genuinely incompatible. **freezed is absent for this reason** - no stable release
 supports analyzer 12. Revisit the whole block together when a Flutter release
 unpins `meta`. Full chain documented in `pubspec.yaml`.
+
+### 2026-08-10 - A fixture where two fields agree cannot say which one is read
+`LevelFloorField` binds `DictionaryItem.rank`, not `sortOrder` - "B2 or better"
+is a comparison, and `sortOrder` moves when an administrator inserts a level
+between two others (§10.3), while `rank` does not.
+
+The first test fixture built the scale with `sortOrder: rank`, because that is
+what the seed data looks like. Mutating the widget to read `sortOrder` then
+changed **nothing**: every test still passed. A realistic fixture had made the
+distinction untestable, and the bug it was written to catch would have shipped
+and then surfaced months later as a filter that silently drifted.
+
+The rule, and it is general: **when a test exists to pin *which* of two fields
+the code reads, the fixture must give them different values** - deliberately
+unrealistic ones. Realism in a fixture is worth having only where it does not
+collapse the thing under test. Same shape as the `isCurrent`/`endedOn` trap
+above: count the combinations that can occur, not the ones that usually do.
+
+Verified by mutation both ways - the fixed fixture fails on `sortOrder` and
+passes on `rank`.
+
+### 2026-08-18 - A purchase whose effect is not wired is worse than no button
+The backend shipped the Coin wallet (`a88d185`) and M12 looked unblocked. It was
+half unblocked. The wallet routes are complete — balance, prices, the paged
+ledger, and an atomic unlock that really does debit two Coins — but
+`contact-exposure.ts` was **not touched**, and `expose()` is what decides whether
+an employer sees a phone number. Grepping for the entitlement settles it in one
+command: `candidate_unlocks` appears only inside the backend's wallet module.
+
+So an "Unlock contact — 2 Coins" button built that day would have taken the money
+and left the profile still saying "nobody has applied yet". The purchase real,
+the effect imaginary.
+
+**What was built instead**: the half that depends on nothing else — balance,
+server-supplied prices, and the append-only ledger — and the spending half was
+left out with the reason written down. Two things follow that are worth keeping:
+
+- **Check what the new endpoints are *read by*, not just that they exist.** A
+  published contract says a feature can be called, not that calling it does
+  anything. One `grep` for the new table outside its own module is the whole
+  check.
+- The same judgement M7 already recorded for its wrong exposure copy: when the
+  copy or the control would have to be written twice — once against today's
+  server and again against the one arriving — write it once, later, and say why
+  in the checklist. **Both are now waiting on the same single backend change**,
+  so they land together rather than as two half-corrections.
+
+### 2026-08-20 - The app's own Kotlin is not a plugin, and that is a way out
+Opening a downloaded file needs native code. Every pub package that does it is
+written in Kotlin and therefore **applies the Kotlin Gradle Plugin**, which is the
+warning this project emptied on 2026-08-19 by removing `telegram_login` and which
+future Flutter versions will refuse outright. So the obvious dependency was the
+one thing not to add.
+
+**`MainActivity.kt` does not count against that.** The KGP warning names *plugins*
+- pub packages that apply the plugin in their own build files. The app module's
+Kotlin is compiled by Flutter's built-in support: `android/app/build.gradle.kts`
+has no `kotlin("android")` id in its `plugins` block and yet carries a working
+`kotlin { compilerOptions { } }` block. So thirty lines behind a `MethodChannel`
+bought a feature that a dependency could not.
+
+Two facts that made it cheap, both checkable before writing anything:
+
+- **`androidx.core` is already on the app's compile classpath** at 1.15.0 through
+  the Flutter embedding - the previous build's manifest-merger blame report names
+  it. So `FileProvider` needed no Gradle change, and `build.gradle.kts` - a file
+  CLAUDE.md warns about - stayed untouched.
+- **`path_provider` was already transitive** at 2.1.6 via `file_picker`, so
+  promoting it to a direct dependency pinned nothing new.
+
+The generalisation: before accepting a dependency, check whether the app's own
+platform code can do it, and check what is *already* resolved. Both answers are in
+the repo and neither needs a build.
+
+The cost to be honest about: **native code written here cannot be compiled here.**
+Gradle would not start, so `MainActivity.kt` shipped unverified. The mitigation is
+a test that asserts the *contract* across the boundary - channel name, provider
+authority, the read-only flag, the cache scope - because those are the four things
+that fail silently at a tap rather than loudly at a build.
+
+### 2026-08-20 - Make a design's misuse cases unwritable, not documented
+The brand mark has four documented misuses, and two of them are colour choices:
+turquoise on white, and both figures turquoise. An API taking colours would leave
+both expressible and rely on whoever writes the fifteenth call site having read
+the guidelines.
+
+So `HhBrandMark` takes a **ground** - navy, light or turquoise - and derives the
+colours. There is no parameter to get wrong. The same reasoning made the 20pt
+floor automatic rather than advisory: the mark switches to the single figure
+itself, because a rule a caller has to remember is a rule that breaks eventually
+and silently.
+
+This is worth generalising. The design's own solution to "turquoise is banned on
+white but the mark needs two colours" was to make the separation **structural** -
+two heads and a 1.6-unit gap - so that colour became an enhancement rather than
+the mechanism. Encoding the rules the same way, as structure instead of as
+documentation, is the same move one layer down.
+
+The cost to know about: the automatic switch **changes the widget's aspect**, from
+23 : 19.8 to 10.7 : 19.8, because the solo crop is taller than wide. A rule that
+enforces itself still has to say what it did.
+
+### 2026-08-20 - A logged endpoint must never be fanned out per row
+The employer's sent list has `candidateUserId` on every row and no name, and the
+one route that would resolve a name is
+`GET /candidate-search/candidates/:candidateUserId`. Its own contract rules the
+obvious fix out: **every call is a logged access to protected data (§11.1)**, and
+so it "is never called speculatively". Thirty rows would have written thirty audit
+entries nobody asked for — into the very log BR-09 exists to make meaningful, and
+diluting it is the actual harm, not the request count.
+
+So the client renders no name, and `Invitation.candidateName` is **parsed but not
+yet sent**: the field is a backend ask, null on every server today, and the name
+appears the day it lands with no client release. Same discipline as the quota's
+404 and `unlock_required` — render what the server can say, invent nothing.
+
+Two related shapes settled at the same time, both worth keeping:
+
+- **The vacancy on a row comes from `myVacanciesProvider`, not from discovery.**
+  The candidate's inbox resolves a posting per row through
+  `GET /discovery/vacancies/:id`, and that whole controller carries
+  `@RequireRole('candidate')` — an employer calling it gets 403, not a title. The
+  employer's side pulls its own list once and looks up locally, which is also one
+  request instead of N.
+- **A screen whose subject rendering is shared must share it in code.** The
+  general-invitation subject is now one widget used by both sides
+  (`invitation_subject.dart`), for the reason already recorded for
+  `invitationStamp`: two views of one resource that describe it differently drift,
+  and the drift is invisible until somebody reads both screens side by side. The
+  **vacancy** subject is deliberately *not* shared, because the two roles reach it
+  through different endpoints.
+
+### 2026-08-19 - Filter a ledger by the amount's sign, never by a list of kinds
+E-52's filters are "topped up" and "spent", which read like they name transaction
+kinds. They do not, and building them that way would have been wrong twice over.
+
+An `admin_adjustment` is a credit *or* a debit depending on its sign. A `reversal`
+is a credit whose whole purpose is to undo a debit. So no mapping from kind to
+side is even correct — and worse, a hard-coded list of kinds means a **sixth kind
+from a newer server disappears from both filters**, which is a silent hole in the
+one screen an employer opens to reconcile money.
+
+`isCredit` — `amountCoins > 0` — puts every entry on exactly one side, forever,
+including kinds that do not exist yet. Two tests pin it: a reversal files under
+"topped up", and an unknown `promotional_grant` files under it as well.
+
+The general shape: when a filter's two halves are really about a **property** of
+the row, filter on the property. A list of type codes is a filter that needs
+maintaining every time the server learns a new word.
+
+### 2026-08-19 - A detail screen does not always need to refetch
+E-53 takes the ledger entry as a constructor argument instead of fetching it by
+id, and there is no `GET /wallet/transactions/{id}` to fetch from.
+
+That is not a shortcut. The only reason a detail screen normally refetches is that
+the copy in the list might be stale — and a ledger entry **cannot** be: three
+database triggers refuse `UPDATE`, `DELETE` and `TRUNCATE` on that table (BR-24).
+Immutability upstream removes the need for freshness downstream.
+
+Worth checking for elsewhere before adding an endpoint: if the record is
+append-only, the list already has the truth.
+
+### 2026-08-19 - Renamed to JobBridge, and where the old name legitimately stays
+The product is **JobBridge**. Renamed the same day: launcher name and in-app title,
+Android `applicationId` (`com.jobbridge.app` + `.dev` / `.staging`), Android
+`namespace`, the Kotlin package and its directory, and the Dart package
+(`headhunter_app` → `jobbridge_app`, which rewrote imports in 136 files).
+
+**Deliberately not renamed**, so nobody "finishes the job" later and breaks things:
+
+- **Repository folders** — the owner's call, and they are not user-visible.
+- **`headhunter-backend` in doc comments** — that repository really is called
+  that. Every `Mirrors …Dto in headhunter-backend` comment is correct as written.
+- **`docs/SPEC.md` and the design document** — client deliverables that carry the
+  old name. Regenerating SPEC.md from a renamed .docx is the client's move, not
+  ours, and the two repos' copies must stay byte-identical.
+- **`hh.qitmir.uz`** and `api.staging.headhunter.uz` — infrastructure, and the
+  staging host deliberately does not exist.
+
+So: a `headhunter` in a path or a backend reference is **correct**. A `headhunter`
+in an application id or a Dart import is a leftover.
+
+The rename was only possible because **nothing has been published**. An
+`applicationId` is a store identity: after the first Play upload it is fixed, and
+changing it means a new listing with no upgrade path for installed users.
+
+**How it was verified, because "it compiled" proves almost nothing here.** A
+successful build does not prove the id changed, and the one failure mode that
+matters — `namespace` and the Kotlin package disagreeing — surfaces as a runtime
+`ClassNotFoundException` on launch, not as a build error. Two checks settle it
+without installing anything:
+
+```powershell
+# the id Gradle actually stamped
+Get-Content build\app\outputs\apk\development\debug\output-metadata.json
+
+# the id, the launcher label and the resolved activity, from the APK itself
+& "$env:LOCALAPPDATA\Android\Sdk\build-tools\36.0.0\aapt2.exe" dump badging `
+  build\app\outputs\flutter-apk\app-development-debug.apk
+```
+
+For this rename they reported `com.jobbridge.app.dev`, `application-label:
+'JobBridge Dev'` and `launchable-activity: com.jobbridge.app.MainActivity` — the
+third being the one that proves the namespace and the Kotlin package agree.
+
+Note that Gradle cannot run inside this project's agent sandbox at all: it fails in
+about a second with `java.io.IOException: Unable to establish loopback connection`,
+before compiling anything. That is the environment, not the build — an Android
+build has to be run from a normal shell.
+
+### 2026-08-19 - A stale google-services.json is better than a hand-edited one
+The rename left `android/app/google-services.json` listing the old package names.
+The tempting fix — search-and-replace `package_name` — is the wrong one.
+
+Firebase issues a `mobilesdk_app_id`, an `api_key` and a `client_id` **per package
+name**. Editing only the package name produces a file the Gradle plugin happily
+accepts, and which then fails on the device when it registers a token against an
+app id that does not exist. The symptom is "notifications don't arrive" — a runtime
+mystery instead of a build error.
+
+Left stale, it fails at exactly the right moment and says exactly what is wrong:
+the Google Services plugin refuses the build with `No matching client found for
+package name 'com.jobbridge.app.dev'`. Since the plugin is not applied until M9,
+nothing is broken in the meantime.
+
+**The general rule: a generated credentials file is not text to be edited.**
+Regenerate it from the console that issued it. And when a config will be wrong
+later, prefer the form that fails loudly at the point of use over the form that
+looks right.
+
+Two things that surprised me and are worth remembering: SHA certificate
+fingerprints are stored **per Android app**, so new apps start with none even in
+the same project; and one `google-services.json` download contains **every** app in
+the project, which is why a single file covers all three flavors.
+
+### 2026-08-19 - The design document's canvas colour is not the app's background
+`scaffoldBackgroundColor` is `sand100` = `#EFEBE4`. That colour is genuinely in
+the palette — the foundations page swatches it as sand-100 — but in the design
+*document* it is also `body{background:#EFEBE4}`, the paper the artboards sit on.
+
+Every phone frame in the document draws its screen on `#F7F8FA` instead: 30 uses
+against 4 for `#EFEBE4`, and of those 4 the only one inside an artboard is the
+swatch itself. So the app looks to have adopted the canvas colour as its
+background — warm beige where the design is cool grey.
+
+**Not changed yet**, deliberately: it repaints every screen, so it wants its own
+commit and a device check rather than a quiet edit inside a feature. Recorded in
+TODO.md. The lesson generalises to any `.dc.html` import: **a colour's presence
+in the file is not evidence of its role.** Check whether it appears inside an
+artboard or around one, and count.
+
+### 2026-08-19 - A designer's copy beats an invented translation, always
+The wallet shipped with `walletCoins` reading "2 tanga" in Uzbek and "2 монеты"
+in Russian. Both were mine. The design writes **"2 Coin"** — the unit name left
+untranslated, as a service unit rather than a currency.
+
+Round 1's handoff had already said who owns what: design owns the Uzbek Latin
+source and the English reference, and **uz-Cyrl and ru need certified translation
+from the client**, because "machine translation of recruitment and legal-consent
+strings is a liability, not a shortcut". A money unit is squarely in that class,
+and inventing `монета` was exactly the shortcut being warned against.
+
+The rule: when a design document contains the string, use the design's string.
+Where it does not, and the string is money, legal or consent copy, leave the
+client's obligation visible rather than filling it in plausibly.
+
+### 2026-08-19 - Reflowing comments by line orphans words; reflow paragraphs
+Fixing 80-column lints with a per-line wrapper produced comments ending in single
+words — "deciding", "price", "alone", "of". Wrapping a line in isolation cannot
+know the next line continues the sentence.
+
+Worse, the same script silently disabled a lint: `hh_icons.dart` opens with a
+prose paragraph followed by `// ignore_for_file: lines_longer_than_80_chars`, and
+the wrapper folded the directive into the prose. Analyze then reported four
+*pre-existing* long lines as new — the file's SVG path data, which that directive
+exempts on purpose.
+
+Two rules if this is ever automated again: **reflow paragraphs, not lines**
+(group consecutive same-marker comment lines, join, rewrap), and **never let a
+comment reflow touch a line matching `ignore` or `ignore_for_file`** — those are
+code wearing a comment's clothes. Markdown tables and lists need the same
+exemption; they are structure, not prose.
+
+### 2026-08-19 - Gate a feature on a code the old server cannot send, not a flag
+The owner overruled the decision above and asked for the unlock to be merged now,
+with the backend catching up. The concern was real — a button that debits two
+Coins and reveals nothing — but it did not need a flag to solve.
+
+`expose()` answers `no_interaction` today. Once it reads the entitlement it will
+answer `unlock_required` instead. So the unlock control is offered on
+`unlock_required` **and nothing else**: the purchase path is complete, tested and
+merged, and it is unreachable until the server can honour it. It turns itself on
+when the gate deploys, with no client release.
+
+Why this beats the obvious alternative: a build-time flag is a code path that
+takes money, enabled by a constant somebody has to remember to flip at the right
+moment — and forgetting in either direction is a bug (dead feature, or a paywall
+that charges for nothing). The reason code is not a switch at all. It is the
+server telling the client what it is capable of, which is information the client
+was already reading.
+
+**The general shape**: when a client must ship ahead of its server, look for a
+value the new server sends and the old one cannot. Gate on that. If no such value
+exists, ask for one — it is a smaller request than a coordinated release, and it
+is self-documenting.
+
+Pinned by a test that funds a wallet with 500 Coins against `no_interaction` and
+asserts both no button and no request. Verified by mutation: loosening the gate to
+include `no_interaction` fails exactly that test and one other.
+
+### 2026-08-19 - A code whose meaning changed wants a new code, not new copy
+The plan had said M7's shipped exposure copy was "now wrong" and would have to be
+rewritten when the wallet landed, losing the mutation tests pinning it. That
+turned out to be the wrong frame.
+
+`no_interaction` used to mean "wait for an application"; under a paid gate the
+remedy becomes "pay". The instinct is to rewrite that code's sentence. But the
+client answered the §11.1 question leniently — an application still opens contact
+— so the old sentence is **still true wherever it is still sent**. Adding
+`unlock_required` beside it left the original six codes untouched, kept every
+existing test, and made one build correct against two servers at once.
+
+The rule: if a reason code's *remedy* changes, that is a different reason, so give
+it a different code. Rewriting the old one's copy destroys the ability to serve
+both servers and quietly invalidates whatever pinned it.
+
+### 2026-08-19 - A spec that argues with itself answers its own question
+Follows the entry below, and is the part worth remembering: the §8.2 question was
+settled not by the server but by **reading the rest of the specification.**
+
+§8.2 said an employer must hold a Candidate Unlock and "an invitation **may then**
+be attached to an active vacancy". Two other places disagree:
+
+- **§7.3** lists the candidate card's actions as "View profile, Save, and Send
+  invitation" — two of which are unambiguously free — in the sentence immediately
+  after the one saying phone, e-mail and CV are locked. The section separates the
+  locked *data* from the free *action*.
+- **§7.4**, the client's own worked example, fills **20 openings** by sending
+  invitations. Filling 20 takes far more than 20 invitations; at 2 Coins each that
+  is over a million som before a single reply, and the 10-Coin registration bonus
+  covers five people. The example the client wrote does not work under the strict
+  reading of the sentence the client also wrote.
+
+So the question stopped being "which document wins, spec or code" and became "one
+word against two sections and a running server". The client confirmed the lenient
+reading in a sentence.
+
+**The habit worth keeping: before escalating a contradiction between the spec and
+the code, look for the spec contradicting itself.** A revised document has new
+prose stitched into old, and the seam is usually where a sentence lists four
+things and quietly acquires a fifth. §8.2's sentence lists contact, CV, chat and
+interview — all genuinely gated — and the invitation got swept in beside them.
+
+The follow-on is also worth recording: **the answer created a new problem the spec
+had no rule for at all.** Sending free and uncapped let a verified employer send
+an unbounded number, and neither §8.2 nor the service had a limit. The remedy is a
+cap, and the cap belongs to the server rather than to Dart — the client said extra
+invitations may be purchasable later, and a quota that can be bought is a balance
+(§12.3.1). So the client renders `{remaining, limit, resetsAt}` and holds no
+number: `limit` is the *effective* total, deliberately not free-plus-purchased, so
+a future purchase raises it with no client release and no arithmetic here.
+
+**An absent quota must block nothing.** A 404 means "this server has no cap", and
+a form disabled by a counter that failed to load would refuse sends the API
+accepts — a false refusal, not a cautious one. Same discipline as gating the unlock
+on a reason code: render what the server can say, invent nothing.
+
+### 2026-08-19 - A structured error's figures are in `details`, not at the top
+The backend's 409 for the invitation quota carries `limit` and `resetsAt` so a
+screen can refresh its counter without a second request or a regular expression
+over localized prose. The client's first attempt read them as `data['limit']` and
+`data['resetsAt']`, which would have compiled, passed every test with a fixture
+the client wrote itself, and silently produced nulls against the real server.
+
+The body is `{statusCode, code, message, details: {...}}`, and the nesting is
+deliberate: `localized.exception.ts` says a key spread beside `statusCode`,
+`code` or `message` would eventually collide with one of them, and that `params`
+stay out of the body entirely because they are written to read well inside a
+sentence rather than to be consumed.
+
+Two things to carry:
+
+1. **Read the backend's exception filter, not the throw site**, when parsing an
+   error body. The throw site shows *which* figures exist; only the filter shows
+   *where* they land.
+2. **A fixture the client author invents cannot catch this class of bug.** The
+   test passes because the fake produces the shape the parser expects. This one
+   was caught by reading the server, which is the only place the shape is decided.
+
+### 2026-08-19 - When the spec and the server disagree about money, ask
+§8.2 as revised reads "the employer must have a Candidate Unlock entitlement for
+that candidate. An invitation **may then** be attached to an active vacancy or
+sent as a general work invitation." The word "then" makes the unlock a
+precondition of *sending an invitation*.
+
+The backend does not implement that, and not by omission: its integration tests
+assert the looser behaviour deliberately. A verified employer may invite any
+search-visible candidate for free; a merely `sent` invitation answers
+`exposureReason: unlock_required` and reveals nothing; **acceptance** is what
+turns the code into `accepted_invitation` and opens the phone, e-mail and CV.
+
+The tempting move is to implement the spec — it is the client's own document, and
+the strict reading is the cautious one. **It is the wrong move here, twice over.**
+A client that gates on the unlock while the server does not tells an employer to
+pay for something the API would have accepted free: not a conservative failure, a
+false one. And deciding *when money must be spent* is exactly what §12.3.1 puts on
+the server, for the same reason it forbids computing a total — the rule has to
+live in one place, and that place is the side that owns the ledger.
+
+So the client built the half the two agree on (the candidate's inbox, which is
+unaffected either way), left the employer's send screen for after the answer, and
+recorded the question in PLAN.md next to the §11.1 one it resembles. The
+underlying product question is real and worth the client's attention: **is an
+invitation a contact action, or a request to make contact?** The server implements
+the second, and it is the better answer — an employer should not pay to be
+declined, and a candidate's consent is a better gate on their own phone number
+than the employer's wallet is.
+
+Generalises past this case: **a spec sentence and a running endpoint that
+disagree are a question, not a bug to be fixed in the client.** Build what they
+agree on, name the disagreement where the decision-maker will see it, and do not
+resolve it by writing the stricter rule into Dart where it cannot be changed
+without a store release.
+
+### 2026-08-18 - Money on screen must never be arithmetic the client did
+§6.6 makes the Coin price and the unlock cost server configuration, and today
+`balanceValueUzs == balanceCoins * coinPriceUzs` exactly. That coincidence is a
+trap: the obvious "simplification" is to drop the server's figure and multiply,
+and it passes every test written against realistic data.
+
+The fixture therefore makes them **disagree** — 8 Coins, 10,000 a Coin, and a
+balance value of 75,000 — which is the `rank`/`sortOrder` rule above applied to
+money. Verified by mutation: replacing the read with the multiplication fails
+exactly one test, the one named for it.
+
+The second half of the same rule is the ledger. Every entry carries the balance
+the server recorded after it, and the temptation is to accumulate down the list
+instead. That is wrong *by construction* rather than merely fragile: the client
+only ever holds one page, so page two's running total would start from nowhere.
+The test fixture gives balances that are not a running sum of their own amounts,
+so an accumulating implementation cannot pass it.
+
+### 2026-08-18 - `scrollUntilVisible` does nothing when the list is not lazy
+Tapping "Show more" under a full page of ledger entries missed: the tap landed at
+y=2453 in an 800-high viewport. `ensureVisible` did not help either, and the two
+failures have different causes worth telling apart.
+
+`ListView(children: [...])` builds **every** child immediately, unlike
+`ListView.builder`. So the finder matches from the first frame — and
+`scrollUntilVisible` stops as soon as the finder matches, which is before it has
+scrolled anything. It is built for lazy lists, where "not found" *is* the signal.
+
+`ensureVisible` is the right call here, but it only schedules the scroll; without
+a `pumpAndSettle` the frame never advances and the tap still lands off-screen.
+`ensureVisible` **then** `pumpAndSettle` is the working pair.
+
+### 2026-08-10 - A `Text` in a `Row` overflows; it does not wrap
+`HhRemovableChip` painted a striped overflow bar the first time a filter chip
+carried a long label. `Row` gives an unconstrained child its natural width, and
+`Text` has no reason to shrink - so the label ran past the chip and pushed the
+remove control off screen, which is the one part of that component that must
+never be lost. Fixed with `Flexible` + `TextOverflow.ellipsis`.
+
+Worth knowing because **the same label is longer in Russian and Uzbek than in
+English**, so this class of bug is invisible when a screen is built and read in
+one language. A widget test found it in seconds; `flutter analyze` cannot.
+
+Two consequences: prefer short chip labels (the group, not the form label - the
+builder is where the exact wording belongs), and treat any `Text` inside a
+`Row` as needing `Flexible` unless its width is provably bounded.
+
+**2026-08-19, the same bug with a different answer.** The invitation card's header
+was `Row(badge, Spacer, timestamp)` and overflowed by 32pt at 360 wide:
+"Details requested" plus `2026-08-18 09:30` needs 330 of the card's 298. Here
+`Flexible` + ellipsis is the *wrong* fix, because the only two candidates for
+truncation are both unshrinkable in principle — a badge is icon **plus word**, so
+a clipped word puts the state back on colour alone, and a truncated date is worse
+than no date. So the header became a `Wrap`: both fit on one line when they fit,
+and the timestamp drops to a second line when they do not.
+
+The general rule: **when nothing in a `Row` may shrink, the row is the wrong
+widget.** Reach for `Wrap` before deciding which piece of information to damage.
+Pinned at 320pt × 2.0x — the design's own QA case — rather than at 360, because
+the width that happened to fail is not the width worth guarding.
 
 ### 2026-08-04 - iOS cannot be built on this machine
 Xcode is macOS-only. `ios/` is generated and the Dart code is cross-platform; CI

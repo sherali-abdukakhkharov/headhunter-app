@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What the FileProvider in AndroidManifest.xml is allowed to share.
+
+  **One directory, and it is the narrowest one that works.** `<cache-path>` is
+  `Context.getCacheDir()`, which is app-private and OS-clearable, and the
+  `path="attachments/"` prefix narrows it further to the single subdirectory
+  `AttachmentOpener` writes into. Everything else under the app's data — the
+  `flutter_secure_storage` token pair, shared_preferences, the dictionary cache —
+  stays outside anything this provider can name.
+
+  Deliberately **not** `<external-path>` or `<external-cache-path>`: a candidate's
+  CV on shared storage is readable by other apps and survives an uninstall, which
+  is the opposite of what §11.1 asks of protected data.
+
+  The cache is also why every open re-downloads rather than reusing what is here:
+  BR-09 is re-evaluated per download, so a file left on disk must never be what
+  answers the next tap.
+-->
+<paths>
+    <cache-path name="attachments" path="attachments/" />
+</paths>

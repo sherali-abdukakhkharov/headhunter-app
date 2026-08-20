@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/auth/session_controller.dart';
-import 'package:headhunter_app/src/core/auth/session_state.dart';
-import 'package:headhunter_app/src/core/auth/token_store.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/auth_events.dart';
-import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
-import 'package:headhunter_app/src/features/auth/domain/auth_session.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
+import 'package:jobbridge_app/src/core/auth/token_store.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/auth_events.dart';
+import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
+import 'package:jobbridge_app/src/features/auth/domain/auth_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Cold-start restore is the whole reason a user does not sign in twice a day,

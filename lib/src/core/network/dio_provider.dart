@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/auth/token_store.dart';
-import 'package:headhunter_app/src/core/config/app_config.dart';
-import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
-import 'package:headhunter_app/src/core/network/auth_events.dart';
-import 'package:headhunter_app/src/core/network/interceptors/auth_interceptor.dart';
-import 'package:headhunter_app/src/core/network/interceptors/idempotency_interceptor.dart';
-import 'package:headhunter_app/src/core/network/interceptors/lang_interceptor.dart';
-import 'package:headhunter_app/src/core/network/log_redaction.dart';
+import 'package:jobbridge_app/src/core/auth/token_store.dart';
+import 'package:jobbridge_app/src/core/config/app_config.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/core/network/auth_events.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/auth_interceptor.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/idempotency_interceptor.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/lang_interceptor.dart';
+import 'package:jobbridge_app/src/core/network/log_redaction.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dio_provider.g.dart';

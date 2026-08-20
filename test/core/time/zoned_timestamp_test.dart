@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/time/zoned_timestamp.dart';
+import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 
 void main() {
   group('ZonedTimestamp', () {

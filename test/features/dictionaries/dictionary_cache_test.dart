@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_cache.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_delta.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_cache.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_delta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The merge rules decide what a picker offers, and every way of getting them

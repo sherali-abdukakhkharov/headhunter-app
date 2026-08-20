@@ -1,4 +1,4 @@
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 
 /// Compile-time application configuration.
 ///
@@ -44,29 +44,6 @@ abstract final class AppConfig {
   /// Surfaced in the debug footer so "which backend am I actually talking to"
   /// is answerable from the device.
   static bool get isApiBaseUrlOverridden => _apiBaseUrlOverride.isNotEmpty;
-
-  /// Telegram OIDC client id — the bot's **numeric id**, i.e. the part of the
-  /// bot token before the colon.
-  ///
-  /// Not a secret and safe to compile in: it is the public identifier of the
-  /// bot, and it is also the `aud` claim the backend checks on the ID token.
-  /// The **Client Secret** is a different value and must never appear in this
-  /// repository — the SDK performs the code exchange with PKCE, so the app has
-  /// no use for it (docs/TELEGRAM_LOGIN.md §6).
-  ///
-  /// One bot serves all three flavors; only the *redirect URI* differs per
-  /// flavor, because that is what Telegram binds to an application id.
-  static const String telegramClientId = String.fromEnvironment(
-    'TELEGRAM_CLIENT_ID',
-    defaultValue: '8565299674',
-  );
-
-  /// Scopes requested from Telegram.
-  ///
-  /// `phone` is **not optional**: BR-01 requires a verified phone number, and
-  /// the backend refuses a login without one. `openid` is mandatory per OIDC,
-  /// and `profile` supplies the name and photo the profile screens show.
-  static const List<String> telegramScopes = ['openid', 'profile', 'phone'];
 
   /// Request timeout for a single API call.
   static const Duration requestTimeout = Duration(seconds: 15);

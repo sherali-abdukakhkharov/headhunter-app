@@ -7,14 +7,42 @@
 > client; this document is kept as the record of what was built and what the
 > spike proved, not as a plan.
 >
+> ## The client code was REMOVED on 2026-08-19
+>
+> Everything below is now history rather than a description of the repository.
+> Deleted: `TelegramSignIn` / `PluginTelegramSignIn` and their tests,
+> `SessionController.signInWithTelegram`, `AuthRepository.signInWithTelegram` and
+> its tests, `AppConfig.telegramClientId` / `telegramScopes`,
+> `AppFlavor.telegramRedirectUri` / `isTelegramSignInAvailable`, and the
+> `telegram_login` dependency.
+>
+> **Why, when the code worked and was free to keep:** it had stopped being free.
+>
+> 1. It applies the **Kotlin Gradle Plugin**, and the build now warns that
+>    "future versions of Flutter will fail to build if your app uses plugins that
+>    apply KGP". A dead feature that will eventually break the build is a
+>    liability with no upside.
+> 2. Its Android half resolved `io.khode:telegram-login-sdk` — a **community fork**
+>    of Telegram's official SDK — from Maven Central. That supply-chain trade
+>    (§4.1 below) sat on the code path that guards every account, to no benefit.
+> 3. The JobBridge rename changed the application id to `com.jobbridge.app*`, so
+>    the BotFather registration in §7 was **already invalid**. Reviving the flow
+>    would have required re-registering regardless, which removes the "cheaper to
+>    keep than rebuild" argument that justified keeping it.
+>
+> Git history holds the deleted code, and this document holds the design. If
+> Telegram login ever returns, §8's recommendation stands: a platform channel over
+> the official SDKs rather than this package.
+>
 > **What is still true and still works:**
 >
 > - `POST /auth/telegram` on the backend, with JWKS verification and 22 passing
->   integration tests. Marked `deprecated` in Swagger. Nothing calls it.
-> - `TelegramSignIn` / `PluginTelegramSignIn` and
->   `SessionController.signInWithTelegram` in the app, with their tests. Nothing
->   calls them, and the sign-in screen no longer offers the button.
-> - The `telegram_login` dependency and the BotFather registration in §7.
+>   integration tests. Marked `deprecated` in Swagger. **Nothing calls it, and now
+>   nothing can** — the client has no code to obtain an `idToken`.
+> - `redactSensitive` still redacts `idToken`, deliberately: a redaction key that
+>   stops being applied is a leak waiting for the day the field comes back.
+> - The BotFather registration in §7, except that the application id it names no
+>   longer exists.
 >
 > **The open question in §7a — whether the `phone` scope actually returns a
 > number — was never settled, and is now moot.** It was also the reason to

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
-import 'package:headhunter_app/src/core/design/hh_icons.dart';
-import 'package:headhunter_app/src/core/design/hh_metrics.dart';
-import 'package:headhunter_app/src/core/design/hh_typography.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_icons.dart';
+import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
+import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
 /// The button variants drawn in the design.
 enum HhButtonVariant {
@@ -287,9 +287,19 @@ class _TextButtonBody extends StatelessWidget {
                 HhIcon(iconPath!, size: 19, color: colour, strokeWidth: 1.9),
                 const SizedBox(width: 7),
               ],
-              Text(
-                label,
-                style: HhTypography.bodyStrong.copyWith(color: colour),
+              // `Flexible`, as the filled variants have. Without it the label
+              // takes its full intrinsic width and the Row overflows instead of
+              // the label wrapping — a text button reading "View candidate" in
+              // a card overflowed by 190pt at 320 wide and 2.0x text scale.
+              //
+              // The same §08.2 rule applies here as above: the box grows with
+              // the label and never clips it. It simply grows in *height*, and
+              // `Flexible` is what lets it.
+              Flexible(
+                child: Text(
+                  label,
+                  style: HhTypography.bodyStrong.copyWith(color: colour),
+                ),
               ),
             ],
           ),

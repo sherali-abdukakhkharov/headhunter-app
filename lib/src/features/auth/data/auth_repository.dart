@@ -1,12 +1,12 @@
 import 'dart:io' show Platform;
 
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/core/network/interceptors/auth_interceptor.dart';
-import 'package:headhunter_app/src/features/auth/domain/auth_session.dart';
-import 'package:headhunter_app/src/features/auth/domain/otp_challenge.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/auth_interceptor.dart';
+import 'package:jobbridge_app/src/features/auth/domain/auth_session.dart';
+import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_repository.g.dart';
@@ -47,7 +47,6 @@ class AuthRepository {
       final response = await _dio.post<Map<String, dynamic>>(
         '/auth/otp$suffix',
         data: {'phone': phone},
-        // No session exists yet; see signInWithTelegram for why this matters.
         options: Options(extra: {AuthInterceptor.skipAuthFlag: true}),
       );
 
@@ -229,35 +228,7 @@ class AuthRepository {
   ///
   /// Throws [ApiException]. A 4xx here is meaningful rather than generic: the
   /// backend refuses a login that carries no Telegram-verified phone number
-  /// (BR-01), and its message arrives already localized.
-  Future<AuthSession> signInWithTelegram(String idToken) async {
-    try {
-      final response = await _dio.post<Map<String, dynamic>>(
-        '/auth/telegram',
-        data: {'idToken': idToken, ..._deviceInfo()},
-        options: Options(
-          // No session exists yet, so a 401 here means Telegram's token was
-          // rejected - not that an access token expired. Without this flag the
-          // auth interceptor would try to refresh a session that does not
-          // exist, and on failure would clear tokens and report an auth
-          // failure, turning a bad-credentials message into a spurious
-          // "signed out".
-          extra: {AuthInterceptor.skipAuthFlag: true},
-        ),
-      );
-
-      final data = response.data;
-      if (data == null) {
-        throw const ApiException('The server returned an empty response.');
-      }
-
-      return AuthSession.fromJson(data);
-    } on DioException catch (e) {
-      throw ApiException.fromDioException(e);
-    }
-  }
-
-  /// Device fields the backend records against the session, so the sessions
+   /// Device fields the backend records against the session, so the sessions
   /// screen (§4.2) can name devices.
   ///
   /// `platform` is validated server-side against `['android', 'ios']`, so it is

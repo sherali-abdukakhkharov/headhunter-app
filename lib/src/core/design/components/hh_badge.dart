@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
-import 'package:headhunter_app/src/core/design/hh_icons.dart';
-import 'package:headhunter_app/src/core/design/hh_typography.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_icons.dart';
+import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
 /// The five semantic tones.
 ///
@@ -21,9 +21,9 @@ enum HhTone { success, warning, error, info, neutral }
 
 /// A status badge: **icon + word**, never colour alone.
 ///
-/// One component behind vacancy, application and verification state. Use a
-/// named constructor — they *are* the vocabulary, and inventing a badge inline
-/// is how the vocabulary stops being learnable.
+/// One component behind vacancy, application, verification and invitation
+/// state. Use a named constructor — they *are* the vocabulary, and inventing a
+/// badge inline is how the vocabulary stops being learnable.
 ///
 /// ## The glyph rule
 ///
@@ -142,6 +142,48 @@ class HhBadge extends StatelessWidget {
   const HhBadge.applicationVacancyClosed({required this.label, super.key})
     : tone = HhTone.neutral,
       iconPath = HhIconPath.lock;
+
+  // --- Invitation · Taklif (4 states) --------------------------------------
+
+  /// Sent — delivered, not yet answered.
+  ///
+  /// Same send glyph and neutral tone as [HhBadge.applicationSubmitted],
+  /// because it is the same fact seen from the other side: something was sent
+  /// and the other party has not acted.
+  const HhBadge.invitationSent({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.send;
+
+  /// Details requested — **the candidate asked a question, so it waits on the
+  /// employer.**
+  ///
+  /// Warning-toned for that reason and not because anything is wrong: the tone
+  /// means "waiting on a person", and here the person is the employer reading
+  /// it. It is deliberately *not* terminal — §8.2 lets the candidate accept or
+  /// decline afterwards.
+  const HhBadge.invitationDetailsRequested({required this.label, super.key})
+    : tone = HhTone.warning,
+      iconPath = HhIconPath.helpCircle;
+
+  /// Accepted — a **person** accepted, the same check-circle as
+  /// [HhBadge.applicationHired].
+  const HhBadge.invitationAccepted({required this.label, super.key})
+    : tone = HhTone.success,
+      iconPath = HhIconPath.checkCircle;
+
+  /// Declined — **the candidate** ended it.
+  ///
+  /// Neutral rather than error, and the same arrow as
+  /// [HhBadge.applicationWithdrawn], because it is the same fact: the party
+  /// whose choice it was has stepped away. The tone table defines error as
+  /// "resolved badly **for the person reading it**", and this badge has two
+  /// readers — an employer, for whom it is a no, and the candidate who chose
+  /// it, for whom red would be the app disapproving of a decision it asked
+  /// them to make. `withdrawn` already settled that trade-off the same way, on
+  /// both of its surfaces.
+  const HhBadge.invitationDeclined({required this.label, super.key})
+    : tone = HhTone.neutral,
+      iconPath = HhIconPath.arrowLeft;
 
   // --- Verification · Tasdiqlash (5 states) --------------------------------
 

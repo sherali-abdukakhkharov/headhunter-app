@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/network/log_redaction.dart';
+import 'package:jobbridge_app/src/core/network/log_redaction.dart';
 
 /// §12.1: log without sensitive data. dio's `LogInterceptor` prints headers and
 /// both bodies verbatim, so this is the thing standing between a developer's
@@ -40,7 +40,10 @@ void main() {
       );
     });
 
-    test('a Telegram id token', () {
+    // `idToken` is kept in the redaction list although the client no longer
+    // sends one: the backend's /auth/telegram still accepts it, and a key that
+    // stops being redacted is a leak waiting for the day it comes back.
+    test('an OIDC id token', () {
       expect(
         redactSensitive('{"idToken":"eyJraWQiOiIx"}'),
         '{"idToken":"<redacted>"}',

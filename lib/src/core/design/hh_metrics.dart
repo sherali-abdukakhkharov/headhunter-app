@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
 
 /// Spacing scale — 4pt base.
 abstract final class HhSpace {

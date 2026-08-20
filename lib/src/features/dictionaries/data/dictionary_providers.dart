@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_cache.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_repository.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_cache.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_repository.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dictionary_providers.g.dart';

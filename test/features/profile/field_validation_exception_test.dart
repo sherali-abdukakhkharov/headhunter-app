@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/features/profile/data/profile_repository.dart';
+import 'package:jobbridge_app/src/features/profile/data/profile_repository.dart';
 
 /// A 422 has to land **on the field that caused it** (§4.6).
 ///

@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/l10n/app_locale.dart';
-import 'package:headhunter_app/src/core/network/interceptors/idempotency_interceptor.dart';
-import 'package:headhunter_app/src/core/network/interceptors/lang_interceptor.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/idempotency_interceptor.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/lang_interceptor.dart';
 
 /// Captures the outgoing request and returns an empty 200.
 class _CapturingAdapter implements HttpClientAdapter {

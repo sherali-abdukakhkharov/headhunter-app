@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_item.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_picker.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_picker.dart';
 
 /// Widget tests for the pickers (§3.3, BR-13, §5.1, §10.3).
 ///

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/features/profile/domain/candidate_profile.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/features/profile/domain/candidate_profile.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'profile_repository.g.dart';
@@ -60,6 +60,30 @@ class ProfileRepository {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         '/schemas/candidate-profile',
+        queryParameters: {'category': category},
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return FieldSchema.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /schemas/vacancy?category=…`
+  ///
+  /// The same shape as [fetchSchema], deliberately: one form engine draws both
+  /// the candidate profile and the vacancy, and one declaration validates
+  /// both. `requiredForSearchable` here means "required before the vacancy may
+  /// be submitted for publication".
+  Future<FieldSchema> fetchVacancySchema(String category) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/schemas/vacancy',
         queryParameters: {'category': category},
       );
 
@@ -147,8 +171,17 @@ class ProfileRepository {
     }
   }
 
-  /// Turns a 422 body into per-field errors, or null when it is not one.
-  static FieldValidationException? _asFieldErrors(DioException e) {
+  // Moved out of this class: vacancy writes answer with the same §4.6 shape,
+  // and a second parser would be a second thing to keep in step with it.
+  static FieldValidationException? _asFieldErrors(DioException e) =>
+      fieldErrorsFrom(e);
+}
+
+/// Turns a 422 body into per-field errors, or null when it is not one.
+///
+/// Shared by every write that can be refused field by field (§4.6) — the
+/// candidate profile and vacancies both answer in this shape.
+FieldValidationException? fieldErrorsFrom(DioException e) {
     if (e.response?.statusCode != 422) return null;
 
     final data = e.response?.data;
@@ -178,8 +211,7 @@ class ProfileRepository {
       data['message'] as String? ?? 'Some of the submitted data was not valid.',
       errors,
       cause: e,
-    );
-  }
+  );
 }
 
 @Riverpod(keepAlive: true)

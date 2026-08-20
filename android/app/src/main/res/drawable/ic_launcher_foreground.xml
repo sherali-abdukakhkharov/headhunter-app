@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The JobBridge mark, as an adaptive icon's foreground layer.
+
+  ## Why 48% and not the 56% the design states for square masks
+
+  An adaptive foreground is 108dp and the launcher may mask it to a circle, a
+  squircle, a square or a teardrop, so the artwork has to satisfy the *most*
+  restrictive of them. The design works it out: a circle binds on the mark's
+  bounding diagonal, and at 23 : 19.8 that diagonal is width x 1.320. At 56% the
+  diagonal reaches 73.9% of the layer and the 66% safe zone clips the corners; at
+  48% it is 63.4%, clearing by about 1.3pp per side.
+
+    mark width  = 0.48 x 108 = 51.84
+    mark height = 51.84 x 19.8 / 23 = 44.6275   (aspect is locked)
+    diagonal    = 68.40 = 63.3% of 108          (safe zone is 72 = 66.7%)
+
+  ## Why the transforms rather than pre-multiplied path data
+
+  The path data below is **byte-identical to the design document**, so it can be
+  diffed against it. Android's viewport has no origin offset, where the designer's
+  export is cropped to the ink with `viewBox="4.5 6.2 23 19.8"` - so the inner
+  group carries that crop as a translate and the outer group carries the scale
+  and centring. Baking the numbers into the coordinates would save two lines and
+  make the mark unverifiable against its source.
+
+    outer: scale 2.253913 (= 51.84 / 23), translate to (28.08, 31.686261)
+    inner: translate (-4.5, -6.2), which is the viewBox origin
+
+  Heads are circles in the source; VectorDrawable has no <circle>, so each is the
+  standard two-arc path around the same centre and radius.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:scaleX="2.253913"
+        android:scaleY="2.253913"
+        android:translateX="28.08"
+        android:translateY="31.686261">
+        <group
+            android:translateX="-4.5"
+            android:translateY="-6.2">
+
+            <!-- Left figure: the candidate. -->
+            <path
+                android:fillColor="#FFFFFFFF"
+                android:pathData="M5,9.8a3.6,3.6 0 1,0 7.2,0a3.6,3.6 0 1,0 -7.2,0" />
+            <path
+                android:fillColor="#FFFFFFFF"
+                android:pathData="M4.5 26C4.5 18.5 5.8 13.2 8.6 13.2C11.5 13.2 13.4 12.4 15.2 11.8L15.2 17.5C12.5 18.2 10.5 20.5 10.5 26Z" />
+
+            <!-- Right figure: the employer, reaching toward the candidate. This
+                 is the turquoise one, always; never the left, never both. -->
+            <path
+                android:fillColor="#FF12B0BE"
+                android:pathData="M19.8,9.8a3.6,3.6 0 1,0 7.2,0a3.6,3.6 0 1,0 -7.2,0" />
+            <path
+                android:fillColor="#FF12B0BE"
+                android:pathData="M27.5 26C27.5 18.5 26.2 13.2 23.4 13.2C20.5 13.2 18.6 12.4 16.8 11.8L16.8 17.5C19.5 18.2 21.5 20.5 21.5 26Z" />
+        </group>
+    </group>
+</vector>

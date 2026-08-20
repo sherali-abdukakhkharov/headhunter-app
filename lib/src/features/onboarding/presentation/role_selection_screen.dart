@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/auth/session_controller.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
 
 /// Where an account with no role is held (§2.3). **M1** owns the finished
 /// screen, with the copy explaining what each role can do.

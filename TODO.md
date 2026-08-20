@@ -37,10 +37,50 @@ decision or on the backend.
       there.
 - [?] **Time zone policy** for interview display (§8.3). *Blocks M8.*
 - [?] **App icons and launch screen** - still Flutter defaults.
+- [?] **Payme and CLICK merchant credentials** for the providers' *test*
+      environments (§12.6). Nothing in M13 can be finished without them, and
+      UAT-22 — the duplicated callback — has to be demonstrated rather than
+      argued. *Blocks M13.*
+- [?] **Storefront billing decision** (§12.7, BR-23) — whether Coin purchases
+      ship through Payme/CLICK or must go through Apple IAP / Google Play
+      Billing. The ledger stays provider-agnostic either way, which is what
+      makes this deferrable; the checkout surface in the app does not. *Shapes
+      M13 and gates release.*
+- [x] ~~**Wallet API contract**~~ — **published 2026-08-18.** The backend built
+      it (`a88d185`): `GET /wallet` carries the balance, its UZS value and the
+      prices; `GET /wallet/transactions` is the paged append-only ledger;
+      `GET /wallet/unlocks/:candidateUserId` answers locked-or-not without
+      attempting a purchase, and `POST /wallet/unlocks` is the atomic debit,
+      answering **402** with `required` and `balance` when the balance is short.
+      There is deliberately **no `Idempotency-Key` on the unlock** — the
+      (employer, candidate) pair is a primary key, so a retry returns the
+      existing entitlement with `charged: false` and one key per tap would be
+      two keys for one intent.
+- [x] ~~**Contact exposure is not gated on the entitlement**~~ — **merged
+      2026-08-19** (backend `c5e7a97`, 970 tests). `expose()` reads the unlock,
+      `no_interaction` became **`unlock_required`**, `candidate_unlock` joined
+      the granting codes, `between()` gained an `unlocks` kind, and there is a
+      third download route at `/unlocks/{candidateUserId}/files/{fileId}`. All
+      seven codes are now an enum on the DTO rather than prose. The client's
+      reason-code gate needed no change to activate — which was the point of it.
+      Two corrections worth keeping:
+      **`hidden_by_candidate` did *not* become reachable** as the brief
+      predicted — the readability gate 404s before `expose()` is consulted, so
+      keep it mapped as defence in depth but do not design a screen around it.
+      And **`not_verified_employer` is reachable with a 200**, a readable
+      profile and `phone: null`, so it belongs in the page rather than in an
+      error state; it now routes to verification.
+- [x] **The purchase has four refusals, and they do not share a destination.**
+      402 `wallet.insufficient_coins` → top-up; **403 `employer.not_verified` /
+      `employer.profile_incomplete` → verification, never top-up** (BR-03 is a
+      precondition an employer cannot buy past, so selling Coins there sells
+      access §7 is about to refuse); 404 and 409 have no destination at all.
+      All four land before any Coins move. The 403 reuses the codes every other
+      §7-gated route already returns rather than minting a wallet-specific one
 
 ## M0 - Foundations *(done)*
 
-- [x] Flutter 3.44.8, Riverpod 3 + go_router + dio, `com.headhunter.app`
+- [x] Flutter 3.44.8, Riverpod 3 + go_router + dio, `com.jobbridge.app` (was `com.headhunter.app` until the 2026-08-19 rename)
 - [x] Feature-first `lib/src/{core,features,shared}` layout
 - [x] `ApiException` mapping; repositories never leak `DioException`
 - [x] Riverpod auto-retry disabled (endless-spinner fix) + error-first rendering
@@ -71,7 +111,54 @@ emulator against the design document, with 18 tests pinning the rules.
       rule, always-on category band, conditional-field rail, two-line nav at a
       constant 70pt, min-52 control height, 2.0x text-scale clamp, derived
       skeletons
+- [x] **§06 (wallet) round applied 2026-08-19** — imported from the designer's
+      project via the Claude Design MCP. Added: `HhNoticeTone.success` with a
+      `HhNotice.done` constructor and an optional dismiss control (the first
+      success-toned *notice* in the product — badges carry no border, so the
+      ramp had no `successBorder` until one was drawn); the `coin`, `phone` and
+      `mail` glyphs, transcribed from the designer's own paths; `surfaceMuted`.
+      All registered in the gallery, and the two chevrons — which the catalogue
+      had been missing since round 1 — now render there beside each other
+- [!] **The employer nav question resolved itself in the design's favour.** The
+      wallet TZ §5.2 lists Wallet as an employer bottom-nav destination, which
+      would be a **sixth** tab against `HhBottomNav`'s five-tab cap and round
+      1's constant 70pt bar. The design keeps five (Bosh sahifa · Vakansiyalar ·
+      Nomzodlar · Xabarlar · Kompaniya) and makes the **balance chip** the entry
+      point instead, in the app bar of surfaces where Coins get spent. So no
+      cap to renegotiate and no tab to add — `CoinBalanceChip` is that widget
+- [x] **The app was painting the canvas colour as its screen background** —
+      **corrected 2026-08-19.** `scaffoldBackgroundColor` was `sand100`
+      (`#EFEBE4`), which the design's foundations page *does* swatch as sand-100 —
+      and which is also `body{background:#EFEBE4}`, the paper the artboards are
+      laid out on. That double role is why it looked defensible. Every phone frame
+      in the document draws its screen on `#F7F8FA`: 30 uses against 4, and of
+      those 4 the only one *inside* an artboard is the swatch itself.
+      Now `HhColors.surfaceMuted`, with a test asserting it against the literal
+      value as well as the token, so repointing the token cannot satisfy it. Two
+      `HhCompletenessRing` call sites moved with it — the ring paints its own hole
+      rather than leaving it transparent, so a ring sitting on a screen has to be
+      told the screen's colour. **Not yet seen on a device**, which is the one
+      check this change really wants
 - [x] Verified at the design's QA case — 320pt at 2.0x, no overflow anywhere
+- [x] **§8.2's four invitation badges, 2026-08-19** — the round-1 rule named
+      invitation state as one of the object types `HhBadge` stands behind, and
+      the constructors did not exist, so every invitation surface would have
+      hand-rolled one. Now **sent · details requested · accepted · declined**,
+      registered in the gallery and held to both halves of the glyph rule by the
+      same tests as the other twenty. Two decisions worth keeping:
+      **a declined invitation is neutral, not error.** The tone table defines
+      error as "resolved badly *for the person reading it*", and this badge has
+      two readers — the employer, for whom it is a no, and the candidate who
+      chose it, for whom red is the app disapproving of a decision it asked them
+      to make. `applicationWithdrawn` settled the same trade-off the same way
+      and appears on both of its surfaces too, so this follows it rather than
+      inventing a rule: neutral tone, and the same `arrowLeft` glyph, because it
+      is the same fact.
+      And **`helpCircle` is the one glyph in the set the designer did not
+      draw** — "request details" needs a *question* glyph, and `infoCircle`
+      means "here is information", so reusing it would break the rule that a
+      shared glyph means the same thing everywhere. Same 9-radius circle and
+      stroke as its three siblings. Raised in docs/design-feedback.md round 4
 - [ ] **Category photography** - five 3:2 masters (1620x1080), one per §2.1
       category, subject inside the middle 60% vertically so one file survives
       both the 4.15:1 card crop and the 2.6:1 hero crop. Stock, art-directed by
@@ -270,8 +357,10 @@ working destinations rather than dead ends.
 - [x] Resolve labels by id, including retired and merged items (§10.3)
 - [x] Verified on device against the live API: labels switch uz-Latn → ru while
       the bound ids stay byte-identical — the client half of UAT-13
-- [ ] **Match-all / match-any** on multi-select where §7.1 needs it — a search
-      concern, so it belongs with the search UI rather than the picker
+- [x] **Match-all / match-any** on multi-select where §7.1 needs it — landed in
+      the M7 filter builder rather than the picker, which is where the concern
+      actually is. Shown only once its group has values: a mode with no group
+      asks a question with no subject, and `toJson` drops it anyway
 - [x] **Level pickers** (skill × skill_level, language × language_level) —
       `LeveledFieldEditor`, built as M3's `dictionary_leveled` field. It reuses
       the picker sheet via `pickDictionaryItem` rather than growing a second
@@ -288,13 +377,19 @@ working destinations rather than dead ends.
       loading arm on a resolution *failure*, and with retry disabled that
       ellipsis is terminal. The rule now lives once, in `resolveLabel`
 
-## M3 - Candidate profile
+## M3 - Candidate profile *(done bar one test)*
 
-The candidate Profile tab is a **real screen** now: it renders from
+The candidate Profile tab is a **real screen**: it renders from
 `GET /schemas/candidate-profile`, writes through `PATCH /candidates/me/profile`,
-and shows the completeness the server computed. Verified on device against the
-live API — saving a name and a region moved it 0% → 10% and unlocked the
-district picker.
+and shows the completeness the server computed.
+
+Walked end to end on an emulator against the live API on 2026-08-07 — the form,
+the leveled skill rows, work history, education, the file slots and the privacy
+control, all against real endpoints. Running it found four bugs the suite had
+not: see MEMORY.md. Every one now has a test.
+
+The only item left is the second-category comparison test, which needs a second
+category to compare against.
 
 - [x] Form engine: text, long text, int, decimal, url, phone, bool, date,
       money range, dictionary single/multi. **An unknown `kind` is skipped and
@@ -326,70 +421,711 @@ district picker.
       Every mutation refreshes two things: the list, and the profile's
       completeness (§5.3). The second is `ProfileEditor.refreshProfile`, not
       an invalidate — invalidating would refetch the schema *and* discard
-      unsaved form edits, so adding a job would silently eat a half-typed name
+      unsaved form edits, so adding a job would silently eat a half-typed name.
+      **Verified on an emulator against the live API**: add took completeness
+      5% → 10%, delete took it back, and the form's unsaved state survived
+      both. Running it found a bug the suite missed — see MEMORY.md
 - [x] Simplified experience entry for informal/seasonal work — satisfied by
       construction rather than by a second mode, which the design system
       forbids. Only `roleTitle` and `startedOn` are required, so a seasonal
       worker with no employer to name can still file a complete record
-- [ ] Missing-field list with **direct edit links** — the codes are in the
-      response, the tap-to-focus is not built
-- [ ] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —
-      `setVisibility` exists on the controller, no UI yet
-- [ ] Last-meaningful-update display
-- [ ] CV upload with progress, cancel, failure reason, retry (UAT-03)
-- [ ] Optional certificates / work evidence
+- [x] Missing-field list with **direct edit links** — each blocking field is a
+      chip that scrolls to the widget that fixes it. The label comes from the
+      schema, so a field name is translated once rather than twice.
+      **This is why the form is a `SingleChildScrollView`, not a `ListView`**:
+      a lazy list never mounts the fields below the fold, so every key the
+      chips needed was null and the feature silently did nothing
+- [x] Privacy control: searchable / hidden / visible-after-apply (UAT-12) —
+      `VisibilitySection`, applied immediately rather than through the save
+      bar, and deliberately not a schema field: §4.2 has no `enum` kind and
+      this is the one write that must not refresh `lastMeaningfulUpdateAt`.
+      Verified on device: the setting changes while `isSearchable` stays false
+      on an incomplete profile, which is BR-02 computed server-side
+- [x] Last-meaningful-update display — in the completeness card, ISO because
+      §8.3's display policy is still open
+- [x] CV upload with progress, cancel, failure reason, retry (UAT-03) —
+      `AttachmentsSection`, with the slots taken from the schema's own
+      `attachments` block rather than listed here, so CV, photo, certificates
+      and supporting documents all arrive at once and a fifth purpose would
+      need no client change. Verified on device: a PDF uploaded (201), the
+      button flipped to Replace on the full one-file slot, and completeness
+      refreshed. **Adding `file_picker` cost three toolchain fixes** — AGP 9,
+      built-in Kotlin and JVM targets; all three are in MEMORY.md
+- [x] Optional certificates / work evidence — the same schema-driven slots.
+      `certificate` carries `maxCount: 10`, so it accumulates rather than
+      replacing, which the one shared widget already handles
 - [ ] Test: form adapts by category and irrelevant fields are not mandatory —
       needs a second category to compare against
 
-## M4 - Employer profile
+## M4 - Employer profile *(done bar evidence upload)*
 
-- [ ] Company and individual employer forms
-- [ ] Verification submission + evidence upload
-- [ ] Status display with admin reason and changes-required path
-- [ ] BR-03: explain what blocks invitations / vacancy submission
+The employer Company tab is a real screen. Walked end to end on an emulator
+against the live API on 2026-08-07 with a freshly registered employer account.
 
-## M5 - Vacancy management
+- [x] Company and individual employer forms — one screen, and **`type` decides
+      which fields exist**. There is no neutral empty employer, so a 404 before
+      the first write is "not created yet" and renders the type question, not
+      an error. The type is fixed after creation (`employer.type_immutable`),
+      so the chooser disappears rather than offering a control that always
+      fails, and the `PUT` carries only the chosen type's fields
+- [~] Verification submission + evidence upload — state, the served
+      `requiredEvidence` list and submission are wired; **the evidence files
+      are not.** They go through `POST /files` and want the attachments widget
+      generalised, which is the next slice. The server refuses a submission
+      that lacks a required document and says so, so the gap is visible rather
+      than silent
+- [x] Status display with admin reason and changes-required path — the five
+      §6.1 states through the design system's own badge constructors, and the
+      administrator's reason shown **verbatim** (§2.4). An unrecognised status
+      falls back rather than throwing, the same rule as an unknown field kind
+- [x] BR-03: explain what blocks invitations / vacancy submission — `canPublish`
+      is computed server-side and rendered as given; the sentence names both
+      conditions, because an employer who is complete but unverified needs to
+      know which half is missing
 
-- [ ] Vacancy create/edit across all six §6.3 categories via the form engine
-- [ ] Structured requirements incl. mandatory-vs-preferred languages
-- [ ] Status display + employer-available transitions (§6.4)
-- [ ] Moderation rejection reason shown to the employer
-- [ ] Worker count `>= 1` (BR-05)
-- [ ] Age/gender fields warn about justification + moderation (BR-12)
-- [ ] Seasonal/agricultural flow (UAT-10)
-- [ ] Employer dashboard widgets (§6.2)
+## M5 - Vacancy management *(core done)*
 
-## M6 - Discovery and applications
+The employer Vacancies tab lists the employer's own vacancies and opens a
+schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 
-- [ ] Candidate home: recommended, recent, saved, completion prompt
-- [ ] Vacancy filters per §5.5
-- [ ] Vacancy details + verification badge; Apply / Save / Share / Report
-- [ ] Apply button reflects BR-07 (one active application per vacancy)
-- [ ] Application list with all §8.1 stages; withdraw where permitted
+- [x] Vacancy create/edit across all six §6.3 categories via the form engine —
+      `GET /schemas/vacancy` returns the **same `FieldSchema`** the candidate
+      profile renders, so `SchemaFieldWidget` draws it unchanged and a sixth
+      category costs no client work. Adding a vacancy field is a backend change
+- [x] Structured requirements incl. mandatory-vs-preferred languages — carried
+      by the schema, not written here, for the same reason
+- [x] Status display + employer-available transitions (§6.4) — the six statuses
+      through the design system's own badge constructors; only the transitions
+      the current status allows are offered, and **closing is terminal (BR-11)**
+      so nothing is ever offered from closed. Closing is confirmed first
+- [x] Moderation rejection reason shown to the employer — verbatim (§2.4)
+- [x] Age/gender fields warn about justification + moderation (BR-12) — said on
+      the form rather than discovered at submit
+- [x] `missingForSubmit` shown as a count **before** the refusal, turning one
+      422-per-field into a checklist. Verified on device: submitting an empty
+      draft outlined all eight required fields with their messages
+- [ ] Worker count `>= 1` (BR-05) — the server enforces it; the schema's
+      `validation.min` is not yet applied client-side, so it costs a round trip
+- [ ] Seasonal/agricultural flow (UAT-10) — needs a seasonal category to walk
+- [ ] Employer dashboard widgets (§6.2) — the Home tab is still a placeholder
+
+## M6 - Discovery and applications *(candidate half done)*
+
+- [x] Candidate feeds: recommended, recent, saved — three tabs over one list,
+      because they differ only in endpoint. Ranking stays server-side
+- [x] Vacancy card with the employer's **public** name and the §5.6
+      verification badge. Verified on device against the live API
+- [x] Apply button reflects BR-07 — the card carries `applicationStatus`, the
+      caller's own stage, so Apply is offered exactly when there is no live
+      application and no second request is needed to decide
+- [x] **Idempotency key on apply, persisted** — written against the vacancy id
+      before the request and cleared only once the server answers. A key minted
+      per attempt gives no protection: the retry looks new and the server
+      creates a second application (§12.4)
+- [x] Application list with all §8.1 stages; withdraw offered only while the
+      application is live
+- [ ] Vacancy **detail** screen — the feed card is built, the full
+      `GET /discovery/vacancies/:id` view with requirements, Share and Report
+      is not
+- [ ] Vacancy filters per §5.5 — the repository takes them, no filter UI yet
 - [ ] Deadline-expired / closed vacancy rendering (UAT-15)
-- [ ] Employer: applications per vacancy, filters, stage moves, internal notes,
-      hired-vs-required counts
-- [ ] Idempotency key on apply
+- [x] Employer: applications per vacancy, stage moves and §6.5's
+      hired-vs-required counts. **Stage moves are forward only, skipping
+      allowed** (§8.1) — real hiring skips, and backwards is refused by the
+      server, so only the legal targets are rendered. `withdrawn` is never
+      offered: it is the candidate's alone
+- [x] **BR-09 on the applicant view** — the phone is whatever the server sent
+      and nothing reconstructs one it withheld. Null is a normal answer, so
+      the absence is stated rather than left blank, and `canViewFiles` false
+      means the server sent no files at all
+- [ ] Employer application filters, and the internal-notes UI — the repository
+      has `notes`/`addNote`, no screen yet
+- [x] **Vacancy detail (§5.6)** — the candidate could browse a feed and apply
+      but never open a vacancy to read it. Tapping a card opens it: employer
+      and verification badge, pay, openings, deadline, the work window,
+      location, the description **exactly as entered** (§2.4), the structured
+      requirements grouped by field, and Apply / Save / Report
+- [x] **UAT-15: a vacancy that is gone reads as gone, not as a fault.** The
+      server answers `vacancy.not_found` for unknown, closed, expired and
+      moderated-away alike — deliberately, since saying which would leak the
+      existence of vacancies the candidate may not see. So the client
+      distinguishes only "gone" from "broken", which is the distinction that
+      matters to the person holding the phone: 404 gets its own notice with a
+      Back action and **no retry**, everything else keeps the error state
+- [x] **Required is not the same as preferred** (§6.3) — badged, never told
+      apart by order or colour alone. A preference that looked like a
+      requirement would stop people applying, which is the opposite of what a
+      preference is for. Mandatory rows also sort first within their group
+- [x] A levelled requirement renders **both halves** — the row carries an item
+      *and* a level, so testing the item slot first and stopping would silently
+      drop the "C1" that is the whole requirement. Pinned by a test
 
-## M7 - Candidate search
+## M7 - Candidate search *(§7.1–§7.3 done; invitations and the profile view open)*
 
-- [ ] Filter builder for all §7.1 groups
-- [ ] Count before results; render "200+" when inexact
-- [ ] Removable filter chips; reset all; edit one
-- [ ] Result list with §7.3 sorts and candidate cards
-- [ ] **No phone numbers on candidate cards** (BR-09, §11.1) - assert in a test
-- [ ] Prefill from vacancy, still editable (UAT-06)
-- [ ] Save candidates, shortlists, private notes
-- [ ] Invitations + response tracking (UAT-07); general invitations
-- [ ] Persist last search configuration locally
+- [x] **No phone numbers on candidate cards** (BR-09, §11.1) — **asserted in a
+      test**, and verified to fail against a card that renders one. The
+      guarantee is structural on both sides: the server's DTO has no phone
+      field and neither does `CandidateCard`, so there is nowhere to put one.
+      The test also pins that §7.3's private note stays off the card
+- [x] Count before results; **"200+" comes from `isExact`**, never from
+      comparing the number — reading `count == 200` as capped would be wrong
+      the day the server raises the cap, and wrong today for a search that
+      genuinely returns two hundred
+- [x] Result list with §7.3 candidate cards and the match score
+- [x] Save candidates — the repository also covers shortlists, private notes
+      and UAT-06's prefill-from-vacancy
+- [x] Filter builder for all §7.1 groups — every field on
+      `CandidateSearchFiltersDto`, in eleven sections. Two of the server's
+      refusals are re-made in the client so they are read *before* the request
+      rather than as a 403 after it: **BR-12** blocks Apply until an age or
+      gender filter has a declared reason, and `search.occupation_required` is
+      made unreachable by disabling "years in this occupation" until an
+      occupation is chosen
+- [x] **Level floors bind a `rank`, not a dictionary id** — the one deliberate
+      exception to BR-13 in this app, because "B2 or better" is a comparison
+      and ids are unordered. Pinned by a test whose fixture gives `rank` and
+      `sortOrder` *different* values, so a field reading `sortOrder` fails
+      here rather than the day an administrator inserts a level (§7.4, §10.3)
+- [x] Removable filter chips; reset all; edit one. **Removing a group takes its
+      dependents with it** — occupation → occupation-experience, region →
+      districts, justification → age/gender — so a chip can never leave a set
+      the server refuses for a filter the employer did not touch
+- [x] §7.3 sorts, all five
+- [x] Persist last search configuration locally, restrictions included. Safe
+      because a restriction is never invisible: it is always a chip, and it
+      cannot survive without the justification it was declared with
+- [x] UAT-06 prefill from a vacancy — "Find candidates" on a non-draft vacancy
+      fetches `/candidate-search/prefill/:id` *before* navigating, so the tab is
+      never entered showing the previous search and then reshuffled
+- [x] Candidate profile view from a result card (§7.3 "View profile") — the
+      place where **BR-09 does open**. The client holds no copy of the rule to
+      disagree with: `phone` is either in the response or it is not. What the
+      screen adds is the *reason* — `exposureReason` becomes a sentence saying
+      what would change it, mapped exhaustively over the six codes in
+      `contact-exposure.ts` rather than defaulted, because "hidden their
+      profile" and "nobody has applied yet" are undone by different things.
+      The applicants screen now shows the same specific reason instead of a
+      generic line, from the same one function
+- [x] Saved candidates screen (§7.3) — still behind BR-02's gate, so the empty
+      state says "nothing here" rather than "you have saved nobody": a
+      candidate who hides their profile leaves the list without having been
+      un-saved
+- [~] Invitations + response tracking (UAT-07); general invitations.
+      **The candidate half shipped 2026-08-19**; the employer half is next.
+      The 2026-08-10 re-scope said this could not finish before M12, and M12
+      landing showed the blocker was narrower than recorded: **the server does
+      not require an unlock to send an invitation.** `invitations.service.ts`
+      checks BR-03 and BR-02 and nothing else, and a merely `sent` invitation
+      answers `exposureReason: unlock_required` — so it carries no contact
+      context until the candidate **accepts**, at which point the code becomes
+      `accepted_invitation` and contact opens. The gate is acceptance, not
+      payment. §8.2's prose disagrees; see the item below it
+- [x] ~~**§8.2 says unlock *then* invite, and the server does not**~~ —
+      **answered by the client 2026-08-19: sending is free.** What settled it was
+      not the server but the specification arguing with itself. §7.3 lists "Send
+      invitation" beside "View profile" and "Save" — two explicitly free actions —
+      in the sentence right after the one saying phone, e-mail and CV are locked.
+      And §7.4, the client's own worked example, fills **20 openings** by sending
+      invitations in step 6; filling 20 takes far more than 20 invitations, and at
+      2 Coins each the employer would spend over a million som before a single
+      reply, with the 10-Coin registration bonus covering five people. §8.2's
+      "then" is one word against two sections and a running server. Recorded for
+      the client as a spec correction, not a code change. The original note is
+      kept below because the reasoning generalises.
+- [-] ~~**§8.2 as revised says unlock *then* invite, and the server does not.**~~
+      The sentence reads "To initiate direct contact … the employer must have a
+      Candidate Unlock entitlement for that candidate. An invitation **may then**
+      be attached to an active vacancy or sent as a general work invitation." The
+      word "then" makes the unlock a precondition of *sending*. The backend has
+      no such check, and its own integration tests assert the looser behaviour.
+      **Not resolved in the client, deliberately.** Enforcing it here would be
+      the client deciding when money must be spent, which §12.3.1 puts on the
+      server — and if the client gated while the server did not, an employer
+      would be told to pay for something the API would have accepted free.
+      Needs a one-line answer, and it is the same shape as the §11.1 question
+      that was already emailed: is an invitation a *contact* action (pay first)
+      or a *request* to make contact (pay when they say yes)? The second reading
+      is what the server implements and it is the more defensible one — an
+      employer should not pay to be declined. *Blocks nothing today: the
+      candidate inbox is unaffected either way, and the employer's send screen
+      is the one that would carry the gate.*
+- [x] **A daily invitation cap, server-owned, 2026-08-19.** With sending free
+      and uncapped, a verified employer could send an unbounded number — no limit
+      existed in the service or in the specification. The client asked for a daily
+      cap and said extra invitations may become **purchasable** later, which is
+      what settled ownership: the moment a quota can be bought it is a balance,
+      and §12.3.1 puts balances on the server. So the client holds **no number**
+      and refuses no send on its own authority.
+      The backend shipped it the same day: `GET /invitations/quota` returning
+      `{remaining, limit, resetsAt}`, `EMPLOYER_DAILY_INVITATION_LIMIT` defaulting
+      to **30**, and a 409 `invitation.daily_limit_reached`. Two shapes worth
+      keeping: `limit` is the **effective** total rather than free-plus-purchased,
+      so the client models no tiers and a future purchase raises the number with no
+      client release; and the day is a **calendar** day in `PLATFORM_TIME_ZONE`,
+      because "it resets at midnight" is something an employer can plan around and
+      "one more in 7 hours 22 minutes" is not.
+      **An absent quota blocks nothing.** A 404 or an unreadable body means "this
+      server has no cap" — no counter, nothing disabled — because a form disabled
+      by a counter that failed to load would refuse sends the API accepts. Pinned
+      and mutation-verified both ways: hard-coding 30 fails the fixture whose limit
+      is 47, and treating an absent quota as blocked fails the no-quota test.
+      **The 409's figures are in a nested `details` object, not at the top level**
+      — caught before shipping by reading `localized.exception.ts`, which spreads
+      nothing on purpose so a key cannot collide with `statusCode`, `code` or
+      `message`
+- [x] **Candidate invitation inbox (§8.2, UAT-07's second half), 2026-08-19.**
+      Three actions rendered from the status rather than as a fixed row of three,
+      so an answered invitation offers nothing and one already at
+      `details_requested` no longer offers to ask again — the server refuses
+      both, and offering a refusal is worse than offering nothing.
+      **Accepting is a disclosure and the sheet says so before the button**: it
+      names the phone, e-mail and CV by name rather than saying "your contact
+      details", because a candidate cannot weigh a category, and it states that
+      the status is final. That is the most consequential tap in the product and
+      §8.2 gives it no way back.
+      **"Request details" requires its question**, though the server takes the
+      note as optional: "the candidate asked for details" with nothing attached
+      is a message the employer cannot answer. Same idiom as the leveled field
+      editor opening its level picker immediately. Declining takes an optional
+      note, marked optional in the label, because a decline owes no reason.
+      **No price, balance or unlock appears anywhere on the screen** — swept by a
+      test, because the way this regresses is a well-meaning "top up to reply"
+      landing on the wrong person's screen. §8.2's entitlement is the employer's.
+      A **vacancy** invitation fetches and shows its posting, and 404 renders as
+      "no longer available" rather than as a fault: the inbox is deliberately not
+      filtered by whether the vacancy is still visible. A **general** one shows
+      its own occupation, place, pay and schedule, every id resolved (BR-13).
+      **Running the tests found a real overflow**: the card header was a row with
+      the timestamp pushed right, and "Details requested" beside a timestamp
+      needs 330 of a 360pt card's 298. It is a `Wrap` now — a badge is icon plus
+      word, so truncating it would put the state back on colour alone. Pinned at
+      the design's own QA case, 320pt at 2.0x, and mutation-verified
+- [x] **Employer send, 2026-08-19.** `POST /invitations` behind a compose
+      screen with §8.2's two shapes on a segmented control, reached from §7.3's
+      candidate profile. **No price and no unlock on the screen**, swept by a test
+      for "coin", "unlock", "uzs" and "top up" — and it says sending is free,
+      because an employer who thinks inviting costs Coins will not invite.
+      Only **open** vacancies are offered (BR-06): the server refuses the rest
+      with `invitation.vacancy_not_open`, and an employer with none gets a notice
+      rather than an error, because the general shape needs nothing published.
+      Switching shape clears the other shape's binding, so `shape_invalid` is
+      unreachable rather than merely unlikely; negotiable pay discards a typed
+      range rather than qualifying it.
+      Two of the server's refusals are **outcomes rather than exceptions**, since
+      they change what the screen offers: the quota 409 and `already_invited`.
+      Both share status 409 and are told apart by `code`, not by status — reading
+      the status alone would conflate "not today" with "you already did this", two
+      states with different remedies.
+      Not offered where a send would *fail* rather than merely be declined:
+      `not_verified_employer` (BR-03, and the exposure notice already routes there)
+      and `hidden_by_candidate` (BR-02 — the server will not accept an invitation
+      to somebody the employer could not have found)
+- [x] **Employer sent list + §7.4 counts, 2026-08-20.** `GET /invitations/sent`
+      behind a screen reached two ways: unscoped from the Candidates tab, and
+      scoped to one vacancy from the §7.4 counts card. Both filters are the
+      **server's** — unlike the ledger's, these are real server-side filters, so
+      a filtered list is complete rather than filtered-over-what-was-loaded, and
+      "Accepted" means every acceptance rather than the acceptances on the first
+      page. That is also why there is no "showing some of possibly more" caveat
+      here and there is one on the ledger.
+      Five statuses are **chips and not `HhSegmented`**: segments divide the
+      width equally and clip to one line, which at 360pt gives each about 66pt,
+      and "Details requested" does not fit that in any of the four variants.
+      **An acceptance is announced rather than badged.** BR-09's `expose()`
+      grants contact details *and* files on an accepted invitation, at the same
+      strength as an application and with no Coin — and it survives the candidate
+      hiding their profile, because that branch only fires when there is no
+      application, no invitation and no unlock. The notice says the unlock is not
+      needed, because an employer shown a paid unlock on every other candidate
+      screen has every reason to assume one is.
+      §7.4 step 7's four counts are joined from **two** endpoints in the
+      applicants card, and "invited" is the **sum of every status** rather than
+      `byStatus.sent`: a candidate who answered was still invited, so reading
+      `sent` would have looked right until the first reply and then counted
+      downwards. Both halves are watched independently, so a vacancy whose
+      invitation counts 404 still shows its hiring progress
+- [!] **Backend ask, one request covering three gaps in `/invitations`.** All
+      three are the same shape — the employer's side of §8.2 can say *what* was
+      sent and not *to whom*:
+      1. **`candidateName` on `InvitationDto`.** A sent list has
+         `candidateUserId` and no name, and the client-side substitute is the
+         wrong one: `GET /candidate-search/candidates/:id` logs a protected-data
+         access per call (§11.1) and its own contract says it "is never called
+         speculatively", so resolving thirty rows would write thirty audit
+         entries nobody asked for — into the log BR-09 exists to make meaningful.
+         **The client already parses the field** (`Invitation.candidateName`,
+         null everywhere today), so the name appears the day it is sent with no
+         client release. §7.3's "permitted name", and null where a name may not
+         be shown.
+      2. **A `candidateUserId` filter on `GET /invitations/sent`**, so a card
+         can ask "did I invite this person?" without pulling an employer's whole
+         history — the endpoint is unpaged.
+      3. **Or the invitation status on `CandidateCard`**, which is what (2) would
+         be used for. The vacancy card carries `applicationStatus` so Apply is
+         offered exactly when valid (BR-07); `CandidateCard` has `isSaved` and
+         `isShortlisted` and nothing about invitations, so a search result cannot
+         show "already invited" and the employer learns it from a 409. Handled
+         honestly meanwhile — that refusal reads as a fact, not a failure
+- [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
+      to hang off, which is `GET /vacancies/:id/shortlist`
+- [x] **The brand mark, its lockups and the Android launcher icon, 2026-08-20.**
+      §01 of the design document, delivered by the designer and implemented as
+      `HhBrandMark` / `HhBrandWordmark` / `HhBrandLockup` /
+      `HhBrandLaunchPlate`, plus the adaptive and legacy launcher icons and a
+      navy platform launch window.
+      Two API shapes are load-bearing. The mark takes a **ground, not colours**,
+      because "turquoise on white" and "both figures turquoise" are two of the
+      four documented misuses and selecting by ground makes them unwritable. And
+      it **switches to the single figure below 20pt** on its own, because the
+      pair fuses there — a rule a caller has to remember is a rule that breaks at
+      the fourteenth call site. The consequence to know is that the crop changes
+      from 23 : 19.8 to 10.7 : 19.8, so the mark is taller than wide under the
+      floor.
+      The launcher icon is **vector, not PNG**: there is no rasteriser on this
+      machine, and one file beats five that can drift. `mipmap-anydpi` serves
+      API 24/25 and `mipmap-anydpi-v26` serves the rest, which is the same
+      resource-precedence mechanism every adaptive-icon setup already uses, one
+      level further down. Flutter's default logo mipmaps are deleted rather than
+      left as dead weight in the APK
+- [x] **The Android build was run and passed, 2026-08-20.** `flutter build apk
+      --debug --flavor development` built `app-development-debug.apk` in 56s, so
+      AAPT2 accepted both vector drawables and the resource precedence resolves.
+      The KGP warning still names **only `file_picker`**, which is what it named
+      before the brand work — nothing new was added to it. The note below is kept
+      because the reason it could not be run here will recur.
+- [-] ~~**The Android build could not be run in this session, so run it once.**~~
+      Gradle failed at startup with `java.io.IOException: Unable to establish
+      loopback connection` — an environment restriction, not a code problem, and
+      it failed identically for `flutter build apk`, a direct `gradlew` call and
+      a resource-only task. So **AAPT2 has never seen the new vector drawables.**
+      Their geometry is checked by `test/core/design/brand_test.dart` (centring,
+      the 48% and 56% ratios, the locked aspect, the safe-zone diagonal, the path
+      data against the design) and every file is well-formed XML, but neither of
+      those is the compiler:
+      ```powershell
+      flutter build apk --debug --flavor development
+      ```
+- [x] **Candidate attachments open, with no plugin, 2026-08-20.** The client
+      chose the platform-channel route: `AttachmentOpener` fetches the bytes over
+      the file's own `downloadPath` into an app-private cache directory, and
+      thirty lines in `MainActivity.kt` hand it to the OS through a
+      `FileProvider` and `ACTION_VIEW`.
+      **The point of doing it this way is the KGP list.** Every pub package that
+      opens a file is written in Kotlin and applies the Kotlin Gradle Plugin — the
+      warning this project emptied on 2026-08-19 by removing `telegram_login`, and
+      one future Flutter versions refuse outright. The app module's *own* Kotlin
+      is not a plugin and does not appear on that list, so the feature costs zero
+      entries. `path_provider` was promoted from transitive (already 2.1.6 via
+      `file_picker`) and `androidx.core` needed no Gradle change: it is already on
+      the compile classpath at 1.15.0 through the Flutter embedding.
+      Four things are load-bearing and tested:
+      1. **The path is followed verbatim.** It is scoped to whichever interaction
+         entitles this employer, so the test asserts the string was passed through
+         untouched rather than that a request happened.
+      2. **Every tap re-downloads.** BR-09 is re-evaluated per download, so a copy
+         on disk must never answer the next tap — a candidate who withdraws has
+         to stop being readable mid-session.
+      3. **The local name comes from the server's file id**, never from
+         `fileName`, which is content a candidate typed: only a validated
+         extension is carried over, so `../../shared_prefs/x` cannot become a
+         path. Pinned with eight hostile names.
+      4. **The provider authority is `\${applicationId}.fileprovider`.** Two
+         installed apps cannot declare the same authority, so a literal would make
+         §12.1's three side-by-side flavors fail at *install* time — which is
+         later and stranger than a build failure
+- [!] **`MainActivity.kt` has never been compiled.** Gradle would not start in
+      the session that wrote it (see the note below), so the Kotlin is unverified
+      in a way the XML is not: it has no well-formedness check and no test that
+      runs it. `attachment_opener_test.dart` asserts the *contract* across the
+      language boundary — the channel name, the authority, the read-only flag, the
+      cache scope — but a typo in the Kotlin fails at the tap, not at the build.
+      Build once and open a CV:
+      ```powershell
+      flutter build apk --debug --flavor development
+      ```
+- [-] ~~**Opening a candidate attachment needs a plugin decision — yours, not
+      ours.**~~ Answered 2026-08-20: platform channel. BR-09 grants the file, the
+      server serves it, and the client could not open it.
+      What is already right: `CandidateFile.downloadPath` is parsed, and the
+      **client has never constructed a file route** — the backend's guess that we
+      had hard-coded the application-scoped one was wrong in our favour. There is
+      simply no download anywhere in the app: `downloadPath` and
+      `Attachment.downloadPath` are both read from JSON and used nowhere.
+      What is missing is only the last step. `path_provider` is **already a
+      transitive dependency** (2.1.6, via `file_picker`), so fetching the bytes
+      to a cache directory costs nothing. *Opening* them needs a viewer plugin —
+      `open_filex` or equivalent — and every candidate is written in Kotlin, so
+      it would **apply the Kotlin Gradle Plugin**. That is the second name on a
+      warning list the team deliberately emptied on 2026-08-19 by removing
+      `telegram_login`, and future Flutter versions will refuse a build that has
+      one. So this is not a decision to slip in.
+      Three ways out, in ascending cost:
+      1. **Live with the current behaviour.** The row says opening is not
+         available yet, the way §6.7's top-up does. Phone and e-mail — the two
+         things an employer needs to make contact — already work.
+      2. **Show images in-app only.** `Image.memory` needs no plugin, so a photo
+         attachment could open and a PDF could not. Half of the list behaving
+         differently from the other half, for a reason no employer can deduce.
+      3. **Add a viewer plugin and accept a second KGP entry.** The only option
+         that actually opens a CV, which is the attachment that matters.
+      Nothing is blocked on the backend: **follow `downloadPath` verbatim, never
+      construct it.** It is scoped to whichever interaction currently entitles the
+      employer — application, accepted invitation or unlock — and BR-09 is
+      re-evaluated per download, so holding a path is not holding permission
+- [!] **Check the launcher icon on an API 24 or 25 device.** It is the one file
+      in `res/` that a modern launcher never exercises, and a vector launcher
+      icon on Android 7 is the only part of this that rests on documented
+      behaviour rather than on something already shipping in this app
 
-## M8 - Chat and interviews
+### Re-opened by the 2026-08-10 spec revision
+
+The search itself is unaffected — cards carried no contact detail and still
+don't. What changed is what a card leads to.
+
+- [x] ~~**The shipped contact-exposure copy is now wrong**~~ — **resolved
+      2026-08-19, and not the way this item expected.** It assumed the copy had
+      to be replaced. It did not: the client answered the client question in the
+      lenient direction (an application still opens contact), so the original
+      `no_interaction` sentence is *still true wherever it is still sent*, and
+      the new `unlock_required` code got a sentence of its own beside it. Nothing
+      was swapped and no mutation test was lost. The lesson is worth keeping —
+      a code that changes meaning wants a **new** code, not new copy on the old
+      one, and that is what made a single build correct against two servers
+- [x] ~~Locked state on the candidate profile~~ — **built 2026-08-19** under
+      M12. The label carries the server's price rather than §7.3's literal
+      "2 Coins", since §10.5 can change it without a store release
+- [ ] UAT-03's wording changed too: the CV is protected "until the employer has
+      Candidate Unlock access", not merely until an interaction exists. Nothing
+      to build on the candidate side; it changes what the *employer* side must
+      show
+- [ ] **Download a candidate's files.** The list renders with the purpose
+      resolved as a word, but tapping does nothing: saving bytes to disk and
+      opening them needs `path_provider` and an opener, and adding packages
+      here has to be weighed against pubspec.yaml's load-bearing pins. Same
+      decision blocks a `tel:` link on the phone, which is why the contact
+      block offers **copy** instead — no new dependency, and the platform
+      dialler takes it from the clipboard
+
+## M12 - Employer wallet, Coins and Candidate Unlock *(client complete; the server has one change left)*
+
+**§6.6 · BR-15 – BR-18, BR-21, BR-24 · UAT-16 – UAT-19.** Delivered **before
+M8**, because §9.1 puts employer-initiated chat behind the same entitlement.
+Needs no payment provider — the ten free Coins are enough to build and accept
+the whole flow, which is why it is split from M13.
+
+**The client side is finished. The server has one change left**, and it is
+specified: `expose()` must read the entitlement and gain a reason code for it
+(the task handed over on 2026-08-19 spells out all six changes, including the
+third file-download route and the two gaps in the purchase itself).
+
+**How both halves shipped in one build without shipping a paywall that charges
+for nothing.** The wallet — balance, prices, ledger — never depended on the gate
+and went first. The unlock did, and rather than a flag it is gated on
+`exposureReason == 'unlock_required'`: a code only a server that reads the
+entitlement can send. So the purchase path exists, is tested, and is unreachable
+until the server can honour it. A flag would have been a code path that takes
+money and is enabled by a constant somebody has to remember.
+
+- [x] ~~Wallet API contract~~ — published 2026-08-18, see "Blocked on someone
+      else" for the four routes
+- [x] **Wallet screen: balance, approximate UZS value, append-only ledger**
+      (BR-24). Reversals and admin adjustments render as their own entries and
+      are marked as corrections; each row shows **the balance the server
+      recorded after it**, never a total accumulated down the list — the client
+      only ever holds one page of a ledger, so accumulating is wrong by
+      construction. Paged with "show more", and an append that fails leaves the
+      entries on screen instead of replacing a correct ledger with an error page
+- [x] **Prices come from the server** (§6.6), and a test enforces it: the
+      fixture's `balanceValueUzs` deliberately **disagrees** with
+      `balanceCoins × coinPriceUzs`, and the same for the unlock price, so any
+      client-side multiplication fails here rather than the day a bundle price
+      or a rounding rule lands. Verified by mutation — computing the value
+      instead of reading it fails exactly that test. Same idiom as the
+      level-floor test's mismatched `rank`/`sortOrder`
+- [x] **A ledger kind is not a badge.** `HhBadge`'s tone answers "whose turn is
+      it, and did it end well?" and a ledger entry is an event with neither, so
+      the kind is a word plus a glyph. What *is* held to the badge rule is the
+      amount: `+5` and `−2` carry the sign, so credit and debit never rest on
+      green versus grey
+- [ ] **The §6.2 dashboard tile has no dashboard yet.** `WalletTile` is built
+      and lives in the wallet feature, but the employer home tab is still M5's
+      placeholder, so it currently sits on the company tab. The dashboard places
+      the same widget rather than growing a second copy
+- [x] **E-52 activity history and E-53 activity detail, 2026-08-19.** The wallet
+      now shows *recent* activity with an "All" link, as §06 splits them: the
+      wallet answers "what just happened", the history answers "what has ever
+      happened" and needs the filters and month headers the first one does not.
+      The filter reads the amount's **sign, not the kind** — an
+      `admin_adjustment` can be either and a `reversal` is a credit that undoes a
+      debit, so a list of kind codes would have to guess, and would silently drop
+      a sixth kind from *both* filters. Pinned by a test that files a reversal
+      under "topped up" and an unknown kind under it too.
+      E-53 takes the entry rather than refetching it: there is no
+      `GET /wallet/transactions/{id}` and none is needed, because BR-24's
+      triggers make an entry immutable, so the copy in hand cannot be stale.
+      Its reference number is the payment order where one exists and the entry id
+      otherwise — **never an unlock's `referenceId`**, which is a candidate's user
+      id and would hand somebody's identifier to support for no reason. Pinned.
+- [x] **The balance card lost its price table**, per §06's first principle. The
+      UZS value and the Coin price share one line under the balance, and what a
+      Coin is *for* is a sentence where the table was — including that search and
+      preview are free, because an employer who thinks browsing costs Coins will
+      not browse
+- [ ] **Server-side ledger filtering.** `GET /wallet/transactions` takes only
+      `limit` and `offset`, so E-52's filter runs over what has been loaded:
+      choosing "spent" on a first page of twenty shows the spends *in those
+      twenty*. Handled honestly rather than hidden — "show more" stays offered
+      whenever the server may hold more, even when the filtered list looks short,
+      because the alternative is a list that looks complete and is not. A `kind`
+      or `sign` query parameter would fix it properly. *Not blocking; the wallet
+      of a real employer is unlikely to exceed one page for a long time.*
+- [x] **The unlock flow is built, and it cannot fire against today's server.**
+      The whole thing turns on one signal: the control is offered only where
+      `exposureReason` is `unlock_required`, and that code exists **only on a
+      server that actually reads the entitlement**. Today's server answers
+      `no_interaction`, so the control is absent and nobody can be charged for
+      access that would not change — which is what made it safe to merge ahead
+      of the backend. The day the gate deploys, the control appears with no
+      client release and no flag anyone has to remember. Pinned by a test that
+      funds a wallet with 500 Coins against `no_interaction` and asserts both no
+      button and no request; verified by mutation, since loosening the gate to
+      include `no_interaction` fails exactly that test
+- [x] **Unlock confirmation sheet**: cost, current balance and remaining
+      balance, shown *before* anything is charged (UAT-17). Opening it and
+      cancelling both charge nothing, and a test asserts no request is made by
+      either. The remaining balance is the **one derived figure in this feature**
+      — both inputs are server integers, a Coin count is not an amount payable,
+      no endpoint returns it, and §6.6 asks for it by name. It is a preview and
+      never a result: the balance after the charge is refetched
+- [x] **The unlock is one server call and the client does not simulate it.**
+      Debit and entitlement are atomic server-side (BR-18), and the response
+      does not carry the new balance — so the wallet is *invalidated* rather
+      than adjusted by the cost. An optimistic debit that then failed would
+      show Coins gone with no access
+- [x] ~~Persisted idempotency key on the unlock~~ — **not needed, and the
+      backend explains why**: `(employer, candidate)` is a primary key, so BR-16
+      charges the pair once by construction and any retry returns the existing
+      entitlement with `charged: false`. A header key would answer the same
+      question worse, since one key per tap is two keys for one intent. Apply
+      still needs its persisted key (§12.4) because a second application on the
+      same vacancy has no such natural key
+- [x] **Locked candidate profile**: structured data free, contact locked, price
+      on the button from the server rather than a constant (§10.5 can reprice
+      it while the app is installed). Neither `not_verified_employer` nor
+      `hidden_by_candidate` offers a purchase — BR-03 is a precondition an
+      employer cannot buy past, and a candidate who left search is not for sale
+- [x] **Under 2 Coins routes to top-up, not a failure** (UAT-19), decided
+      *before* the request from figures the server already sent — and the 402 is
+      still handled, because the balance can move between the sheet opening and
+      the tap. The server's sentence carries both numbers in the user's language,
+      so it is rendered rather than rebuilt in Dart
+- [x] **`exposureExplanation` rewritten to tell the truth on both servers.**
+      `candidate_unlock` joins the *allowing* group — an employer who paid and
+      finds no number was not refused anything — and `unlock_required` gets the
+      sentence that offers the purchase *and* names the free route, because
+      §11.1 still treats an application as an entitlement of its own. The
+      original six codes keep their meanings, so one build is correct before and
+      after the gate lands. **This closes M7's `[!]` item**
+- [x] **Built to the design (§06, E-42 – E-46), 2026-08-19.** The locked block is
+      now the drawn card — `Himoyalangan ma'lumotlar` with three **named** rows,
+      phone / e-mail / CV, each masked — rather than a sentence saying contact is
+      unavailable. That is DA-14, and it is also the better answer to the
+      question an employer is actually asking: what do the two Coins buy?
+      The mask is a **fixed-width constant**, never derived from the value,
+      because a mask that tracked the length would leak the length (§8.7); the
+      masked value is excluded from semantics so a screen reader announces the
+      label and not twelve bullets; and a test sweeps every `Text` on a locked
+      profile for any run of three digits
+- [x] **The priced action is a sticky bar** (§3.1), not a button inside a card —
+      a price halfway down a long scroll stops being visible at the moment of
+      the decision. The success outcome is an **inline dismissible banner**
+      carrying Coins spent and the new balance, not a snackbar: those are
+      figures somebody may want to read twice, and four seconds is the wrong
+      container for money
+- [x] **Insufficient balance no longer redirects** (§06's third principle:
+      paying must never lose the candidate). It stays in the sheet, still naming
+      them, and swaps the action for top-up. The same now applies to the 403 —
+      which also fixed a real overflow, since a snackbar carrying the server's
+      sentence *and* a verification action overflows a 360pt bar in English and
+      would be worse in Russian
+- [x] **"Coin" is the unit name in every language.** The design writes `2 Coin`
+      in Uzbek Latin, and round 1 puts uz-Latn copy under design ownership. My
+      `tanga` / `монета` were inventions — exactly the machine translation of a
+      money string the handoff calls "a liability, not a shortcut". Still owed:
+      the client's certified uz-Cyrl and ru translation to confirm it
+- [ ] Files behind an unlock. The route now exists
+      (`/unlocks/{candidateUserId}/files/{fileId}/content`), so what is left is
+      the client half: saving bytes and opening them needs `path_provider` and an
+      opener, weighed against pubspec.yaml's load-bearing pins. **Always use the
+      `downloadPath` the server hands back** — an employer holding both an
+      application and an unlock is served through `/applications/…`, because the
+      application is the stronger claim
+
+## M13 - Coin top-up: Payme and CLICK *(designed 2026-08-19; still blocked)*
+
+**§6.7, §12.6, §12.7 · BR-19, BR-20, BR-22, BR-23 · UAT-20 – UAT-23.** Blocked
+on client-supplied merchant credentials and the storefront billing decision.
+
+**Now fully drawn, and still not buildable.** The designer's §06 covers
+E-47 – E-53 in full — pack selector and free-entry amount, provider cards for
+Payme / CLICK / store billing, the pending state with "Holatni tekshirish", the
+receipt, the failure, the filtered history and the transaction detail. Copy and
+geometry are in the design document; the section is imported and readable.
+
+What is missing is not design. It is **a server**: there are no payment-order
+endpoints at all, `wallet_transactions.reference_id` is reserved for this and
+still unfilled, and the two client-owed items above (merchant credentials, the
+storefront billing decision) are unchanged. Building a checkout against no
+server is the trap the wallet and the unlock were each split to avoid, twice —
+and this one is worse, because there is nothing to gate on either. No reason
+code, no endpoint, nothing a running server could say that would make the screens
+correct.
+
+So the drawn screens are recorded here rather than half-built. Three things from
+the design worth carrying into that work when it opens:
+
+- **The UZS figure belongs here and almost nowhere else.** §06's first principle:
+  the amount in som appears on the top-up screen, the payment screen and the
+  receipt — the three places money actually changes hands. It has been removed
+  from the unlock price row for this reason.
+- **The receipt's primary action is "back to the candidate"**, not "go to the
+  wallet". §06's third principle again: the name travels through every screen of
+  the top-up flow, and the employer must never have to find their way back.
+- **Card fields are never drawn** (BR-22, and §15.2 says so explicitly): the
+  design hands off to provider checkout and annotates what is app-owned versus
+  provider-owned. The store-billing card is a *third provider option* in the same
+  list, which is what makes DA-16's configurability a layout that already works.
+
+- [ ] Coin quantity chooser; **the server calculates the amount** and returns
+      the Payment Order. A total computed in Dart is never the source of truth
+      (§12.3.1) — show the server's figure or show nothing
+- [ ] Provider choice and checkout through an approved link, deep link or SDK
+- [ ] **No card data in the app, ever** (BR-22) — no PAN, no CVV, no provider
+      credentials, and no "helpful" saved card field
+- [ ] **A success redirect credits nothing** (§6.7). Returning from the provider
+      leaves the order pending; Coins appear only when the backend says PAID
+- [ ] Every Payment Order state rendered honestly, including the unwanted ones:
+      CREATED, PENDING, PAID, FAILED, CANCELLED, REVERSED/REFUNDED. Failure and
+      cancellation return to Wallet with a reason and a retry
+- [ ] Order history showing the internal order ID, so a support call can start
+      from something the user can read out
+- [ ] UAT-22 — the duplicated callback — demonstrated in the provider test
+      environment, not argued
+
+## M8 - Chat and interviews *(now depends on M12)*
+
+§9.1 changed on 2026-08-10: employer-initiated chat is enabled only once that
+employer holds a Candidate Unlock for the candidate. **The candidate's side is
+not gated** — someone who applied can still write, and must never be shown a
+paywall that is not theirs.
 
 - [ ] Conversation list + thread; text and approved attachments
 - [ ] Sent / delivered / read indicators
 - [ ] Report and block; read-only closed conversations
 - [ ] Interview display by type + confirm / request another time
 - [ ] Idempotency key on message send
+- [ ] Employer entry points gated on the entitlement (§9.1); candidate entry
+      points deliberately not
 - [ ] **Deep links switch role before navigating** where required *(moved here
       from M9 - routing infrastructure, not a notification feature)*
 
@@ -400,7 +1136,29 @@ this opens. Deep links moved to M8.
 
 - [ ] In-app list, unread badge, mark read *(no push dependency; can be pulled
       forward at no cost if the client wants notification history earlier)*
-- [ ] Push registration and foreground/background handling
+- [~] Push registration and foreground/background handling — **config in place**
+      2026-08-07: `android/app/google-services.json` holds the Firebase project
+      `headhunter-app-b463f`, so one file covers every flavor. **No Firebase
+      package is in `pubspec.yaml` and no Gradle plugin is applied** — the file is
+      inert until this milestone opens, which is the owner's explicit ordering
+      (wire it last). The backend side is ready as of 2026-08-07
+- [?] **`google-services.json` now lists the OLD package names, and is left that
+      way deliberately** (JobBridge rename, 2026-08-19). It cannot be fixed by
+      editing the text: Firebase issues a `mobilesdk_app_id`, an `api_key` and a
+      `client_id` per package name, so a hand-edited `package_name` yields a file
+      the Gradle plugin accepts and that then fails at *runtime*, when a device
+      registers a token against an app id that does not exist. That failure looks
+      like "notifications just don't arrive", which is far worse than a build
+      error.
+      Left stale, it fails **loudly and at the right moment** instead: the moment
+      this milestone applies the Google Services plugin, the build stops with
+      `No matching client found for package name 'com.jobbridge.app.dev'`.
+      *The fix is console work, not code*: add three Android apps
+      (`com.jobbridge.app`, `.dev`, `.staging`) to the same Firebase project,
+      re-add the debug and upload-keystore SHA fingerprints (they are stored per
+      app, so new apps start with none), download the regenerated file — one
+      download covers all three — and replace it. No new Firebase project, no
+      server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
 ## M10 - Admin module
@@ -412,6 +1170,18 @@ this opens. Deep links moved to M8.
 - [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
 - [ ] Dictionary management with four localized labels + skill merge, designed for
       a phone (there is no web panel)
+- [ ] **§10.5 wallet and payment administration** *(new, 2026-08-10)* — employer
+      balance and immutable history; Payment Order search on six axes (employer,
+      provider, status, date, internal order ID, provider transaction ID,
+      because the one support has is whichever the caller can read out); payment
+      detail with status history and failure/reversal reason
+- [ ] Manual wallet adjustment with a **mandatory reason**, audited (BR-24) — it
+      writes a new ledger entry, and nothing on this screen may edit an existing
+      one
+- [ ] Registration bonus / Coin price / unlock price as editable server config,
+      with the screen stating that a change **affects future transactions only**.
+      The natural reading of "change the price" is that history follows, and it
+      does not
 
 ## M11 - Hardening
 
@@ -428,7 +1198,15 @@ this opens. Deep links moved to M8.
       `AppFlavor.production.telegramRedirectUri` — until then Telegram login is
       unavailable in a downloaded APK, by design. RELEASE.md §4
 - [ ] App icons and launch screen
-- [ ] Walk all 15 UAT scenarios and keep the evidence
+- [ ] Walk **all 24** UAT scenarios and keep the evidence — the 2026-08-10
+      revision added UAT-16 – UAT-24. UAT-20 – UAT-23 need the providers' test
+      environments, so book those *before* the acceptance window, not inside it
+- [ ] **Verify storefront billing rules immediately before release** (§12.7,
+      BR-23). Listed here as well as in M13 because it is a gate that expires:
+      rules checked two months out are not evidence
+- [ ] Payment-integration documentation in the delivery package (§13.2) —
+      callback endpoints, test/production configuration, reconciliation
+      behaviour, secure credential setup
 
 ---
 
@@ -440,6 +1218,9 @@ Applies to every task above:
 - New picker → binds a dictionary **ID**, displays a label.
 - New non-idempotent write → persisted idempotency key.
 - New mutation → list its invalidations next to it.
+- Anything showing a price, total or balance → **the server's figure**, never
+  one computed in Dart (§6.6, §12.3.1).
+- Nothing in the app ever holds card data or provider credentials (BR-22).
 - `flutter analyze` clean and `flutter test` passing before commit; commit the
   `build_runner` output.
 - Do not bump packages casually - the pins in `pubspec.yaml` are load-bearing

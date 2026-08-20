@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/auth/session_controller.dart';
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
-import 'package:headhunter_app/src/features/auth/domain/otp_challenge.dart';
-import 'package:headhunter_app/src/features/auth/domain/uz_phone.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
+import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
+import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 
 /// What the phone screen hands to the code screen through
 /// `GoRouterState.extra`.

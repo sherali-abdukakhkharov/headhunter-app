@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/network/dio_provider.dart';
-import 'package:headhunter_app/src/features/profile/domain/history_record.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/features/profile/domain/history_record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'history_repository.g.dart';

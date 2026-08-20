@@ -54,7 +54,21 @@ abstract final class HhColors {
 
   static const sand300 = Color(0xFFE2D9C6);
 
-  /// App background.
+  /// Sand-100 from the design's foundations page — **and not the app
+  /// background**, though it was until 2026-08-19.
+  ///
+  /// It is a real palette colour, swatched as sand-100. It is *also*
+  /// `body{background:#EFEBE4}` in the design document: the paper the artboards
+  /// are laid out on. The app had adopted the paper as its screen colour.
+  ///
+  /// Every phone frame in that document draws its screen on [surfaceMuted]
+  /// instead — 30 uses against 4 for this one, and of those 4 the only one
+  /// *inside* an artboard is the swatch itself.
+  ///
+  /// So `scaffoldBackgroundColor` is [surfaceMuted] now. This stays in the ramp
+  /// because it is a documented palette value, and the lesson stays with it: a
+  /// colour's presence in a design file is not evidence of its role — check
+  /// whether it appears inside an artboard or around one, and count.
   static const sand100 = Color(0xFFEFEBE4);
 
   /// Subtle raised surface on white cards.
@@ -91,6 +105,24 @@ abstract final class HhColors {
   /// Neutral fill for meta chips and segmented-control track.
   static const fill = Color(0xFFF3F5F7);
 
+  /// The coolest surface in the ramp — one step off white.
+  ///
+  /// §06 uses it for a contact row whose value is **present**, against [fill]
+  /// for one still locked. The pair only has to be distinguishable from each
+  /// other, which is why they sit this close: the difference says open-or-shut
+  /// before a word is read, without either row shouting.
+  ///
+  /// **And it is the app background**, which is the bigger of its two jobs:
+  /// every phone frame in the design document draws its screen on this. See the
+  /// note on [sand100] for what the app painted before 2026-08-19 and why that
+  /// was wrong.
+  ///
+  /// One consequence worth knowing: `HhCompletenessRing` paints its own hole
+  /// rather than leaving it transparent, so any ring sitting directly on a
+  /// screen must be passed `surfaceColor: surfaceMuted`. A ring on a white card
+  /// keeps the default.
+  static const surfaceMuted = Color(0xFFF7F8FA);
+
   /// Disabled control background.
   static const fillDisabled = Color(0xFFEFF2F5);
 
@@ -115,6 +147,12 @@ abstract final class HhColors {
 
   static const successBg = Color(0xFFE7F3EC);
   static const successFg = Color(0xFF0F5E3A);
+
+  /// Hairline on a success-toned surface, to match [warningBorder] and
+  /// [errorBorder]. Added with §06's unlock-success banner, which is the first
+  /// success notice in the product — badges carry no border, so the ramp had no
+  /// need of it until a bordered success surface was drawn.
+  static const successBorder = Color(0xFFBFE0CC);
 
   static const warningBg = Color(0xFFFBF0DC);
   static const warningFg = Color(0xFF8A5200);

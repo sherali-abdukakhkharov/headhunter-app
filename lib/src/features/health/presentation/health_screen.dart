@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/src/core/config/app_config.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
-import 'package:headhunter_app/src/features/health/data/health_repository.dart';
-import 'package:headhunter_app/src/features/health/domain/health_status.dart';
+import 'package:jobbridge_app/src/core/config/app_config.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/health/data/health_repository.dart';
+import 'package:jobbridge_app/src/features/health/domain/health_status.dart';
 
 /// Proves the app -> backend -> Postgres chain works end to end.
 ///

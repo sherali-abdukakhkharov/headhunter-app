@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
 
 /// Guards the design decisions that are easy to erode one screen at a time.
 ///
@@ -80,6 +81,67 @@ void main() {
         greaterThan(normal),
         reason: 'the box must grow with the label rather than clip it',
       );
+    });
+
+    // The rule above is a rule for **every** variant, and the test above only
+    // ever exercised the filled one — which is how `HhButton.text` shipped
+    // without the `Flexible` its siblings have. A text button reading "View
+    // candidate" in a card overflowed by 190pt at 320 wide and 2.0x, and the
+    // 320pt QA case on a feature screen is what caught it, not this file.
+    //
+    // Narrow box plus 2.0x is the whole test: an unflexed `Text` in a `Row`
+    // takes its intrinsic width and overflows, where a flexed one wraps and the
+    // box grows in height, which is what §08.2 asks for.
+    testWidgets('no variant clips or overflows its label at 2.0x', (
+      tester,
+    ) async {
+      final variants = <String, Widget>{
+        'primary': HhButton(label: 'Продолжить регистрацию', onPressed: () {}),
+        'secondary': HhButton.secondary(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'tertiary': HhButton.tertiary(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'destructive': HhButton.destructive(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'text': HhButton.text(
+          label: 'Продолжить регистрацию',
+          onPressed: () {},
+        ),
+        'text with icon': HhButton.text(
+          label: 'Продолжить регистрацию',
+          iconPath: HhIconPath.plus,
+          onPressed: () {},
+        ),
+      };
+
+      for (final entry in variants.entries) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: HhTheme.light,
+            home: MediaQuery(
+              data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+              child: Scaffold(
+                body: Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(width: 200, child: entry.value),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: '${entry.key} must wrap its label, not overflow',
+        );
+      }
     });
 
     // Regression: the bordered variants set Material.shape, and passing both
@@ -179,16 +241,31 @@ void main() {
       HhBadge.verificationRejected(label: 'Rad etildi'),
       HhBadge.verificationChangesRequired(label: "O'zgartirish talab"),
     ];
+    // §8.2's four, added 2026-08-19 with the invitations feature. The design
+    // system's own rule named invitation state from round 1 and the badges did
+    // not exist, so this group closes a gap rather than extending the design.
+    const invitation = <HhBadge>[
+      HhBadge.invitationSent(label: 'Yuborilgan'),
+      HhBadge.invitationDetailsRequested(label: "Batafsil so'ralgan"),
+      HhBadge.invitationAccepted(label: 'Qabul qilingan'),
+      HhBadge.invitationDeclined(label: 'Rad etilgan'),
+    ];
 
-    test('all twenty states exist', () {
-      expect(vacancy.length + application.length + verification.length, 20);
+    test('the twenty-state vocabulary plus §8.2 four is twenty-four', () {
+      expect(
+        vacancy.length +
+            application.length +
+            verification.length +
+            invitation.length,
+        24,
+      );
     });
 
     // "Within one object type no glyph ever repeats, so tone never has to carry
     // the distinction alone." This is what lets withdrawn / paused / closed all
     // be neutral without becoming indistinguishable.
     test('no glyph repeats within an object type', () {
-      for (final group in [vacancy, application, verification]) {
+      for (final group in [vacancy, application, verification, invitation]) {
         final glyphs = group.map((b) => b.iconPath).toList();
         expect(
           glyphs.toSet().length,
@@ -214,6 +291,57 @@ void main() {
       expect(
         const HhBadge.vacancyClosed(label: '').iconPath,
         const HhBadge.applicationVacancyClosed(label: '').iconPath,
+      );
+      // Sent, and the other party has not acted yet.
+      expect(
+        const HhBadge.applicationSubmitted(label: '').iconPath,
+        const HhBadge.invitationSent(label: '').iconPath,
+      );
+      // A person was accepted — check-circle, on both objects that carry one.
+      expect(
+        const HhBadge.applicationHired(label: '').iconPath,
+        const HhBadge.invitationAccepted(label: '').iconPath,
+      );
+      // The party whose choice it was stepped away.
+      expect(
+        const HhBadge.applicationWithdrawn(label: '').iconPath,
+        const HhBadge.invitationDeclined(label: '').iconPath,
+      );
+    });
+
+    // The tone table defines error as "resolved badly **for the person reading
+    // it**", and a declined invitation has two readers: an employer, for whom
+    // it is a no, and the candidate who chose it, for whom red would be the app
+    // disapproving of a decision it asked them to make. `withdrawn` settled the
+    // same trade-off the same way and appears on both of its surfaces too, so
+    // this is the existing rule applied rather than a new one.
+    test('a declined invitation is neutral, not error', () {
+      const declined = HhBadge.invitationDeclined(label: 'Rad etilgan');
+
+      expect(declined.tone, HhTone.neutral);
+      expect(
+        declined.tone,
+        const HhBadge.applicationWithdrawn(label: '').tone,
+        reason: 'declining and withdrawing are the same fact',
+      );
+      expect(
+        declined.tone,
+        isNot(const HhBadge.applicationRejected(label: '').tone),
+        reason: 'a decline is a choice, a rejection is an outcome',
+      );
+    });
+
+    // Warning means "waiting on a person", and after "request details" that
+    // person is the employer — so it is warning-toned because something is
+    // pending, not because anything is wrong.
+    test('details requested waits on the employer, and is not terminal', () {
+      const asked = HhBadge.invitationDetailsRequested(label: '');
+
+      expect(asked.tone, HhTone.warning);
+      expect(asked.iconPath, HhIconPath.helpCircle);
+      expect(
+        InvitationStatus.terminal.contains(InvitationStatus.detailsRequested),
+        isFalse,
       );
     });
 
@@ -243,7 +371,12 @@ void main() {
     });
 
     testWidgets('every badge renders an icon beside its word', (tester) async {
-      final badges = [...vacancy, ...application, ...verification];
+      final badges = [
+        ...vacancy,
+        ...application,
+        ...verification,
+        ...invitation,
+      ];
 
       for (final badge in badges) {
         await pump(tester, badge);
@@ -453,6 +586,33 @@ void main() {
     });
   });
 
+  group('the icon set', () {
+    // An icon is a bare path string wrapped in an SVG document at build time,
+    // so a typo in the path data is a parse failure at paint time rather than a
+    // compile error - and it can only be caught by rendering it.
+    testWidgets('both disclosure chevrons render', (tester) async {
+      await pump(
+        tester,
+        const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            HhIcon(HhIconPath.chevronDown),
+            HhIcon(HhIconPath.chevronRight),
+          ],
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(HhIcon), findsNWidgets(2));
+    });
+
+    test('the two chevrons are different glyphs', () {
+      // They mean different things - down opens a list in place, right opens a
+      // screen - so an alias would make the distinction unrenderable.
+      expect(HhIconPath.chevronRight, isNot(HhIconPath.chevronDown));
+    });
+  });
+
   group('bottom navigation', () {
     testWidgets('height is constant across role configurations', (
       tester,
@@ -543,6 +703,23 @@ void main() {
     // The design specifies a single light scheme. If a dark theme is ever
     // added it must come from the client, not from us.
     expect(HhTheme.light.brightness, Brightness.light);
+  });
+
+  test('screens are painted on the colour the design draws them on', () {
+    // Corrected 2026-08-19. The app had been painting sand100, which is both a
+    // real palette swatch *and* the canvas paper the artboards sit on — so it
+    // looked defensible and was wrong. Every phone frame in the design document
+    // draws its screen on surfaceMuted.
+    //
+    // Asserted against the literal value as well as the token, so repointing
+    // the token cannot quietly satisfy this test.
+    expect(HhTheme.light.scaffoldBackgroundColor, HhColors.surfaceMuted);
+    expect(HhTheme.light.scaffoldBackgroundColor, const Color(0xFFF7F8FA));
+    expect(
+      HhTheme.light.scaffoldBackgroundColor,
+      isNot(HhColors.sand100),
+      reason: 'sand100 is the design canvas, not the app background',
+    );
   });
 
   testWidgets('completeness ring reports its value to screen readers', (

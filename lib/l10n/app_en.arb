@@ -1,11 +1,9 @@
 {
   "@@locale": "en",
-
-  "appTitle": "HeadHunter",
+  "appTitle": "JobBridge",
   "@appTitle": {
     "description": "Application name. Brand term - left untranslated in every locale."
   },
-
   "commonRetry": "Try again",
   "@commonRetry": {
     "description": "Action on an error state. Every error state must offer one."
@@ -38,17 +36,14 @@
   "@commonEdit": {
     "description": "Opens an existing record for editing. Used on the repeating profile sections (§5.1)."
   },
-
   "commonDelete": "Delete",
   "@commonDelete": {
     "description": "Removes a record. Always behind a confirmation, because it cannot be undone."
   },
-
   "commonSignOut": "Sign out",
   "@commonSignOut": {
     "description": "Ends the session at the user's request. Distinct from an expired session, which the user did not choose."
   },
-
   "stateLoading": "Loading…",
   "@stateLoading": {
     "description": "Accessible label for a loading state. Read by screen readers where the spinner itself carries no text."
@@ -85,17 +80,14 @@
   "@statePermissionDeniedBody": {
     "description": "Body when an OS permission was refused."
   },
-
   "sessionExpired": "Your session has expired. Please sign in again.",
   "@sessionExpired": {
     "description": "Shown when refresh fails and the user is returned to onboarding."
   },
-
   "settingsLanguage": "Language",
   "@settingsLanguage": {
     "description": "Label for the interface-language setting."
   },
-
   "roleCandidate": "Candidate",
   "@roleCandidate": {
     "description": "Role name. Someone looking for work."
@@ -108,7 +100,6 @@
   "@roleAdmin": {
     "description": "Role name. Platform moderator."
   },
-
   "navHome": "Home",
   "@navHome": {
     "description": "Bottom-nav tab. Candidate and employer home. LENGTH-CRITICAL: the bar reserves two label lines at a constant 70pt and clips beyond them - keep to two lines at 320pt and 2.0x text scale, or add a soft hyphen."
@@ -157,7 +148,6 @@
   "@navDictionaries": {
     "description": "Bottom-nav tab, administrator. Dictionary management with all four localized labels (§10.3). Length-critical - see navHome."
   },
-
   "blockedTitle": "Account blocked",
   "@blockedTitle": {
     "description": "BR-10. Heading of the screen a blocked account is held on. The app must explain the restriction rather than fail mysteriously."
@@ -166,7 +156,6 @@
   "@blockedBody": {
     "description": "BR-10. Shown only when the administrator supplied no reason; when they did, their reason is displayed verbatim instead and is never translated client-side (§2.4)."
   },
-
   "profileCompleteness": "Profile completeness",
   "@profileCompleteness": {
     "description": "§5.3. Heading of the completeness ring on the candidate profile."
@@ -175,7 +164,9 @@
   "@profileMissingRequired": {
     "description": "How many fields still block searchability (BR-02). Counts only the blocking ones, not everything that would raise the percentage.",
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "profileSearchable": "Visible in search",
@@ -218,102 +209,496 @@
   "@profileSalaryNegotiable": {
     "description": "money_range fields that allow it: the candidate would rather discuss than state a figure."
   },
-
+  "profileLastUpdated": "Last updated {date}",
+  "@profileLastUpdated": {
+    "description": "§5.3's last meaningful update. The date is ISO because §8.3's display policy is still open and the value is data, not prose.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "profileFixField": "Fill in",
+  "@profileFixField": {
+    "description": "Accessibility label on a missing-field chip that scrolls to the field it names."
+  },
+  "profileVisibilityTitle": "Who can find you",
+  "@profileVisibilityTitle": {
+    "description": "Heading of the search-visibility control (UAT-12, §5.5). Its own section because it is not a schema field."
+  },
+  "profileVisibilitySearchable": "Visible in search",
+  "@profileVisibilitySearchable": {
+    "description": "visibility=searchable. Note this is the setting, not the effect - BR-02 still requires a complete profile."
+  },
+  "profileVisibilitySearchableHint": "Employers can find you in candidate search.",
+  "@profileVisibilitySearchableHint": {
+    "description": "Explains the searchable option."
+  },
+  "profileVisibilityHidden": "Hidden from search",
+  "@profileVisibilityHidden": {
+    "description": "visibility=hidden."
+  },
+  "profileVisibilityHiddenHint": "You can still browse vacancies and apply. Employers cannot find you.",
+  "@profileVisibilityHiddenHint": {
+    "description": "Explains that hiding does not disable the account - the distinction UAT-12 turns on."
+  },
+  "profileVisibilityAfterApply": "Visible after I apply",
+  "@profileVisibilityAfterApply": {
+    "description": "visibility=visible_after_apply."
+  },
+  "profileVisibilityAfterApplyHint": "Only employers whose vacancy you applied to can see your profile.",
+  "@profileVisibilityAfterApplyHint": {
+    "description": "Explains the visible_after_apply option."
+  },
+  "feedRecommended": "Recommended",
+  "@feedRecommended": {
+    "description": "Candidate home tab: vacancies matched to the profile (§5.6). Ranking is server-side."
+  },
+  "feedRecent": "Recent",
+  "@feedRecent": {
+    "description": "Candidate home tab: newest vacancies."
+  },
+  "feedSaved": "Saved",
+  "@feedSaved": {
+    "description": "Candidate home tab: vacancies the candidate bookmarked."
+  },
+  "feedEmpty": "No vacancies to show yet",
+  "@feedEmpty": {
+    "description": "Empty state of a candidate feed."
+  },
+  "vacancyVerifiedEmployer": "Verified employer",
+  "@vacancyVerifiedEmployer": {
+    "description": "§5.6 shows verification on the vacancy itself, so a candidate can weigh it without opening the employer."
+  },
+  "vacancyNegotiablePay": "Pay negotiable",
+  "@vacancyNegotiablePay": {
+    "description": "Salary is open to discussion. A negotiable vacancy also passes a minimum-pay filter, because it has not said no to the figure."
+  },
+  "vacancyDeadline": "Apply by {date}",
+  "@vacancyDeadline": {
+    "description": "The application deadline. ISO, because §8.3's display policy is still open.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vacancyApply": "Apply",
+  "@vacancyApply": {
+    "description": "Submits an application (§5.6). Carries a persisted idempotency key, because BR-07 allows one active application per vacancy."
+  },
+  "vacancyApplied": "Applied",
+  "@vacancyApplied": {
+    "description": "Shown instead of Apply once the candidate has an application on this vacancy (BR-07)."
+  },
+  "vacancyClosedToApplications": "Not accepting applications",
+  "@vacancyClosedToApplications": {
+    "description": "UAT-15: the vacancy is closed, paused, or past its deadline. BR-06 is computed server-side and rendered as given."
+  },
+  "vacancySave": "Save",
+  "@vacancySave": {
+    "description": "Bookmarks a vacancy."
+  },
+  "vacancySaved": "Saved",
+  "@vacancySaved": {
+    "description": "The vacancy is bookmarked; tapping removes it."
+  },
+  "vacancyReport": "Report",
+  "@vacancyReport": {
+    "description": "Reports a vacancy for review (§10.2)."
+  },
+  "vacancyReportTitle": "Report this vacancy",
+  "@vacancyReportTitle": {
+    "description": "Title of the report sheet."
+  },
+  "vacancyReportHint": "What is wrong with it?",
+  "@vacancyReportHint": {
+    "description": "Free text: a candidate reporting a fake vacancy should not have to find their objection on a list."
+  },
+  "vacancyReported": "Thank you. A moderator will review it.",
+  "@vacancyReported": {
+    "description": "Confirmation after reporting."
+  },
+  "applicationsMine": "Your applications",
+  "@applicationsMine": {
+    "description": "Heading of the candidate application list (§8.1)."
+  },
+  "applicationsEmpty": "You have not applied to anything yet",
+  "@applicationsEmpty": {
+    "description": "Empty state of the application list."
+  },
+  "applicationWithdraw": "Withdraw",
+  "@applicationWithdraw": {
+    "description": "§8.1's candidate-only transition. Offered only while the application is live."
+  },
+  "applicationWithdrawTitle": "Withdraw this application?",
+  "@applicationWithdrawTitle": {
+    "description": "Confirmation before withdrawing."
+  },
+  "stageSubmitted": "Submitted",
+  "@stageSubmitted": {
+    "description": "application stage=submitted."
+  },
+  "stageViewed": "Viewed",
+  "@stageViewed": {
+    "description": "application stage=viewed."
+  },
+  "stageShortlisted": "Shortlisted",
+  "@stageShortlisted": {
+    "description": "application stage=shortlisted."
+  },
+  "stageInterview": "Interview",
+  "@stageInterview": {
+    "description": "application stage=interview."
+  },
+  "stageOffer": "Offer",
+  "@stageOffer": {
+    "description": "application stage=offer."
+  },
+  "stageHired": "Hired",
+  "@stageHired": {
+    "description": "application stage=hired."
+  },
+  "stageRejected": "Not selected",
+  "@stageRejected": {
+    "description": "application stage=rejected. Worded plainly rather than harshly - it is read by the person it happened to."
+  },
+  "stageWithdrawn": "Withdrawn",
+  "@stageWithdrawn": {
+    "description": "application stage=withdrawn, by the candidate."
+  },
+  "vacancyMine": "Your vacancies",
+  "@vacancyMine": {
+    "description": "Heading of the employer's own vacancy list (§6.2). Includes closed ones - BR-11 keeps them in history."
+  },
+  "vacancyNew": "New vacancy",
+  "@vacancyNew": {
+    "description": "Creates an empty draft. BR-03 is checked here, so an employer who cannot publish is told before filling in a form."
+  },
+  "vacancyNone": "No vacancies yet",
+  "@vacancyNone": {
+    "description": "Empty state of the employer vacancy list."
+  },
+  "vacancyUntitled": "Untitled vacancy",
+  "@vacancyUntitled": {
+    "description": "Stands in for a draft whose title has not been filled in yet."
+  },
+  "vacancyStatusDraft": "Draft",
+  "@vacancyStatusDraft": {
+    "description": "vacancy status=draft."
+  },
+  "vacancyStatusModeration": "Under review",
+  "@vacancyStatusModeration": {
+    "description": "vacancy status=under_moderation."
+  },
+  "vacancyStatusActive": "Published",
+  "@vacancyStatusActive": {
+    "description": "vacancy status=active."
+  },
+  "vacancyStatusPaused": "Paused",
+  "@vacancyStatusPaused": {
+    "description": "vacancy status=paused."
+  },
+  "vacancyStatusClosed": "Closed",
+  "@vacancyStatusClosed": {
+    "description": "vacancy status=closed. Terminal (BR-11)."
+  },
+  "vacancyStatusRejected": "Rejected",
+  "@vacancyStatusRejected": {
+    "description": "vacancy status=rejected. Editing returns it to draft, which is §6.4's correction path."
+  },
+  "vacancySubmit": "Submit for publication",
+  "@vacancySubmit": {
+    "description": "Sends a draft to moderation (§6.4)."
+  },
+  "vacancyPause": "Pause",
+  "@vacancyPause": {
+    "description": "Employer transition: active -> paused."
+  },
+  "vacancyResume": "Resume",
+  "@vacancyResume": {
+    "description": "Employer transition: paused -> active."
+  },
+  "vacancyClose": "Close",
+  "@vacancyClose": {
+    "description": "Employer transition to closed."
+  },
+  "vacancyCloseTitle": "Close this vacancy?",
+  "@vacancyCloseTitle": {
+    "description": "Confirmation before closing."
+  },
+  "vacancyCloseMessage": "Closing is permanent. The vacancy leaves search and stays in your history.",
+  "@vacancyCloseMessage": {
+    "description": "BR-11 stated before the fact, because closing cannot be undone."
+  },
+  "vacancyMissingForSubmit": "{count, plural, one{{count} field to fill before publishing} other{{count} fields to fill before publishing}}",
+  "@vacancyMissingForSubmit": {
+    "description": "Turns the server's missingForSubmit into a checklist shown before the refusal rather than after.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vacancyNotEditable": "This vacancy cannot be edited right now.",
+  "@vacancyNotEditable": {
+    "description": "Shown while a vacancy is under moderation or closed - the server refuses the write, so the form is read-only rather than accepting keystrokes it cannot save."
+  },
+  "vacancyOpenForApplications": "Accepting applications",
+  "@vacancyOpenForApplications": {
+    "description": "BR-06 satisfied: active, and no deadline or one that has not passed."
+  },
+  "vacancyRestrictionTitle": "Age and gender restrictions",
+  "@vacancyRestrictionTitle": {
+    "description": "Title of the BR-12 notice on the vacancy form."
+  },
+  "vacancyRestrictionWarning": "Age and gender restrictions need a justification and are always reviewed by a moderator.",
+  "@vacancyRestrictionWarning": {
+    "description": "BR-12, stated on the form rather than discovered at submit."
+  },
+  "employerChooseType": "What kind of employer are you?",
+  "@employerChooseType": {
+    "description": "Asked before the form exists. §6.1's type decides which fields apply, so there is no neutral employer profile to render first."
+  },
+  "employerTypeCompany": "A company",
+  "@employerTypeCompany": {
+    "description": "employer type=company."
+  },
+  "employerTypeCompanyHint": "Registered business hiring under a company name.",
+  "@employerTypeCompanyHint": {
+    "description": "Explains the company option."
+  },
+  "employerTypeIndividual": "An individual",
+  "@employerTypeIndividual": {
+    "description": "employer type=individual — §6.1's private person hiring for their own work."
+  },
+  "employerTypeIndividualHint": "Hiring for your own household or private work.",
+  "@employerTypeIndividualHint": {
+    "description": "Explains the individual option."
+  },
+  "employerTypeFixed": "Chosen once and cannot be changed later.",
+  "@employerTypeFixed": {
+    "description": "Warning shown while the type is still choosable. The server refuses a later change, because it would strand the other type's answers and the evidence verification was granted against."
+  },
+  "employerDetails": "Employer details",
+  "@employerDetails": {
+    "description": "Heading of the employer form (§6.1)."
+  },
+  "employerLegalName": "Registered name",
+  "@employerLegalName": {
+    "description": "Companies: the name on the registration."
+  },
+  "employerPublicName": "Name shown to candidates",
+  "@employerPublicName": {
+    "description": "Companies: the name on a vacancy card, which often differs from the registered one."
+  },
+  "employerFullName": "Your full name",
+  "@employerFullName": {
+    "description": "Individual employers."
+  },
+  "employerIndustry": "Industry",
+  "@employerIndustry": {
+    "description": "Companies: binds an industry dictionary id."
+  },
+  "employerContactPerson": "Contact person",
+  "@employerContactPerson": {
+    "description": "Companies: §6.1's named contact."
+  },
+  "employerContactPhone": "Contact phone",
+  "@employerContactPhone": {
+    "description": "The number a candidate should call. Deliberately separate from the sign-in number, which BR-01 verified and which must not be overwritten by a business detail."
+  },
+  "employerRegion": "Region",
+  "@employerRegion": {
+    "description": "Employer location, top level of the region hierarchy (§5.1). Its own key rather than the candidate form's, which comes from the schema."
+  },
+  "employerDistrict": "District or city",
+  "@employerDistrict": {
+    "description": "Employer location, the child of the chosen region."
+  },
+  "employerAddress": "Address",
+  "@employerAddress": {
+    "description": "Free text address."
+  },
+  "employerDescription": "Description",
+  "@employerDescription": {
+    "description": "A company description, or for an individual employer §6.1's short description of the work being offered."
+  },
+  "employerVerification": "Verification",
+  "@employerVerification": {
+    "description": "Heading of the verification card (§6.1)."
+  },
+  "employerVerificationNotSubmitted": "Not submitted",
+  "@employerVerificationNotSubmitted": {
+    "description": "verification status=not_submitted."
+  },
+  "employerVerificationUnderReview": "Under review",
+  "@employerVerificationUnderReview": {
+    "description": "verification status=under_review."
+  },
+  "employerVerificationVerified": "Verified",
+  "@employerVerificationVerified": {
+    "description": "verification status=verified."
+  },
+  "employerVerificationRejected": "Rejected",
+  "@employerVerificationRejected": {
+    "description": "verification status=rejected."
+  },
+  "employerVerificationChangesRequired": "Changes required",
+  "@employerVerificationChangesRequired": {
+    "description": "verification status=changes_required — §6.1's correction path, distinct from a rejection because the employer can act on it."
+  },
+  "employerSubmitVerification": "Submit for verification",
+  "@employerSubmitVerification": {
+    "description": "Sends the collected evidence for review."
+  },
+  "employerEvidence": "Documents to provide",
+  "@employerEvidence": {
+    "description": "Heading of the required-evidence list. The list is served rather than hardcoded, because §6.1 leaves the policy open."
+  },
+  "employerEvidenceRequired": "Required",
+  "@employerEvidenceRequired": {
+    "description": "Marks a document a submission is refused without."
+  },
+  "employerEvidenceOptional": "Optional",
+  "@employerEvidenceOptional": {
+    "description": "Marks a document that may be supplied but is not demanded."
+  },
+  "employerCannotPublish": "Complete your profile and get verified before posting a vacancy or inviting a candidate.",
+  "@employerCannotPublish": {
+    "description": "BR-03 stated plainly. Both conditions, because the rule is the conjunction and an employer who meets only one needs to know which is missing."
+  },
+  "employerCanPublish": "You can post vacancies and invite candidates.",
+  "@employerCanPublish": {
+    "description": "BR-03 satisfied."
+  },
+  "employerSaveFirst": "Save your details before submitting for verification.",
+  "@employerSaveFirst": {
+    "description": "Shown when the form has unsaved changes: the server verifies what it has stored, not what is on screen."
+  },
+  "attachmentsTitle": "Documents",
+  "@attachmentsTitle": {
+    "description": "Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here."
+  },
+  "attachmentUpload": "Upload",
+  "@attachmentUpload": {
+    "description": "Adds a file to a slot that has room."
+  },
+  "attachmentReplace": "Replace",
+  "@attachmentReplace": {
+    "description": "Shown instead of Upload on a full single-file slot. §5.4's replace: the new file supersedes the old one, which the server does by retiring the oldest."
+  },
+  "attachmentUploading": "Uploading… {percent}%",
+  "@attachmentUploading": {
+    "description": "UAT-03 asks for progress. A percentage rather than a spinner, because a large CV on a slow connection is exactly where an indeterminate spinner reads as a hang.",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentNone": "Nothing uploaded yet",
+  "@attachmentNone": {
+    "description": "Empty state of one file slot."
+  },
+  "attachmentTooLarge": "That file is larger than {limit} MB.",
+  "@attachmentTooLarge": {
+    "description": "Refused before sending. The server enforces the limit too, but bouncing it here saves uploading a file that cannot land.",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentWrongType": "Choose a {types} file.",
+  "@attachmentWrongType": {
+    "description": "Refused before sending. The accepted extensions come from the schema's accept list, so they are never hardcoded.",
+    "placeholders": {
+      "types": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentDeleteTitle": "Delete this file?",
+  "@attachmentDeleteTitle": {
+    "description": "Confirmation before deleting an uploaded file."
+  },
   "historyDeleteTitle": "Delete this entry?",
   "@historyDeleteTitle": {
     "description": "Confirmation before deleting a work-experience or education record (§5.1)."
   },
-
   "historyDeleteMessage": "It will be removed from your profile.",
   "@historyDeleteMessage": {
     "description": "Body of the delete confirmation. States the consequence rather than asking again."
   },
-
   "experienceEmpty": "No work experience yet",
   "@experienceEmpty": {
     "description": "Empty state of the work-experience section. Not an error - a first-time candidate has none."
   },
-
   "experienceAdd": "Add experience",
   "@experienceAdd": {
     "description": "Opens the editor for a new work-experience record."
   },
-
   "experienceEmployer": "Employer",
   "@experienceEmployer": {
     "description": "Optional: §5.1 asks for simplified entry for informal or seasonal work, where there is often no employer to name."
   },
-
   "experienceRole": "Position",
   "@experienceRole": {
     "description": "What the person did. The one field a work-experience record cannot omit."
   },
-
   "experienceOccupation": "Occupation",
   "@experienceOccupation": {
     "description": "Binds an occupation dictionary id, so §7.1's 'years in the selected occupation' is computed rather than guessed from the title text."
   },
-
   "experienceStarted": "Start date",
   "@experienceStarted": {
     "description": "Required. The other half of what makes a record countable."
   },
-
   "experienceEnded": "End date",
   "@experienceEnded": {
     "description": "Disabled while 'I work here now' is on - the server treats the two as mutually exclusive."
   },
-
   "experienceCurrent": "I work here now",
   "@experienceCurrent": {
     "description": "Marks the role as ongoing. Mutually exclusive with an end date."
   },
-
   "experienceResponsibilities": "Responsibilities",
   "@experienceResponsibilities": {
     "description": "Free text describing the role. Never translated (§2.4)."
   },
-
   "experiencePresent": "Present",
   "@experiencePresent": {
     "description": "Stands in for the end date on an ongoing role, in the date range shown on a record."
   },
-
   "educationEmpty": "No education yet",
   "@educationEmpty": {
     "description": "Empty state of the education section. Optional for the categories where §5.1 says it is not relevant."
   },
-
   "educationAdd": "Add education",
   "@educationAdd": {
     "description": "Opens the editor for a new education record."
   },
-
   "educationLevel": "Level of education",
   "@educationLevel": {
     "description": "Binds an education_level dictionary id. The one required field of an education record."
   },
-
   "educationInstitution": "Institution",
   "@educationInstitution": {
     "description": "Free text: the school or university. Never translated (§2.4)."
   },
-
   "educationSpecialization": "Specialization",
   "@educationSpecialization": {
     "description": "Free text: what was studied."
   },
-
   "educationYear": "Graduation year",
   "@educationYear": {
     "description": "A year, not a date. An expected graduation in the future is accepted."
   },
-
   "leveledChangeLevel": "Level",
   "@leveledChangeLevel": {
     "description": "Opens the proficiency picker on a dictionary_leveled row - a skill level or a CEFR grade (§4.4). Short because it sits inline on the row beside the value it changes."
   },
-
   "pickerChoose": "Choose",
   "@pickerChoose": {
     "description": "Placeholder in a dictionary-backed field before anything is selected (§3.3)."
@@ -338,7 +723,6 @@
   "@pickerUnknownValue": {
     "description": "A stored dictionary id the server could not resolve even through the resolve-by-id endpoint. Rare: retired and merged items still resolve forever (§10.3). Shown instead of a raw UUID."
   },
-
   "authSignInTitle": "Sign in",
   "@authSignInTitle": {
     "description": "Heading of the sign-in screen (§4.1)."
@@ -432,5 +816,1212 @@
   "authSignInUnavailable": "Telegram sign-in is not available in this build.",
   "@authSignInUnavailable": {
     "description": "DEPRECATED with the Telegram flow. This build's application id has no redirect URI registered with BotFather, so a login cannot start."
+  },
+  "vacancyApplicants": "Applicants",
+  "@vacancyApplicants": {
+    "description": "Heading of the employer view of one vacancy’s applications (§6.5)."
+  },
+  "vacancyApplicantsEmpty": "No applications yet",
+  "@vacancyApplicantsEmpty": {
+    "description": "Empty state."
+  },
+  "applicationsHired": "{hired} of {required} hired",
+  "@applicationsHired": {
+    "description": "§6.5: hires counted against BR-05’s required worker count.",
+    "placeholders": {
+      "hired": {
+        "type": "int"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationsHiredNoTarget": "{hired} hired",
+  "@applicationsHiredNoTarget": {
+    "description": "Used when the vacancy states no worker count.",
+    "placeholders": {
+      "hired": {
+        "type": "int"
+      }
+    }
+  },
+  "applicationMoveTo": "Move to",
+  "@applicationMoveTo": {
+    "description": "Opens the stage picker. §8.1 allows forward moves only, skipping permitted."
+  },
+  "applicationRejectReason": "Reason (shown to the candidate)",
+  "@applicationRejectReason": {
+    "description": "§8.1’s optional standard message on a rejection. Recorded in the BR-08 history whatever the stage."
+  },
+  "candidatePhoneHidden": "Phone not available",
+  "@candidatePhoneHidden": {
+    "description": "BR-09: null is a normal answer, not an error, so the absence is stated rather than left blank."
+  },
+  "candidatePhoneHiddenWhy": "The candidate’s privacy settings decide when an employer can see it.",
+  "@candidatePhoneHiddenWhy": {
+    "description": "Explains that the server decided, not the app."
+  },
+  "candidateFilesHidden": "Files not available",
+  "@candidateFilesHidden": {
+    "description": "BR-09, §5.4: the server sends no files when the employer may not download them."
+  },
+  "candidateCompleteness": "Profile {percent}% complete",
+  "@candidateCompleteness": {
+    "description": "How complete the candidate’s profile is.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notesTitle": "Private notes",
+  "@notesTitle": {
+    "description": "§8.2: the employer’s private notes on an application."
+  },
+  "notesHint": "Only you can see these",
+  "@notesHint": {
+    "description": "States that the candidate cannot see them."
+  },
+  "notesAdd": "Add note",
+  "@notesAdd": {
+    "description": "Adds a note."
+  },
+  "searchCandidates": "Find candidates",
+  "@searchCandidates": {
+    "description": "Heading of employer candidate search (§7.1)."
+  },
+  "searchRun": "Search",
+  "@searchRun": {
+    "description": "Runs the search after the count has been seen."
+  },
+  "searchCountExact": "{count, plural, one{{count} candidate} other{{count} candidates}}",
+  "@searchCountExact": {
+    "description": "§7.2: how many candidates match, shown before the results.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchCountCapped": "{count}+ candidates",
+  "@searchCountCapped": {
+    "description": "§7.2: the server capped the count, so it is rendered as \"200+\". The cap comes from isExact, never from comparing the number.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchNoResults": "No candidates match these filters",
+  "@searchNoResults": {
+    "description": "Empty result set - not an error."
+  },
+  "searchSaved": "Saved candidates",
+  "@searchSaved": {
+    "description": "§7.3: candidates this employer bookmarked."
+  },
+  "searchMatch": "{percent}% match",
+  "@searchMatch": {
+    "description": "§7.3’s weighted requirement match.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "searchExperienceYears": "{years, plural, one{{years} year of experience} other{{years} years of experience}}",
+  "@searchExperienceYears": {
+    "description": "Total years summed from the experience rows.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "searchShortlist": "Shortlist",
+  "@searchShortlist": {
+    "description": "Adds the candidate to a vacancy’s shortlist (§7.3)."
+  },
+  "searchShortlisted": "Shortlisted",
+  "@searchShortlisted": {
+    "description": "Already on the shortlist; tapping removes."
+  },
+  "filtersTitle": "Filters",
+  "@filtersTitle": {
+    "description": "Title of §7.1’s filter builder."
+  },
+  "filtersApply": "Apply filters",
+  "@filtersApply": {
+    "description": "Closes the filter builder and re-counts (§7.2)."
+  },
+  "filtersReset": "Reset",
+  "@filtersReset": {
+    "description": "Clears every filter inside the builder."
+  },
+  "filtersEdit": "Filters",
+  "@filtersEdit": {
+    "description": "Opens the filter builder from the results screen."
+  },
+  "filtersClearAll": "Clear all",
+  "@filtersClearAll": {
+    "description": "Removes every applied-filter chip at once."
+  },
+  "filtersNone": "No filters — every searchable candidate",
+  "@filtersNone": {
+    "description": "Shown in place of the chips when nothing is filtered. Names BR-02’s gate rather than saying \"all candidates\", which would be untrue."
+  },
+  "filtersBlockedTitle": "Cannot search yet",
+  "@filtersBlockedTitle": {
+    "description": "BR-12: heading of the notice blocking Apply while a restriction is unjustified."
+  },
+  "filtersOccupation": "Occupation",
+  "@filtersOccupation": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersSkills": "Skills",
+  "@filtersSkills": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersExperience": "Experience",
+  "@filtersExperience": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersLanguages": "Languages",
+  "@filtersLanguages": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersEducation": "Education",
+  "@filtersEducation": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersLocation": "Location",
+  "@filtersLocation": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersPreferences": "Work preferences",
+  "@filtersPreferences": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersAvailability": "Availability",
+  "@filtersAvailability": {
+    "description": "Filter-builder section heading (§7.1)."
+  },
+  "filtersAttributes": "Additional requirements",
+  "@filtersAttributes": {
+    "description": "Filter-builder section heading — §6.3’s attribute dictionary."
+  },
+  "filtersProfile": "Profile",
+  "@filtersProfile": {
+    "description": "Filter-builder section heading: completeness and recency (§7.1)."
+  },
+  "filtersRestrictions": "Restrictions",
+  "@filtersRestrictions": {
+    "description": "Filter-builder section heading for BR-12’s conditional filters."
+  },
+  "filtersSort": "Sort by",
+  "@filtersSort": {
+    "description": "Filter-builder section heading for §7.3’s ordering."
+  },
+  "filterOccupations": "Occupations",
+  "@filterOccupations": {
+    "description": "Multi-select of occupation dictionary ids."
+  },
+  "filterPrimaryOnly": "Primary occupation only",
+  "@filterPrimaryOnly": {
+    "description": "Restricts the occupation match to the candidate’s main one."
+  },
+  "filterPrimaryOnlyHint": "Match the candidate’s main occupation, not every one they listed",
+  "@filterPrimaryOnlyHint": {
+    "description": "Explains what the switch changes."
+  },
+  "filterOccupationLevels": "Professional level",
+  "@filterOccupationLevels": {
+    "description": "§7.1’s \"professional level where applicable\"."
+  },
+  "filterCurrentOccupations": "Current or last role",
+  "@filterCurrentOccupations": {
+    "description": "§7.1: the occupation of the candidate’s current job."
+  },
+  "filterSkills": "Skills",
+  "@filterSkills": {
+    "description": "Multi-select of skill dictionary ids."
+  },
+  "filterMatchMode": "Match",
+  "@filterMatchMode": {
+    "description": "Label of §7.1’s match-all / match-any control."
+  },
+  "filterMatchAny": "Any",
+  "@filterMatchAny": {
+    "description": "Any one of the chosen items is enough. The default: a vacancy naming eight skills would otherwise match nobody."
+  },
+  "filterMatchAll": "All",
+  "@filterMatchAll": {
+    "description": "Every chosen item is required."
+  },
+  "filterMinLevel": "Minimum level",
+  "@filterMinLevel": {
+    "description": "§7.4’s floor on an ordered scale — \"B2 or better\"."
+  },
+  "filterLevelAny": "Any level",
+  "@filterLevelAny": {
+    "description": "No floor. Also what a scale that failed to load falls back to."
+  },
+  "filterExperienceYearsMin": "Total years, minimum",
+  "@filterExperienceYearsMin": {
+    "description": "Total years summed from the candidate’s experience rows."
+  },
+  "filterOccupationExperience": "Years in this occupation, minimum",
+  "@filterOccupationExperience": {
+    "description": "Years within the chosen occupations, which it therefore requires."
+  },
+  "filterOccupationExperienceNeedsOccupation": "Choose an occupation first",
+  "@filterOccupationExperienceNeedsOccupation": {
+    "description": "The server’s search.occupation_required, said before the request instead of after it."
+  },
+  "filterLanguages": "Languages",
+  "@filterLanguages": {
+    "description": "Multi-select of language dictionary ids; each chosen language then gets its own floor."
+  },
+  "filterLanguageCertificate": "Certificate required",
+  "@filterLanguageCertificate": {
+    "description": "§7.1’s \"certificate availability\", per language."
+  },
+  "filterEducationLevels": "Education level",
+  "@filterEducationLevels": {
+    "description": "A set of acceptable levels rather than a floor — the education row stores no rank."
+  },
+  "filterSpecializations": "Specialization",
+  "@filterSpecializations": {
+    "description": "§7.1’s \"specialization where relevant\", as dictionary ids (BR-13)."
+  },
+  "filterRegion": "Region",
+  "@filterRegion": {
+    "description": "Top level of the region dictionary — the districts are its children."
+  },
+  "filterDistricts": "Districts",
+  "@filterDistricts": {
+    "description": "Children of the chosen region."
+  },
+  "filterDistrictsNeedRegion": "Choose a region first",
+  "@filterDistrictsNeedRegion": {
+    "description": "Cascading picker with no parent chosen. Without it the list would show every district in the country."
+  },
+  "filterWillingToRelocate": "Willing to relocate",
+  "@filterWillingToRelocate": {
+    "description": "§7.1. Remote-work readiness is not here — it is a work_format id."
+  },
+  "filterWillingToTravel": "Ready to travel",
+  "@filterWillingToTravel": {
+    "description": "§7.1’s travel readiness."
+  },
+  "filterProximityDistrict": "Near this district",
+  "@filterProximityDistrict": {
+    "description": "Where to be near, for the proximity sort. Separate from the district filter, which would exclude everyone else and leave the sort nothing to order."
+  },
+  "filterProximityHint": "Used by the “Nearest” sort",
+  "@filterProximityHint": {
+    "description": "Hint on the proximity picker."
+  },
+  "filterEmploymentTypes": "Employment type",
+  "@filterEmploymentTypes": {
+    "description": "employment_type dictionary ids."
+  },
+  "filterWorkFormats": "Work format",
+  "@filterWorkFormats": {
+    "description": "work_format dictionary ids — this is where remote lives."
+  },
+  "filterShifts": "Shift",
+  "@filterShifts": {
+    "description": "shift dictionary ids."
+  },
+  "filterSalaryMin": "Salary from",
+  "@filterSalaryMin": {
+    "description": "The floor of the employer’s range."
+  },
+  "filterSalaryMax": "Salary up to",
+  "@filterSalaryMax": {
+    "description": "The employer’s ceiling."
+  },
+  "filterSalaryMaxHint": "A candidate expecting more is excluded. A negotiable expectation still matches.",
+  "@filterSalaryMaxHint": {
+    "description": "Says what the ceiling does, including the negotiable case, which is the half people get wrong."
+  },
+  "filterAvailableBy": "Available by",
+  "@filterAvailableBy": {
+    "description": "A date the candidate can start by."
+  },
+  "filterAvailableImmediately": "Available immediately",
+  "@filterAvailableImmediately": {
+    "description": "§7.1’s \"immediately\", tested against today in Asia/Tashkent."
+  },
+  "filterAttributes": "Licences, transport and tools",
+  "@filterAttributes": {
+    "description": "§6.3’s attribute dictionary, which is one type covering all of these."
+  },
+  "filterCrewSizeMin": "Can bring a crew of at least",
+  "@filterCrewSizeMin": {
+    "description": "Candidates who can bring a crew — a physical-work filter (§2.1)."
+  },
+  "filterMinCompleteness": "Profile completeness, minimum (%)",
+  "@filterMinCompleteness": {
+    "description": "Percentage floor on profile completeness."
+  },
+  "filterUpdatedSince": "Updated since",
+  "@filterUpdatedSince": {
+    "description": "§7.1’s \"recently updated\", against last_meaningful_update_at."
+  },
+  "filterAgeMin": "Age from",
+  "@filterAgeMin": {
+    "description": "BR-12. Permitted only with a justification."
+  },
+  "filterAgeMax": "Age to",
+  "@filterAgeMax": {
+    "description": "BR-12. See filterAgeMin."
+  },
+  "filterGender": "Gender",
+  "@filterGender": {
+    "description": "BR-12. Permitted only with a justification."
+  },
+  "filterJustification": "Reason for the restriction",
+  "@filterJustification": {
+    "description": "BR-12: a restriction_justification dictionary id, required as soon as an age or gender filter is used."
+  },
+  "filterRestrictionRequired": "An age or gender filter needs a declared reason. Every use is logged.",
+  "@filterRestrictionRequired": {
+    "description": "BR-12, blocking Apply. Says the logging part too: it is a fact about the feature, not a threat."
+  },
+  "filterRestrictionExplain": "Only where the job genuinely requires it.",
+  "@filterRestrictionExplain": {
+    "description": "Sits above the BR-12 section, before anything is filled in."
+  },
+  "sortMatch": "Best match",
+  "@sortMatch": {
+    "description": "§7.3 sort: the weighted share of the filters each candidate satisfies."
+  },
+  "sortRecent": "Recently updated",
+  "@sortRecent": {
+    "description": "§7.3 sort."
+  },
+  "sortExperience": "Most experience",
+  "@sortExperience": {
+    "description": "§7.3 sort."
+  },
+  "sortSalary": "Lowest expectation",
+  "@sortSalary": {
+    "description": "§7.3 sort."
+  },
+  "sortProximity": "Nearest",
+  "@sortProximity": {
+    "description": "§7.3 sort: tiered — same district, then same region, then the rest. With no location filter it falls through to recency."
+  },
+  "commonLoadMore": "Load more",
+  "@commonLoadMore": {
+    "description": "Fetches the next page of a paged list."
+  },
+  "filterChipCount": "{label} ({count})",
+  "@filterChipCount": {
+    "description": "An applied-filter chip for a group holding more than one value. The group is named, not its values: turning eight dictionary ids into words is eight asynchronous resolutions in a wrapping row.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterChipValue": "{label}: {value}",
+  "@filterChipValue": {
+    "description": "An applied-filter chip for a filter whose value needs no dictionary — a number, a date, a percentage. Those carry their value, because hiding a number the user can already read helps nobody.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "searchFromVacancy": "Find candidates",
+  "@searchFromVacancy": {
+    "description": "UAT-06: opens candidate search with this vacancy’s mandatory requirements prefilled as filters."
+  },
+  "searchScopedToVacancy": "Filters came from a vacancy",
+  "@searchScopedToVacancy": {
+    "description": "Shown on the search screen when the config was prefilled from a vacancy (UAT-06). The prefill is a starting point, so the employer has to be able to see that it happened."
+  },
+  "candidateProfileTitle": "Candidate",
+  "@candidateProfileTitle": {
+    "description": "§7.3 “View profile”. Every open is a logged read of protected data (§11.1)."
+  },
+  "candidateViewProfile": "View profile",
+  "@candidateViewProfile": {
+    "description": "Opens the candidate detail screen from a result card — the only place on the search screen where BR-09 can open at all."
+  },
+  "candidateContact": "Contact",
+  "@candidateContact": {
+    "description": "Heading of the block holding the phone number, shown only when BR-09 allowed it."
+  },
+  "candidateAvailableFrom": "Available from {date}",
+  "@candidateAvailableFrom": {
+    "description": "When the candidate can start. The date is ISO on the wire; §8.3’s display policy is still open.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "candidateAttachments": "Attachments",
+  "@candidateAttachments": {
+    "description": "§5.4: the CV and any other files. The CV is an attachment, never a parsed source of profile data."
+  },
+  "candidateNoFiles": "This candidate has not uploaded anything",
+  "@candidateNoFiles": {
+    "description": "Files are permitted but there are none — different from being withheld, and it has to read differently."
+  },
+  "candidatePhoneNotOnFile": "This candidate has no phone number on file.",
+  "@candidatePhoneNotOnFile": {
+    "description": "BR-09 allowed contact but there is nothing to show. Says so plainly rather than implying something was withheld."
+  },
+  "candidateExposureNotVerified": "Contact details open once your company is verified.",
+  "@candidateExposureNotVerified": {
+    "description": "BR-09 reason not_verified_employer (§7, BR-03). Names the one thing the employer can act on."
+  },
+  "candidateExposureNoInteraction": "Contact details open once this candidate applies to one of your vacancies, or accepts an invitation.",
+  "@candidateExposureNoInteraction": {
+    "description": "BR-09 reason no_interaction. The common case, and the one that reads as a bug when unexplained."
+  },
+  "candidateExposureHidden": "This candidate has hidden their profile from search. They can still see your vacancies and apply.",
+  "@candidateExposureHidden": {
+    "description": "BR-09 reason hidden_by_candidate (§5.3). The second sentence matters: hidden means hidden from search, not unreachable."
+  },
+  "searchSavedEmpty": "No saved candidates",
+  "@searchSavedEmpty": {
+    "description": "Empty saved list. Deliberately not “you have saved nobody” — a saved candidate who hides their profile leaves this list without having been un-saved (BR-02)."
+  },
+  "commonCopy": "Copy",
+  "@commonCopy": {
+    "description": "Copies a value to the clipboard."
+  },
+  "commonCopied": "Copied",
+  "@commonCopied": {
+    "description": "Confirms the copy."
+  },
+  "vacancyDetailTitle": "Vacancy",
+  "@vacancyDetailTitle": {
+    "description": "Title of §5.6’s vacancy detail screen."
+  },
+  "vacancyDescription": "About the job",
+  "@vacancyDescription": {
+    "description": "Heading above the employer’s free text. Never translated (§2.4) — shown exactly as entered."
+  },
+  "vacancyRequirements": "Requirements",
+  "@vacancyRequirements": {
+    "description": "§6.3’s structured requirements, grouped by schema field."
+  },
+  "vacancyMandatory": "Required",
+  "@vacancyMandatory": {
+    "description": "§6.3’s mandatory flag. Badged rather than ordered: a preference that looked like a requirement would stop people applying."
+  },
+  "vacancyPreferred": "Preferred",
+  "@vacancyPreferred": {
+    "description": "§6.3’s preferred flag — rewarded by the match score, never used to exclude."
+  },
+  "vacancyGoneTitle": "This vacancy is no longer available",
+  "@vacancyGoneTitle": {
+    "description": "UAT-15: the vacancy closed, expired or was moderated away between the feed being drawn and this screen opening. A normal outcome, not a failure — so it must not read as one."
+  },
+  "vacancyGoneBody": "It may have been filled, closed, or its deadline may have passed.",
+  "@vacancyGoneBody": {
+    "description": "Names the three reasons without claiming which: the server answers vacancy.not_found for all of them, deliberately, so telling the candidate which would be a guess."
+  },
+  "vacancyReportReason": "What is wrong with this vacancy?",
+  "@vacancyReportReason": {
+    "description": "Free text, matching the endpoint — a candidate reporting a fake vacancy should not have to find their objection on somebody else’s menu."
+  },
+  "vacancyReportSend": "Send report",
+  "@vacancyReportSend": {
+    "description": "Submits the complaint."
+  },
+  "commonYes": "Yes",
+  "@commonYes": {
+    "description": "Boolean true."
+  },
+  "commonNo": "No",
+  "@commonNo": {
+    "description": "Boolean false."
+  },
+  "vacancyOpenings": "{count, plural, one{{count} opening} other{{count} openings}}",
+  "@vacancyOpenings": {
+    "description": "BR-05’s required worker count, which is always at least one.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vacancyWorkWindow": "{start} – {end}",
+  "@vacancyWorkWindow": {
+    "description": "The work window for a seasonal or fixed-date assignment (§6.3, UAT-10). ISO dates on the wire; §8.3’s display policy is still open.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vacancyStartsOn": "From {date}",
+  "@vacancyStartsOn": {
+    "description": "A start date with no stated end.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTitle": "Wallet",
+  "@walletTitle": {
+    "description": "§6.6's employer Coin wallet. Employer-only: a multi-role account switched to candidate has no wallet to read."
+  },
+  "walletBalanceLabel": "Balance",
+  "@walletBalanceLabel": {
+    "description": "Label above the Coin balance on the wallet screen."
+  },
+  "walletCoins": "{count, plural, one{{count} Coin} other{{count} Coins}}",
+  "@walletCoins": {
+    "description": "A Coin quantity. Coins are an internal service unit (§6.6) - not money, not transferable, not withdrawable.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletApproxUzs": "≈ {amount} UZS",
+  "@walletApproxUzs": {
+    "description": "§6.2's approximate UZS purchase value. Approximate because it is the balance at today's price and repricing must not restate history - the figure comes from the server, never from multiplying Coins here.",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "walletUzs": "{amount} UZS",
+  "@walletUzs": {
+    "description": "An exact UZS figure: a price, or the value a transaction carried at the time it happened.",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "walletPrices": "Prices today",
+  "@walletPrices": {
+    "description": "Heading over the server-supplied prices. \"Today\" is deliberate: §10.5 lets an administrator change them."
+  },
+  "walletCoinPriceLabel": "1 Coin",
+  "@walletCoinPriceLabel": {
+    "description": "Row label for the price of a single Coin."
+  },
+  "walletUnlockPriceLabel": "Candidate unlock",
+  "@walletUnlockPriceLabel": {
+    "description": "Row label for what one Candidate Unlock costs (§6.6)."
+  },
+  "walletRegistrationBonusOn": "Registration bonus granted {date}",
+  "@walletRegistrationBonusOn": {
+    "description": "BR-15's one-time bonus. Shown with its date because \"granted once\" is the guarantee, and the date is the evidence.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "walletTopUp": "Top up",
+  "@walletTopUp": {
+    "description": "§6.2's Top up action, which opens §6.7's Payme / CLICK checkout."
+  },
+  "walletTopUpUnavailable": "Top-up is not available yet. It arrives with Payme and CLICK support.",
+  "@walletTopUpUnavailable": {
+    "description": "Shown when Top up is tapped before M13 ships. An honest sentence rather than a dead button: a control that does nothing reads as a broken app, and the ten free Coins mean nobody is stuck."
+  },
+  "walletActivity": "Recent activity",
+  "@walletActivity": {
+    "description": "Heading over the Coin ledger (§6.2 \"recent wallet activity\")."
+  },
+  "walletActivityEmpty": "Nothing has moved in this wallet yet. Credits and unlocks both appear here, and neither is ever removed.",
+  "@walletActivityEmpty": {
+    "description": "Empty ledger. Says how the list fills up, and states BR-24's append-only guarantee in passing - an employer should learn early that nothing here can be quietly rewritten."
+  },
+  "walletShowMore": "Show more",
+  "@walletShowMore": {
+    "description": "Loads the next page of ledger entries."
+  },
+  "walletLoadingMore": "Loading more…",
+  "@walletLoadingMore": {
+    "description": "Shown while a further page of the ledger is in flight."
+  },
+  "walletBalanceAfter": "Balance {count}",
+  "@walletBalanceAfter": {
+    "description": "The balance the server recorded after one ledger entry. Read from the entry, never accumulated down the list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletAmountCredit": "+{count, plural, one{{count} Coin} other{{count} Coins}}",
+  "@walletAmountCredit": {
+    "description": "Coins arriving. The sign is what distinguishes a credit from a debit - colour alone would fail the same rule badges are held to.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletAmountDebit": "−{count, plural, one{{count} Coin} other{{count} Coins}}",
+  "@walletAmountDebit": {
+    "description": "Coins leaving, with a true minus sign (U+2212). Takes the absolute count, so the caller never renders a double negative.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletKindRegistrationBonus": "Registration bonus",
+  "@walletKindRegistrationBonus": {
+    "description": "Ledger kind registration_bonus (BR-15)."
+  },
+  "walletKindTopUp": "Top-up",
+  "@walletKindTopUp": {
+    "description": "Ledger kind top_up (§6.7)."
+  },
+  "walletKindCandidateUnlock": "Candidate unlock",
+  "@walletKindCandidateUnlock": {
+    "description": "Ledger kind candidate_unlock (§6.6, BR-16)."
+  },
+  "walletKindAdminAdjustment": "Administrator adjustment",
+  "@walletKindAdminAdjustment": {
+    "description": "Ledger kind admin_adjustment (§10.5). Always carries a reason - the server refuses one without."
+  },
+  "walletKindReversal": "Reversal",
+  "@walletKindReversal": {
+    "description": "Ledger kind reversal: a refund or an undo, recorded as its own entry rather than by deleting what it corrects (BR-24)."
+  },
+  "walletKindOther": "Wallet activity",
+  "@walletKindOther": {
+    "description": "Fallback for a kind this build does not know. A newer server's entry still shows its amount and resulting balance, which is the part being checked."
+  },
+  "walletCorrection": "Correction",
+  "@walletCorrection": {
+    "description": "Marks an adjustment or reversal as correcting an earlier entry. BR-24 forbids fixing a mistake by rewriting the entry that caused it, so the correction is visible instead."
+  },
+  "walletBalanceUnavailable": "Balance unavailable",
+  "@walletBalanceUnavailable": {
+    "description": "Shown on the §6.2 wallet tile when the balance could not be fetched. The tile still opens the wallet screen, which renders the failure and offers the retry - a summary beside a profile must not turn that screen into an error page."
+  },
+  "unlockContact": "Unlock contact — {coins}",
+  "@unlockContact": {
+    "description": "§7.3's unlock action. The Coin count is a placeholder rather than the literal \"2 Coins\" of §6.6, because the price is server configuration and §10.5 lets an administrator change it.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockTitle": "Unlock contact",
+  "@unlockTitle": {
+    "description": "Heading of the confirmation sheet (§6.6)."
+  },
+  "unlockCost": "Cost",
+  "@unlockCost": {
+    "description": "Confirmation sheet row: what the unlock costs."
+  },
+  "unlockBalanceNow": "Your balance",
+  "@unlockBalanceNow": {
+    "description": "Confirmation sheet row: the balance before the charge."
+  },
+  "unlockBalanceAfter": "Balance after",
+  "@unlockBalanceAfter": {
+    "description": "Confirmation sheet row: what the balance becomes. §6.6 requires all three figures before anything is charged, so nobody discovers the cost by paying it."
+  },
+  "unlockConfirm": "Confirm",
+  "@unlockConfirm": {
+    "description": "The button that charges. E-44 asks for Cancel and Confirm, and the sheet title already names the purchase — repeating it on the button would be the same words twice with the cost and both balances in between."
+  },
+  "unlockWhatYouGet": "Phone number, e-mail and CV become available, and you can start a conversation. Charged once — returning to this candidate later is free.",
+  "@unlockWhatYouGet": {
+    "description": "What the two Coins buy (§6.6, BR-16). Says the charge is one-off because UAT-18 is the reassurance an employer needs before spending anything."
+  },
+  "unlockDone": "Contact unlocked",
+  "@unlockDone": {
+    "description": "Confirmation after a successful unlock."
+  },
+  "unlockAlready": "Already unlocked — nothing was charged",
+  "@unlockAlready": {
+    "description": "UAT-18: shown when the entitlement already existed, so `charged` came back false. Worth saying rather than silently succeeding - an employer who tapped twice should be told the second tap was free rather than left wondering."
+  },
+  "unlockUnlockedOn": "Unlocked {date}",
+  "@unlockUnlockedOn": {
+    "description": "Shown where contact was opened by a purchase rather than by an application.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockTopUpNeeded": "Top up to unlock",
+  "@unlockTopUpNeeded": {
+    "description": "UAT-19: replaces the confirm action when the balance is short. The unlock is blocked and the route out is top-up, not an error."
+  },
+  "candidateExposureUnlockRequired": "Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.",
+  "@candidateExposureUnlockRequired": {
+    "description": "The `unlock_required` reason code: a verified employer, a readable candidate, and no entitlement yet. Says both routes on purpose - §11.1 treats an application as an entitlement of its own, so an employer who is happy to wait should not be told paying is the only way. This code exists only on a server that honours the unlock, which is why it is also what the unlock control is gated on."
+  },
+  "contactLockedTitle": "Protected information",
+  "@contactLockedTitle": {
+    "description": "Heading of §06's locked contact block (E-43). Names what is behind the lock rather than announcing that something is locked - an employer deciding whether to spend Coins needs to know what the Coins buy."
+  },
+  "contactUnlockedTitle": "Contact details",
+  "@contactUnlockedTitle": {
+    "description": "The same block once BR-09 allows contact."
+  },
+  "contactPhone": "Phone number",
+  "@contactPhone": {
+    "description": "Row label. The value beside it is masked with a fixed-width run of dots until the entitlement exists - never a mask derived from the real value, which would leak its length (§8.7)."
+  },
+  "contactEmail": "E-mail",
+  "@contactEmail": {
+    "description": "Row label. Reserved: the candidate DTO carries no e-mail field yet, so this row is always masked today."
+  },
+  "contactCv": "CV file",
+  "@contactCv": {
+    "description": "Row label for the CV while it is locked. Once open, the real file list renders below with each file's purpose and size, so this row disappears rather than duplicating it."
+  },
+  "contactCvLocked": "PDF · locked",
+  "@contactCvLocked": {
+    "description": "Stands in for the CV's name and size while locked. Says the format, which is useful, and nothing that identifies the file."
+  },
+  "contactLockedExplainer": "{coins} opens one new candidate's phone, e-mail, CV and conversation. An unlocked candidate is never charged for again.",
+  "@contactLockedExplainer": {
+    "description": "§6.6 and BR-16 in two sentences, under the locked rows. The second sentence is the one that matters before a purchase: UAT-18's guarantee is the reassurance an employer needs to spend anything at all.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockGoToVerification": "Go to verification",
+  "@unlockGoToVerification": {
+    "description": "Destination for the 403 refusals (`employer.not_verified`, `employer.profile_incomplete`) and for the `not_verified_employer` exposure reason. BR-03 is a precondition an employer cannot buy past, so these must route to verification and never to top-up - offering Coins there would sell access §7 is about to refuse."
+  },
+  "unlockChargedDetail": "{coins} spent · balance {balance}",
+  "@unlockChargedDetail": {
+    "description": "§06's unlock-success banner. Both figures are already-localized Coin quantities: the amount actually debited, taken from the response rather than from what the sheet predicted, and the new balance refetched from the wallet. Neither is computed here.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      },
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockInsufficient": "Not enough Coins",
+  "@unlockInsufficient": {
+    "description": "Title of the in-sheet notice when the server refuses a purchase the sheet had judged affordable - the balance moved between the sheet opening and the tap. Names the state; the server's own sentence below it carries the two numbers, which are the authority now that the displayed rows are known to be stale."
+  },
+  "walletValueAndPrice": "≈ {value} UZS · 1 Coin = {price} UZS",
+  "@walletValueAndPrice": {
+    "description": "§06 puts the balance's approximate UZS value and the Coin price on one line under the balance, instead of a prices table. Both figures are the server's: `value` is `balanceValueUzs`, never coins × price, and `price` is `coinPriceUzs`.",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "price": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "walletCoinRule": "{coins} unlocks one new candidate's contact. Searching candidates and viewing profiles is free.",
+  "@walletCoinRule": {
+    "description": "What a Coin is for, in a sentence, where a price table used to be. The second half matters as much as the first: §6.6 makes search and preview free, and an employer who thinks browsing costs Coins will not browse.",
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "walletHistoryTitle": "Activity history",
+  "@walletHistoryTitle": {
+    "description": "§06's E-52, the whole ledger. Distinct from the wallet's own \"recent activity\": this one has filters and month headers."
+  },
+  "walletHistoryAll": "All",
+  "@walletHistoryAll": {
+    "description": "Doubles as the filter chip on E-52 and the link from the wallet's recent-activity heading to it."
+  },
+  "walletHistoryIncoming": "Topped up",
+  "@walletHistoryIncoming": {
+    "description": "Filter for entries where Coins arrived. Selected by the amount's **sign**, not by kind — an administrator adjustment can be either, and a reversal is a credit that undoes a debit."
+  },
+  "walletHistoryOutgoing": "Spent",
+  "@walletHistoryOutgoing": {
+    "description": "Filter for entries where Coins left. Also by sign, so a sixth kind from a newer server lands on one side rather than vanishing from both."
+  },
+  "walletHistoryNoMatch": "No activity of this kind yet. Clear the filter to see everything the wallet has recorded.",
+  "@walletHistoryNoMatch": {
+    "description": "§11 wants an empty filter result told apart from an empty list: one is resolved by clearing the filter, the other by using the app."
+  },
+  "walletDetailTitle": "Activity detail",
+  "@walletDetailTitle": {
+    "description": "§06's E-53."
+  },
+  "walletDetailSection": "Detail",
+  "@walletDetailSection": {
+    "description": "Heading over the detail rows."
+  },
+  "walletDetailReason": "Reason",
+  "@walletDetailReason": {
+    "description": "Mandatory on an administrator adjustment (§10.5); absent on everything else."
+  },
+  "walletDetailWhen": "Date and time",
+  "@walletDetailWhen": {
+    "description": "The wall clock the server resolved, never re-rendered in the device zone."
+  },
+  "walletDetailAmountUzs": "Amount paid",
+  "@walletDetailAmountUzs": {
+    "description": "The UZS this entry carried **at the time**, never recomputed from today's price (§10.5). Absent on an unlock or a bonus, which are priced in Coins and never touched money."
+  },
+  "walletDetailEffect": "Effect on balance",
+  "@walletDetailEffect": {
+    "description": "The signed Coin amount, repeated here because it is the figure a support call is about."
+  },
+  "walletDetailBalanceAfter": "Balance after",
+  "@walletDetailBalanceAfter": {
+    "description": "The balance the server recorded after this entry — read, never accumulated."
+  },
+  "walletDetailReference": "Reference number",
+  "@walletDetailReference": {
+    "description": "What support can look the entry up by: the payment order behind a top-up, otherwise the entry's own id. Never an unlock's `referenceId`, which is a candidate's user id and identifies a person rather than a transaction."
+  },
+  "walletDetailSupportTitle": "Something wrong with this entry?",
+  "@walletDetailSupportTitle": {
+    "description": "Title of the support notice on E-53."
+  },
+  "walletDetailSupport": "Contact support and quote the reference number above. Nothing in this history can be edited or deleted, so the record you are looking at is the record they will see.",
+  "@walletDetailSupport": {
+    "description": "§06's support footnote, plus BR-24 stated plainly. The second sentence is worth the words: an employer disputing a charge should know the ledger cannot have been altered, which is exactly why the append-only guarantee exists."
+  },
+  "walletCorrectionExplained": "This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.",
+  "@walletCorrectionExplained": {
+    "description": "Shown on E-53 for an adjustment or a reversal. BR-24 in one sentence, at the moment an employer is most likely to wonder why they can see both entries."
+  },
+  "navInvitations": "Invitations",
+  "@navInvitations": {
+    "description": "Employer invitations (§8.2). Used on the segmented control inside the candidate's Applications tab, not as a bottom-nav label — the five-tab cap is full."
+  },
+  "invitationSent": "Sent",
+  "@invitationSent": {
+    "description": "Invitation status: delivered and not yet answered. Also the fallback label for a status this app version does not recognise."
+  },
+  "invitationDetailsRequested": "Details requested",
+  "@invitationDetailsRequested": {
+    "description": "Invitation status: the candidate asked a question, so it now waits on the employer. Not a final state — accepting or declining afterwards is allowed."
+  },
+  "invitationAccepted": "Accepted",
+  "@invitationAccepted": {
+    "description": "Invitation status: the candidate accepted, which is what opens contact details to that employer (BR-09)."
+  },
+  "invitationDeclined": "Declined",
+  "@invitationDeclined": {
+    "description": "Invitation status: the candidate declined. Final. Shown to both sides, so the wording must not read as a reproach to the person who chose it."
+  },
+  "invitationAccept": "Accept",
+  "@invitationAccept": {
+    "description": "Button. A verb where invitationAccepted is a state — a past participle on a button reads as a label, not an action."
+  },
+  "invitationDecline": "Decline",
+  "@invitationDecline": {
+    "description": "Button."
+  },
+  "invitationRequestDetails": "Ask a question",
+  "@invitationRequestDetails": {
+    "description": "Button for §8.2's \"Request details\". Phrased as asking a question rather than requesting details, because that is what the candidate actually does with it and it makes the empty state of the field obvious."
+  },
+  "invitationsInboxEmpty": "Employers who invite you to a vacancy will appear here.",
+  "@invitationsInboxEmpty": {
+    "description": "Empty state for the candidate's invitation inbox. Says what would fill it rather than that it is empty."
+  },
+  "invitationGeneral": "General invitation",
+  "@invitationGeneral": {
+    "description": "§8.2's second shape: an invitation to work rather than to a specific vacancy. Shown first on the card, because the absence of a posting is the first thing the candidate needs to know."
+  },
+  "invitationOpenVacancy": "Open vacancy",
+  "@invitationOpenVacancy": {
+    "description": "Opens the full vacancy behind a vacancy-scoped invitation."
+  },
+  "invitationVacancyLoading": "Loading the vacancy…",
+  "@invitationVacancyLoading": {
+    "description": "Placeholder line while the vacancy behind an invitation is fetched. A line of text rather than a spinner, so a list of cards does not flicker."
+  },
+  "invitationVacancyUnavailable": "The vacancy could not be loaded.",
+  "@invitationVacancyUnavailable": {
+    "description": "A real failure fetching the vacancy behind an invitation, as distinct from vacancyGoneTitle, which is the ordinary 404 for a vacancy that has closed since."
+  },
+  "invitationVacancyUntitled": "Vacancy",
+  "@invitationVacancyUntitled": {
+    "description": "Fallback when the vacancy behind an invitation has no title yet."
+  },
+  "invitationYourReply": "Your reply",
+  "@invitationYourReply": {
+    "description": "Label above the candidate's own note, played back to them on the invitation card."
+  },
+  "invitationPayRange": "{from} – {to} UZS",
+  "@invitationPayRange": {
+    "description": "A general invitation's stated pay range. Only general invitations carry pay of their own — a vacancy invitation's lives on the vacancy.",
+    "placeholders": {
+      "from": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "to": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "invitationPayFrom": "From {amount} UZS",
+  "@invitationPayFrom": {
+    "description": "A general invitation with only a lower bound on pay.",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "invitationPayUpTo": "Up to {amount} UZS",
+  "@invitationPayUpTo": {
+    "description": "A general invitation with only an upper bound on pay.",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "invitationAcceptTitle": "Accept this invitation?",
+  "@invitationAcceptTitle": {
+    "description": "Title of the accept confirmation sheet."
+  },
+  "invitationAcceptDiscloses": "Accepting shares your phone number, e-mail address and CV with this employer, and cannot be undone.",
+  "@invitationAcceptDiscloses": {
+    "description": "The disclosure, shown before the accept button. Names the three protected fields rather than saying \"your contact details\": a candidate cannot weigh a category, and these are exactly the three §11.1 protects. Also states irreversibility, because §8.2 has no transition out of accepted."
+  },
+  "invitationDeclineTitle": "Decline this invitation?",
+  "@invitationDeclineTitle": {
+    "description": "Title of the decline confirmation sheet."
+  },
+  "invitationDeclineFinal": "Your contact details stay private. Declining is final, but the employer may invite you again later.",
+  "@invitationDeclineFinal": {
+    "description": "Shown before the decline button. Says what stays private, that the status is final, and that a decline is not a permanent block — the last part matters because the alternative reading is that declining once ends the relationship."
+  },
+  "invitationRequestDetailsTitle": "Ask the employer a question",
+  "@invitationRequestDetailsTitle": {
+    "description": "Title of the sheet behind §8.2's \"Request details\"."
+  },
+  "invitationRequestDetailsBody": "You can still accept or decline afterwards. Your contact details stay private until you accept.",
+  "@invitationRequestDetailsBody": {
+    "description": "Shown before the ask-a-question button. States both things the candidate needs: that asking is not a decision, and that it discloses nothing."
+  },
+  "invitationQuestionLabel": "Your question",
+  "@invitationQuestionLabel": {
+    "description": "Field label when asking for details. Required, unlike the note on the other two responses."
+  },
+  "invitationQuestionHint": "For example: where exactly is the work, and when does it start?",
+  "@invitationQuestionHint": {
+    "description": "Hint under the question field. An example rather than an instruction, because the field is empty and a blank box invites a blank answer."
+  },
+  "invitationNoteLabel": "Message (optional)",
+  "@invitationNoteLabel": {
+    "description": "Field label on accept and decline. Marked optional in the label itself, so a candidate declining is never left wondering whether a reason is required."
+  },
+  "invitationNoteHint": "Anything you would like the employer to know.",
+  "@invitationNoteHint": {
+    "description": "Hint under the optional message field."
+  },
+  "invitationAlreadyAnswered": "This invitation has already been answered",
+  "@invitationAlreadyAnswered": {
+    "description": "Title over the server's refusal in the response sheet. §8.2's `invitation.final` and `invitation.response_not_allowed` both mean the invitation moved elsewhere — usually another device — so the sentence explains the refusal rather than blaming the tap."
+  },
+  "commonChoose": "Choose",
+  "@commonChoose": {
+    "description": "Placeholder in a read-only field that opens a picker."
+  },
+  "invitationSendTitle": "Send invitation",
+  "@invitationSendTitle": {
+    "description": "Screen title for the compose form. Deliberately different wording from invitationSend, the button, so the two are distinguishable."
+  },
+  "invitationSend": "Send",
+  "@invitationSend": {
+    "description": "The submit button on the compose form."
+  },
+  "invitationSendFree": "Sending is free. Contact details open only if the candidate accepts.",
+  "@invitationSendFree": {
+    "description": "States the resolution of the section 8.2 contradiction where the employer will act on it. Worth saying explicitly: an employer who thinks inviting costs Coins will not invite, and section 7.4 own example needs dozens of invitations."
+  },
+  "invitationToVacancy": "To a vacancy",
+  "@invitationToVacancy": {
+    "description": "One of the two invitation shapes; the other is invitationGeneral."
+  },
+  "invitationVacancyLabel": "Choose a vacancy",
+  "@invitationVacancyLabel": {
+    "description": "Label above the list of the employer open vacancies."
+  },
+  "invitationNoOpenVacancyTitle": "No open vacancies",
+  "@invitationNoOpenVacancyTitle": {
+    "description": "Only open vacancies may carry an invitation (BR-06) — the server refuses the rest with invitation.vacancy_not_open."
+  },
+  "invitationNoOpenVacancyBody": "An invitation can only point at an active vacancy. You can still send a general work invitation.",
+  "@invitationNoOpenVacancyBody": {
+    "description": "A notice rather than an error, because the general shape is a way forward that needs nothing published."
+  },
+  "invitationOccupation": "Occupation",
+  "@invitationOccupation": {
+    "description": "Required on a general invitation — it is what makes the invitation about something."
+  },
+  "invitationRegion": "Region",
+  "@invitationRegion": {
+    "description": "Optional on a general invitation."
+  },
+  "invitationDistrict": "District",
+  "@invitationDistrict": {
+    "description": "Optional, and scoped to the chosen region — districts are children of the region dictionary, not a type of their own."
+  },
+  "invitationNegotiable": "Pay is negotiable",
+  "@invitationNegotiable": {
+    "description": "Excludes a range rather than qualifying one: a negotiable figure and a stated one are different answers."
+  },
+  "invitationSalaryFrom": "Pay from",
+  "@invitationSalaryFrom": {
+    "description": "Lower bound, in som."
+  },
+  "invitationSalaryTo": "Pay to",
+  "@invitationSalaryTo": {
+    "description": "Upper bound, in som."
+  },
+  "invitationSalaryPeriod": "Per",
+  "@invitationSalaryPeriod": {
+    "description": "A payment_period dictionary id — per month, per day, per shift."
+  },
+  "invitationSchedule": "Schedule",
+  "@invitationSchedule": {
+    "description": "Free text by design: a general invitation is a message, and the structured version of a schedule is what publishing a vacancy is for."
+  },
+  "invitationScheduleHint": "For example: six days a week, mornings",
+  "@invitationScheduleHint": {
+    "description": "Hint under the schedule field."
+  },
+  "invitationMessageLabel": "Message (optional)",
+  "@invitationMessageLabel": {
+    "description": "The employer own words, shown to the candidate verbatim and never translated. Marked optional in the label."
+  },
+  "invitationMessageHint": "What you would like the candidate to know",
+  "@invitationMessageHint": {
+    "description": "Hint under the message field."
+  },
+  "invitationQuotaRemaining": "{remaining} of {limit} invitations left today",
+  "@invitationQuotaRemaining": {
+    "description": "The daily cap, entirely the server figures (section 12.3.1). `limit` is the effective total — the client deliberately does not model a free tier and a purchased one, so a future purchase raises the number and this string is already correct.",
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "invitationQuotaResets": "Resets at {at}",
+  "@invitationQuotaResets": {
+    "description": "A calendar boundary in the platform time zone, not a rolling window — \"it resets at midnight\" is something an employer can plan a day around.",
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "invitationQuotaSpentTitle": "Today’s invitations are used up",
+  "@invitationQuotaSpentTitle": {
+    "description": "Warning-toned rather than an error: the employer did nothing wrong and the remedy is a clock."
+  },
+  "invitationAlreadySentTitle": "Already invited",
+  "@invitationAlreadySentTitle": {
+    "description": "The server invitation.already_invited — a fact rather than a failure. One open invitation per candidate per vacancy; answering frees the slot."
+  },
+  "invitationSentConfirm": "Invitation sent",
+  "@invitationSentConfirm": {
+    "description": "Confirmation after a successful send. A transient toast rather than an inline banner, unlike the unlock, and the difference is deliberate: an unlock carries figures somebody may want to read twice, while this carries none — the invitation itself is now in the sent list, which is where it belongs."
+  },
+  "invitationsSentTitle": "Invitations sent",
+  "@invitationsSentTitle": {
+    "description": "The employer's half of section 8.2, and the title of the screen the section 7.4 counts open. Deliberately not \"My invitations\", which the candidate's inbox could equally be called."
+  },
+  "invitationsSentEmpty": "Candidates you invite will appear here.",
+  "@invitationsSentEmpty": {
+    "description": "The unfiltered empty list. States what would fill it rather than that it is empty, which the title above it already says."
+  },
+  "invitationsSentNoMatch": "No invitations with this status. Clear the filter to see everything you have sent.",
+  "@invitationsSentNoMatch": {
+    "description": "A filter that matched nothing, which is a different fact from having invited nobody: this one is fixed by clearing the filter. Telling an employer looking at \"Declined\" that they have invited nobody would simply be false."
+  },
+  "invitationsSentForVacancy": "This vacancy only",
+  "@invitationsSentForVacancy": {
+    "description": "Shown when the list was opened from one vacancy, so the server is narrowing it. The scope is stated because the list looks identical to the unscoped one otherwise, and a short list would read as \"few invitations\" rather than \"few on this vacancy\"."
+  },
+  "invitationFilterAll": "All",
+  "@invitationFilterAll": {
+    "description": "The unfiltered choice among the four statuses. Sends no `status` parameter rather than a fifth value, matching what the server means by its absence."
+  },
+  "invitationYourMessage": "What you wrote",
+  "@invitationYourMessage": {
+    "description": "Labels the employer's own message on their sent list. The counterpart of `invitationYourReply` on the candidate's side: the same words belong to whoever is reading, and only the label says whose they are."
+  },
+  "invitationCandidateReply": "Candidate's reply",
+  "@invitationCandidateReply": {
+    "description": "Labels the note a candidate attached when answering — and on \"Details requested\" it is a question waiting for an answer, which is why it is never trimmed to a preview."
+  },
+  "invitationContactOpenTitle": "Contact is open",
+  "@invitationContactOpenTitle": {
+    "description": "Heading on an accepted invitation. BR-09 grants contact details and files on an acceptance, at the same strength as an application and without a Coin."
+  },
+  "invitationContactOpenBody": "The candidate accepted, so their phone, e-mail and CV are on their profile. No unlock needed.",
+  "@invitationContactOpenBody": {
+    "description": "Says the unlock is not needed, because an employer who has just been shown a paid unlock on every other candidate screen has every reason to assume it is. Section 11.1 grants contact on an accepted invitation, and it survives the candidate hiding their profile."
+  },
+  "invitationOpenCandidate": "View candidate",
+  "@invitationOpenCandidate": {
+    "description": "Opens section 7.3's \"View profile\" from a sent invitation. A tap and never a prefetch: every open is a logged access to protected data (section 11.1), so thirty rows must not resolve thirty candidates."
+  },
+  "invitationCounts": "{invited} invited, {accepted} accepted",
+  "@invitationCounts": {
+    "description": "The first two of section 7.4 step 7's four counts; interviewed and hired are application stages and sit beside this from a different endpoint. `invited` is the **sum of every status** and not the count of `sent` — a candidate who answered was still invited, so reading `byStatus.sent` would make the number fall as replies arrive.",
+    "placeholders": {
+      "invited": {
+        "type": "int"
+      },
+      "accepted": {
+        "type": "int"
+      }
+    }
+  },
+  "candidateFileNoViewer": "No app on this phone can open this file.",
+  "@candidateFileNoViewer": {
+    "description": "Shown when an attachment downloaded fine and nothing installed can display it. Its own message rather than a generic failure: the bytes arrived and the server allowed it, so \"check your connection\" would send an employer looking in the wrong place. The remedy is on the device."
   }
 }

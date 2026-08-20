@@ -9,7 +9,7 @@ class AppL10nEn extends AppL10n {
   AppL10nEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'HeadHunter';
+  String get appTitle => 'JobBridge';
 
   @override
   String get commonRetry => 'Try again';
@@ -176,6 +176,322 @@ class AppL10nEn extends AppL10n {
   String get profileSalaryNegotiable => 'Negotiable';
 
   @override
+  String profileLastUpdated(String date) {
+    return 'Last updated $date';
+  }
+
+  @override
+  String get profileFixField => 'Fill in';
+
+  @override
+  String get profileVisibilityTitle => 'Who can find you';
+
+  @override
+  String get profileVisibilitySearchable => 'Visible in search';
+
+  @override
+  String get profileVisibilitySearchableHint =>
+      'Employers can find you in candidate search.';
+
+  @override
+  String get profileVisibilityHidden => 'Hidden from search';
+
+  @override
+  String get profileVisibilityHiddenHint =>
+      'You can still browse vacancies and apply. Employers cannot find you.';
+
+  @override
+  String get profileVisibilityAfterApply => 'Visible after I apply';
+
+  @override
+  String get profileVisibilityAfterApplyHint =>
+      'Only employers whose vacancy you applied to can see your profile.';
+
+  @override
+  String get feedRecommended => 'Recommended';
+
+  @override
+  String get feedRecent => 'Recent';
+
+  @override
+  String get feedSaved => 'Saved';
+
+  @override
+  String get feedEmpty => 'No vacancies to show yet';
+
+  @override
+  String get vacancyVerifiedEmployer => 'Verified employer';
+
+  @override
+  String get vacancyNegotiablePay => 'Pay negotiable';
+
+  @override
+  String vacancyDeadline(String date) {
+    return 'Apply by $date';
+  }
+
+  @override
+  String get vacancyApply => 'Apply';
+
+  @override
+  String get vacancyApplied => 'Applied';
+
+  @override
+  String get vacancyClosedToApplications => 'Not accepting applications';
+
+  @override
+  String get vacancySave => 'Save';
+
+  @override
+  String get vacancySaved => 'Saved';
+
+  @override
+  String get vacancyReport => 'Report';
+
+  @override
+  String get vacancyReportTitle => 'Report this vacancy';
+
+  @override
+  String get vacancyReportHint => 'What is wrong with it?';
+
+  @override
+  String get vacancyReported => 'Thank you. A moderator will review it.';
+
+  @override
+  String get applicationsMine => 'Your applications';
+
+  @override
+  String get applicationsEmpty => 'You have not applied to anything yet';
+
+  @override
+  String get applicationWithdraw => 'Withdraw';
+
+  @override
+  String get applicationWithdrawTitle => 'Withdraw this application?';
+
+  @override
+  String get stageSubmitted => 'Submitted';
+
+  @override
+  String get stageViewed => 'Viewed';
+
+  @override
+  String get stageShortlisted => 'Shortlisted';
+
+  @override
+  String get stageInterview => 'Interview';
+
+  @override
+  String get stageOffer => 'Offer';
+
+  @override
+  String get stageHired => 'Hired';
+
+  @override
+  String get stageRejected => 'Not selected';
+
+  @override
+  String get stageWithdrawn => 'Withdrawn';
+
+  @override
+  String get vacancyMine => 'Your vacancies';
+
+  @override
+  String get vacancyNew => 'New vacancy';
+
+  @override
+  String get vacancyNone => 'No vacancies yet';
+
+  @override
+  String get vacancyUntitled => 'Untitled vacancy';
+
+  @override
+  String get vacancyStatusDraft => 'Draft';
+
+  @override
+  String get vacancyStatusModeration => 'Under review';
+
+  @override
+  String get vacancyStatusActive => 'Published';
+
+  @override
+  String get vacancyStatusPaused => 'Paused';
+
+  @override
+  String get vacancyStatusClosed => 'Closed';
+
+  @override
+  String get vacancyStatusRejected => 'Rejected';
+
+  @override
+  String get vacancySubmit => 'Submit for publication';
+
+  @override
+  String get vacancyPause => 'Pause';
+
+  @override
+  String get vacancyResume => 'Resume';
+
+  @override
+  String get vacancyClose => 'Close';
+
+  @override
+  String get vacancyCloseTitle => 'Close this vacancy?';
+
+  @override
+  String get vacancyCloseMessage =>
+      'Closing is permanent. The vacancy leaves search and stays in your history.';
+
+  @override
+  String vacancyMissingForSubmit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fields to fill before publishing',
+      one: '$count field to fill before publishing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vacancyNotEditable => 'This vacancy cannot be edited right now.';
+
+  @override
+  String get vacancyOpenForApplications => 'Accepting applications';
+
+  @override
+  String get vacancyRestrictionTitle => 'Age and gender restrictions';
+
+  @override
+  String get vacancyRestrictionWarning =>
+      'Age and gender restrictions need a justification and are always reviewed by a moderator.';
+
+  @override
+  String get employerChooseType => 'What kind of employer are you?';
+
+  @override
+  String get employerTypeCompany => 'A company';
+
+  @override
+  String get employerTypeCompanyHint =>
+      'Registered business hiring under a company name.';
+
+  @override
+  String get employerTypeIndividual => 'An individual';
+
+  @override
+  String get employerTypeIndividualHint =>
+      'Hiring for your own household or private work.';
+
+  @override
+  String get employerTypeFixed => 'Chosen once and cannot be changed later.';
+
+  @override
+  String get employerDetails => 'Employer details';
+
+  @override
+  String get employerLegalName => 'Registered name';
+
+  @override
+  String get employerPublicName => 'Name shown to candidates';
+
+  @override
+  String get employerFullName => 'Your full name';
+
+  @override
+  String get employerIndustry => 'Industry';
+
+  @override
+  String get employerContactPerson => 'Contact person';
+
+  @override
+  String get employerContactPhone => 'Contact phone';
+
+  @override
+  String get employerRegion => 'Region';
+
+  @override
+  String get employerDistrict => 'District or city';
+
+  @override
+  String get employerAddress => 'Address';
+
+  @override
+  String get employerDescription => 'Description';
+
+  @override
+  String get employerVerification => 'Verification';
+
+  @override
+  String get employerVerificationNotSubmitted => 'Not submitted';
+
+  @override
+  String get employerVerificationUnderReview => 'Under review';
+
+  @override
+  String get employerVerificationVerified => 'Verified';
+
+  @override
+  String get employerVerificationRejected => 'Rejected';
+
+  @override
+  String get employerVerificationChangesRequired => 'Changes required';
+
+  @override
+  String get employerSubmitVerification => 'Submit for verification';
+
+  @override
+  String get employerEvidence => 'Documents to provide';
+
+  @override
+  String get employerEvidenceRequired => 'Required';
+
+  @override
+  String get employerEvidenceOptional => 'Optional';
+
+  @override
+  String get employerCannotPublish =>
+      'Complete your profile and get verified before posting a vacancy or inviting a candidate.';
+
+  @override
+  String get employerCanPublish =>
+      'You can post vacancies and invite candidates.';
+
+  @override
+  String get employerSaveFirst =>
+      'Save your details before submitting for verification.';
+
+  @override
+  String get attachmentsTitle => 'Documents';
+
+  @override
+  String get attachmentUpload => 'Upload';
+
+  @override
+  String get attachmentReplace => 'Replace';
+
+  @override
+  String attachmentUploading(String percent) {
+    return 'Uploading… $percent%';
+  }
+
+  @override
+  String get attachmentNone => 'Nothing uploaded yet';
+
+  @override
+  String attachmentTooLarge(String limit) {
+    return 'That file is larger than $limit MB.';
+  }
+
+  @override
+  String attachmentWrongType(String types) {
+    return 'Choose a $types file.';
+  }
+
+  @override
+  String get attachmentDeleteTitle => 'Delete this file?';
+
+  @override
   String get historyDeleteTitle => 'Delete this entry?';
 
   @override
@@ -317,4 +633,926 @@ class AppL10nEn extends AppL10n {
   @override
   String get authSignInUnavailable =>
       'Telegram sign-in is not available in this build.';
+
+  @override
+  String get vacancyApplicants => 'Applicants';
+
+  @override
+  String get vacancyApplicantsEmpty => 'No applications yet';
+
+  @override
+  String applicationsHired(int hired, int required) {
+    return '$hired of $required hired';
+  }
+
+  @override
+  String applicationsHiredNoTarget(int hired) {
+    return '$hired hired';
+  }
+
+  @override
+  String get applicationMoveTo => 'Move to';
+
+  @override
+  String get applicationRejectReason => 'Reason (shown to the candidate)';
+
+  @override
+  String get candidatePhoneHidden => 'Phone not available';
+
+  @override
+  String get candidatePhoneHiddenWhy =>
+      'The candidate’s privacy settings decide when an employer can see it.';
+
+  @override
+  String get candidateFilesHidden => 'Files not available';
+
+  @override
+  String candidateCompleteness(int percent) {
+    return 'Profile $percent% complete';
+  }
+
+  @override
+  String get notesTitle => 'Private notes';
+
+  @override
+  String get notesHint => 'Only you can see these';
+
+  @override
+  String get notesAdd => 'Add note';
+
+  @override
+  String get searchCandidates => 'Find candidates';
+
+  @override
+  String get searchRun => 'Search';
+
+  @override
+  String searchCountExact(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count candidates',
+      one: '$count candidate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchCountCapped(int count) {
+    return '$count+ candidates';
+  }
+
+  @override
+  String get searchNoResults => 'No candidates match these filters';
+
+  @override
+  String get searchSaved => 'Saved candidates';
+
+  @override
+  String searchMatch(int percent) {
+    return '$percent% match';
+  }
+
+  @override
+  String searchExperienceYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years years of experience',
+      one: '$years year of experience',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchShortlist => 'Shortlist';
+
+  @override
+  String get searchShortlisted => 'Shortlisted';
+
+  @override
+  String get filtersTitle => 'Filters';
+
+  @override
+  String get filtersApply => 'Apply filters';
+
+  @override
+  String get filtersReset => 'Reset';
+
+  @override
+  String get filtersEdit => 'Filters';
+
+  @override
+  String get filtersClearAll => 'Clear all';
+
+  @override
+  String get filtersNone => 'No filters — every searchable candidate';
+
+  @override
+  String get filtersBlockedTitle => 'Cannot search yet';
+
+  @override
+  String get filtersOccupation => 'Occupation';
+
+  @override
+  String get filtersSkills => 'Skills';
+
+  @override
+  String get filtersExperience => 'Experience';
+
+  @override
+  String get filtersLanguages => 'Languages';
+
+  @override
+  String get filtersEducation => 'Education';
+
+  @override
+  String get filtersLocation => 'Location';
+
+  @override
+  String get filtersPreferences => 'Work preferences';
+
+  @override
+  String get filtersAvailability => 'Availability';
+
+  @override
+  String get filtersAttributes => 'Additional requirements';
+
+  @override
+  String get filtersProfile => 'Profile';
+
+  @override
+  String get filtersRestrictions => 'Restrictions';
+
+  @override
+  String get filtersSort => 'Sort by';
+
+  @override
+  String get filterOccupations => 'Occupations';
+
+  @override
+  String get filterPrimaryOnly => 'Primary occupation only';
+
+  @override
+  String get filterPrimaryOnlyHint =>
+      'Match the candidate’s main occupation, not every one they listed';
+
+  @override
+  String get filterOccupationLevels => 'Professional level';
+
+  @override
+  String get filterCurrentOccupations => 'Current or last role';
+
+  @override
+  String get filterSkills => 'Skills';
+
+  @override
+  String get filterMatchMode => 'Match';
+
+  @override
+  String get filterMatchAny => 'Any';
+
+  @override
+  String get filterMatchAll => 'All';
+
+  @override
+  String get filterMinLevel => 'Minimum level';
+
+  @override
+  String get filterLevelAny => 'Any level';
+
+  @override
+  String get filterExperienceYearsMin => 'Total years, minimum';
+
+  @override
+  String get filterOccupationExperience => 'Years in this occupation, minimum';
+
+  @override
+  String get filterOccupationExperienceNeedsOccupation =>
+      'Choose an occupation first';
+
+  @override
+  String get filterLanguages => 'Languages';
+
+  @override
+  String get filterLanguageCertificate => 'Certificate required';
+
+  @override
+  String get filterEducationLevels => 'Education level';
+
+  @override
+  String get filterSpecializations => 'Specialization';
+
+  @override
+  String get filterRegion => 'Region';
+
+  @override
+  String get filterDistricts => 'Districts';
+
+  @override
+  String get filterDistrictsNeedRegion => 'Choose a region first';
+
+  @override
+  String get filterWillingToRelocate => 'Willing to relocate';
+
+  @override
+  String get filterWillingToTravel => 'Ready to travel';
+
+  @override
+  String get filterProximityDistrict => 'Near this district';
+
+  @override
+  String get filterProximityHint => 'Used by the “Nearest” sort';
+
+  @override
+  String get filterEmploymentTypes => 'Employment type';
+
+  @override
+  String get filterWorkFormats => 'Work format';
+
+  @override
+  String get filterShifts => 'Shift';
+
+  @override
+  String get filterSalaryMin => 'Salary from';
+
+  @override
+  String get filterSalaryMax => 'Salary up to';
+
+  @override
+  String get filterSalaryMaxHint =>
+      'A candidate expecting more is excluded. A negotiable expectation still matches.';
+
+  @override
+  String get filterAvailableBy => 'Available by';
+
+  @override
+  String get filterAvailableImmediately => 'Available immediately';
+
+  @override
+  String get filterAttributes => 'Licences, transport and tools';
+
+  @override
+  String get filterCrewSizeMin => 'Can bring a crew of at least';
+
+  @override
+  String get filterMinCompleteness => 'Profile completeness, minimum (%)';
+
+  @override
+  String get filterUpdatedSince => 'Updated since';
+
+  @override
+  String get filterAgeMin => 'Age from';
+
+  @override
+  String get filterAgeMax => 'Age to';
+
+  @override
+  String get filterGender => 'Gender';
+
+  @override
+  String get filterJustification => 'Reason for the restriction';
+
+  @override
+  String get filterRestrictionRequired =>
+      'An age or gender filter needs a declared reason. Every use is logged.';
+
+  @override
+  String get filterRestrictionExplain =>
+      'Only where the job genuinely requires it.';
+
+  @override
+  String get sortMatch => 'Best match';
+
+  @override
+  String get sortRecent => 'Recently updated';
+
+  @override
+  String get sortExperience => 'Most experience';
+
+  @override
+  String get sortSalary => 'Lowest expectation';
+
+  @override
+  String get sortProximity => 'Nearest';
+
+  @override
+  String get commonLoadMore => 'Load more';
+
+  @override
+  String filterChipCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String filterChipValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get searchFromVacancy => 'Find candidates';
+
+  @override
+  String get searchScopedToVacancy => 'Filters came from a vacancy';
+
+  @override
+  String get candidateProfileTitle => 'Candidate';
+
+  @override
+  String get candidateViewProfile => 'View profile';
+
+  @override
+  String get candidateContact => 'Contact';
+
+  @override
+  String candidateAvailableFrom(String date) {
+    return 'Available from $date';
+  }
+
+  @override
+  String get candidateAttachments => 'Attachments';
+
+  @override
+  String get candidateNoFiles => 'This candidate has not uploaded anything';
+
+  @override
+  String get candidatePhoneNotOnFile =>
+      'This candidate has no phone number on file.';
+
+  @override
+  String get candidateExposureNotVerified =>
+      'Contact details open once your company is verified.';
+
+  @override
+  String get candidateExposureNoInteraction =>
+      'Contact details open once this candidate applies to one of your vacancies, or accepts an invitation.';
+
+  @override
+  String get candidateExposureHidden =>
+      'This candidate has hidden their profile from search. They can still see your vacancies and apply.';
+
+  @override
+  String get searchSavedEmpty => 'No saved candidates';
+
+  @override
+  String get commonCopy => 'Copy';
+
+  @override
+  String get commonCopied => 'Copied';
+
+  @override
+  String get vacancyDetailTitle => 'Vacancy';
+
+  @override
+  String get vacancyDescription => 'About the job';
+
+  @override
+  String get vacancyRequirements => 'Requirements';
+
+  @override
+  String get vacancyMandatory => 'Required';
+
+  @override
+  String get vacancyPreferred => 'Preferred';
+
+  @override
+  String get vacancyGoneTitle => 'This vacancy is no longer available';
+
+  @override
+  String get vacancyGoneBody =>
+      'It may have been filled, closed, or its deadline may have passed.';
+
+  @override
+  String get vacancyReportReason => 'What is wrong with this vacancy?';
+
+  @override
+  String get vacancyReportSend => 'Send report';
+
+  @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
+  String vacancyOpenings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count openings',
+      one: '$count opening',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vacancyWorkWindow(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String vacancyStartsOn(String date) {
+    return 'From $date';
+  }
+
+  @override
+  String get walletTitle => 'Wallet';
+
+  @override
+  String get walletBalanceLabel => 'Balance';
+
+  @override
+  String walletCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String walletApproxUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '≈ $amountString UZS';
+  }
+
+  @override
+  String walletUzs(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString UZS';
+  }
+
+  @override
+  String get walletPrices => 'Prices today';
+
+  @override
+  String get walletCoinPriceLabel => '1 Coin';
+
+  @override
+  String get walletUnlockPriceLabel => 'Candidate unlock';
+
+  @override
+  String walletRegistrationBonusOn(String date) {
+    return 'Registration bonus granted $date';
+  }
+
+  @override
+  String get walletTopUp => 'Top up';
+
+  @override
+  String get walletTopUpUnavailable =>
+      'Top-up is not available yet. It arrives with Payme and CLICK support.';
+
+  @override
+  String get walletActivity => 'Recent activity';
+
+  @override
+  String get walletActivityEmpty =>
+      'Nothing has moved in this wallet yet. Credits and unlocks both appear here, and neither is ever removed.';
+
+  @override
+  String get walletShowMore => 'Show more';
+
+  @override
+  String get walletLoadingMore => 'Loading more…';
+
+  @override
+  String walletBalanceAfter(int count) {
+    return 'Balance $count';
+  }
+
+  @override
+  String walletAmountCredit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '+$_temp0';
+  }
+
+  @override
+  String walletAmountDebit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '−$_temp0';
+  }
+
+  @override
+  String get walletKindRegistrationBonus => 'Registration bonus';
+
+  @override
+  String get walletKindTopUp => 'Top-up';
+
+  @override
+  String get walletKindCandidateUnlock => 'Candidate unlock';
+
+  @override
+  String get walletKindAdminAdjustment => 'Administrator adjustment';
+
+  @override
+  String get walletKindReversal => 'Reversal';
+
+  @override
+  String get walletKindOther => 'Wallet activity';
+
+  @override
+  String get walletCorrection => 'Correction';
+
+  @override
+  String get walletBalanceUnavailable => 'Balance unavailable';
+
+  @override
+  String unlockContact(String coins) {
+    return 'Unlock contact — $coins';
+  }
+
+  @override
+  String get unlockTitle => 'Unlock contact';
+
+  @override
+  String get unlockCost => 'Cost';
+
+  @override
+  String get unlockBalanceNow => 'Your balance';
+
+  @override
+  String get unlockBalanceAfter => 'Balance after';
+
+  @override
+  String get unlockConfirm => 'Confirm';
+
+  @override
+  String get unlockWhatYouGet =>
+      'Phone number, e-mail and CV become available, and you can start a conversation. Charged once — returning to this candidate later is free.';
+
+  @override
+  String get unlockDone => 'Contact unlocked';
+
+  @override
+  String get unlockAlready => 'Already unlocked — nothing was charged';
+
+  @override
+  String unlockUnlockedOn(String date) {
+    return 'Unlocked $date';
+  }
+
+  @override
+  String get unlockTopUpNeeded => 'Top up to unlock';
+
+  @override
+  String get candidateExposureUnlockRequired =>
+      'Unlock contact to reach this candidate now. It also opens free if they apply to one of your vacancies, or accept an invitation.';
+
+  @override
+  String get contactLockedTitle => 'Protected information';
+
+  @override
+  String get contactUnlockedTitle => 'Contact details';
+
+  @override
+  String get contactPhone => 'Phone number';
+
+  @override
+  String get contactEmail => 'E-mail';
+
+  @override
+  String get contactCv => 'CV file';
+
+  @override
+  String get contactCvLocked => 'PDF · locked';
+
+  @override
+  String contactLockedExplainer(String coins) {
+    return '$coins opens one new candidate\'s phone, e-mail, CV and conversation. An unlocked candidate is never charged for again.';
+  }
+
+  @override
+  String get unlockGoToVerification => 'Go to verification';
+
+  @override
+  String unlockChargedDetail(String coins, String balance) {
+    return '$coins spent · balance $balance';
+  }
+
+  @override
+  String get unlockInsufficient => 'Not enough Coins';
+
+  @override
+  String walletValueAndPrice(int value, int price) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String valueString = valueNumberFormat.format(value);
+    final intl.NumberFormat priceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String priceString = priceNumberFormat.format(price);
+
+    return '≈ $valueString UZS · 1 Coin = $priceString UZS';
+  }
+
+  @override
+  String walletCoinRule(String coins) {
+    return '$coins unlocks one new candidate\'s contact. Searching candidates and viewing profiles is free.';
+  }
+
+  @override
+  String get walletHistoryTitle => 'Activity history';
+
+  @override
+  String get walletHistoryAll => 'All';
+
+  @override
+  String get walletHistoryIncoming => 'Topped up';
+
+  @override
+  String get walletHistoryOutgoing => 'Spent';
+
+  @override
+  String get walletHistoryNoMatch =>
+      'No activity of this kind yet. Clear the filter to see everything the wallet has recorded.';
+
+  @override
+  String get walletDetailTitle => 'Activity detail';
+
+  @override
+  String get walletDetailSection => 'Detail';
+
+  @override
+  String get walletDetailReason => 'Reason';
+
+  @override
+  String get walletDetailWhen => 'Date and time';
+
+  @override
+  String get walletDetailAmountUzs => 'Amount paid';
+
+  @override
+  String get walletDetailEffect => 'Effect on balance';
+
+  @override
+  String get walletDetailBalanceAfter => 'Balance after';
+
+  @override
+  String get walletDetailReference => 'Reference number';
+
+  @override
+  String get walletDetailSupportTitle => 'Something wrong with this entry?';
+
+  @override
+  String get walletDetailSupport =>
+      'Contact support and quote the reference number above. Nothing in this history can be edited or deleted, so the record you are looking at is the record they will see.';
+
+  @override
+  String get walletCorrectionExplained =>
+      'This entry corrects an earlier one. The original stays in the history — corrections are added, never written over.';
+
+  @override
+  String get navInvitations => 'Invitations';
+
+  @override
+  String get invitationSent => 'Sent';
+
+  @override
+  String get invitationDetailsRequested => 'Details requested';
+
+  @override
+  String get invitationAccepted => 'Accepted';
+
+  @override
+  String get invitationDeclined => 'Declined';
+
+  @override
+  String get invitationAccept => 'Accept';
+
+  @override
+  String get invitationDecline => 'Decline';
+
+  @override
+  String get invitationRequestDetails => 'Ask a question';
+
+  @override
+  String get invitationsInboxEmpty =>
+      'Employers who invite you to a vacancy will appear here.';
+
+  @override
+  String get invitationGeneral => 'General invitation';
+
+  @override
+  String get invitationOpenVacancy => 'Open vacancy';
+
+  @override
+  String get invitationVacancyLoading => 'Loading the vacancy…';
+
+  @override
+  String get invitationVacancyUnavailable => 'The vacancy could not be loaded.';
+
+  @override
+  String get invitationVacancyUntitled => 'Vacancy';
+
+  @override
+  String get invitationYourReply => 'Your reply';
+
+  @override
+  String invitationPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString UZS';
+  }
+
+  @override
+  String invitationPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'From $amountString UZS';
+  }
+
+  @override
+  String invitationPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'Up to $amountString UZS';
+  }
+
+  @override
+  String get invitationAcceptTitle => 'Accept this invitation?';
+
+  @override
+  String get invitationAcceptDiscloses =>
+      'Accepting shares your phone number, e-mail address and CV with this employer, and cannot be undone.';
+
+  @override
+  String get invitationDeclineTitle => 'Decline this invitation?';
+
+  @override
+  String get invitationDeclineFinal =>
+      'Your contact details stay private. Declining is final, but the employer may invite you again later.';
+
+  @override
+  String get invitationRequestDetailsTitle => 'Ask the employer a question';
+
+  @override
+  String get invitationRequestDetailsBody =>
+      'You can still accept or decline afterwards. Your contact details stay private until you accept.';
+
+  @override
+  String get invitationQuestionLabel => 'Your question';
+
+  @override
+  String get invitationQuestionHint =>
+      'For example: where exactly is the work, and when does it start?';
+
+  @override
+  String get invitationNoteLabel => 'Message (optional)';
+
+  @override
+  String get invitationNoteHint =>
+      'Anything you would like the employer to know.';
+
+  @override
+  String get invitationAlreadyAnswered =>
+      'This invitation has already been answered';
+
+  @override
+  String get commonChoose => 'Choose';
+
+  @override
+  String get invitationSendTitle => 'Send invitation';
+
+  @override
+  String get invitationSend => 'Send';
+
+  @override
+  String get invitationSendFree =>
+      'Sending is free. Contact details open only if the candidate accepts.';
+
+  @override
+  String get invitationToVacancy => 'To a vacancy';
+
+  @override
+  String get invitationVacancyLabel => 'Choose a vacancy';
+
+  @override
+  String get invitationNoOpenVacancyTitle => 'No open vacancies';
+
+  @override
+  String get invitationNoOpenVacancyBody =>
+      'An invitation can only point at an active vacancy. You can still send a general work invitation.';
+
+  @override
+  String get invitationOccupation => 'Occupation';
+
+  @override
+  String get invitationRegion => 'Region';
+
+  @override
+  String get invitationDistrict => 'District';
+
+  @override
+  String get invitationNegotiable => 'Pay is negotiable';
+
+  @override
+  String get invitationSalaryFrom => 'Pay from';
+
+  @override
+  String get invitationSalaryTo => 'Pay to';
+
+  @override
+  String get invitationSalaryPeriod => 'Per';
+
+  @override
+  String get invitationSchedule => 'Schedule';
+
+  @override
+  String get invitationScheduleHint => 'For example: six days a week, mornings';
+
+  @override
+  String get invitationMessageLabel => 'Message (optional)';
+
+  @override
+  String get invitationMessageHint =>
+      'What you would like the candidate to know';
+
+  @override
+  String invitationQuotaRemaining(int remaining, int limit) {
+    return '$remaining of $limit invitations left today';
+  }
+
+  @override
+  String invitationQuotaResets(String at) {
+    return 'Resets at $at';
+  }
+
+  @override
+  String get invitationQuotaSpentTitle => 'Today’s invitations are used up';
+
+  @override
+  String get invitationAlreadySentTitle => 'Already invited';
+
+  @override
+  String get invitationSentConfirm => 'Invitation sent';
+
+  @override
+  String get invitationsSentTitle => 'Invitations sent';
+
+  @override
+  String get invitationsSentEmpty => 'Candidates you invite will appear here.';
+
+  @override
+  String get invitationsSentNoMatch =>
+      'No invitations with this status. Clear the filter to see everything you have sent.';
+
+  @override
+  String get invitationsSentForVacancy => 'This vacancy only';
+
+  @override
+  String get invitationFilterAll => 'All';
+
+  @override
+  String get invitationYourMessage => 'What you wrote';
+
+  @override
+  String get invitationCandidateReply => 'Candidate\'s reply';
+
+  @override
+  String get invitationContactOpenTitle => 'Contact is open';
+
+  @override
+  String get invitationContactOpenBody =>
+      'The candidate accepted, so their phone, e-mail and CV are on their profile. No unlock needed.';
+
+  @override
+  String get invitationOpenCandidate => 'View candidate';
+
+  @override
+  String invitationCounts(int invited, int accepted) {
+    return '$invited invited, $accepted accepted';
+  }
+
+  @override
+  String get candidateFileNoViewer =>
+      'No app on this phone can open this file.';
 }

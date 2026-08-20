@@ -6,8 +6,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
-import 'package:headhunter_app/src/core/design/hh_metrics.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
 
 /// SVG path data for the design's icon set.
 ///
@@ -70,6 +70,11 @@ abstract final class HhIconPath {
   /// which means withdrawal — this one is pure "there is a list behind this".
   static const chevronDown = 'M6 9.5 12 15.5 18 9.5';
 
+  /// Disclosure on a row that opens a *screen*, where [chevronDown] means a
+  /// list opens in place. The same glyph turned, because it is the same promise
+  /// — "there is more behind this" — pointed at where the more actually is.
+  static const chevronRight = 'M9.5 6 15.5 12 9.5 18';
+
   // Attributes and metadata
   static const location =
       'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11zM12 12.5a2.5 2.5 0 1 0 '
@@ -78,6 +83,27 @@ abstract final class HhIconPath {
   static const wallet =
       'M3.5 7.5h13.5a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5.5a2 2 0 0 1-2-2zM3.5 '
       '7.5V6A1.5 1.5 0 0 1 5 4.5h10M15.5 13.5h3';
+
+  /// One Coin — a disc with a C struck into it (§6.6).
+  ///
+  /// Distinct from [wallet], and the pair is the distinction the design draws:
+  /// the wallet glyph means *the place the balance lives*, this one means *the
+  /// unit itself*. So the app bar's balance chip and a priced button carry the
+  /// coin, while the Wallet screen and its Top up action carry the wallet.
+  static const coin =
+      'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM14.8 9.6a3.5 3.5 0 1 0 0 4.8';
+
+  /// A handset. **Contact data, not a dial action** — placing a call needs a
+  /// package this project has not taken on, so this labels the row rather than
+  /// promising to ring it.
+  static const phone =
+      'M6.5 3.5h4l1.5 4-2.2 1.6a12 12 0 0 0 5.1 5.1L16.5 12l4 1.5v4a2 2 0 0 '
+      '1-2.2 2C10.4 18.8 5.2 13.6 4.5 5.7a2 2 0 0 1 2-2.2z';
+
+  /// An envelope. E-mail as a contact *value*; [chat] is the in-product
+  /// conversation, and the two must never share a glyph.
+  static const mail = 'M3.5 6.5h17v11h-17zM3.5 7l8.5 6 8.5-6';
+
   static const calendar = 'M4.5 6.5h15v14h-15zM4.5 11h15M8.5 4v4M15.5 4v4';
   static const car =
       'M4 16.5h16M5.5 16.5v2h-2v-2M20.5 16.5v2h-2v-2M4 16.5v-4l2-5h12l2 '
@@ -105,6 +131,15 @@ abstract final class HhIconPath {
       'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.2 9.2l5.6 5.6M14.8 9.2l-5.6 5.6';
   static const infoCircle =
       'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5.5M12 7.6v.1';
+  /// A question was **asked** — not "here is information", which is
+  /// [infoCircle]. The only glyph in this set the designer did not draw:
+  /// §8.2's "details requested" needs one and the design has no invitation
+  /// section yet. Raised in docs/design-feedback.md; the geometry is this
+  /// family's own (the same 9-radius circle as [checkCircle], [xCircle] and
+  /// [infoCircle], with [infoCircle]'s dot-below-stem construction inverted).
+  static const helpCircle =
+      'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.4 9.3a2.7 2.7 0 0 1 5.25.9c0 '
+      '1.8-2.7 2.4-2.7 4M12 16.9v.1';
   static const alertTriangle = 'M12 4.5 21 20H3zM12 10.5v4M12 17.3v.1';
   static const wifiOff =
       'M3 3l18 18M8.6 15.6a5 5 0 0 1 5.2-1.1M5.4 12.2a10 10 0 0 1 2.8-2M2 8.6A15 '
@@ -114,9 +149,9 @@ abstract final class HhIconPath {
 
 /// Renders one of the [HhIconPath] glyphs.
 ///
-/// The design's rule: **outline (1.75 stroke) = inactive, 2.2 stroke = active.**
-/// Pass `active: true` rather than hand-tuning [strokeWidth], so the distinction
-/// stays consistent everywhere.
+/// The design's rule: **outline (1.75 stroke) = inactive, 2.2 stroke =
+/// active.** Pass `active: true` rather than hand-tuning [strokeWidth], so the
+/// distinction stays consistent everywhere.
 class HhIcon extends StatelessWidget {
   const HhIcon(
     this.path, {

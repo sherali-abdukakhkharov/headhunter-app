@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:headhunter_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
 
 /// A living catalogue of the design system.
 ///
@@ -60,6 +60,116 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         HhSpace.xxl,
       ),
       children: [
+        // --- Brand --------------------------------------------------------
+        // First, because it is §01 of the design document and because the three
+        // colour arrangements are the part most likely to be got wrong by hand.
+        const _Section('Brend belgisi'),
+
+        // Navy: two-tone, and the turquoise figure is always the right one.
+        Container(
+          padding: const EdgeInsets.all(HhSpace.lg),
+          decoration: const BoxDecoration(
+            color: HhColors.brand900,
+            borderRadius: HhRadius.cardAll,
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              HhBrandMark(width: 72, ground: HhBrandGround.navy),
+              HhBrandLockup(ground: HhBrandGround.navy),
+            ],
+          ),
+        ),
+        const SizedBox(height: HhSpace.sm),
+
+        // Light: mono navy. Turquoise on white is misuse, so there is no
+        // specimen of it here and no way to write one.
+        const HhCard(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              HhBrandMark(width: 72),
+              HhBrandLockup(),
+            ],
+          ),
+        ),
+        const SizedBox(height: HhSpace.sm),
+
+        // The stacked lockup and the launch plate, which inverts the mark.
+        Row(
+          children: [
+            const Expanded(
+              child: HhCard(
+                child: Center(
+                  child: HhBrandLockup(axis: HhBrandLockupAxis.stacked),
+                ),
+              ),
+            ),
+            const SizedBox(width: HhSpace.sm),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(HhSpace.lg),
+                decoration: const BoxDecoration(
+                  color: HhColors.brand900,
+                  borderRadius: HhRadius.cardAll,
+                ),
+                // 240 rather than a real screen width: the plate is 44% of
+                // it, and this cell is about a third of a phone. The ratio is
+                // what is on show, not the size.
+                child: const Center(
+                  child: HhBrandLaunchPlate(screenSize: Size(240, 240)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: HhSpace.sm),
+
+        // The size ramp, and the floor. **Look at this one on a device**: the
+        // whole reason the solo figure exists is that the pair fuses below
+        // 20pt, and no test can say whether the 20 is in the right place.
+        HhCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "O'lchamlar · 40 / 24 / 20 · 19 va past — yakka",
+                style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+              ),
+              const SizedBox(height: HhSpace.sm),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  HhBrandMark(width: 40),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: 24),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: HhBrandMark.pairFloor),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: 19),
+                  SizedBox(width: HhSpace.lg),
+                  HhBrandMark(width: 16),
+                ],
+              ),
+              const SizedBox(height: HhSpace.md),
+              Text(
+                "Bo'sh maydon — kamon balandligining yarmi",
+                style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: HhColors.brand200),
+                  borderRadius: HhRadius.inputAll,
+                ),
+                child: const HhBrandMark(width: 48, clearSpace: true),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: HhSpace.sectionGap),
+
         // --- Type ---------------------------------------------------------
         const _Section('Tipografika'),
         Text('Sarlavha · display', style: HhTypography.display),
@@ -229,6 +339,18 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           ],
         ),
         const SizedBox(height: HhSpace.md),
+        const _StateLabel('Taklif · 4'),
+        const Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            HhBadge.invitationSent(label: 'Yuborilgan'),
+            HhBadge.invitationDetailsRequested(label: "Batafsil so'ralgan"),
+            HhBadge.invitationAccepted(label: 'Qabul qilingan'),
+            HhBadge.invitationDeclined(label: 'Rad etilgan'),
+          ],
+        ),
+        const SizedBox(height: HhSpace.md),
         const _StateLabel('Tasdiqlash · 5'),
         const Wrap(
           spacing: 8,
@@ -257,7 +379,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           percent: 72,
           title: "Profil to'ldirilgan",
           subtitle: 'Rezyume va til darajasi qoldi',
-          surfaceColor: HhColors.sand100,
+          surfaceColor: HhColors.surfaceMuted,
         ),
 
         // --- Cards --------------------------------------------------------
@@ -363,6 +485,16 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         const HhNotice.expired(
           title: "Muddati o'tgan",
           message: 'Ariza qabul qilish muddati tugagan.',
+        ),
+        const SizedBox(height: HhSpace.sm),
+        // §06's unlock-success banner: the one success-toned notice, and the
+        // one that is dismissible. Drawn here beside the four conditions so the
+        // difference is visible — those describe something the user cannot
+        // clear, this confirms something they just did.
+        HhNotice.done(
+          title: 'Kontakt ochildi',
+          message: '2 Coin yechildi · balans 8 Coin',
+          onDismiss: () {},
         ),
         const SizedBox(height: HhSpace.md),
         const _StateLabel('09 · Destructive confirm / 11 · Toast'),
@@ -517,9 +649,21 @@ class _IconGrid extends StatelessWidget {
     'check-circle': HhIconPath.checkCircle,
     'x-circle': HhIconPath.xCircle,
     'info': HhIconPath.infoCircle,
+    'help': HhIconPath.helpCircle,
     'alert': HhIconPath.alertTriangle,
     'wifi-off': HhIconPath.wifiOff,
     'arrow-left': HhIconPath.arrowLeft,
+    // The two disclosure chevrons together, because the whole distinction is
+    // which way they point: down opens a list in place, right opens a screen.
+    // Drawn side by side so a wrong one is obvious here, not on a device.
+    'chevron-down': HhIconPath.chevronDown,
+    'chevron-right': HhIconPath.chevronRight,
+    // §06's monetisation glyphs. `coin` sits beside `wallet` deliberately — the
+    // unit and the place it lives are a pair, and drawing them together is how
+    // you notice if one ever starts standing in for the other.
+    'coin': HhIconPath.coin,
+    'phone': HhIconPath.phone,
+    'mail': HhIconPath.mail,
   };
 
   @override

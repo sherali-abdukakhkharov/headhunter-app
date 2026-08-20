@@ -16,3 +16,14 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# Firebase config. The API key inside ships in every APK and Google does not
+# treat it as a secret, but GitHub's scanner flags it and this repository
+# already keeps credential-shaped files out - so it stays out too, alongside
+# the keystore, and is supplied per machine.
+#
+# Obtain it from the Firebase console for project `headhunter-app-b463f`. One
+# file covers all three flavors: it carries `com.headhunter.app`, `.dev` and
+# `.staging`, and the Gradle plugin picks the client matching the build's
+# applicationId.
+app/google-services.json

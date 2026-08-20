@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_label.dart';
-import 'package:headhunter_app/src/features/profile/data/history_controller.dart';
-import 'package:headhunter_app/src/features/profile/data/history_repository.dart';
-import 'package:headhunter_app/src/features/profile/domain/field_schema.dart';
-import 'package:headhunter_app/src/features/profile/domain/history_record.dart';
-import 'package:headhunter_app/src/features/profile/presentation/education_editor_sheet.dart';
-import 'package:headhunter_app/src/features/profile/presentation/experience_editor_sheet.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/profile/data/history_controller.dart';
+import 'package:jobbridge_app/src/features/profile/data/history_repository.dart';
+import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/features/profile/domain/history_record.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/education_editor_sheet.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/experience_editor_sheet.dart';
 
 /// Renders a `editor: "bespoke"` section of the candidate profile (§5.1).
 ///
@@ -200,12 +200,20 @@ class _ExperienceCard extends ConsumerWidget {
   /// Deliberately not localized into a written month: §8.3's time-zone and
   /// display policy is still open, and inventing a format here would have to be
   /// undone. The ISO form is unambiguous in every one of the four variants.
+  ///
+  /// **Three cases, not two.** The server accepts `isCurrent: false` with no
+  /// end date — a role that ended on a date the candidate did not give — and
+  /// that is the combination this editor produces most easily. Folding it in
+  /// with the ongoing case prints "Present" over a record that explicitly says
+  /// it is not current, which is the card asserting something the data denies.
+  /// So an unknown end prints no end at all.
   String _period(ExperienceRecord record, AppL10n l10n) {
-    final end = record.isCurrent
-        ? l10n.experiencePresent
-        : record.endedOn ?? l10n.experiencePresent;
+    if (record.isCurrent) {
+      return '${record.startedOn} — ${l10n.experiencePresent}';
+    }
+    if (record.endedOn case final end?) return '${record.startedOn} — $end';
 
-    return '${record.startedOn} — $end';
+    return record.startedOn;
   }
 }
 

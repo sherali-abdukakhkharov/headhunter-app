@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/auth/token_store.dart';
-import 'package:headhunter_app/src/core/network/interceptors/auth_interceptor.dart';
+import 'package:jobbridge_app/src/core/auth/token_store.dart';
+import 'package:jobbridge_app/src/core/network/interceptors/auth_interceptor.dart';
 
 /// Serves canned responses without touching a socket.
 class _FakeAdapter implements HttpClientAdapter {
@@ -183,10 +183,10 @@ void main() {
 
       await expectLater(
         h.dio.get<dynamic>(
-          // The MVP's sign-in endpoint. A 401 here means Telegram's ID token
-          // was rejected, not that a session expired - so a refresh would be
-          // nonsense, there is no session yet.
-          '/auth/telegram',
+          // The MVP's sign-in endpoint (§4.1). A 401 here means the code was
+          // wrong, not that a session expired - so a refresh would be nonsense,
+          // there is no session yet.
+          '/auth/otp/verify',
           options: Options(extra: {AuthInterceptor.skipAuthFlag: true}),
         ),
         throwsA(isA<DioException>()),

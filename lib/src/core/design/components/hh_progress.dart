@@ -2,9 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
-import 'package:headhunter_app/src/core/design/hh_metrics.dart';
-import 'package:headhunter_app/src/core/design/hh_typography.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
+import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
 /// Step indicator for a multi-step flow: "Step 4 / 9" with the section name and
 /// a progress bar.

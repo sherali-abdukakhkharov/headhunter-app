@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
 
 /// Screens render `ApiException.message` directly, so what this class chooses
 /// to say *is* the user-facing copy for every server failure in the app.

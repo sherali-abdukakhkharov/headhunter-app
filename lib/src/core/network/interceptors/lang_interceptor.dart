@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:headhunter_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 
 /// Attaches the active interface language to every request.
 ///

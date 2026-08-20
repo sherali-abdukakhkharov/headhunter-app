@@ -1,7 +1,22 @@
-# Universal HeadHunter
+# JobBridge
 
 Mobile-only recruitment platform for Uzbekistan. Two repositories, developed
 together.
+
+**The product was renamed from "Universal HeadHunter" to JobBridge on
+2026-08-19, and the rename is deliberately partial.** Renamed: the launcher name
+and in-app title, the Android application id (`com.jobbridge.app` + flavor
+suffixes), the Android namespace and Kotlin package, and the Dart package
+(`jobbridge_app`). **Not renamed, on purpose:** the repository folders, the
+`headhunter-backend` references in doc comments (that repo really is called that),
+`docs/SPEC.md` and the design document (both are client deliverables carrying the
+old name), and the `hh.qitmir.uz` API host. So a `headhunter` in a path or a
+backend reference is correct; a `headhunter` in an application id or an import is
+a leftover.
+
+`android/app/google-services.json` still lists the **old** package names and is
+left that way on purpose — see the Notifications note in
+[TODO.md](TODO.md).
 
 | Repo | Path | Stack |
 |---|---|---|
@@ -18,7 +33,8 @@ Open both at once in one editor window with
 | File | Contents |
 |---|---|
 | [docs/SPEC.md](docs/SPEC.md) | The client specification. **Cite it** as §n, BR-nn, UAT-nn. |
-| [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) | MVP sign-in is **Log in with Telegram**, not OTP. Read before touching auth. |
+| [docs/SPEC_CHANGELOG.md](docs/SPEC_CHANGELOG.md) | What each client revision changed, and which delivered code it contradicts. Read before assuming a section still says what you remember. |
+| [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) | History only. Telegram login was deprecated 2026-08-05 and its client code **deleted 2026-08-19**. Read only if someone proposes reviving it. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Design decisions: role shell, localization, forms, offline. Read before adding a feature. |
 | [PLAN.md](PLAN.md) | Milestones in dependency order, mapped to BR/UAT. |
 | [TODO.md](TODO.md) | Working checklist and what is blocked on whom. |
@@ -61,11 +77,22 @@ and a green test suite both missed.
   them** (§10) - there is no web admin panel, ever (§2.4).
 - **Forms are schema-driven** because the field set depends on work category and
   admins add categories at runtime (§5.2, §6.3, §10.3).
-- **Never show a candidate's phone on a search card** (BR-09, §11.1).
+- **Never show a candidate's phone on a search card** (BR-09, §11.1). Since the
+  2026-08-10 spec revision the rule reaches further: phone, e-mail and CV are
+  released to an employer **only after a paid Candidate Unlock** (§6.6, §11.1).
+  An application no longer entitles an employer to contact on its own.
+- **Money is the server's.** Coin price, unlock cost and the registration bonus
+  are server configuration (§6.6) — a constant in Dart makes a price change a
+  store release and disagrees with the ledger the moment it moves. The client
+  never computes a total, a balance or an amount payable (§12.3.1).
 - **Sign-in is phone + OTP** (§4.1, UAT-01), which satisfies BR-01 by
   construction: verifying the code is what makes the number verified. Telegram
-  login was tried and **deprecated 2026-08-05** — the code is kept and still
-  works, but nothing calls it ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
+  login was tried, **deprecated 2026-08-05**, and its client code **removed
+  2026-08-19** — it applied the Kotlin Gradle Plugin, which future Flutter
+  versions will refuse, and pulled a community fork of Telegram's SDK onto the
+  path that guards every account, for a feature nothing called. The backend's
+  `POST /auth/telegram` still exists and still works; the client can no longer
+  reach it ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
 - **There is no SMS provider yet.** The backend issues a fixed code set by
   `OTP_STATIC_CODE` (currently `666666`), substituted at the point a random code
   would be generated and nowhere else — so TTL, resend delay, attempt limits and
@@ -119,7 +146,13 @@ flutter run --flavor development `
 ## Flavors
 
 Three targets (§12.1), each with its own application id so all three install side
-by side: `development` (`.dev`), `staging` (`.staging`), `production` (no suffix).
+by side: `development` (`com.jobbridge.app.dev`), `staging`
+(`com.jobbridge.app.staging`), `production` (`com.jobbridge.app`, no suffix).
+
+**`com.jobbridge.app` is a store identity.** It has never been published, which is
+the only reason the 2026-08-19 rename was possible at all — after the first upload
+the id is fixed, and changing it means a new listing with no upgrade path for
+anyone who already installed the app.
 
 `--flavor` picks the **Gradle** variant and `--dart-define=FLAVOR=` picks the
 **Dart** config - separate mechanisms that must name the same flavor.
@@ -165,6 +198,12 @@ dart run build_runner build         # regenerate *.g.dart after editing provider
 dart run build_runner watch         # continuous codegen while developing
 flutter gen-l10n                    # regenerate localizations after editing an ARB
 flutter build apk --debug --flavor development   # verify the Android toolchain
+
+# Take in a revised client specification. Run it for BOTH repos with the same
+# source - the two SPEC.md files are required to be byte-identical, and two
+# runs agreeing is what makes the conversion checkable.
+node tool/spec_from_docx.js <source.docx>
+node tool/spec_from_docx.js <source.docx> ..\headhunter-backend\docs\SPEC.md
 ```
 
 ## Structure
@@ -272,16 +311,19 @@ consideration, until asked.** Android only.
 
 - Do not edit anything under `ios/`, and do not touch
   `IPHONEOS_DEPLOYMENT_TARGET`.
-- `ios-build.yml` is **`workflow_dispatch`-only** — it no longer runs on push. It
-  would fail anyway: `telegram_login` needs iOS 15 and the project stays at 13.
+- `ios-build.yml` is **`workflow_dispatch`-only** — it no longer runs on push.
+  The reason it would have failed anyway is gone: `telegram_login` needed iOS 15
+  against the project's 13, and it was removed on 2026-08-19. Whether the iOS
+  build now passes is **untested**, and testing it is not worth doing while iOS is
+  out of scope.
 - **Nothing catches iOS compile breakage now.** That is accepted.
 - Keep Dart cross-platform regardless. No Android-only concessions in `lib/` —
   they cost more to undo than they save.
 
 Background, if this ever reverses: iOS cannot be built on this Windows machine
 (Xcode is macOS-only), an installable `.ipa` needs a Mac and an Apple Developer
-account, and Telegram login additionally needs a bundle id + Apple Team ID
-registered with BotFather (docs/TELEGRAM_LOGIN.md).
+account. (Telegram login also needed a bundle id + Apple Team ID registered with
+BotFather, but that dependency is gone — see docs/TELEGRAM_LOGIN.md.)
 
 ## Backend contract
 

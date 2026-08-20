@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/config/app_config.dart';
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/config/app_config.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 
 void main() {
   group('AppFlavor', () {
@@ -32,12 +32,12 @@ void main() {
     });
 
     test('only production has no environment marker in its display name', () {
-      expect(AppFlavor.production.displayName, 'HeadHunter');
+      expect(AppFlavor.production.displayName, 'JobBridge');
       for (final flavor in AppFlavor.values) {
         if (flavor == AppFlavor.production) continue;
         expect(
           flavor.displayName,
-          isNot('HeadHunter'),
+          isNot('JobBridge'),
           reason: '${flavor.name} must be distinguishable on the home screen',
         );
       }

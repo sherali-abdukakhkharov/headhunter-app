@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:headhunter_app/src/core/design/components/hh_button.dart';
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
-import 'package:headhunter_app/src/core/design/hh_icons.dart';
-import 'package:headhunter_app/src/core/design/hh_metrics.dart';
-import 'package:headhunter_app/src/core/design/hh_typography.dart';
+import 'package:jobbridge_app/src/core/design/components/hh_button.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_icons.dart';
+import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
+import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
 /// The UI states the design treats as **deliverables, not implementation
 /// details** — each is drawn in the specification and each must exist before a
@@ -443,6 +443,7 @@ class HhNotice extends StatelessWidget {
     this.tone = HhNoticeTone.info,
     this.actionLabel,
     this.onAction,
+    this.onDismiss,
   });
 
   /// Location permission not granted.
@@ -452,6 +453,7 @@ class HhNotice extends StatelessWidget {
     super.key,
     this.actionLabel,
     this.onAction,
+    this.onDismiss,
   }) : tone = HhNoticeTone.info,
        iconPath = HhIconPath.location;
 
@@ -462,6 +464,7 @@ class HhNotice extends StatelessWidget {
     super.key,
     this.actionLabel,
     this.onAction,
+    this.onDismiss,
   }) : tone = HhNoticeTone.warning,
        iconPath = HhIconPath.clock;
 
@@ -473,6 +476,7 @@ class HhNotice extends StatelessWidget {
     super.key,
     this.actionLabel,
     this.onAction,
+    this.onDismiss,
   }) : tone = HhNoticeTone.error,
        iconPath = HhIconPath.lock;
 
@@ -483,8 +487,29 @@ class HhNotice extends StatelessWidget {
     super.key,
     this.actionLabel,
     this.onAction,
+    this.onDismiss,
   }) : tone = HhNoticeTone.neutral,
        iconPath = HhIconPath.clock;
+
+  /// **Something the user just did, and it worked.**
+  ///
+  /// Distinct from [HhToast]: a toast is transient and right for a minor
+  /// action, while this stays on the screen the outcome belongs to. §06 uses it
+  /// for the unlock-success banner, where the outcome carries figures an
+  /// employer may want to read twice — Coins spent and the balance left — and a
+  /// message that disappears after four seconds is the wrong container for
+  /// money.
+  ///
+  /// Dismissible, because it is confirming rather than blocking.
+  const HhNotice.done({
+    required this.title,
+    required this.message,
+    super.key,
+    this.actionLabel,
+    this.onAction,
+    this.onDismiss,
+  }) : tone = HhNoticeTone.success,
+       iconPath = HhIconPath.checkCircle;
 
   final String title;
   final String message;
@@ -492,6 +517,12 @@ class HhNotice extends StatelessWidget {
   final HhNoticeTone tone;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// Dismiss control, drawn as a 30px target on the right. Pass it only where
+  /// the notice **confirms** something; a condition the user cannot clear — a
+  /// denied permission, a restricted account — must not offer a control that
+  /// looks like it clears it.
+  final VoidCallback? onDismiss;
 
   @override
   Widget build(BuildContext context) {
@@ -510,6 +541,11 @@ class HhNotice extends StatelessWidget {
         HhColors.errorBg,
         HhColors.errorFg,
         HhColors.errorBorder,
+      ),
+      HhNoticeTone.success => (
+        HhColors.successBg,
+        HhColors.successFg,
+        HhColors.successBorder,
       ),
       HhNoticeTone.neutral => (
         HhColors.neutralBg,
@@ -564,6 +600,31 @@ class HhNotice extends StatelessWidget {
                   ],
                 ),
               ),
+              if (onDismiss case final dismiss?)
+                // A 30px target rather than the usual 44: the notice sits
+                // inside content, and a 44px box would push its own text
+                // narrower than the line it is confirming. The notice is never
+                // the only way past whatever it reports, so an undersized
+                // dismiss cannot trap anyone.
+                Semantics(
+                  button: true,
+                  child: InkWell(
+                    onTap: dismiss,
+                    customBorder: const CircleBorder(),
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Center(
+                        child: HhIcon(
+                          HhIconPath.close,
+                          size: 15,
+                          color: fg,
+                          strokeWidth: 2.2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
           if (actionLabel != null) ...[
@@ -580,7 +641,7 @@ class HhNotice extends StatelessWidget {
   }
 }
 
-enum HhNoticeTone { info, warning, error, neutral }
+enum HhNoticeTone { info, warning, error, neutral, success }
 
 /// **State 11 — success toast.** Dark surface, success glyph, and an optional
 /// action on the right.

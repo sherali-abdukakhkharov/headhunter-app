@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
 
 /// What the app knows about the current session.
 ///

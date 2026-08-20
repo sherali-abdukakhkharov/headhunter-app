@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/src/app.dart';
+import 'package:jobbridge_app/src/app.dart';
 
 void main() {
   runApp(

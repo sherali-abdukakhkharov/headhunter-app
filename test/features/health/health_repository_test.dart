@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/features/health/data/health_repository.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/health/data/health_repository.dart';
 
 /// Serves canned responses so the repository can be tested without a server.
 class _StubAdapter implements HttpClientAdapter {

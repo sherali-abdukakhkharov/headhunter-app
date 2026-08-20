@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/l10n/app_locale.dart';
-import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_cache.dart';
-import 'package:headhunter_app/src/features/dictionaries/data/dictionary_providers.dart';
-import 'package:headhunter_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:headhunter_app/src/features/dictionaries/presentation/dictionary_picker.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_cache.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_picker.dart';
 
 /// **Development only.** Exercises the dictionary layer against the real API.
 ///

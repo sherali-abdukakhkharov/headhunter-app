@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/config/app_flavor.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/l10n/app_locale.dart';
-import 'package:headhunter_app/src/core/l10n/locale_controller.dart';
-import 'package:headhunter_app/src/core/network/api_exception.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
-import 'package:headhunter_app/src/features/auth/data/auth_repository.dart';
-import 'package:headhunter_app/src/features/auth/domain/uz_phone.dart';
-import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/config/app_flavor.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
+import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
+import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
 
 /// Language, consent, and **phone entry** — the first step of sign-in (§4.1).
 ///
@@ -110,7 +110,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: HhSpace.xxl),
-              Text(l10n.appTitle, style: HhTypography.display),
+              // The stacked lockup, not the app title as text: this is the
+              // first thing anybody sees, and a logotype is what belongs
+              // there. The mark also carries the product's one idea — two
+              // people and the span between them — which `appTitle` cannot.
+              const Center(
+                child: HhBrandLockup(axis: HhBrandLockupAxis.stacked),
+              ),
               const SizedBox(height: HhSpace.xl),
 
               Text(l10n.settingsLanguage, style: HhTypography.subtitle),

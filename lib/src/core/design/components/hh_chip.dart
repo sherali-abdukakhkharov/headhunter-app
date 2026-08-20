@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:headhunter_app/src/core/design/hh_colors.dart';
-import 'package:headhunter_app/src/core/design/hh_icons.dart';
-import 'package:headhunter_app/src/core/design/hh_metrics.dart';
-import 'package:headhunter_app/src/core/design/hh_typography.dart';
+import 'package:jobbridge_app/src/core/design/hh_colors.dart';
+import 'package:jobbridge_app/src/core/design/hh_icons.dart';
+import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
+import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
 /// A pill filter chip. Selected chips take the brand fill and gain a check
 /// glyph — selection is never conveyed by colour alone.
@@ -65,6 +65,13 @@ class HhFilterChip extends StatelessWidget {
 ///
 /// Tinted rather than solid so a row of applied filters does not compete with
 /// the primary action.
+///
+/// **The label shrinks before the chip does.** A chip holds whatever a
+/// dictionary or a filter group is called, and the same word is longer in
+/// Russian than in English — an unconstrained `Text` in a `Row` overflows its
+/// line rather than wrapping, so one long label paints a striped bar across the
+/// filter row. Truncating is the only option that keeps the remove control
+/// reachable, which is the part of the chip that must never be lost.
 class HhRemovableChip extends StatelessWidget {
   const HhRemovableChip({
     required this.label,
@@ -87,11 +94,15 @@ class HhRemovableChip extends StatelessWidget {
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          label,
-          style: HhTypography.chipLabel(
-            selected: true,
-          ).copyWith(color: HhColors.brand600),
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: HhTypography.chipLabel(
+              selected: true,
+            ).copyWith(color: HhColors.brand600),
+          ),
         ),
         // A 44px target around a 14px glyph: the chip stays visually compact
         // while the remove control is still legal to tap.

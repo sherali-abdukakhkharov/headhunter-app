@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The three brand colours, mirrored from HhColors so the Android side of the
+  launch can match the Flutter side with no seam. Change both together.
+
+    brand_navy      HhColors.brand900   #0B2545
+    brand_turquoise HhColors.accent500  #12B0BE
+    app_surface     HhColors.surfaceMuted #F7F8FA
+
+  There is deliberately no -night variant: the design exposes no dark theme, and
+  a night-only value here would put a colour on screen that no screen of this app
+  ever draws.
+-->
+<resources>
+    <color name="brand_navy">#FF0B2545</color>
+    <color name="brand_turquoise">#FF12B0BE</color>
+    <color name="app_surface">#FFF7F8FA</color>
+
+    <!-- The adaptive icon's background layer: full-bleed navy, per the design's
+         "Full-bleed navy #0B2545, arch in turquoise #12B0BE". -->
+    <color name="ic_launcher_background">#FF0B2545</color>
+</resources>

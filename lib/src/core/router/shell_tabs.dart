@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/design/hh_icons.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/design/hh_icons.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
 
 /// One destination in a role's bottom navigation.
 ///

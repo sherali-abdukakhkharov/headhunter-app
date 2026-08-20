@@ -3,18 +3,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:headhunter_app/l10n/generated/app_l10n.dart';
-import 'package:headhunter_app/src/core/auth/app_role.dart';
-import 'package:headhunter_app/src/core/auth/session_controller.dart';
-import 'package:headhunter_app/src/core/auth/session_state.dart';
-import 'package:headhunter_app/src/core/design/design.dart';
-import 'package:headhunter_app/src/core/l10n/app_locale.dart';
-import 'package:headhunter_app/src/core/router/app_router.dart';
-import 'package:headhunter_app/src/core/router/routes.dart';
-import 'package:headhunter_app/src/core/router/shell_tabs.dart';
-import 'package:headhunter_app/src/features/auth/domain/otp_challenge.dart';
-import 'package:headhunter_app/src/features/auth/domain/uz_phone.dart';
-import 'package:headhunter_app/src/features/auth/presentation/otp_verification_screen.dart';
+import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
+import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/router/app_router.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
+import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
+import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A session controller that starts in a state chosen by the test.
@@ -48,10 +49,10 @@ class _FakeSessionController extends SessionController {
 /// Advances enough frames for a redirect and the page transition it triggers,
 /// **without** `pumpAndSettle`.
 ///
-/// `pumpAndSettle` cannot be used here: the splash screen carries a
-/// `CircularProgressIndicator`, which animates forever, so waiting for the tree
-/// to go quiet times out. That failure looks exactly like a stuck redirect,
-/// which is a misleading way to spend twenty minutes.
+/// `pumpAndSettle` cannot be used here: a page transition plus whatever a
+/// destination screen animates can keep the tree from going quiet, and the
+/// timeout looks exactly like a stuck redirect — a misleading way to spend
+/// twenty minutes.
 ///
 /// Two long pumps rather than one: a deep link into a non-active role converges
 /// over *two* passes - the first allows the navigation and schedules the role
@@ -135,7 +136,11 @@ void main() {
       // signed-in user onboarding for a frame or two.
       final result = await settle(tester, const SessionUnknown());
       expect(result.location, Routes.splash);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      // The screen itself, not a spinner it happens to contain. It used to
+      // contain one; the design forbids it on the launch screen, and a test
+      // anchored on an incidental child fails when the screen is redrawn
+      // correctly.
+      expect(find.byType(SplashScreen), findsOneWidget);
     });
 
     testWidgets('an unrestored session cannot be navigated past', (

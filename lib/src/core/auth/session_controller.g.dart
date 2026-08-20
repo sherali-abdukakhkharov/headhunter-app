@@ -22,7 +22,8 @@ part of 'session_controller.dart';
 /// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
 /// number and the code sent to it, and takes the roles and tokens from the
 /// response.
-/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
+/// Telegram login was the deprecated predecessor. Its client code was removed
+/// on 2026-08-19 — see docs/TELEGRAM_LOGIN.md.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with
@@ -47,7 +48,8 @@ final sessionControllerProvider = SessionControllerProvider._();
 /// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
 /// number and the code sent to it, and takes the roles and tokens from the
 /// response.
-/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
+/// Telegram login was the deprecated predecessor. Its client code was removed
+/// on 2026-08-19 — see docs/TELEGRAM_LOGIN.md.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with
@@ -70,7 +72,8 @@ final class SessionControllerProvider
   /// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
   /// number and the code sent to it, and takes the roles and tokens from the
   /// response.
-  /// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
+  /// Telegram login was the deprecated predecessor. Its client code was removed
+  /// on 2026-08-19 — see docs/TELEGRAM_LOGIN.md.
   ///
   /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
   /// until the refresh call is wired through the repository, so a cold start with
@@ -104,7 +107,7 @@ final class SessionControllerProvider
   }
 }
 
-String _$sessionControllerHash() => r'dc7a1fad1f8a178ef36ec0ed7932bf6a81aa38c0';
+String _$sessionControllerHash() => r'a14d762cf3fc3ab62e442f68efcbef0be1423886';
 
 /// App-wide session and active-role state.
 ///
@@ -120,7 +123,8 @@ String _$sessionControllerHash() => r'dc7a1fad1f8a178ef36ec0ed7932bf6a81aa38c0';
 /// **Acquiring** a session is now real too: [signInWithOtp] posts a phone
 /// number and the code sent to it, and takes the roles and tokens from the
 /// response.
-/// [signInWithTelegram] is the deprecated predecessor, kept but uncalled.
+/// Telegram login was the deprecated predecessor. Its client code was removed
+/// on 2026-08-19 — see docs/TELEGRAM_LOGIN.md.
 ///
 /// Still a seam: [restore] cannot rebuild a session from a stored refresh token
 /// until the refresh call is wired through the repository, so a cold start with

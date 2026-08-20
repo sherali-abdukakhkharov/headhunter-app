@@ -1,7 +1,7 @@
 import 'dart:ui' show PlatformDispatcher;
 
-import 'package:headhunter_app/src/core/l10n/app_locale.dart';
-import 'package:headhunter_app/src/core/storage/preferences_provider.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/storage/preferences_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'locale_controller.g.dart';
