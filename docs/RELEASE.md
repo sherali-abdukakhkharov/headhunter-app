@@ -21,8 +21,13 @@ Push a version tag and GitHub builds a signed production APK and attaches it to 
 release. The download link never changes, so the README needs no edit per release:
 
 ```
-https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/headhunter.apk
+https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/jobbridge.apk
 ```
+
+The asset was called `headhunter.apk` up to and including **v1.1.0**. Later
+releases attach both names — the same bytes — so links shared before the
+JobBridge rename keep resolving; the alias goes away once nothing points at it,
+and TODO.md carries that removal.
 
 ```powershell
 git tag v1.0.1
@@ -52,8 +57,9 @@ artifact instead of publishing.
 
 > **Back this file up somewhere you will not lose it, along with its password.**
 > It is not recoverable. If it is lost, a Play Store listing signed with it can
-> never be updated — a new key means a new listing — and every Telegram login
-> breaks until a new fingerprint is registered with BotFather.
+> never be updated — a new key means a new listing — and even for direct
+> download every tester has to uninstall before the next build will install,
+> because Android refuses an update whose signature changed.
 >
 > A password manager entry plus an encrypted copy off this machine. Not just the
 > laptop it was made on.
@@ -119,17 +125,19 @@ gh secret set ANDROID_KEY_PASSWORD        # prompts
 </details>
 
 The workflow **fails fast** if any of these is missing, rather than falling back
-to debug signing. That fallback would produce an APK that installs happily and
-then cannot complete a Telegram login, because its fingerprint is not the one
-registered with BotFather.
+to debug signing. The fallback in `build.gradle.kts` is a warning, not an error,
+so without this check a run would go green and publish an APK signed with the
+debug key — one that installs fine on a clean phone and then blocks every future
+update, since Android will not install over a changed signature.
 
 ### 3. The API base URL — optional now
 
 **You can skip this.** `AppFlavor.production` points at the live backend,
 `https://hh.qitmir.uz`, so a release build already talks to the right place.
-Verified 2026-08-05: `GET /health` answers 200 over HTTPS, `POST /auth/telegram`
-answers 401 for a bogus token rather than 404 (so that deployment carries the
-Telegram endpoint), and the name resolves on Google, Cloudflare and Quad9 DNS.
+Verified 2026-08-05: `GET /health` answers 200 over HTTPS and the name resolves
+on Google, Cloudflare and Quad9 DNS. What a downloaded build actually needs from
+that deployment now is `POST /auth/otp/send` — sign-in is phone + OTP (§4.1) —
+and that in turn needs an SMS provider, which is the open item below.
 
 Set the variable only to point a build somewhere else without editing code. It is
 a repository **variable**, not a secret — it is a hostname, and §12.5 keeps
@@ -147,56 +155,40 @@ gh variable set API_BASE_URL --body https://api.staging.headhunter.uz
 ```
 
 Resolution order in the workflow: the manual `api_base_url` input, then this
-variable, then `AppFlavor.production`'s own default
-(`https://api.headhunter.uz`). If none is set the build still succeeds and logs a
-warning — worth knowing, because that host does not exist yet.
+variable, then `AppFlavor.production`'s own default (`https://hh.qitmir.uz`,
+which is live). If none is set the build still succeeds and logs a warning
+naming the default it used.
 
-### 4. Register the release fingerprint with BotFather — *not needed*
+### 4. What a downloaded build still needs: an SMS provider
 
-> **Skip this step.** Telegram login was deprecated on 2026-08-05 and the app
-> signs in with phone + OTP, which needs no BotFather registration and no
-> per-certificate binding. A downloaded APK signs in fine without any of the
-> below.
->
-> Kept because the fingerprint and the mechanics are correct, and this is the
-> first thing to do if Telegram login is ever revived —
-> [TELEGRAM_LOGIN.md](TELEGRAM_LOGIN.md).
->
-> **What a release *does* need instead: an SMS provider.** Until one is
-> connected the backend issues a fixed `OTP_STATIC_CODE`, and it refuses to boot
-> with that set when `NODE_ENV=production` — so a production deploy fails at
-> startup, loudly, rather than shipping a master key.
+Nothing about signing — a signed APK signs people in as soon as the backend can
+send a code. Until an SMS provider is connected the backend issues a fixed
+`OTP_STATIC_CODE`, and it **refuses to boot with that set when
+`NODE_ENV=production`** — so a production deploy fails at startup, loudly, rather
+than shipping a master key. That is the one thing standing between a release
+build and a stranger being able to use it.
 
-Telegram
-binds a redirect URI to one application id *plus one signing certificate*, and the
-release keystore above is a different certificate from the debug one used so far.
+> **There is no BotFather step, and there never will be unless Telegram login is
+> revived.** It was deprecated on 2026-08-05 and the client code was deleted on
+> 2026-08-19, `AppFlavor.telegramRedirectUri` with it. Sign-in is phone + OTP
+> (§4.1, UAT-01), which binds to no certificate, so the release key needs
+> registering nowhere. The fingerprint mechanics — a redirect URI bound to one
+> application id *plus* one signing certificate — are in
+> [TELEGRAM_LOGIN.md](TELEGRAM_LOGIN.md), which is where they belong if anyone
+> ever asks for the feature back.
 
-In @BotFather → your bot → Login Widget, add an Android app registration for:
+### Printing a signing fingerprint
 
-| | |
-|---|---|
-| Package name | `com.headhunter.app` |
-| SHA-256 | `7C:1C:C8:1C:FC:55:64:F6:56:3E:BA:B3:FE:71:4E:0E:2A:C3:2F:18:17:3F:36:09:F7:86:A0:9D:FF:C5:42:1F` |
-
-BotFather returns an app id; put its redirect URI into
-`AppFlavor.production.telegramRedirectUri`, which is empty today, and add a
-`android/app/src/production/AndroidManifest.xml` with the matching App Link host —
-copy the shape of the `development` one.
-
-Until that is done, a downloaded APK runs but the login button reports that
-Telegram sign-in is unavailable in this build. That is deliberate: the Dart side
-refuses to start a login it knows Telegram will reject.
-
-To print that fingerprint again — `keytool` is not on `PATH`, it ships inside
-Android Studio's bundled JBR:
+Needed to compare a build against the table above, not for any registration.
+`keytool` is not on `PATH`; it ships inside Android Studio's bundled JBR:
 
 ```powershell
 $keytool = "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe"
 & $keytool -list -v -keystore android\upload-keystore.jks -alias upload
 ```
 
-Every signing certificate in use needs registering. `gradlew signingReport` lists
-them all per variant:
+`gradlew signingReport` lists every variant's certificate at once, which is the
+faster way to see that a flavor is signed with the key you think it is:
 
 ```powershell
 Push-Location android
@@ -216,24 +208,27 @@ Build and stage it under the exact name the permanent link expects:
 ```powershell
 flutter build apk --release --flavor production --dart-define=FLAVOR=production
 New-Item -ItemType Directory -Force dist | Out-Null
-Copy-Item build\app\outputs\flutter-apk\app-production-release.apk dist\headhunter.apk -Force
+Copy-Item build\app\outputs\flutter-apk\app-production-release.apk dist\jobbridge.apk -Force
+Copy-Item dist\jobbridge.apk dist\headhunter.apk -Force
 ```
 
 Confirm it carries the **release** key before uploading — see the next section.
-This matters more than it sounds: a release build silently falls back to debug
-signing when `android/key.properties` is missing, and Telegram login then fails
-only in the downloaded APK.
+This matters more than it sounds: a release build falls back to debug signing
+when `android/key.properties` is missing, with only a warning in the build log,
+and the APK installs perfectly well — then refuses to be updated by a correctly
+signed one, on every phone that took it.
 
 ```powershell
 git tag v1.0.1
 git push origin v1.0.1
 ```
 
-Then **Releases → Draft a new release**, pick that tag, and attach
-`dist\headhunter.apk`. The filename must be exactly `headhunter.apk` — the
-permanent URL is `latest/download/headhunter.apk`, so a different name breaks it.
+Then **Releases → Draft a new release**, pick that tag, and attach both files.
+The names must be exact: the permanent URL is
+`latest/download/jobbridge.apk`, and `headhunter.apk` is the pre-1.1.0 alias
+kept so older links resolve. A different name breaks whichever link uses it.
 
-`dist/` is gitignored: a 52 MB binary belongs in a release attachment, never in
+`dist/` is gitignored: a 60 MB binary belongs in a release attachment, never in
 git history, where it cannot be removed without a rewrite.
 
 When Actions is available again the tag-triggered workflow does all of this,
@@ -249,7 +244,7 @@ expected SHA-256 digest is `7c1cc81cfc5564f6563ebab3fe714e0e2ac32f18173f3609f786
 ```powershell
 $apksigner = Get-ChildItem "$env:LOCALAPPDATA\Android\Sdk\build-tools" -Recurse -Filter apksigner.bat |
   Select-Object -First 1 -ExpandProperty FullName
-& $apksigner verify --print-certs headhunter.apk
+& $apksigner verify --print-certs jobbridge.apk
 ```
 
 `keytool -printcert -jarfile` does **not** work here: the APK is signed with
@@ -261,7 +256,7 @@ Application id and launcher name:
 ```powershell
 $aapt = Get-ChildItem "$env:LOCALAPPDATA\Android\Sdk\build-tools" -Recurse -Filter aapt2.exe |
   Select-Object -First 1 -ExpandProperty FullName
-& $aapt dump badging headhunter.apk | Select-String "^package:|^application-label:"
+& $aapt dump badging jobbridge.apk | Select-String "^package:|^application-label:"
 ```
 
 ---

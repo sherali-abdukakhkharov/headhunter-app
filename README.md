@@ -1,13 +1,20 @@
-# headhunter-app
+# JobBridge (`headhunter-app`)
 
-Flutter mobile app (**Android**) for the Headhunter job search and recruitment
+Flutter mobile app (**Android**) for the JobBridge job search and recruitment
 platform. iOS is out of scope — see [CLAUDE.md](CLAUDE.md).
+
+The product was renamed from *Universal HeadHunter* to **JobBridge** on
+2026-08-19, and the rename is deliberately partial: the launcher name, the
+in-app title, the application id and the Dart package are JobBridge, while the
+repository, the `headhunter-backend` companion and the `hh.qitmir.uz` API host
+keep the old name because that is genuinely what they are called. CLAUDE.md has
+the full list of what did and did not move.
 
 Companion backend: `headhunter-backend` — `d:\Dev\tgbots\headhunter-backend`.
 
 ## Download the latest APK
 
-**[⬇ Download headhunter.apk](https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/headhunter.apk)**
+**[⬇ Download jobbridge.apk](https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/jobbridge.apk)**
 
 [![release-apk](https://github.com/sherali-abdukakhkharov/headhunter-app/actions/workflows/release-apk.yml/badge.svg)](https://github.com/sherali-abdukakhkharov/headhunter-app/actions/workflows/release-apk.yml)
 [![latest release](https://img.shields.io/github/v/release/sherali-abdukakhkharov/headhunter-app?label=latest)](https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest)
@@ -21,8 +28,19 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
-Setup, signing and the BotFather step Telegram login needs are in
-[docs/RELEASE.md](docs/RELEASE.md).
+Up to and including **v1.1.0** the asset was called `headhunter.apk`. Releases
+after the rename carry both names — the same bytes — so a link shared earlier
+keeps working; the alias will be dropped once nothing points at it. Prefer
+`jobbridge.apk`.
+
+**Installing over an older build.** The application id changed with the rename
+(`com.headhunter.app` → `com.jobbridge.app`), so Android treats the new APK as a
+different app: it installs *beside* an older one rather than updating it, and
+the old icon keeps its own data. Uninstall the pre-rename build to avoid two
+launcher entries. Nothing was ever published to a store under the old id, which
+is the only reason a rename was possible at all.
+
+Setup and signing are in [docs/RELEASE.md](docs/RELEASE.md).
 
 > Commands in this repository are **PowerShell** — this is a Windows project. Note
 > that `&&` is a parser error in Windows PowerShell 5.1, `<` input redirection is
@@ -39,7 +57,7 @@ Setup, signing and the BotFather step Telegram login needs are in
 | HTTP | dio 5 |
 | Models | json_serializable |
 | Lints | very_good_analysis + riverpod_lint |
-| App id | `com.headhunter.app` (Android `applicationId`, iOS bundle id) |
+| App id | `com.jobbridge.app` (Android `applicationId`; `.dev` / `.staging` per flavor) |
 
 ## Cutting a release
 
@@ -109,9 +127,9 @@ silently replaces another and takes its data.
 
 | Flavor | Application id | Launcher name | Default API base URL |
 |---|---|---|---|
-| `development` | `com.headhunter.app.dev` | HeadHunter Dev | `http://10.0.2.2:3001` (host loopback) |
-| `staging` | `com.headhunter.app.staging` | HeadHunter Staging | *(no environment yet — see below)* |
-| `production` | `com.headhunter.app` | HeadHunter | `https://hh.qitmir.uz` (live) |
+| `development` | `com.jobbridge.app.dev` | JobBridge Dev | `http://10.0.2.2:3001` (host loopback) |
+| `staging` | `com.jobbridge.app.staging` | JobBridge Staging | *(no environment yet — see below)* |
+| `production` | `com.jobbridge.app` | JobBridge | `https://hh.qitmir.uz` (live) |
 
 `staging`'s host does not exist, deliberately. There is one real backend today, and
 pointing staging at it too would let a staging build write production data with
@@ -147,8 +165,9 @@ the button on the onboarding screen and from the floating button inside any role
 shell. It offers:
 
 - **sign-in scenarios** for every branch of the redirect chain — each role, both
-  roles at once, no role yet, and blocked (BR-10) — because M1 has not shipped
-  real auth yet;
+  roles at once, no role yet, and blocked (BR-10). Real phone + OTP sign-in has
+  shipped; these stay because a blocked account and a role-less one are states
+  the redirect chain has to handle and neither is reachable by typing a code;
 - **the role switcher** (§2.3);
 - **live interface-variant switching** across all four variants;
 - links to the design catalogue (`/_design`) and the backend health probe
@@ -171,11 +190,18 @@ flutter build apk --debug --flavor development
 
 ## Before shipping
 
-- **Release signing.** `android/app/build.gradle.kts` signs release builds with
-  the debug keystore so `flutter run --release` works out of the box. Create a
-  real keystore and signing config before any store upload.
-- **App icons and launch screen** are still Flutter's defaults.
-- **iOS** requires a Mac; CI compiles it with `--no-codesign` as a check.
+- **Release signing** is configured: `android/app/build.gradle.kts` reads
+  `android/key.properties` when it exists — which is what CI writes from the
+  repository secrets — and falls back to the debug key with a loud warning so a
+  fresh clone can still run `flutter run --release`. A debug-signed release APK
+  installs but cannot be *updated* by a properly signed one; Android refuses a
+  signature change. [docs/RELEASE.md](docs/RELEASE.md) has the keystore steps.
+- **The launcher icon and launch screen** are the designer's, as of 2026-08-20 —
+  a vector adaptive icon plus a navy launch window. One thing is still
+  unverified: a vector launcher icon on **API 24/25**, which is the one path no
+  modern launcher exercises. See TODO.md.
+- **iOS** requires a Mac and is out of scope; `ios-build.yml` is
+  `workflow_dispatch`-only and nothing catches iOS breakage on push.
 
 ## Docs
 

@@ -1329,10 +1329,27 @@ this opens. Deep links moved to M8.
       back to debug signing with a loud warning when absent, so a fresh clone
       still builds. Verified: the release APK is signed with SHA-256 `7C:1C:…`,
       not the debug key. See [docs/RELEASE.md](docs/RELEASE.md)
-- [?] **Register the release SHA-256 with BotFather** and fill
-      `AppFlavor.production.telegramRedirectUri` — until then Telegram login is
-      unavailable in a downloaded APK, by design. RELEASE.md §4
-- [ ] App icons and launch screen
+- [-] ~~**Register the release SHA-256 with BotFather** and fill
+      `AppFlavor.production.telegramRedirectUri`~~ — **dead 2026-08-20.** The
+      field it names was deleted with the rest of the Telegram client code on
+      2026-08-19, so this was an instruction to edit something that no longer
+      exists. Phone + OTP binds to no signing certificate; a release key needs
+      registering nowhere. RELEASE.md §4 now says what a downloaded build
+      actually needs — an SMS provider — and the fingerprint mechanics moved to
+      docs/TELEGRAM_LOGIN.md, where they belong if the feature is ever revived
+- [x] ~~App icons and launch screen~~ — **shipped 2026-08-20** with §01 of the
+      design document: a vector adaptive launcher icon, the legacy round/square
+      mipmaps, and a navy platform launch window. The one part still unverified
+      is API 24/25, which is tracked in M7 above
+- [ ] **Drop the `headhunter.apk` release alias.** The asset was renamed to
+      `jobbridge.apk` on 2026-08-20 and the old name is uploaded beside it,
+      byte-identical, because `latest/download/headhunter.apk` was already in
+      the README, in RELEASE.md and in whatever chat it had been pasted into —
+      renaming alone would have turned every one of those into a 404 against
+      the *newest* release, which reads as a broken build rather than a moved
+      file. Both names ship until the links that matter are updated; then delete
+      the `cp` and the second `files:` entry in `release-apk.yml`. **Not before
+      one release has carried both**, or the alias buys nothing
 - [ ] Walk **all 24** UAT scenarios and keep the evidence — the 2026-08-10
       revision added UAT-16 – UAT-24. UAT-20 – UAT-23 need the providers' test
       environments, so book those *before* the acceptance window, not inside it

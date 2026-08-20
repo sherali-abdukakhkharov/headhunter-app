@@ -216,7 +216,7 @@ node tool/spec_from_docx.js <source.docx> ..\headhunter-backend\docs\SPEC.md
 
 ```
 lib/
-  main.dart                     ProviderScope + HeadhunterApp
+  main.dart                     ProviderScope + JobBridgeApp
   src/
     app.dart                    MaterialApp.router wiring
     core/
