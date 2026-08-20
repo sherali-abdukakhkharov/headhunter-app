@@ -470,6 +470,32 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-20 - A checklist rots faster than the code it describes
+Continuing after a merge, six TODO.md entries described work that was already
+done, and two of them were **wrong in a way that changes decisions**:
+
+- `Dictionary contract` and `Category field-schema contract` sat under "blocked
+  on someone else" long after the endpoints shipped, so the list said we were
+  waiting on the backend for things M2, M3 and M5 are already built on.
+- `Role switch does not tell the server` was listed as an M1 gap.
+  `SessionController._publishActiveRole` has been calling
+  `POST /auth/active-role` on every switch for some time.
+- The app icon appeared **three times** — under blocked, under the design system
+  and under M11 — because it blocked at three levels, and one entry being struck
+  left the other two lying.
+
+Two of them also *closed something off*: the file-download entry said the
+dependency cost had to be "weighed against pubspec.yaml's load-bearing pins", and
+in the same breath noted that the same decision blocked a `tel:` link. When the
+answer turned out to be "the app's own Kotlin is not a plugin", the `tel:` link
+was unblocked too — and nothing would have gone looking for it, because the note
+recording the blockage was inside the entry that got struck.
+
+**The habit: before answering "what is left", re-read the list against the code
+rather than reciting it.** Grep for the endpoint, open the screen. Six of
+sixty-nine entries were stale after two days of heavy work, and the two that
+mattered were the ones that made the project look more blocked than it was.
+
 ### 2026-08-20 - A test asserting a token is *absent* must strip comments first
 Three times in one day, in three different files:
 

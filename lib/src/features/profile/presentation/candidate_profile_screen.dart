@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/account/presentation/account_entry_row.dart';
 import 'package:jobbridge_app/src/features/profile/data/profile_controller.dart';
 import 'package:jobbridge_app/src/features/profile/domain/candidate_profile.dart';
 import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
@@ -140,6 +141,11 @@ class _FormState extends ConsumerState<_Form> {
                 // Not a schema field, and deliberately outside the save bar's
                 // dirty set - see VisibilitySection.
                 VisibilitySection(current: state.profile.visibility),
+                const SizedBox(height: HhSpace.sectionGap),
+
+                // Sessions, sign-out and BR-14. Last, because it is the one
+                // thing here that is not about the profile.
+                const AccountEntryRow(),
                 const SizedBox(height: HhSpace.sectionGap),
 
                 // Room for the save bar, which floats over the list.

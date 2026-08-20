@@ -1625,4 +1625,76 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get dashboardWallet => 'Кошелёк';
+
+  @override
+  String get accountTitle => 'Аккаунт и безопасность';
+
+  @override
+  String get accountDevices => 'Устройства с активным входом';
+
+  @override
+  String get accountDevicesBody =>
+      'Если видите незнакомое устройство — завершите его сеанс.';
+
+  @override
+  String get accountDeviceUnknown => 'Устройство без имени';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Последний вход: $at';
+  }
+
+  @override
+  String get accountThisDevice => 'Это устройство';
+
+  @override
+  String get accountRevoke => 'Завершить сеанс';
+
+  @override
+  String get accountRevokeTitle => 'Завершить этот сеанс?';
+
+  @override
+  String get accountRevokeBody =>
+      'На этом устройстве потребуется войти заново.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Выйти на этом устройстве?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'Это устройство, которым вы пользуетесь. Сейчас вы выйдете из аккаунта.';
+
+  @override
+  String get accountRevokeAll => 'Завершить все сеансы';
+
+  @override
+  String get accountRevokeAllTitle => 'Завершить все сеансы?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Из аккаунта выйдут все устройства, включая это.';
+
+  @override
+  String get accountDelete => 'Удаление аккаунта';
+
+  @override
+  String get accountDeleteBody =>
+      'Ваш профиль, заявки и сообщения будут удалены. Отменить это нельзя.';
+
+  @override
+  String get accountDeleteAction => 'Запросить удаление';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Запросить удаление аккаунта?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'Мы начнём удаление вашего аккаунта. Отменить это из приложения будет нельзя.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'Удаление запрошено';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка.';
 }

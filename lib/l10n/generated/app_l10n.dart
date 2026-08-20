@@ -2854,6 +2854,132 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Wallet'**
   String get dashboardWallet;
+
+  /// The one screen where somebody acts on the account rather than on the work: signed-in devices (section 4.2), signing out, and requesting deletion (BR-14).
+  ///
+  /// In en, this message translates to:
+  /// **'Account and security'**
+  String get accountTitle;
+
+  /// Section 4.2's session list.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed-in devices'**
+  String get accountDevices;
+
+  /// Says what the list is *for*. A list of devices with no instruction is a list most people scroll past; the reason to read it is that one of the rows might not be theirs.
+  ///
+  /// In en, this message translates to:
+  /// **'If you see a device you do not recognise, end its session.'**
+  String get accountDevicesBody;
+
+  /// A session whose device name and platform are both absent — an older build sent neither. Named rather than blank, because three empty lines read as a rendering failure rather than as missing data.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed device'**
+  String get accountDeviceUnknown;
+
+  /// The wall clock the platform recorded, never converted to the device's zone: a session opened abroad would otherwise be dated in the wrong one (section 8.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Last used {at}'**
+  String accountLastUsed(String at);
+
+  /// Marks the row belonging to the phone in the reader's hand. The server decides it by comparing against the presented token, so it is not derivable client-side — and it is the one field that must not be wrong, because revoking that row signs the reader out.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get accountThisDevice;
+
+  /// Revokes one device. The verb, not "Remove": the device is not being removed from anything, its sign-in is being ended.
+  ///
+  /// In en, this message translates to:
+  /// **'End session'**
+  String get accountRevoke;
+
+  /// Confirmation for revoking another device.
+  ///
+  /// In en, this message translates to:
+  /// **'End this session?'**
+  String get accountRevokeTitle;
+
+  /// States the consequence rather than asking for confirmation twice. Nothing is lost — the session ends, the account does not.
+  ///
+  /// In en, this message translates to:
+  /// **'That device will have to sign in again.'**
+  String get accountRevokeBody;
+
+  /// Revoking the current session *is* signing out, so the confirmation says so rather than repeating "end session" — a reader who taps it should not be surprised by what happens next.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of this device?'**
+  String get accountRevokeCurrentTitle;
+
+  /// The row is not hidden: somebody looking at a list of their devices must be able to act on the one in their hand. So the consequence is spelled out instead.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the device you are using. You will be signed out now.'**
+  String get accountRevokeCurrentBody;
+
+  /// Section 4.2's terminate-all. Offered only when more than one device is signed in — with one, it is the same button as Sign out under a longer name.
+  ///
+  /// In en, this message translates to:
+  /// **'End all sessions'**
+  String get accountRevokeAll;
+
+  /// Confirmation for terminate-all.
+  ///
+  /// In en, this message translates to:
+  /// **'End every session?'**
+  String get accountRevokeAllTitle;
+
+  /// "Including this one" is the load-bearing half: "every device" is a phrase most people read as "every *other* device", and the surprise arrives after the action rather than before it.
+  ///
+  /// In en, this message translates to:
+  /// **'Every device will be signed out, including this one.'**
+  String get accountRevokeAllBody;
+
+  /// BR-14. A section heading, and the section exists because an app that lets people create an account has to let them delete it from inside the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get accountDelete;
+
+  /// Says what is lost before the button rather than after it. Deliberately no date: the server sends `purgeAfter: null` because the retention period is an open client question, so naming one would be promising something nobody has agreed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile, applications and messages will be removed. This cannot be undone.'**
+  String get accountDeleteBody;
+
+  /// "Request", because that is what BR-14 does: the account moves to `deletion_requested` and a status-history row is written. Nothing is purged as the button is released, and a label saying "Delete" would describe a different operation.
+  ///
+  /// In en, this message translates to:
+  /// **'Request deletion'**
+  String get accountDeleteAction;
+
+  /// Confirmation for BR-14.
+  ///
+  /// In en, this message translates to:
+  /// **'Request account deletion?'**
+  String get accountDeleteConfirmTitle;
+
+  /// "Not from the app" rather than "not at all": the request is a status change an administrator can see (section 10), so claiming it is absolutely final would be a stronger promise than the system makes.
+  ///
+  /// In en, this message translates to:
+  /// **'We will start removing your account. You will not be able to undo this from the app.'**
+  String get accountDeleteConfirmBody;
+
+  /// Shown in place of the button once BR-14 has been recorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion requested'**
+  String get accountDeleteRequestedTitle;
+
+  /// Points at support rather than at a date, because the server returns `purgeAfter: null` and there is no retention period to quote yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request has been recorded. Support can tell you what happens next.'**
+  String get accountDeleteRequestedBody;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -2116,5 +2116,94 @@
   "dashboardWallet": "Wallet",
   "@dashboardWallet": {
     "description": "Heading over section 6.2's wallet widget. The Top up action it also asks for is M13 and blocked on merchant credentials, so the tile shows the balance and its som value and leads to the ledger."
+  },
+  "accountTitle": "Account and security",
+  "@accountTitle": {
+    "description": "The one screen where somebody acts on the account rather than on the work: signed-in devices (section 4.2), signing out, and requesting deletion (BR-14)."
+  },
+  "accountDevices": "Signed-in devices",
+  "@accountDevices": {
+    "description": "Section 4.2's session list."
+  },
+  "accountDevicesBody": "If you see a device you do not recognise, end its session.",
+  "@accountDevicesBody": {
+    "description": "Says what the list is *for*. A list of devices with no instruction is a list most people scroll past; the reason to read it is that one of the rows might not be theirs."
+  },
+  "accountDeviceUnknown": "Unnamed device",
+  "@accountDeviceUnknown": {
+    "description": "A session whose device name and platform are both absent — an older build sent neither. Named rather than blank, because three empty lines read as a rendering failure rather than as missing data."
+  },
+  "accountLastUsed": "Last used {at}",
+  "@accountLastUsed": {
+    "description": "The wall clock the platform recorded, never converted to the device's zone: a session opened abroad would otherwise be dated in the wrong one (section 8.3).",
+    "placeholders": {
+      "at": {
+        "type": "String"
+      }
+    }
+  },
+  "accountThisDevice": "This device",
+  "@accountThisDevice": {
+    "description": "Marks the row belonging to the phone in the reader's hand. The server decides it by comparing against the presented token, so it is not derivable client-side — and it is the one field that must not be wrong, because revoking that row signs the reader out."
+  },
+  "accountRevoke": "End session",
+  "@accountRevoke": {
+    "description": "Revokes one device. The verb, not \"Remove\": the device is not being removed from anything, its sign-in is being ended."
+  },
+  "accountRevokeTitle": "End this session?",
+  "@accountRevokeTitle": {
+    "description": "Confirmation for revoking another device."
+  },
+  "accountRevokeBody": "That device will have to sign in again.",
+  "@accountRevokeBody": {
+    "description": "States the consequence rather than asking for confirmation twice. Nothing is lost — the session ends, the account does not."
+  },
+  "accountRevokeCurrentTitle": "Sign out of this device?",
+  "@accountRevokeCurrentTitle": {
+    "description": "Revoking the current session *is* signing out, so the confirmation says so rather than repeating \"end session\" — a reader who taps it should not be surprised by what happens next."
+  },
+  "accountRevokeCurrentBody": "This is the device you are using. You will be signed out now.",
+  "@accountRevokeCurrentBody": {
+    "description": "The row is not hidden: somebody looking at a list of their devices must be able to act on the one in their hand. So the consequence is spelled out instead."
+  },
+  "accountRevokeAll": "End all sessions",
+  "@accountRevokeAll": {
+    "description": "Section 4.2's terminate-all. Offered only when more than one device is signed in — with one, it is the same button as Sign out under a longer name."
+  },
+  "accountRevokeAllTitle": "End every session?",
+  "@accountRevokeAllTitle": {
+    "description": "Confirmation for terminate-all."
+  },
+  "accountRevokeAllBody": "Every device will be signed out, including this one.",
+  "@accountRevokeAllBody": {
+    "description": "\"Including this one\" is the load-bearing half: \"every device\" is a phrase most people read as \"every *other* device\", and the surprise arrives after the action rather than before it."
+  },
+  "accountDelete": "Delete account",
+  "@accountDelete": {
+    "description": "BR-14. A section heading, and the section exists because an app that lets people create an account has to let them delete it from inside the app."
+  },
+  "accountDeleteBody": "Your profile, applications and messages will be removed. This cannot be undone.",
+  "@accountDeleteBody": {
+    "description": "Says what is lost before the button rather than after it. Deliberately no date: the server sends `purgeAfter: null` because the retention period is an open client question, so naming one would be promising something nobody has agreed."
+  },
+  "accountDeleteAction": "Request deletion",
+  "@accountDeleteAction": {
+    "description": "\"Request\", because that is what BR-14 does: the account moves to `deletion_requested` and a status-history row is written. Nothing is purged as the button is released, and a label saying \"Delete\" would describe a different operation."
+  },
+  "accountDeleteConfirmTitle": "Request account deletion?",
+  "@accountDeleteConfirmTitle": {
+    "description": "Confirmation for BR-14."
+  },
+  "accountDeleteConfirmBody": "We will start removing your account. You will not be able to undo this from the app.",
+  "@accountDeleteConfirmBody": {
+    "description": "\"Not from the app\" rather than \"not at all\": the request is a status change an administrator can see (section 10), so claiming it is absolutely final would be a stronger promise than the system makes."
+  },
+  "accountDeleteRequestedTitle": "Deletion requested",
+  "@accountDeleteRequestedTitle": {
+    "description": "Shown in place of the button once BR-14 has been recorded."
+  },
+  "accountDeleteRequestedBody": "Your request has been recorded. Support can tell you what happens next.",
+  "@accountDeleteRequestedBody": {
+    "description": "Points at support rather than at a date, because the server returns `purgeAfter: null` and there is no retention period to quote yet."
   }
 }

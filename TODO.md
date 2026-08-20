@@ -323,7 +323,12 @@ working destinations rather than dead ends.
       keeps the tokens (correct) but there is no "we cannot reach the server,
       retry" state, so the user sees sign-in and has no way to say *try again*.
       Needs a `SessionState` case; §12.4 asks for explicit offline state
-- [ ] **Role switch does not tell the server** — `POST /auth/active-role`
+- [x] ~~**Role switch does not tell the server**~~ — it does, and has for a
+      while: `SessionController._publishActiveRole` calls
+      `AuthRepository.switchActiveRole` on every switch and stores the access
+      token it returns. The note below is kept because the failure it describes is
+      the reason the call exists.
+- [-] ~~**Role switch does not tell the server** — `POST /auth/active-role`~~
       returns an access token carrying the new role, and the app does not call
       it. Harmless today because nothing is role-authorized yet; **it becomes a
       403 the moment M2+ adds an endpoint that checks the acting role**
@@ -334,10 +339,39 @@ working destinations rather than dead ends.
       the per-role explanations are still M1's
 - [~] Role switcher in the profile area — `switchRoleAndGo` is done and exercised
       from `/_dev`; it needs its product entry point once the profile area exists
-- [ ] Sessions screen: list, sign out, terminate all
+- [x] **Account and security screen, 2026-08-20.** §4.2's session list with
+      per-device revoke and terminate-all, BR-14's deletion request, and — the
+      part that turned out to matter most — **a sign-out an ordinary user can
+      reach.** It existed only in the dev-tools screen and the blocked-account
+      screen, so a signed-in user had no way out of the app at all.
+      Four decisions worth keeping:
+      **Revoking the current device is offered rather than hidden.** It is the
+      same thing as signing out, and hiding the row would leave somebody looking
+      at a list of their devices unable to act on the one in their hand. The
+      confirmation is worded as signing out, and the tokens are cleared locally
+      afterwards so the redirect chain moves rather than waiting for the next
+      request to fail.
+      **Terminate-all says "including this one".** "Every device" is a phrase
+      most people read as "every *other* device", and the surprise would arrive
+      after the action.
+      **Deletion is a request, and no date is printed.** The server returns
+      `purgeAfter: null` while the retention period is an open client question,
+      so the screen points at support instead — a made-up date is the kind of
+      promise that ends up in a complaint.
+      **The sign-out button survives a failed list.** A screen that can only
+      fail traps whoever came here to leave, and signing out of this device needs
+      no list.
+      Reached from a row at the end of *both* profile screens, because §2.3 makes
+      the role a runtime switch and whichever shell somebody is in has to reach
+      the account. A row rather than an icon: neither profile screen has an app
+      bar, and the glyph set has no gear — `lock` already means "restricted" in
+      five places and `shieldCheck` means verification
 - [x] Blocked-account notice explaining the restriction (BR-10) — reason shown
       verbatim, sign-out available; verified on device
-- [ ] Account deletion request with confirmation
+- [x] ~~Account deletion request with confirmation~~ — done 2026-08-20, on the
+      account screen above. Worth noting *why* it moved up the list: an app that
+      lets people create an account has to let them delete it from inside the
+      app, which makes it a store-review gate rather than a feature
 - [x] ~~Real session acquisition, replacing `signInAsDevelopmentRole`~~ — done.
       `signInAsDevelopmentRole` stays, gated on the flavor: it is how the
       redirect chain is exercised without a network

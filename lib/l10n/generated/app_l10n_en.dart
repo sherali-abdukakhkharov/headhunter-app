@@ -1612,4 +1612,75 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dashboardWallet => 'Wallet';
+
+  @override
+  String get accountTitle => 'Account and security';
+
+  @override
+  String get accountDevices => 'Signed-in devices';
+
+  @override
+  String get accountDevicesBody =>
+      'If you see a device you do not recognise, end its session.';
+
+  @override
+  String get accountDeviceUnknown => 'Unnamed device';
+
+  @override
+  String accountLastUsed(String at) {
+    return 'Last used $at';
+  }
+
+  @override
+  String get accountThisDevice => 'This device';
+
+  @override
+  String get accountRevoke => 'End session';
+
+  @override
+  String get accountRevokeTitle => 'End this session?';
+
+  @override
+  String get accountRevokeBody => 'That device will have to sign in again.';
+
+  @override
+  String get accountRevokeCurrentTitle => 'Sign out of this device?';
+
+  @override
+  String get accountRevokeCurrentBody =>
+      'This is the device you are using. You will be signed out now.';
+
+  @override
+  String get accountRevokeAll => 'End all sessions';
+
+  @override
+  String get accountRevokeAllTitle => 'End every session?';
+
+  @override
+  String get accountRevokeAllBody =>
+      'Every device will be signed out, including this one.';
+
+  @override
+  String get accountDelete => 'Delete account';
+
+  @override
+  String get accountDeleteBody =>
+      'Your profile, applications and messages will be removed. This cannot be undone.';
+
+  @override
+  String get accountDeleteAction => 'Request deletion';
+
+  @override
+  String get accountDeleteConfirmTitle => 'Request account deletion?';
+
+  @override
+  String get accountDeleteConfirmBody =>
+      'We will start removing your account. You will not be able to undo this from the app.';
+
+  @override
+  String get accountDeleteRequestedTitle => 'Deletion requested';
+
+  @override
+  String get accountDeleteRequestedBody =>
+      'Your request has been recorded. Support can tell you what happens next.';
 }
