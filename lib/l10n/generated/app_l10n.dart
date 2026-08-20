@@ -2764,6 +2764,96 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'No app on this phone can open this file.'**
   String get candidateFileNoViewer;
+
+  /// Header metric on section 6.2's dashboard. Counted from `isOpenForApplications`, which the server computes from the status *and* the deadline — so a vacancy that is active with yesterday's deadline is correctly not counted.
+  ///
+  /// In en, this message translates to:
+  /// **'Active vacancies'**
+  String get dashboardActiveVacancies;
+
+  /// Section 6.2's "total open positions": the worker counts of the active vacancies added up. A vacancy that states no worker count contributes nothing rather than one.
+  ///
+  /// In en, this message translates to:
+  /// **'Open positions'**
+  String get dashboardOpenPositions;
+
+  /// Applications still at `submitted` — nobody has opened them. Shown as an em dash while any per-vacancy count is still in flight, because a zero that becomes 34 a moment later was a wrong number rather than a stale one.
+  ///
+  /// In en, this message translates to:
+  /// **'New applications'**
+  String get dashboardNewApplications;
+
+  /// Heading over the dashboard's pending work. It comes before the metrics because the design says why: "a recruiter opens this app to act, not to read numbers."
+  ///
+  /// In en, this message translates to:
+  /// **'Needs your attention'**
+  String get dashboardAttention;
+
+  /// Shown when the pending list is empty. Deliberately a plain positive line rather than an empty state with an illustration: an empty queue is the good outcome here, and drawing it as absence would read as a failure to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is waiting on you.'**
+  String get dashboardAttentionClear;
+
+  /// The first pending row, and it outranks the rest: BR-03 means an unverified employer cannot publish a vacancy, search candidates or buy an unlock, so nothing else on the screen works until it is done.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is not complete'**
+  String get dashboardVerificationTitle;
+
+  /// A vacancy a moderator sent back (section 6.4). Ranked above unread applicants because it is the only item on the list whose timing the employer does not control.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes are required'**
+  String get dashboardVacancyRejected;
+
+  /// One pending row per vacancy with applications still at `submitted`.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications not yet reviewed'**
+  String dashboardUnreviewed(int count);
+
+  /// Section 6.2's "candidates to review". Last in the pending list because it is a nudge rather than a blockage — nobody is waiting on it.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} saved candidates'**
+  String dashboardSavedCandidates(int count);
+
+  /// Heading over one meter per open vacancy, tracking section 7.4's counts against the target.
+  ///
+  /// In en, this message translates to:
+  /// **'Hiring progress'**
+  String get dashboardHiring;
+
+  /// Hires against the worker count (section 6.5). Absent when the vacancy states no worker count, because a denominator nobody set is not a target to measure against.
+  ///
+  /// In en, this message translates to:
+  /// **'{hired} of {openings}'**
+  String dashboardHiredOf(int hired, int openings);
+
+  /// Legend for the meter's first segment. The figure is in the label because an 8pt bar cannot be read off, and the design's own rule is that status is never colour alone.
+  ///
+  /// In en, this message translates to:
+  /// **'Hired {count}'**
+  String dashboardMeterHired(int count);
+
+  /// Legend for the meter's second segment, and it counts invitations still **in the air** rather than every invitation ever sent: the three segments add up to the openings, so they have to be disjoint, and somebody already hired must not be counted twice. Non-terminal statuses only — the same set the candidate's inbox uses to decide whether an invitation can still be answered.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited {count}'**
+  String dashboardMeterInvited(int count);
+
+  /// Legend for the unfilled part of the meter. Drawn by *not* drawing it — the track showing through is the remainder — so this label is the only thing that names it.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining {count}'**
+  String dashboardMeterRemaining(int count);
+
+  /// Heading over section 6.2's wallet widget. The Top up action it also asks for is M13 and blocked on merchant credentials, so the tile shows the balance and its som value and leads to the ledger.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get dashboardWallet;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

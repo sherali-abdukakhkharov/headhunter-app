@@ -443,5 +443,20 @@
   "invitationContactOpenBody": "Кандидат принял приглашение — телефон, эл. почта и резюме доступны в профиле кандидата. Платное открытие не требуется.",
   "invitationOpenCandidate": "Открыть кандидата",
   "invitationCounts": "Приглашено: {invited}, принято: {accepted}",
-  "candidateFileNoViewer": "На этом телефоне нет приложения, которое откроет этот файл."
+  "candidateFileNoViewer": "На этом телефоне нет приложения, которое откроет этот файл.",
+  "dashboardActiveVacancies": "Активные вакансии",
+  "dashboardOpenPositions": "Открытых мест",
+  "dashboardNewApplications": "Новые заявки",
+  "dashboardAttention": "Требует вашего внимания",
+  "dashboardAttentionClear": "Ничего не ждёт вашего решения.",
+  "dashboardVerificationTitle": "Проверка не завершена",
+  "dashboardVacancyRejected": "Требуются изменения",
+  "dashboardUnreviewed": "Не рассмотрено заявок: {count}",
+  "dashboardSavedCandidates": "Сохранённых кандидатов: {count}",
+  "dashboardHiring": "Ход найма",
+  "dashboardHiredOf": "{hired} из {openings}",
+  "dashboardMeterHired": "Приняты {count}",
+  "dashboardMeterInvited": "Приглашены {count}",
+  "dashboardMeterRemaining": "Осталось {count}",
+  "dashboardWallet": "Кошелёк"
 }

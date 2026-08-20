@@ -443,5 +443,20 @@
   "invitationContactOpenBody": "Nomzod taklifni qabul qildi — telefon, e-pochta va rezyume uning profilida. Buning uchun to'lov kerak emas.",
   "invitationOpenCandidate": "Nomzodni ko'rish",
   "invitationCounts": "{invited} ta taklif yuborilgan, {accepted} tasi qabul qilingan",
-  "candidateFileNoViewer": "Bu telefonda bu faylni ocha oladigan ilova yo'q."
+  "candidateFileNoViewer": "Bu telefonda bu faylni ocha oladigan ilova yo'q.",
+  "dashboardActiveVacancies": "Faol vakansiya",
+  "dashboardOpenPositions": "Ochiq o'rin",
+  "dashboardNewApplications": "Yangi ariza",
+  "dashboardAttention": "Sizning e'tiboringiz kerak",
+  "dashboardAttentionClear": "Sizdan kutilayotgan ish yo'q.",
+  "dashboardVerificationTitle": "Tasdiqlash tugallanmagan",
+  "dashboardVacancyRejected": "O'zgartirish talab qilinadi",
+  "dashboardUnreviewed": "{count} ta ariza ko'rib chiqilmagan",
+  "dashboardSavedCandidates": "{count} ta saqlangan nomzod",
+  "dashboardHiring": "Ishga qabul jarayoni",
+  "dashboardHiredOf": "{openings} dan {hired}",
+  "dashboardMeterHired": "Ishga olindi {count}",
+  "dashboardMeterInvited": "Taklif yuborildi {count}",
+  "dashboardMeterRemaining": "Qolgan {count}",
+  "dashboardWallet": "Hamyon"
 }

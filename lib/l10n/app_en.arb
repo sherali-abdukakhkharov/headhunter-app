@@ -2023,5 +2023,98 @@
   "candidateFileNoViewer": "No app on this phone can open this file.",
   "@candidateFileNoViewer": {
     "description": "Shown when an attachment downloaded fine and nothing installed can display it. Its own message rather than a generic failure: the bytes arrived and the server allowed it, so \"check your connection\" would send an employer looking in the wrong place. The remedy is on the device."
+  },
+  "dashboardActiveVacancies": "Active vacancies",
+  "@dashboardActiveVacancies": {
+    "description": "Header metric on section 6.2's dashboard. Counted from `isOpenForApplications`, which the server computes from the status *and* the deadline — so a vacancy that is active with yesterday's deadline is correctly not counted."
+  },
+  "dashboardOpenPositions": "Open positions",
+  "@dashboardOpenPositions": {
+    "description": "Section 6.2's \"total open positions\": the worker counts of the active vacancies added up. A vacancy that states no worker count contributes nothing rather than one."
+  },
+  "dashboardNewApplications": "New applications",
+  "@dashboardNewApplications": {
+    "description": "Applications still at `submitted` — nobody has opened them. Shown as an em dash while any per-vacancy count is still in flight, because a zero that becomes 34 a moment later was a wrong number rather than a stale one."
+  },
+  "dashboardAttention": "Needs your attention",
+  "@dashboardAttention": {
+    "description": "Heading over the dashboard's pending work. It comes before the metrics because the design says why: \"a recruiter opens this app to act, not to read numbers.\""
+  },
+  "dashboardAttentionClear": "Nothing is waiting on you.",
+  "@dashboardAttentionClear": {
+    "description": "Shown when the pending list is empty. Deliberately a plain positive line rather than an empty state with an illustration: an empty queue is the good outcome here, and drawing it as absence would read as a failure to load."
+  },
+  "dashboardVerificationTitle": "Verification is not complete",
+  "@dashboardVerificationTitle": {
+    "description": "The first pending row, and it outranks the rest: BR-03 means an unverified employer cannot publish a vacancy, search candidates or buy an unlock, so nothing else on the screen works until it is done."
+  },
+  "dashboardVacancyRejected": "Changes are required",
+  "@dashboardVacancyRejected": {
+    "description": "A vacancy a moderator sent back (section 6.4). Ranked above unread applicants because it is the only item on the list whose timing the employer does not control."
+  },
+  "dashboardUnreviewed": "{count} applications not yet reviewed",
+  "@dashboardUnreviewed": {
+    "description": "One pending row per vacancy with applications still at `submitted`.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardSavedCandidates": "{count} saved candidates",
+  "@dashboardSavedCandidates": {
+    "description": "Section 6.2's \"candidates to review\". Last in the pending list because it is a nudge rather than a blockage — nobody is waiting on it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardHiring": "Hiring progress",
+  "@dashboardHiring": {
+    "description": "Heading over one meter per open vacancy, tracking section 7.4's counts against the target."
+  },
+  "dashboardHiredOf": "{hired} of {openings}",
+  "@dashboardHiredOf": {
+    "description": "Hires against the worker count (section 6.5). Absent when the vacancy states no worker count, because a denominator nobody set is not a target to measure against.",
+    "placeholders": {
+      "hired": {
+        "type": "int"
+      },
+      "openings": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMeterHired": "Hired {count}",
+  "@dashboardMeterHired": {
+    "description": "Legend for the meter's first segment. The figure is in the label because an 8pt bar cannot be read off, and the design's own rule is that status is never colour alone.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMeterInvited": "Invited {count}",
+  "@dashboardMeterInvited": {
+    "description": "Legend for the meter's second segment, and it counts invitations still **in the air** rather than every invitation ever sent: the three segments add up to the openings, so they have to be disjoint, and somebody already hired must not be counted twice. Non-terminal statuses only — the same set the candidate's inbox uses to decide whether an invitation can still be answered.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMeterRemaining": "Remaining {count}",
+  "@dashboardMeterRemaining": {
+    "description": "Legend for the unfilled part of the meter. Drawn by *not* drawing it — the track showing through is the remainder — so this label is the only thing that names it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardWallet": "Wallet",
+  "@dashboardWallet": {
+    "description": "Heading over section 6.2's wallet widget. The Top up action it also asks for is M13 and blocked on merchant credentials, so the tile shows the balance and its som value and leads to the ledger."
   }
 }

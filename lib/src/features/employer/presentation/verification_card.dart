@@ -13,6 +13,19 @@ import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart
 /// server-side should surface in one place. An unrecognised status falls back
 /// to "not submitted" rather than throwing — the same rule as an unknown field
 /// kind, for the same reason.
+/// The word for one of §6.1's five verification states.
+///
+/// Split out of [verificationBadge] because §6.2's dashboard needs the words
+/// without the badge around them, and two switches over the same five codes is
+/// how a state ends up worded differently on two screens.
+String verificationLabel(String status, AppL10n l10n) => switch (status) {
+  'under_review' => l10n.employerVerificationUnderReview,
+  'verified' => l10n.employerVerificationVerified,
+  'rejected' => l10n.employerVerificationRejected,
+  'changes_required' => l10n.employerVerificationChangesRequired,
+  _ => l10n.employerVerificationNotSubmitted,
+};
+
 Widget verificationBadge(String status, AppL10n l10n) => switch (status) {
   'under_review' => HhBadge.verificationUnderReview(
     label: l10n.employerVerificationUnderReview,

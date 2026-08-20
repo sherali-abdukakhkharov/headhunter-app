@@ -507,7 +507,27 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Worker count `>= 1` (BR-05) — the server enforces it; the schema's
       `validation.min` is not yet applied client-side, so it costs a round trip
 - [ ] Seasonal/agricultural flow (UAT-10) — needs a seasonal category to walk
-- [ ] Employer dashboard widgets (§6.2) — the Home tab is still a placeholder
+- [x] **Employer dashboard (§6.2, E-07/E-08), 2026-08-20.** The Home tab was a
+      placeholder; it is now the dashboard, and five of §6.2's seven widgets are
+      live: active vacancies and open positions, new applications, candidates to
+      review, hiring progress, and the wallet tile — which had been built since
+      M12 with nowhere to live.
+      **Pending work comes before the metrics**, because the design says why: "a
+      recruiter opens this app to act, not to read numbers." The rows are ordered
+      by how stuck the employer is — BR-03 verification first, since nothing else
+      works without it; then a vacancy a moderator sent back, the only item whose
+      timing the employer does not control; then unread applicants; then saved
+      candidates, which is a nudge.
+      Three figures are computed rather than fetched, and each has a trap:
+      **open positions** sums `worker_count` and a vacancy that states none
+      contributes nothing rather than one; **new applications** is absent (an em
+      dash) until *every* per-vacancy count has arrived, because a zero that
+      becomes 34 was wrong rather than stale; **invited** on the meter counts
+      only non-terminal invitations, since the three segments add up to the
+      openings and somebody already hired must not appear twice.
+      New design-system component: `HhMeter`, a segmented bar whose legend is not
+      optional — a stacked bar is colour alone by construction, so each segment
+      carries a swatch, a word **and** its figure
 
 ## M6 - Discovery and applications *(candidate half done)*
 
@@ -744,6 +764,22 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       `sent` would have looked right until the first reply and then counted
       downwards. Both halves are watched independently, so a vacancy whose
       invitation counts 404 still shows its hiring progress
+- [!] **Backend ask: two routes §6.2's dashboard needs.** Neither blocks the
+      screen, which ships without them, and both are one request each:
+      1. **`GET /employers/me/dashboard`** — a summary. The dashboard currently
+         fans out **two requests per active vacancy**
+         (`/vacancies/{id}/applications/counts` and `/invitations/counts/{id}`)
+         because there is no aggregate anywhere. Fine for the handful an employer
+         runs at once, wrong in principle, and it is the client doing arithmetic
+         that a single query would do better. When it lands the screen loses the
+         fan-out and nothing else about it changes.
+      2. **An employer's interview list.** `GET /interviews/mine` carries
+         `@RequireRole('candidate')`, so there is no route an employer may call —
+         which means the design's third header metric ("5 Suhbat") cannot be
+         built at all. **Not a client gap, a contract gap**, and §6.2 lists
+         Interviews as one of its seven widgets. Until it exists the header shows
+         the three counts that *are* answerable rather than a placeholder where a
+         number should be
 - [!] **Backend ask, one request covering three gaps in `/invitations`.** All
       three are the same shape — the employer's side of §8.2 can say *what* was
       sent and not *to whom*:
@@ -947,7 +983,10 @@ money and is enabled by a constant somebody has to remember.
       the kind is a word plus a glyph. What *is* held to the badge rule is the
       amount: `+5` and `−2` carry the sign, so credit and debit never rest on
       green versus grey
-- [ ] **The §6.2 dashboard tile has no dashboard yet.** `WalletTile` is built
+- [x] ~~**The §6.2 dashboard tile has no dashboard yet.**~~ — it does now, as
+      of 2026-08-20. Kept below because the reasoning about *where* it lives still
+      applies.
+- [-] ~~**The §6.2 dashboard tile has no dashboard yet.**~~ `WalletTile` is built
       and lives in the wallet feature, but the employer home tab is still M5's
       placeholder, so it currently sits on the company tab. The dashboard places
       the same widget rather than growing a second copy

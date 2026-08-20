@@ -17,6 +17,7 @@ import 'package:jobbridge_app/src/features/design_gallery/presentation/design_ga
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
 import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_feed_screen.dart';
+import 'package:jobbridge_app/src/features/employer/presentation/employer_dashboard_screen.dart';
 import 'package:jobbridge_app/src/features/employer/presentation/employer_profile_screen.dart';
 import 'package:jobbridge_app/src/features/health/presentation/health_screen.dart';
 import 'package:jobbridge_app/src/features/onboarding/presentation/onboarding_screen.dart';
@@ -157,6 +158,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               Routes.candidateProfile => const CandidateProfileScreen(),
               Routes.candidateVacancies => const VacancyFeedScreen(),
               Routes.candidateApplications => const ApplicationsScreen(),
+              Routes.employerHome => const EmployerDashboardScreen(),
               Routes.employerCompany => const EmployerProfileScreen(),
               Routes.employerVacancies => const VacancyListScreen(),
               Routes.employerCandidates => const CandidateSearchScreen(),

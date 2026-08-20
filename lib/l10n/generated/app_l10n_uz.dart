@@ -1553,6 +1553,63 @@ class AppL10nUz extends AppL10n {
   @override
   String get candidateFileNoViewer =>
       'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
+
+  @override
+  String get dashboardActiveVacancies => 'Faol vakansiya';
+
+  @override
+  String get dashboardOpenPositions => 'Ochiq o\'rin';
+
+  @override
+  String get dashboardNewApplications => 'Yangi ariza';
+
+  @override
+  String get dashboardAttention => 'Sizning e\'tiboringiz kerak';
+
+  @override
+  String get dashboardAttentionClear => 'Sizdan kutilayotgan ish yo\'q.';
+
+  @override
+  String get dashboardVerificationTitle => 'Tasdiqlash tugallanmagan';
+
+  @override
+  String get dashboardVacancyRejected => 'O\'zgartirish talab qilinadi';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count ta ariza ko\'rib chiqilmagan';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count ta saqlangan nomzod';
+  }
+
+  @override
+  String get dashboardHiring => 'Ishga qabul jarayoni';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$openings dan $hired';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Ishga olindi $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Taklif yuborildi $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Qolgan $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Hamyon';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3102,6 +3159,63 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get candidateFileNoViewer =>
       'Бу телефонда бу файлни оча оладиган илова йўқ.';
+
+  @override
+  String get dashboardActiveVacancies => 'Фаол вакансия';
+
+  @override
+  String get dashboardOpenPositions => 'Очиқ ўрин';
+
+  @override
+  String get dashboardNewApplications => 'Янги ариза';
+
+  @override
+  String get dashboardAttention => 'Сизнинг эътиборингиз керак';
+
+  @override
+  String get dashboardAttentionClear => 'Сиздан кутилаётган иш йўқ.';
+
+  @override
+  String get dashboardVerificationTitle => 'Тасдиқлаш тугалланмаган';
+
+  @override
+  String get dashboardVacancyRejected => 'Ўзгартириш талаб қилинади';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count та ариза кўриб чиқилмаган';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count та сақланган номзод';
+  }
+
+  @override
+  String get dashboardHiring => 'Ишга қабул жараёни';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$openings дан $hired';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Ишга олинди $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Таклиф юборилди $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Қолган $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Ҳамён';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4653,4 +4767,61 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get candidateFileNoViewer =>
       'Bu telefonda bu faylni ocha oladigan ilova yo\'q.';
+
+  @override
+  String get dashboardActiveVacancies => 'Faol vakansiya';
+
+  @override
+  String get dashboardOpenPositions => 'Ochiq o\'rin';
+
+  @override
+  String get dashboardNewApplications => 'Yangi ariza';
+
+  @override
+  String get dashboardAttention => 'Sizning e\'tiboringiz kerak';
+
+  @override
+  String get dashboardAttentionClear => 'Sizdan kutilayotgan ish yo\'q.';
+
+  @override
+  String get dashboardVerificationTitle => 'Tasdiqlash tugallanmagan';
+
+  @override
+  String get dashboardVacancyRejected => 'O\'zgartirish talab qilinadi';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count ta ariza ko\'rib chiqilmagan';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count ta saqlangan nomzod';
+  }
+
+  @override
+  String get dashboardHiring => 'Ishga qabul jarayoni';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$openings dan $hired';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Ishga olindi $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Taklif yuborildi $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Qolgan $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Hamyon';
 }

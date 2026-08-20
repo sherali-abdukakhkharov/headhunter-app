@@ -1568,4 +1568,61 @@ class AppL10nRu extends AppL10n {
   @override
   String get candidateFileNoViewer =>
       'На этом телефоне нет приложения, которое откроет этот файл.';
+
+  @override
+  String get dashboardActiveVacancies => 'Активные вакансии';
+
+  @override
+  String get dashboardOpenPositions => 'Открытых мест';
+
+  @override
+  String get dashboardNewApplications => 'Новые заявки';
+
+  @override
+  String get dashboardAttention => 'Требует вашего внимания';
+
+  @override
+  String get dashboardAttentionClear => 'Ничего не ждёт вашего решения.';
+
+  @override
+  String get dashboardVerificationTitle => 'Проверка не завершена';
+
+  @override
+  String get dashboardVacancyRejected => 'Требуются изменения';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return 'Не рассмотрено заявок: $count';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return 'Сохранённых кандидатов: $count';
+  }
+
+  @override
+  String get dashboardHiring => 'Ход найма';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$hired из $openings';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Приняты $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Приглашены $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Осталось $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Кошелёк';
 }

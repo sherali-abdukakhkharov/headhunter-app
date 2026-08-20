@@ -4,10 +4,14 @@
 /// newer server is carried and displayed rather than crashing the list — the
 /// same rule as an unknown field kind.
 abstract final class ApplicationStage {
+  /// Where every application starts, and the one stage §6.2 counts: an
+  /// application still at `submitted` is one nobody has looked at.
+  static const String submitted = 'submitted';
+
   /// The hiring progression, in order. `rejected` and `withdrawn` are outside
   /// it because they are exits, not steps.
-  static const progression = [
-    'submitted',
+  static const List<String> progression = [
+    submitted,
     'viewed',
     'shortlisted',
     'interview',

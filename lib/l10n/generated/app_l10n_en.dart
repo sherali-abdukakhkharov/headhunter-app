@@ -1555,4 +1555,61 @@ class AppL10nEn extends AppL10n {
   @override
   String get candidateFileNoViewer =>
       'No app on this phone can open this file.';
+
+  @override
+  String get dashboardActiveVacancies => 'Active vacancies';
+
+  @override
+  String get dashboardOpenPositions => 'Open positions';
+
+  @override
+  String get dashboardNewApplications => 'New applications';
+
+  @override
+  String get dashboardAttention => 'Needs your attention';
+
+  @override
+  String get dashboardAttentionClear => 'Nothing is waiting on you.';
+
+  @override
+  String get dashboardVerificationTitle => 'Verification is not complete';
+
+  @override
+  String get dashboardVacancyRejected => 'Changes are required';
+
+  @override
+  String dashboardUnreviewed(int count) {
+    return '$count applications not yet reviewed';
+  }
+
+  @override
+  String dashboardSavedCandidates(int count) {
+    return '$count saved candidates';
+  }
+
+  @override
+  String get dashboardHiring => 'Hiring progress';
+
+  @override
+  String dashboardHiredOf(int hired, int openings) {
+    return '$hired of $openings';
+  }
+
+  @override
+  String dashboardMeterHired(int count) {
+    return 'Hired $count';
+  }
+
+  @override
+  String dashboardMeterInvited(int count) {
+    return 'Invited $count';
+  }
+
+  @override
+  String dashboardMeterRemaining(int count) {
+    return 'Remaining $count';
+  }
+
+  @override
+  String get dashboardWallet => 'Wallet';
 }
