@@ -1388,6 +1388,21 @@ this opens. Deep links moved to M8.
       file. Both names ship until the links that matter are updated; then delete
       the `cp` and the second `files:` entry in `release-apk.yml`. **Not before
       one release has carried both**, or the alias buys nothing
+- [x] **A tag that disagrees with `pubspec.yaml` now fails the release run,
+      2026-08-20.** v1.1.1 was tagged without the version bump and published an
+      APK reporting **1.1.0+3** — the third time in four releases (v1.0.1 and
+      v1.0.2 both shipped as `1.0.0+1`). The rule was already written in
+      `CHANGELOG.md`, in `pubspec.yaml` and in `README.md`; what it was missing
+      was a reader at the moment of tagging. `release-apk.yml` compares
+      `GITHUB_REF_NAME` with the pubspec version as its **first** step, so a
+      mismatch costs twenty seconds and publishes nothing. **1.1.2+4 is staged
+      in `pubspec.yaml` and `CHANGELOG.md` for exactly this reason**: 1.1.1
+      reuses build number 3, so a phone holding 1.1.0 refuses it as an upgrade
+- [ ] **Also check the build number moved**, which the guard deliberately does
+      not. It would need `fetch-depth: 0` and a `git show <prev-tag>:pubspec.yaml`
+      to know the last released number, and the failure it would catch —
+      bumping the name but not the build — has not happened yet. Worth adding
+      the day it does
 - [ ] Walk **all 24** UAT scenarios and keep the evidence — the 2026-08-10
       revision added UAT-16 – UAT-24. UAT-20 – UAT-23 need the providers' test
       environments, so book those *before* the acceptance window, not inside it

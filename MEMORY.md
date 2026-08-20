@@ -987,6 +987,28 @@ The cost to know about: the automatic switch **changes the widget's aspect**, fr
 23 : 19.8 to 10.7 : 19.8, because the solo crop is taller than wide. A rule that
 enforces itself still has to say what it did.
 
+### 2026-08-20 - A rule written in three documents is not enforced anywhere
+"The version in `pubspec.yaml` is what a device reports, so a tag is not a
+release" is stated in `CHANGELOG.md`, in a comment above `version:` in
+`pubspec.yaml`, and in `README.md`'s release section. **Three of the first four
+releases broke it**: v1.0.1 and v1.0.2 both shipped as `1.0.0+1`, and v1.1.1
+shipped as `1.1.0+3` — reusing the previous release's build number, which is the
+part that actually hurts, because a phone holding 1.1.0 then refuses it as an
+upgrade and the tester keeps reporting bugs that were fixed.
+
+The documents were not wrong and adding a fourth would not have helped. The
+missing thing was a **reader at the moment of the mistake**: tagging is one
+command typed from a terminal, and nothing in that moment opens a changelog. So
+the check moved into `release-apk.yml` as its first step — a mismatch now costs
+twenty seconds and publishes no artifact.
+
+Generalises to any rule whose violation is invisible until later: **if the
+consequence surfaces somewhere other than where the mistake is made, the rule
+belongs in the machine, not in prose.** The corollary is worth keeping too — the
+guard checks only the versionName, because the build-number check would need a
+deeper checkout and the failure it catches has not happened yet. A guard that
+covers the failure you have had beats one designed for the failure you imagine.
+
 ### 2026-08-20 - A score computed from nothing is still a number on screen
 The saved-candidates list and the new vacancy shortlist both come back from the
 same server helper, which runs the card query with **no filters and no scoring

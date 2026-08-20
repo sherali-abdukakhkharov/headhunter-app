@@ -7,14 +7,15 @@ publish_to: 'none'
 # **This is what a device reports.** `android/app/build.gradle.kts` derives
 # `versionName` and `versionCode` from it, so a release tag with this left
 # unchanged produces an APK that disagrees with the tag — which is exactly what
-# v1.0.1 and v1.0.2 did.
+# v1.0.1, v1.0.2 and v1.1.1 did. `release-apk.yml` now refuses a tag that does
+# not match this line, so the fourth time is a red run instead of a bad APK.
 #
 # **The build number must always increase.** Android refuses to install an APK
 # whose `versionCode` is not higher than the installed one, so two releases
 # sharing a number cannot upgrade each other on a device: the install fails, or
 # the tester keeps looking at the old app. One build number per release, counted
 # from the first — see CHANGELOG.md.
-version: 1.1.0+3
+version: 1.1.2+4
 
 environment:
   sdk: ^3.12.2

@@ -48,6 +48,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The version in pubspec.yaml is what the device reports - Gradle derives
+      # versionName and versionCode from it - so a tag on its own is not a
+      # release. That rule was written in CHANGELOG.md, in pubspec.yaml and in
+      # README.md, and *three of the first four releases broke it anyway*: v1.0.1,
+      # v1.0.2 and v1.1.1 all shipped reporting an earlier version, v1.1.1 while
+      # reusing v1.1.0's build number, which is what stops a phone from taking it
+      # as an upgrade at all.
+      #
+      # A document nobody re-reads at the moment of tagging cannot enforce
+      # anything. This can: it is the first step, so a mismatch costs twenty
+      # seconds and no published artifact.
+      #
+      # Only the versionName is compared. The build number is checked for having
+      # moved by the reviewer, not here - the workflow has no cheap way to know
+      # the last released one without deepening the checkout to fetch tags.
+      - name: Check the tag matches pubspec.yaml
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version=$(grep -m1 '^version:' pubspec.yaml | sed 's/^version:[[:space:]]*//')
+          name=${version%%+*}
+          build=${version#*+}
+          tag=${GITHUB_REF_NAME#v}
+          echo "tag=$tag  pubspec=$version  (versionName=$name, versionCode=$build)"
+          if [ "$tag" != "$name" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME would publish an APK reporting $name (build $build). Bump pubspec.yaml in the same commit as the tag, add a CHANGELOG.md entry, and tag again - see CHANGELOG.md."
+            exit 1
+          fi
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

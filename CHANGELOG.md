@@ -13,6 +13,60 @@ build number cannot upgrade each other on a device: the install fails, or the
 tester keeps looking at the old app and reports bugs that were fixed. The
 convention here is **one build number per release**, counted from the first.
 
+Both rules are now enforced by `release-apk.yml`, which refuses to build when the
+tag and this file disagree. They had been documented in three places and broken in
+three releases out of four.
+
+## 1.1.2+4 — unreleased
+
+**Carries no new code.** The same tree as 1.1.1, released so that the version a
+device reports is the version that was tagged, and so that the build number moves
+— 1.1.1 shares 1.1.0's, which is what stops a tester's phone from taking it as an
+upgrade.
+
+### Changed
+
+- `release-apk.yml` **fails before building** when the tag does not match
+  `pubspec.yaml`. The rule was already in this file, in `pubspec.yaml` and in
+  README.md; the run is the only one of the four that nobody can skip reading.
+
+## 1.1.1 — 2026-08-20
+
+The vacancy shortlist (§7.3, closing M7) and the release asset's rename to
+`jobbridge.apk`, with `headhunter.apk` kept beside it as a byte-identical alias
+so links shared before the JobBridge rename keep resolving.
+
+**Shipped as `1.1.0+3`** — the tag was pushed and `pubspec.yaml` was not bumped,
+the same slip as 1.0.1 and 1.0.2. Two consequences worth knowing, because the APK
+itself is fine: a device reports **1.1.0**, so this build and the previous one are
+indistinguishable in a bug report; and it reuses build number **3**, so a phone
+holding 1.1.0 will not accept it as an upgrade. 1.1.2 exists to correct both.
+
+### Added
+
+- **The per-vacancy shortlist** (§7.3), the last open M7 item. The list hangs off
+  its vacancy, and the shortlist action appears only on a card that was fetched
+  for one — outside a vacancy `isShortlisted` is false for everybody, including
+  people who are shortlisted somewhere.
+
+### Fixed
+
+- **The saved-candidates list had been badging everyone a 100% match** since M7.
+  An unfiltered card query has nothing to have matched, so the server scores every
+  row 100; the badge is now painted only where a filter produced it.
+- **Save and shortlist reverted their own labels** after a successful write, which
+  read as the tap having failed.
+- A prefilled search (UAT-06) could leave the previous search's results on screen
+  under someone else's requirements.
+
+### Changed
+
+- The release asset is `jobbridge.apk`; `headhunter.apk` remains as an alias.
+- README.md, docs/RELEASE.md and `build.gradle.kts` no longer explain a
+  debug-signed release by way of Telegram login, which was removed on 2026-08-19.
+  The cost is worse and current: such an APK installs, and then no properly
+  signed build can update it.
+
 ## 1.1.0+3 — 2026-08-20
 
 The release the product was renamed in, and the first with a working version

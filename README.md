@@ -77,6 +77,12 @@ one with the same `versionCode`, so a release that reuses it cannot reach a
 tester's phone as an update. [CHANGELOG.md](CHANGELOG.md) carries the rule and the
 history.
 
+**Step 1 is not optional, and the workflow now checks it.** `release-apk.yml`
+compares the tag against `pubspec.yaml` as its first step and fails the run
+before building anything, because three of the first four releases were tagged
+without the bump and published an APK reporting an earlier version. A mismatch
+now costs twenty seconds and no artifact.
+
 ## Prerequisites
 
 Already installed on this machine:
