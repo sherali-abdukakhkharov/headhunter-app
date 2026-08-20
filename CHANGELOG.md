@@ -17,6 +17,27 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.1.3+5 — 2026-08-20
+
+### Added
+
+- **Interviews (§8.3), the employer's side** — schedule one from an applicant,
+  move it, or call it off, all from the applicants screen. Pick phone, in person
+  or a video link; an address or a link appears only for the type that needs one,
+  and switching type clears the other. Anything the candidate should bring or
+  prepare goes in the same form and reaches them in your own words.
+  Two things worth knowing. **Moving an interview asks the candidate to confirm
+  again**, even for ten minutes — a confirmation belongs to the time it was given
+  for, and the form says so before you save. And **the reason you give for
+  calling one off is shown to the candidate**, which is why the field says so.
+  The time you pick is the time your candidate will read, whichever zone your own
+  phone is in.
+
+### Fixed
+
+- Private notes were unreachable on a hired or rejected application: the control
+  sat behind the stage-move buttons, which a finished application has none of.
+
 ## 1.1.2+4 — 2026-08-20
 
 Cut in the first place to correct 1.1.1's version: that build reports **1.1.0+3**,

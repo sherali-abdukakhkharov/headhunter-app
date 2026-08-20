@@ -8,7 +8,10 @@ import 'package:jobbridge_app/src/features/applications/domain/application.dart'
 import 'package:jobbridge_app/src/features/applications/domain/application_stage.dart';
 import 'package:jobbridge_app/src/features/applications/domain/candidate_for_employer.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
+import 'package:jobbridge_app/src/features/interviews/data/interview_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
+
+import '../interviews/interview_fake.dart';
 
 /// One recorded call to `GET /vacancies/{id}/applications`.
 typedef _Query = ({String vacancyId, String? status});
@@ -102,6 +105,10 @@ void main() {
           invitationCountsProvider(
             'vac-1',
           ).overrideWith((ref) async => const <String, int>{}),
+          // §8.3's interviews render inside every applicant row, so without
+          // this the row reaches the network and leaves a pending timer — which
+          // fails as a broken *filter* test rather than as a missing override.
+          interviewRepositoryProvider.overrideWithValue(FakeInterviews()),
         ],
         child: MaterialApp(
           theme: HhTheme.light,

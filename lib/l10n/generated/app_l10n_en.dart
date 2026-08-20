@@ -1978,4 +1978,74 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get interviewNotAllowed => 'This interview has moved on';
+
+  @override
+  String get interviewSchedule => 'Schedule an interview';
+
+  @override
+  String get interviewScheduleTitle => 'Schedule an interview';
+
+  @override
+  String get interviewScheduleSave => 'Send to the candidate';
+
+  @override
+  String get interviewRescheduleFormTitle => 'Move this interview';
+
+  @override
+  String get interviewRescheduleSave => 'Save the new time';
+
+  @override
+  String get interviewRescheduleResets =>
+      'The candidate will be asked to confirm again, even for a small change — an interview moved to another time has not been confirmed.';
+
+  @override
+  String get interviewTypeLabel => 'Kind of interview';
+
+  @override
+  String get interviewWhereHint =>
+      'Amir Temur 12, 3rd floor — ask for Dilnoza at reception';
+
+  @override
+  String get interviewLinkHint => 'https://meet.example.com/abc-defg-hij';
+
+  @override
+  String get interviewDateLabel => 'Date';
+
+  @override
+  String get interviewTimeLabel => 'Time';
+
+  @override
+  String get interviewTimeHint => '10:00';
+
+  @override
+  String get interviewInstructionsLabel =>
+      'Anything they should bring or prepare';
+
+  @override
+  String get interviewInstructionsHint =>
+      'Bring your diploma and your work record book';
+
+  @override
+  String get interviewReschedule => 'Move';
+
+  @override
+  String get interviewCancelAction => 'Call it off';
+
+  @override
+  String get interviewCancelTitle => 'Call off this interview?';
+
+  @override
+  String get interviewCancelBody =>
+      'This is final for both sides — the interview cannot be brought back, and a new time means scheduling a new one. The candidate will see that it was called off.';
+
+  @override
+  String get interviewCancelReasonLabel =>
+      'Reason (optional, the candidate sees it)';
+
+  @override
+  String get interviewCancelReasonHint =>
+      'The role has been filled — thank you for your time';
+
+  @override
+  String get interviewCandidateReply => 'What the candidate said';
 }

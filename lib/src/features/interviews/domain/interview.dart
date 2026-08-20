@@ -2,6 +2,35 @@ import 'package:flutter/foundation.dart';
 import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 import 'package:jobbridge_app/src/features/interviews/domain/interview_status.dart';
 
+/// The instant an employer means when they pick a date and a time (§8.3).
+///
+/// The inverse of `ZonedTimestamp`'s `wallClock = instant + offset`, and it
+/// exists because scheduling is the one place this app has to run that
+/// conversion **backwards**.
+///
+/// [wallClock] carries the picked fields — year, month, day, hour, minute — as
+/// though they were UTC, which is how they arrive from a date and a time picker
+/// once the device's own zone is kept out of it. [platformOffset] must come
+/// from a timestamp the **server** sent; every `ZonedTimestamp` carries one. A
+/// `+05:00` written into Dart would be a second source of truth for the
+/// platform zone: wrong the day Uzbekistan reintroduces daylight saving, and
+/// wrong in the direction that moves every interview by an hour.
+///
+/// Why the *platform's* clock and not the device's: the candidate's card
+/// renders the platform wall clock, so that is the only reading on which the
+/// two sides agree. An employer scheduling from abroad means "14:00 as my
+/// candidate will read it", not 14:00 where they happen to be standing.
+DateTime instantForPlatformWallClock({
+  required DateTime wallClock,
+  required Duration platformOffset,
+}) => DateTime.utc(
+  wallClock.year,
+  wallClock.month,
+  wallClock.day,
+  wallClock.hour,
+  wallClock.minute,
+).subtract(platformOffset);
+
 /// One scheduled interview (§8.3).
 ///
 /// Mirrors `InterviewDto` in headhunter-backend — change both together.

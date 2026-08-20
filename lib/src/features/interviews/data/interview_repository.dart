@@ -106,6 +106,127 @@ class InterviewRepository {
     }
   }
 
+  // --- employer ------------------------------------------------------------
+
+  /// `POST /applications/:id/interviews` — schedule one (§8.3).
+  ///
+  /// ## [scheduledAt] is an instant, and the client does not invent an offset
+  ///
+  /// It is sent as UTC. The employer picks a date and a time meaning the
+  /// **platform's** clock — that is the clock the candidate's card renders, so
+  /// it is the only reading on which the two sides agree — and
+  /// `instantForPlatformWallClock` converts it using an offset taken from a
+  /// timestamp the *server* sent. A `+05:00` written into Dart would be a
+  /// second source of truth for the platform zone, wrong the day Uzbekistan
+  /// reintroduces daylight saving, and wrong in the direction that moves every
+  /// interview by an hour.
+  ///
+  /// ## The whole shape goes up, on create and on edit alike
+  ///
+  /// The fields are interdependent: the type decides which of [location] and
+  /// [meetingLink] may exist at all, and the server refuses the others. A
+  /// partial update would let a phone interview keep the address of the
+  /// in-person one it used to be — which is why `PUT /interviews/:id` takes the
+  /// same DTO rather than a patch, and why [reschedule] does too.
+  Future<Interview> schedule(
+    String applicationId, {
+    required String type,
+    required DateTime scheduledAt,
+    String? location,
+    String? meetingLink,
+    String? instructions,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/applications/$applicationId/interviews',
+        data: _body(
+          type: type,
+          scheduledAt: scheduledAt,
+          location: location,
+          meetingLink: meetingLink,
+          instructions: instructions,
+        ),
+      );
+
+      return _one(response.data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PUT /interviews/:id` — move it, or correct it (§8.3).
+  ///
+  /// **Rescheduling resets the candidate's answer** to `scheduled`, and the
+  /// server does that rather than the client: an interview moved to another
+  /// time has not been confirmed, whatever was said about the old one. So the
+  /// caller sends no status and must not assume the old one survives.
+  Future<Interview> reschedule(
+    String id, {
+    required String type,
+    required DateTime scheduledAt,
+    String? location,
+    String? meetingLink,
+    String? instructions,
+  }) async {
+    try {
+      final response = await _dio.put<Map<String, dynamic>>(
+        '/interviews/$id',
+        data: _body(
+          type: type,
+          scheduledAt: scheduledAt,
+          location: location,
+          meetingLink: meetingLink,
+          instructions: instructions,
+        ),
+      );
+
+      return _one(response.data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /interviews/:id/cancel` — call it off (§8.3).
+  ///
+  /// The reason is optional and **shown to the candidate**, which is why the
+  /// sheet that collects it says so: an employer writing "found someone closer"
+  /// for their own records would be writing it to the person it is about.
+  Future<void> cancel(String id, {String? reason}) async {
+    try {
+      await _dio.post<void>(
+        '/interviews/$id/cancel',
+        data: {'reason': ?reason},
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// The shape both write routes take.
+  ///
+  /// Empty strings are sent as **absent**, not as empty: the server's
+  /// `detailViolation` treats a blank location as missing for `in_person` and
+  /// as *present* for the other two types, so a field the employer cleared
+  /// would earn a refusal naming a field they thought they had emptied.
+  Map<String, dynamic> _body({
+    required String type,
+    required DateTime scheduledAt,
+    String? location,
+    String? meetingLink,
+    String? instructions,
+  }) => {
+    'type': type,
+    'scheduledAt': scheduledAt.toUtc().toIso8601String(),
+    'location': ?_orNull(location),
+    'meetingLink': ?_orNull(meetingLink),
+    'instructions': ?_orNull(instructions),
+  };
+
+  static String? _orNull(String? value) {
+    final trimmed = value?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
+  }
+
   // --- both ----------------------------------------------------------------
 
   /// `GET /applications/:id/interviews` — one application's interviews, for

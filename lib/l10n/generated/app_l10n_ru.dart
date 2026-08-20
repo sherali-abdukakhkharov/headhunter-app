@@ -1997,4 +1997,72 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get interviewNotAllowed => 'Статус собеседования изменился';
+
+  @override
+  String get interviewSchedule => 'Назначить собеседование';
+
+  @override
+  String get interviewScheduleTitle => 'Назначить собеседование';
+
+  @override
+  String get interviewScheduleSave => 'Отправить кандидату';
+
+  @override
+  String get interviewRescheduleFormTitle => 'Перенести собеседование';
+
+  @override
+  String get interviewRescheduleSave => 'Сохранить новое время';
+
+  @override
+  String get interviewRescheduleResets =>
+      'Кандидата попросят подтвердить заново, даже при небольшом изменении — собеседование, перенесённое на другое время, не считается подтверждённым.';
+
+  @override
+  String get interviewTypeLabel => 'Вид собеседования';
+
+  @override
+  String get interviewWhereHint =>
+      'Амира Темура 12, 3-й этаж — на ресепшене спросите Дилнозу';
+
+  @override
+  String get interviewLinkHint => 'https://meet.example.com/abc-defg-hij';
+
+  @override
+  String get interviewDateLabel => 'Дата';
+
+  @override
+  String get interviewTimeLabel => 'Время';
+
+  @override
+  String get interviewTimeHint => '10:00';
+
+  @override
+  String get interviewInstructionsLabel => 'Что взять с собой или подготовить';
+
+  @override
+  String get interviewInstructionsHint => 'Возьмите диплом и трудовую книжку';
+
+  @override
+  String get interviewReschedule => 'Перенести';
+
+  @override
+  String get interviewCancelAction => 'Отменить собеседование';
+
+  @override
+  String get interviewCancelTitle => 'Отменить это собеседование?';
+
+  @override
+  String get interviewCancelBody =>
+      'Это окончательно для обеих сторон — собеседование не вернуть, а новое время означает новое собеседование. Кандидат увидит, что оно отменено.';
+
+  @override
+  String get interviewCancelReasonLabel =>
+      'Причина (необязательно, кандидат её увидит)';
+
+  @override
+  String get interviewCancelReasonHint =>
+      'Вакансия закрыта — спасибо за ваше время';
+
+  @override
+  String get interviewCandidateReply => 'Что ответил кандидат';
 }

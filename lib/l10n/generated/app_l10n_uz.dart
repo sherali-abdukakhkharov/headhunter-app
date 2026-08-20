@@ -1979,6 +1979,76 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get interviewNotAllowed => 'Bu suhbat holati o\'zgargan';
+
+  @override
+  String get interviewSchedule => 'Suhbat belgilash';
+
+  @override
+  String get interviewScheduleTitle => 'Suhbat belgilash';
+
+  @override
+  String get interviewScheduleSave => 'Nomzodga yuborish';
+
+  @override
+  String get interviewRescheduleFormTitle => 'Suhbat vaqtini o\'zgartirish';
+
+  @override
+  String get interviewRescheduleSave => 'Yangi vaqtni saqlash';
+
+  @override
+  String get interviewRescheduleResets =>
+      'Kichik o\'zgarish bo\'lsa ham, nomzoddan qayta tasdiqlash so\'raladi — boshqa vaqtga ko\'chirilgan suhbat tasdiqlanmagan hisoblanadi.';
+
+  @override
+  String get interviewTypeLabel => 'Suhbat turi';
+
+  @override
+  String get interviewWhereHint =>
+      'Amir Temur 12, 3-qavat — qabulxonada Dilnozani so\'rang';
+
+  @override
+  String get interviewLinkHint => 'https://meet.example.com/abc-defg-hij';
+
+  @override
+  String get interviewDateLabel => 'Sana';
+
+  @override
+  String get interviewTimeLabel => 'Vaqt';
+
+  @override
+  String get interviewTimeHint => '10:00';
+
+  @override
+  String get interviewInstructionsLabel =>
+      'Nima olib kelishi yoki tayyorlashi kerak';
+
+  @override
+  String get interviewInstructionsHint =>
+      'Diplomingizni va mehnat daftaringizni olib keling';
+
+  @override
+  String get interviewReschedule => 'Ko\'chirish';
+
+  @override
+  String get interviewCancelAction => 'Bekor qilish';
+
+  @override
+  String get interviewCancelTitle => 'Bu suhbatni bekor qilasizmi?';
+
+  @override
+  String get interviewCancelBody =>
+      'Bu ikki tomon uchun ham qat\'iy — suhbatni qaytarib bo\'lmaydi, yangi vaqt esa yangi suhbat belgilashni talab qiladi. Nomzod bekor qilinganini ko\'radi.';
+
+  @override
+  String get interviewCancelReasonLabel =>
+      'Sabab (majburiy emas, nomzod ko\'radi)';
+
+  @override
+  String get interviewCancelReasonHint =>
+      'Lavozim to\'ldirildi — vaqtingiz uchun rahmat';
+
+  @override
+  String get interviewCandidateReply => 'Nomzod nima dedi';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3950,6 +4020,76 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get interviewNotAllowed => 'Бу суҳбат ҳолати ўзгарган';
+
+  @override
+  String get interviewSchedule => 'Суҳбат белгилаш';
+
+  @override
+  String get interviewScheduleTitle => 'Суҳбат белгилаш';
+
+  @override
+  String get interviewScheduleSave => 'Номзодга юбориш';
+
+  @override
+  String get interviewRescheduleFormTitle => 'Суҳбат вақтини ўзгартириш';
+
+  @override
+  String get interviewRescheduleSave => 'Янги вақтни сақлаш';
+
+  @override
+  String get interviewRescheduleResets =>
+      'Кичик ўзгариш бўлса ҳам, номзоддан қайта тасдиқлаш сўралади — бошқа вақтга кўчирилган суҳбат тасдиқланмаган ҳисобланади.';
+
+  @override
+  String get interviewTypeLabel => 'Суҳбат тури';
+
+  @override
+  String get interviewWhereHint =>
+      'Амир Темур 12, 3-қават — қабулхонада Дилнозани сўранг';
+
+  @override
+  String get interviewLinkHint => 'https://meet.example.com/abc-defg-hij';
+
+  @override
+  String get interviewDateLabel => 'Сана';
+
+  @override
+  String get interviewTimeLabel => 'Вақт';
+
+  @override
+  String get interviewTimeHint => '10:00';
+
+  @override
+  String get interviewInstructionsLabel =>
+      'Нима олиб келиши ёки тайёрлаши керак';
+
+  @override
+  String get interviewInstructionsHint =>
+      'Дипломингизни ва меҳнат дафтарингизни олиб келинг';
+
+  @override
+  String get interviewReschedule => 'Кўчириш';
+
+  @override
+  String get interviewCancelAction => 'Бекор қилиш';
+
+  @override
+  String get interviewCancelTitle => 'Бу суҳбатни бекор қиласизми?';
+
+  @override
+  String get interviewCancelBody =>
+      'Бу икки томон учун ҳам қатъий — суҳбатни қайтариб бўлмайди, янги вақт эса янги суҳбат белгилашни талаб қилади. Номзод бекор қилинганини кўради.';
+
+  @override
+  String get interviewCancelReasonLabel =>
+      'Сабаб (мажбурий эмас, номзод кўради)';
+
+  @override
+  String get interviewCancelReasonHint =>
+      'Лавозим тўлдирилди — вақтингиз учун раҳмат';
+
+  @override
+  String get interviewCandidateReply => 'Номзод нима деди';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5927,4 +6067,74 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get interviewNotAllowed => 'Bu suhbat holati o\'zgargan';
+
+  @override
+  String get interviewSchedule => 'Suhbat belgilash';
+
+  @override
+  String get interviewScheduleTitle => 'Suhbat belgilash';
+
+  @override
+  String get interviewScheduleSave => 'Nomzodga yuborish';
+
+  @override
+  String get interviewRescheduleFormTitle => 'Suhbat vaqtini o\'zgartirish';
+
+  @override
+  String get interviewRescheduleSave => 'Yangi vaqtni saqlash';
+
+  @override
+  String get interviewRescheduleResets =>
+      'Kichik o\'zgarish bo\'lsa ham, nomzoddan qayta tasdiqlash so\'raladi — boshqa vaqtga ko\'chirilgan suhbat tasdiqlanmagan hisoblanadi.';
+
+  @override
+  String get interviewTypeLabel => 'Suhbat turi';
+
+  @override
+  String get interviewWhereHint =>
+      'Amir Temur 12, 3-qavat — qabulxonada Dilnozani so\'rang';
+
+  @override
+  String get interviewLinkHint => 'https://meet.example.com/abc-defg-hij';
+
+  @override
+  String get interviewDateLabel => 'Sana';
+
+  @override
+  String get interviewTimeLabel => 'Vaqt';
+
+  @override
+  String get interviewTimeHint => '10:00';
+
+  @override
+  String get interviewInstructionsLabel =>
+      'Nima olib kelishi yoki tayyorlashi kerak';
+
+  @override
+  String get interviewInstructionsHint =>
+      'Diplomingizni va mehnat daftaringizni olib keling';
+
+  @override
+  String get interviewReschedule => 'Ko\'chirish';
+
+  @override
+  String get interviewCancelAction => 'Bekor qilish';
+
+  @override
+  String get interviewCancelTitle => 'Bu suhbatni bekor qilasizmi?';
+
+  @override
+  String get interviewCancelBody =>
+      'Bu ikki tomon uchun ham qat\'iy — suhbatni qaytarib bo\'lmaydi, yangi vaqt esa yangi suhbat belgilashni talab qiladi. Nomzod bekor qilinganini ko\'radi.';
+
+  @override
+  String get interviewCancelReasonLabel =>
+      'Sabab (majburiy emas, nomzod ko\'radi)';
+
+  @override
+  String get interviewCancelReasonHint =>
+      'Lavozim to\'ldirildi — vaqtingiz uchun rahmat';
+
+  @override
+  String get interviewCandidateReply => 'Nomzod nima dedi';
 }

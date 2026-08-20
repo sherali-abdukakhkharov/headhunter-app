@@ -12,6 +12,7 @@ import 'package:jobbridge_app/src/features/applications/presentation/application
 import 'package:jobbridge_app/src/features/applications/presentation/exposure_explanation.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
+import 'package:jobbridge_app/src/features/interviews/presentation/employer_interviews.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
 import 'package:jobbridge_app/src/features/invitations/presentation/sent_invitations_screen.dart';
@@ -338,32 +339,45 @@ class _ApplicantRowState extends ConsumerState<_ApplicantRow> {
             const SizedBox(height: HhSpace.sm),
             _CandidateSummary(applicationId: application.id),
 
-            // Forward only, skipping allowed (§8.1). A terminal stage yields
-            // nothing, so the control disappears rather than offering a move
-            // the server refuses.
-            if (next.isNotEmpty) ...[
-              const SizedBox(height: HhSpace.sm),
-              Wrap(
-                spacing: HhSpace.sm,
-                children: [
-                  for (final stage in next)
-                    HhButton.text(
-                      label: stageLabel(stage, l10n),
-                      onPressed: _busy ? null : () => _move(stage),
-                    ),
-                  // §7.3's private note. Beside the stage moves because it is
-                  // the same kind of act — what the employer does *about* this
-                  // application rather than what the candidate sent.
+            // §8.3, the employer's half: what is already booked, and the way to
+            // book one. Above the stage moves because scheduling one is
+            // usually what *precedes* moving somebody to the interview stage,
+            // and the two are independent — §8.1's stage and §8.3's interview
+            // are separate records, so neither drives the other.
+            EmployerInterviews(
+              applicationId: application.id,
+              applicationCreatedAt: application.createdAt,
+            ),
+
+            const SizedBox(height: HhSpace.sm),
+            Wrap(
+              spacing: HhSpace.sm,
+              children: [
+                // Forward only, skipping allowed (§8.1). A terminal stage
+                // yields nothing, so these disappear rather than offering a
+                // move the server refuses.
+                for (final stage in next)
                   HhButton.text(
-                    label: l10n.notesTitle,
-                    onPressed: () => showApplicationNotes(
-                      context,
-                      applicationId: application.id,
-                    ),
+                    label: stageLabel(stage, l10n),
+                    onPressed: _busy ? null : () => _move(stage),
                   ),
-                ],
-              ),
-            ],
+                // §7.3's private note. Beside the stage moves because it is
+                // the same kind of act — what the employer does *about* this
+                // application rather than what the candidate sent.
+                //
+                // Outside the stage-move guard, which it used to be inside: a
+                // hired or rejected application has no move left, and notes on
+                // one were therefore unreachable — exactly the application an
+                // employer is most likely to want to have written a note about.
+                HhButton.text(
+                  label: l10n.notesTitle,
+                  onPressed: () => showApplicationNotes(
+                    context,
+                    applicationId: application.id,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

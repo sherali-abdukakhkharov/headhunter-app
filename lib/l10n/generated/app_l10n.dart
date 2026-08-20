@@ -3502,6 +3502,132 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'This interview has moved on'**
   String get interviewNotAllowed;
+
+  /// §8.3's employer action, on an applicant row. Offered independently of §8.1's stage: the interview and the stage are separate records, so neither drives the other — scheduling one is usually what happens *before* moving somebody to the interview stage.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule an interview'**
+  String get interviewSchedule;
+
+  /// The scheduling sheet's heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule an interview'**
+  String get interviewScheduleTitle;
+
+  /// The verb on the confirm button, named for what actually happens: the candidate sees the interview and is asked to confirm. "Save" would suggest a draft, and §8.3 has none.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to the candidate'**
+  String get interviewScheduleSave;
+
+  /// The same form, reached from an existing interview. "Move" rather than "edit", because the field that matters is the time and the candidate has to answer again.
+  ///
+  /// In en, this message translates to:
+  /// **'Move this interview'**
+  String get interviewRescheduleFormTitle;
+
+  /// The verb on the confirm button when rescheduling.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the new time'**
+  String get interviewRescheduleSave;
+
+  /// The server resets the status to `scheduled` on every edit, and it is right to: a confirmation belongs to the time it was given for. But an employer nudging the time by ten minutes needs to know it costs them a confirmation, or they will do it and wonder why the badge changed.
+  ///
+  /// In en, this message translates to:
+  /// **'The candidate will be asked to confirm again, even for a small change — an interview moved to another time has not been confirmed.'**
+  String get interviewRescheduleResets;
+
+  /// Label above the three type options. Radio rows rather than a segmented control: three segments at 360pt give each about 110pt, and "Личная встреча" does not fit that on one line — the same measurement that kept §8.2's status filters off HhSegmented.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind of interview'**
+  String get interviewTypeLabel;
+
+  /// A hint that shows what the field is *for*: an address alone leaves a candidate standing in a lobby. Required for an in-person interview and forbidden for the other two, which the server enforces both ways.
+  ///
+  /// In en, this message translates to:
+  /// **'Amir Temur 12, 3rd floor — ask for Dilnoza at reception'**
+  String get interviewWhereHint;
+
+  /// Somebody else's meeting URL — §2.4 puts a built-in video engine out of scope. Required for a video-link interview and forbidden for the other two.
+  ///
+  /// In en, this message translates to:
+  /// **'https://meet.example.com/abc-defg-hij'**
+  String get interviewLinkHint;
+
+  /// Label on the date picker. ISO on the wire, because §8.3's display policy for dates is still open and a format invented here would have to be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get interviewDateLabel;
+
+  /// Label on the time picker. The picked time means the **platform's** clock, which is the clock the candidate's card renders — the only reading on which the two sides agree.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get interviewTimeLabel;
+
+  /// Twenty-four hour, as everywhere else in the app: none of the four interface variants uses an am/pm convention.
+  ///
+  /// In en, this message translates to:
+  /// **'10:00'**
+  String get interviewTimeHint;
+
+  /// §8.3's "documents or preparation notes", labelled as the question it answers rather than as the field name. Optional, and shown to the candidate in the employer's own words — never translated (§2.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Anything they should bring or prepare'**
+  String get interviewInstructionsLabel;
+
+  /// The example that makes the field obvious. An employer shown an empty box labelled "instructions" writes nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring your diploma and your work record book'**
+  String get interviewInstructionsHint;
+
+  /// Opens the form on an existing interview. Absent on a cancelled one: §8.3's only ending is cancellation, and rescheduling one would be reviving it — which the server refuses with `interview.final`.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get interviewReschedule;
+
+  /// §8.3's employer-only ending, and the verb on the confirm button. Not "cancel", which is also the word on the button that closes the sheet without doing anything.
+  ///
+  /// In en, this message translates to:
+  /// **'Call it off'**
+  String get interviewCancelAction;
+
+  /// The cancellation sheet's heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Call off this interview?'**
+  String get interviewCancelTitle;
+
+  /// Names the consequence rather than asking "are you sure?". Cancelling is §8.3's only ending and nothing undoes it, so the sheet says both halves of that: it is final, and a replacement is a new record.
+  ///
+  /// In en, this message translates to:
+  /// **'This is final for both sides — the interview cannot be brought back, and a new time means scheduling a new one. The candidate will see that it was called off.'**
+  String get interviewCancelBody;
+
+  /// The parenthesis is the load-bearing part. The reason is shown to the candidate, and an employer writing "found someone closer" for their own records would be writing it to the person it is about.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional, the candidate sees it)'**
+  String get interviewCancelReasonLabel;
+
+  /// Shows the field is addressed to the candidate, by giving an example somebody would be willing to read.
+  ///
+  /// In en, this message translates to:
+  /// **'The role has been filled — thank you for your time'**
+  String get interviewCancelReasonHint;
+
+  /// Label above the note the candidate sent with their answer, on the employer's side. Their own words (§2.4) — and the point of the whole feature, because "another time please" is useless without the times.
+  ///
+  /// In en, this message translates to:
+  /// **'What the candidate said'**
+  String get interviewCandidateReply;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -1461,15 +1461,40 @@ paywall that is not theirs.
       unusable. The posting is fetched per row, the same treatment an §8.2
       invitation's subject gets, and a 404 reads as "no longer available" rather
       than as a fault
-- [ ] **The employer's half of §8.3** — schedule, reschedule, cancel. All three
-      routes exist (`POST /applications/:id/interviews`, `PUT /interviews/:id`,
-      `POST /interviews/:id/cancel`) and so does the employer's per-application
-      list, `GET /applications/:id/interviews`, which is open to **both** sides.
-      So this is ordinary client work, and the note that used to sit here was
-      too pessimistic: what is missing is only the **aggregate** list —
-      `GET /interviews/mine` is candidate-only, which is why §6.2's dashboard
-      shows the three counts it can answer instead of a placeholder where "5
-      interviews" would go. That blocks a metric, not a screen
+- [x] **The employer's half of §8.3, 2026-08-20** — schedule, move, call off,
+      on the applicant row of §6.5's screen. One form for scheduling *and*
+      rescheduling, because `PUT /interviews/:id` takes the whole DTO rather
+      than a patch: the type decides which of the location and the link may
+      exist at all, so a partial update would let a phone interview keep the
+      address of the in-person one it used to be.
+      **The picked time is the *platform's* wall clock, and the offset comes
+      from the server.** This is the one place the app runs
+      `ZonedTimestamp`'s conversion backwards, and `instantForPlatformWallClock`
+      is where it happens. The offset is parsed out of a timestamp the server
+      sent about that very application — a `+05:00` in Dart would be a second
+      source of truth for the platform zone, wrong the day Uzbekistan
+      reintroduces daylight saving and wrong by an hour for every interview.
+      If that timestamp is unreadable the scheduling control is **absent**
+      rather than falling back to the device's zone: booking an interview an
+      hour off is worse than not booking one from this screen. Both halves
+      mutation-verified.
+      Three smaller decisions: switching the type **clears** the other type's
+      detail, so `interview.detail_required` is unreachable rather than merely
+      unlikely; the reschedule form says the candidate will be asked to confirm
+      again, because the server resets the status on every edit and an employer
+      nudging the time by ten minutes should not have to discover that; and the
+      cancellation reason's label says **the candidate sees it**, since an
+      employer writing "found someone closer" for their own records would be
+      writing it to the person it is about.
+      Still missing, and still only a metric: the **aggregate** list.
+      `GET /interviews/mine` is candidate-only, so §6.2's dashboard shows the
+      three counts it can answer rather than a placeholder where "5 interviews"
+      would go
+- [x] **Private notes were unreachable on a finished application** — found while
+      placing the schedule button. The notes control sat inside the
+      stage-move guard, and a hired or rejected application has no move left, so
+      the one application an employer is most likely to want a note about was
+      the one that offered none. Now outside the guard
 - [ ] **Deep links switch role before navigating** where required *(moved here
       from M9 - routing infrastructure, not a notification feature)*
 - [x] **The chat screens and the new badges have been looked at, 2026-08-20** —
