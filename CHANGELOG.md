@@ -17,11 +17,17 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
-## 1.1.2+4 — unreleased
+## 1.1.2+4 — 2026-08-20
 
 Cut in the first place to correct 1.1.1's version: that build reports **1.1.0+3**,
 so a device cannot tell the two apart and a phone holding 1.1.0 will not accept
-build 3 as an upgrade.
+build 3 as an upgrade. It carries §9.1's chat and §8.3's candidate side as well.
+
+**Releases are cut often from here on**, on owner direction (2026-08-20): the
+owner installs the APK to test, and cannot build one locally while Gradle is
+broken on that machine, so an untagged commit is invisible to them. Several small
+releases beat one large one — which is also what keeps the build number honest,
+since a phone refuses an upgrade that does not carry a higher one.
 
 ### Added
 
