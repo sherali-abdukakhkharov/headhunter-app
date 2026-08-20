@@ -332,11 +332,40 @@ working destinations rather than dead ends.
       returns an access token carrying the new role, and the app does not call
       it. Harmless today because nothing is role-authorized yet; **it becomes a
       403 the moment M2+ adds an endpoint that checks the acting role**
-- [~] Role selection (candidate / employer / both) → correct onboarding — now
-      calls `POST /auth/roles` and adopts the set the **server** returns, not
-      the one it sent (an administrator may have granted more, §10).
-      Administrator deliberately not offered, since §10 grants it. The copy and
-      the per-role explanations are still M1's
+- [x] **Role selection, finished 2026-08-20** (§2.3). It calls `POST /auth/roles`
+      and adopts the set the **server** returns rather than the one it sent (an
+      administrator may have granted more, §10), and administrator is not
+      offered, since §10 grants it. What was missing was the whole of the
+      presentation: the screen carried an `HhNotice.pending` reading *"Role
+      selection arrives in M1"* — on the first screen a new account ever sees.
+      **This screen is where registering ends**, which is what set the copy.
+      There is no sign-up step: `POST /auth/otp/verify` creates the account when
+      the phone is new and a new account deliberately holds no role, so the
+      redirect chain lands here and `POST /auth/roles` finishes the job. That
+      makes two words — "candidate", "employer" — the last thing between somebody
+      and the product, and a word is not a choice. Each now carries one line of
+      §2.2's capabilities.
+      Three decisions worth keeping:
+      **What a role can do is stated; what it costs is not.** The employer line
+      says nothing about Coins or unlocks (§6.6), though they are real: a price
+      quoted before anything has been offered reads as a paywall standing in
+      front of registration, and the wallet explains itself once there is
+      something to spend on. A test asserts no digit reaches the screen.
+      **Choosing both is explained, not merely permitted.** §2.3 allows both and
+      keeps the data separate; what stops people is the fear that a personal job
+      search lands inside a company account. So the note about two separate
+      spaces appears **on the second tick** — earlier it is advice nobody asked
+      for, there it answers the question the tick just raised.
+      **It is a caption, not an `HhNotice`.** The notices all carry a state
+      (pending, restricted, expired); toning this one as a notice would make
+      choosing both look like the risky option
+- [ ] **Run the design gallery on a device for `description`.** `HhCheckboxRow`
+      and `HhRadioRow` gained the optional second line `HhSwitchRow` already had,
+      and with it the control aligns to the label instead of to the middle of the
+      block. A specimen is in `/_design` beside the plain checkboxes. Tests cover
+      that both lines render and the whole row stays one tap target, which is not
+      the same as looking at the alignment — and MEMORY.md records three design
+      bugs that a green analyze and a green suite both missed
 - [~] Role switcher in the profile area — `switchRoleAndGo` is done and exercised
       from `/_dev`; it needs its product entry point once the profile area exists
 - [x] **Account and security screen, 2026-08-20.** §4.2's session list with

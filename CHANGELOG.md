@@ -19,16 +19,28 @@ three releases out of four.
 
 ## 1.1.2+4 — unreleased
 
-**Carries no new code.** The same tree as 1.1.1, released so that the version a
-device reports is the version that was tagged, and so that the build number moves
-— 1.1.1 shares 1.1.0's, which is what stops a tester's phone from taking it as an
-upgrade.
+Cut in the first place to correct 1.1.1's version: that build reports **1.1.0+3**,
+so a device cannot tell the two apart and a phone holding 1.1.0 will not accept
+build 3 as an upgrade.
+
+### Added
+
+- **The finished role-selection screen** (§2.3), the last step of registration.
+  There is no separate sign-up — verifying an OTP creates the account and a new
+  account holds no role — so this screen is where registering ends, and until now
+  it showed a placeholder notice reading "Role selection arrives in M1". Each
+  role now says what it *does* (§2.2's capabilities), choosing both is explained
+  rather than merely allowed (§2.3 keeps the two data sets separate), and
+  administrator is still absent because §10 grants it.
 
 ### Changed
 
 - `release-apk.yml` **fails before building** when the tag does not match
   `pubspec.yaml`. The rule was already in this file, in `pubspec.yaml` and in
   README.md; the run is the only one of the four that nobody can skip reading.
+- `HhCheckboxRow` and `HhRadioRow` take an optional `description`, the second
+  line `HhSwitchRow` already had. The control aligns to the label rather than to
+  the middle of a two-line block.
 
 ## 1.1.1 — 2026-08-20
 

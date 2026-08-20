@@ -1743,4 +1743,23 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get shortlistEmpty => 'Nobody is shortlisted yet';
+
+  @override
+  String get roleSelectionTitle => 'How will you use JobBridge?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Pick one or both — you can add the other later without a second account.';
+
+  @override
+  String get roleCandidateDescription =>
+      'Build a profile employers can find, apply to vacancies, and answer invitations.';
+
+  @override
+  String get roleEmployerDescription =>
+      'Publish vacancies, search candidates, and invite the people you want to talk to.';
+
+  @override
+  String get roleSelectionBoth =>
+      'With both, one account keeps two separate spaces: your own profile and your company\'s, switched from your profile.';
 }

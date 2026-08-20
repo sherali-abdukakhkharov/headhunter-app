@@ -2290,5 +2290,25 @@
   "searchShortlisted": "Shortlisted",
   "@searchShortlisted": {
     "description": "The candidate is on this vacancy's shortlist; tapping removes them. Same wording as the application stage of the same name (stageShortlisted), which is the same idea reached a different way."
+  },
+  "roleSelectionTitle": "How will you use JobBridge?",
+  "@roleSelectionTitle": {
+    "description": "§2.3: the screen an account with no role lands on. A question rather than “Choose your role”, because the answer is about what the person came to do."
+  },
+  "roleSelectionSubtitle": "Pick one or both — you can add the other later without a second account.",
+  "@roleSelectionSubtitle": {
+    "description": "§2.3 allows both roles on one account and makes the choice reversible, so the screen says so before somebody agonises over it."
+  },
+  "roleCandidateDescription": "Build a profile employers can find, apply to vacancies, and answer invitations.",
+  "@roleCandidateDescription": {
+    "description": "§2.2's candidate capabilities, in the order somebody meets them. Not a full list — the point is to make the word “Candidate” mean something to a first-time reader."
+  },
+  "roleEmployerDescription": "Publish vacancies, search candidates, and invite the people you want to talk to.",
+  "@roleEmployerDescription": {
+    "description": "§2.2's employer capabilities. Deliberately silent about Coins and unlocks: those are a cost, and a cost stated before anything is on offer reads as a paywall on registration."
+  },
+  "roleSelectionBoth": "With both, one account keeps two separate spaces: your own profile and your company's, switched from your profile.",
+  "@roleSelectionBoth": {
+    "description": "§2.3's “role-specific data and menus shall remain separated”. Shown because the fear that picking both mixes a personal job search into a company account is exactly what stops people picking both."
   }
 }

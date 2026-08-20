@@ -1758,4 +1758,23 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get shortlistEmpty => 'В шорт-листе пока никого нет';
+
+  @override
+  String get roleSelectionTitle => 'Как вы будете пользоваться JobBridge?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Выберите одно или оба — второе можно добавить позже, без второго аккаунта.';
+
+  @override
+  String get roleCandidateDescription =>
+      'Создайте профиль, который найдут работодатели, откликайтесь на вакансии и отвечайте на приглашения.';
+
+  @override
+  String get roleEmployerDescription =>
+      'Публикуйте вакансии, ищите кандидатов и приглашайте тех, с кем хотите поговорить.';
+
+  @override
+  String get roleSelectionBoth =>
+      'С обеими ролями один аккаунт хранит два отдельных пространства: ваш личный профиль и профиль компании, переключение — в профиле.';
 }

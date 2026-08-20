@@ -6,16 +6,35 @@ import 'package:jobbridge_app/src/core/auth/session_controller.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 
-/// Where an account with no role is held (§2.3). **M1** owns the finished
-/// screen, with the copy explaining what each role can do.
+/// Where an account with no role is held (§2.3).
 ///
-/// The mechanism is real, because the redirect chain needs a working exit: the
-/// choice goes to `setGrantedRoles` and the router moves into that role's shell
-/// on its own. Only the presentation is provisional.
+/// ## This is the last step of registration, and the only one with a choice in
+/// it
+///
+/// There is no separate sign-up: `POST /auth/otp/verify` creates the account
+/// when the phone is new, and a new account deliberately holds **no role** — so
+/// the redirect chain lands here, and `POST /auth/roles` is what finishes
+/// registering. The screen therefore has to explain two nouns, because a
+/// first-time reader has no reason to know what either means *in this app*:
+/// §2.2's capabilities are the explanation, one line each.
+///
+/// **What each role can do is stated; what it costs is not.** The employer line
+/// says nothing about Coins or unlocks (§6.6), even though they are real: a
+/// price quoted before anything has been offered reads as a paywall standing in
+/// front of registration, and the wallet screen explains itself perfectly well
+/// once there is something to spend it on.
+///
+/// **Picking both is encouraged rather than merely permitted.** §2.3 allows it
+/// and keeps the two data sets separate, and the thing that stops people is the
+/// fear that a personal job search will end up inside a company account — so
+/// the screen says the spaces stay apart, in the place where the worry occurs.
 ///
 /// **Candidate and employer are offered; administrator is not.** An admin role
-/// is granted by another administrator (§10), never self-selected - offering it
-/// here would be an privilege-escalation control that happens to be a button.
+/// is granted by another administrator (§10), never self-selected — offering it
+/// here would be a privilege-escalation control that happens to be a button.
+///
+/// Nothing navigates on success: the granted roles change the session and the
+/// redirect chain moves into the shell on its own.
 class RoleSelectionScreen extends ConsumerStatefulWidget {
   const RoleSelectionScreen({super.key});
 
@@ -70,12 +89,11 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: HhSpace.xxl),
-              // Scaffolding copy - M1 replaces it with the designer's text.
-              const HhNotice.pending(
-                title: 'Role selection arrives in M1',
-                message:
-                    'The choice below is live: it grants the role and the '
-                    'router moves into that shell. Only the copy is temporary.',
+              Text(l10n.roleSelectionTitle, style: HhTypography.title),
+              const SizedBox(height: HhSpace.sm),
+              Text(
+                l10n.roleSelectionSubtitle,
+                style: HhTypography.body.copyWith(color: HhColors.inkMuted),
               ),
               const SizedBox(height: HhSpace.sectionGap),
 
@@ -91,25 +109,48 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
 
               for (final role in _selectable)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: HhSpace.sm),
-                  child: HhCheckboxRow(
-                    label: switch (role) {
-                      AppRole.candidate => l10n.roleCandidate,
-                      AppRole.employer => l10n.roleEmployer,
-                      AppRole.admin => l10n.roleAdmin,
-                    },
-                    value: _selected.contains(role),
-                    onChanged: _submitting
-                        ? null
-                        : (checked) => setState(() {
-                            if (checked) {
-                              _selected.add(role);
-                            } else {
-                              _selected.remove(role);
-                            }
-                          }),
+                  padding: const EdgeInsets.only(bottom: HhSpace.md),
+                  child: HhCard(
+                    child: HhCheckboxRow(
+                      label: switch (role) {
+                        AppRole.candidate => l10n.roleCandidate,
+                        AppRole.employer => l10n.roleEmployer,
+                        AppRole.admin => l10n.roleAdmin,
+                      },
+                      // §2.2's capabilities. The role name alone is a word;
+                      // this is what makes it a choice.
+                      description: switch (role) {
+                        AppRole.candidate => l10n.roleCandidateDescription,
+                        AppRole.employer => l10n.roleEmployerDescription,
+                        AppRole.admin => null,
+                      },
+                      value: _selected.contains(role),
+                      onChanged: _submitting
+                          ? null
+                          : (checked) => setState(() {
+                              if (checked) {
+                                _selected.add(role);
+                              } else {
+                                _selected.remove(role);
+                              }
+                            }),
+                    ),
                   ),
                 ),
+
+              // Only once both are ticked. Said earlier it would be advice
+              // nobody asked for; said here it answers the question the second
+              // tick raises — "does this mix my job search into the company?"
+              //
+              // A caption rather than an `HhNotice`: the notices carry a state
+              // (pending, restricted, expired) and this is neither a state nor
+              // a warning. Toning it as one would make choosing both look like
+              // the risky option.
+              if (_selected.length == _selectable.length) ...[
+                const SizedBox(height: HhSpace.xs),
+                Text(l10n.roleSelectionBoth, style: HhTypography.caption),
+              ],
+
               const SizedBox(height: HhSpace.lg),
               HhButton(
                 label: l10n.commonNext,

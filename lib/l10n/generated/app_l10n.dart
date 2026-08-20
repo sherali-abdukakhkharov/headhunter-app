@@ -3088,6 +3088,36 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Nobody is shortlisted yet'**
   String get shortlistEmpty;
+
+  /// §2.3: the screen an account with no role lands on. A question rather than “Choose your role”, because the answer is about what the person came to do.
+  ///
+  /// In en, this message translates to:
+  /// **'How will you use JobBridge?'**
+  String get roleSelectionTitle;
+
+  /// §2.3 allows both roles on one account and makes the choice reversible, so the screen says so before somebody agonises over it.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one or both — you can add the other later without a second account.'**
+  String get roleSelectionSubtitle;
+
+  /// §2.2's candidate capabilities, in the order somebody meets them. Not a full list — the point is to make the word “Candidate” mean something to a first-time reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Build a profile employers can find, apply to vacancies, and answer invitations.'**
+  String get roleCandidateDescription;
+
+  /// §2.2's employer capabilities. Deliberately silent about Coins and unlocks: those are a cost, and a cost stated before anything is on offer reads as a paywall on registration.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish vacancies, search candidates, and invite the people you want to talk to.'**
+  String get roleEmployerDescription;
+
+  /// §2.3's “role-specific data and menus shall remain separated”. Shown because the fear that picking both mixes a personal job search into a company account is exactly what stops people picking both.
+  ///
+  /// In en, this message translates to:
+  /// **'With both, one account keeps two separate spaces: your own profile and your company\'s, switched from your profile.'**
+  String get roleSelectionBoth;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

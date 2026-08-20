@@ -1743,6 +1743,25 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get shortlistEmpty => 'Short-listda hozircha hech kim yo\'q';
+
+  @override
+  String get roleSelectionTitle => 'JobBridge\'dan qanday foydalanasiz?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Bittasini yoki ikkalasini tanlang — ikkinchisini keyin ham, ikkinchi akkaunt ochmasdan qo\'shishingiz mumkin.';
+
+  @override
+  String get roleCandidateDescription =>
+      'Ish beruvchilar topadigan profil yarating, vakansiyalarga ariza yuboring va taklifnomalarga javob bering.';
+
+  @override
+  String get roleEmployerDescription =>
+      'Vakansiya joylang, nomzodlarni qidiring va gaplashmoqchi bo\'lganlaringizni taklif qiling.';
+
+  @override
+  String get roleSelectionBoth =>
+      'Ikkalasi tanlanganda bitta akkaunt ikkita alohida makonni saqlaydi: o\'z profilingiz va kompaniyangiz profili — almashtirish profilingizda.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3481,6 +3500,25 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get shortlistEmpty => 'Шорт-листда ҳозирча ҳеч ким йўқ';
+
+  @override
+  String get roleSelectionTitle => 'JobBridge\'дан қандай фойдаланасиз?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Биттасини ёки иккаласини танланг — иккинчисини кейин ҳам, иккинчи аккаунт очмасдан қўшишингиз мумкин.';
+
+  @override
+  String get roleCandidateDescription =>
+      'Иш берувчилар топадиган профил яратинг, вакансияларга ариза юборинг ва таклифномаларга жавоб беринг.';
+
+  @override
+  String get roleEmployerDescription =>
+      'Вакансия жойланг, номзодларни қидиринг ва гаплашмоқчи бўлганларингизни таклиф қилинг.';
+
+  @override
+  String get roleSelectionBoth =>
+      'Иккаласи танланганда битта аккаунт иккита алоҳида маконни сақлайди: ўз профилингиз ва компаниянгиз профили — алмаштириш профилингизда.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5222,4 +5260,23 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get shortlistEmpty => 'Short-listda hozircha hech kim yo\'q';
+
+  @override
+  String get roleSelectionTitle => 'JobBridge\'dan qanday foydalanasiz?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Bittasini yoki ikkalasini tanlang — ikkinchisini keyin ham, ikkinchi akkaunt ochmasdan qo\'shishingiz mumkin.';
+
+  @override
+  String get roleCandidateDescription =>
+      'Ish beruvchilar topadigan profil yarating, vakansiyalarga ariza yuboring va taklifnomalarga javob bering.';
+
+  @override
+  String get roleEmployerDescription =>
+      'Vakansiya joylang, nomzodlarni qidiring va gaplashmoqchi bo\'lganlaringizni taklif qiling.';
+
+  @override
+  String get roleSelectionBoth =>
+      'Ikkalasi tanlanganda bitta akkaunt ikkita alohida makonni saqlaydi: o\'z profilingiz va kompaniyangiz profili — almashtirish profilingizda.';
 }

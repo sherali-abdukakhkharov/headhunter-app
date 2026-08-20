@@ -15,15 +15,25 @@ class HhCheckboxRow extends StatelessWidget {
     required this.value,
     required this.onChanged,
     super.key,
+    this.description,
   });
 
   final String label;
+
+  /// Optional second line saying what the choice means, mirroring
+  /// [HhSwitchRow.description].
+  ///
+  /// Worth filling in wherever the label is a noun the reader may not yet have
+  /// a definition for — "Employer" is a word; what an employer can do in this
+  /// app is the thing somebody choosing needs.
+  final String? description;
   final bool value;
   final ValueChanged<bool>? onChanged;
 
   @override
   Widget build(BuildContext context) => _SelectionRow(
     label: label,
+    description: description,
     onTap: onChanged == null ? null : () => onChanged!(!value),
     semantics: (checked: value, inMutuallyExclusiveGroup: false),
     control: AnimatedContainer(
@@ -62,9 +72,14 @@ class HhRadioRow<T> extends StatelessWidget {
     required this.groupValue,
     required this.onChanged,
     super.key,
+    this.description,
   });
 
   final String label;
+
+  /// Optional second line saying what this option means. See
+  /// [HhCheckboxRow.description].
+  final String? description;
   final T value;
   final T? groupValue;
   final ValueChanged<T>? onChanged;
@@ -75,6 +90,7 @@ class HhRadioRow<T> extends StatelessWidget {
 
     return _SelectionRow(
       label: label,
+      description: description,
       onTap: onChanged == null ? null : () => onChanged!(value),
       semantics: (checked: selected, inMutuallyExclusiveGroup: true),
       control: AnimatedContainer(
@@ -184,9 +200,11 @@ class _SelectionRow extends StatelessWidget {
     required this.control,
     required this.onTap,
     required this.semantics,
+    this.description,
   });
 
   final String label;
+  final String? description;
   final Widget control;
   final VoidCallback? onTap;
   final ({bool checked, bool inMutuallyExclusiveGroup}) semantics;
@@ -202,16 +220,36 @@ class _SelectionRow extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: HhSize.minTarget),
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
+          // Centred against a single line; against a label *and* a description
+          // the control belongs beside the label, not halfway down the block.
+          crossAxisAlignment: description == null
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           children: [
-            ExcludeSemantics(child: control),
+            Padding(
+              // Optical centring on the first line: the box is 22px and the
+              // label's line box is taller, so it sits two points low.
+              padding: EdgeInsets.only(top: description == null ? 0 : 2),
+              child: ExcludeSemantics(child: control),
+            ),
             const SizedBox(width: 11),
             Expanded(
-              child: Text(
-                label,
-                style: HhTypography.body.copyWith(
-                  fontSize: 14.5,
-                  color: HhColors.brand900,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: HhTypography.body.copyWith(
+                      fontSize: 14.5,
+                      color: HhColors.brand900,
+                    ),
+                  ),
+                  if (description case final text?) ...[
+                    const SizedBox(height: 2),
+                    Text(text, style: HhTypography.caption),
+                  ],
+                ],
               ),
             ),
           ],

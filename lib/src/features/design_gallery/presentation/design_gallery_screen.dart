@@ -25,6 +25,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
   int _navIndex = 0;
   bool _licence = true;
   bool _car = false;
+  bool _employerRole = false;
   bool _visible = true;
   String _crew = 'solo';
   bool _saved = true;
@@ -287,6 +288,18 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           label: 'Shaxsiy avtomobilim bor',
           value: _car,
           onChanged: (v) => setState(() => _car = v),
+        ),
+        // With a description: the control aligns to the label rather than to
+        // the middle of the block, which is the part worth looking at on a
+        // device. Used by role selection, where the label is a role name and
+        // the second line is what that role can do (§2.2).
+        HhCheckboxRow(
+          label: 'Ish beruvchi',
+          description:
+              'Vakansiya joylang, nomzodlarni qidiring va '
+              "gaplashmoqchi bo'lganlaringizni taklif qiling.",
+          value: _employerRole,
+          onChanged: (v) => setState(() => _employerRole = v),
         ),
         HhRadioRow<String>(
           label: 'Yakka tartibda ishlayman',

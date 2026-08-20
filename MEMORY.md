@@ -987,6 +987,38 @@ The cost to know about: the automatic switch **changes the widget's aspect**, fr
 23 : 19.8 to 10.7 : 19.8, because the solo crop is taller than wide. A rule that
 enforces itself still has to say what it did.
 
+### 2026-08-20 - Placeholder copy on a reachable screen is not scaffolding
+`role_selection_screen.dart` carried an `HhNotice.pending` reading *"Role
+selection arrives in M1"*, with a body explaining that the mechanism was live and
+only the copy was temporary. Perfectly honest, and addressed to the wrong reader:
+that screen is where **every new account** lands, because there is no sign-up step
+— `POST /auth/otp/verify` creates the user and a new user holds no role, so the
+redirect chain sends them straight here. The note had been on the second screen of
+the product since M0.5 and survived four milestones, because the people who could
+see it were the two people who knew what it meant.
+
+**Test for it, not just remember it.** The screen's test now asserts no rendered
+string contains "M1" and that no `HhNotice` is present at all — a placeholder is
+easy to leave and hard to notice, and a test is the only reader guaranteed to look
+again.
+
+The copy decisions are worth keeping too, because they generalise past this
+screen:
+
+- **Say what a thing does; do not quote its price at the door.** The employer line
+  lists §2.2's capabilities and says nothing about Coins or unlocks (§6.6), which
+  are real and arrive two screens later. A cost stated before any value has been
+  offered reads as a paywall in front of registration. A test asserts no digit
+  reaches the screen at all.
+- **Put reassurance where the doubt occurs.** §2.3 permits both roles on one
+  account and keeps their data apart; the thing that stops people choosing both is
+  the fear of a personal job search landing inside a company account. So the note
+  is shown **on the second tick** rather than up front, where it would be advice
+  nobody asked for.
+- **A sentence is not a status.** It is a caption, not an `HhNotice`: every notice
+  tone in this system means a *state* (pending, restricted, expired), and dressing
+  an explanation as one would make choosing both look like the risky option.
+
 ### 2026-08-20 - A rule written in three documents is not enforced anywhere
 "The version in `pubspec.yaml` is what a device reports, so a tag is not a
 release" is stated in `CHANGELOG.md`, in a comment above `version:` in
