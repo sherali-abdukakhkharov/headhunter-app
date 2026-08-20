@@ -41,6 +41,24 @@ Setup, signing and the BotFather step Telegram login needs are in
 | Lints | very_good_analysis + riverpod_lint |
 | App id | `com.headhunter.app` (Android `applicationId`, iOS bundle id) |
 
+## Cutting a release
+
+The version in `pubspec.yaml` is what the device reports — Gradle reads
+`versionName` and `versionCode` from it — so **the tag is not the release**. Bump
+the version and tag the merge commit on `main`:
+
+```powershell
+# 1. Bump version: and +buildNumber in pubspec.yaml, add a CHANGELOG.md entry
+# 2. Merge to main, then from an updated main:
+git tag -a v1.1.0 -m "1.1.0"
+git push origin v1.1.0
+```
+
+The build number must increase every time. Android will not install an APK over
+one with the same `versionCode`, so a release that reuses it cannot reach a
+tester's phone as an update. [CHANGELOG.md](CHANGELOG.md) carries the rule and the
+history.
+
 ## Prerequisites
 
 Already installed on this machine:
