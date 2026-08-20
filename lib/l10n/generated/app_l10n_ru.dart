@@ -1752,4 +1752,10 @@ class AppL10nRu extends AppL10n {
   @override
   String get applicantsNoneAtStage =>
       'На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.';
+
+  @override
+  String get shortlistTitle => 'Шорт-лист';
+
+  @override
+  String get shortlistEmpty => 'В шорт-листе пока никого нет';
 }

@@ -725,7 +725,7 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get searchShortlist => 'Shortlist';
+  String get searchShortlist => 'Add to shortlist';
 
   @override
   String get searchShortlisted => 'Shortlisted';
@@ -1737,4 +1737,10 @@ class AppL10nEn extends AppL10n {
   @override
   String get applicantsNoneAtStage =>
       'Nobody is at this stage. Clear the filter to see every applicant.';
+
+  @override
+  String get shortlistTitle => 'Shortlist';
+
+  @override
+  String get shortlistEmpty => 'Nobody is shortlisted yet';
 }

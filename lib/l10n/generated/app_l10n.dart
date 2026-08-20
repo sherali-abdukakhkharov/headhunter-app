@@ -1373,13 +1373,13 @@ abstract class AppL10n {
   /// **'{years, plural, one{{years} year of experience} other{{years} years of experience}}'**
   String searchExperienceYears(int years);
 
-  /// Adds the candidate to a vacancy’s shortlist (§7.3).
+  /// §7.3: puts this candidate on the shortlist of the vacancy the card was produced for. Offered only where there is such a vacancy — a shortlist is per-vacancy, so elsewhere there is nothing to add to.
   ///
   /// In en, this message translates to:
-  /// **'Shortlist'**
+  /// **'Add to shortlist'**
   String get searchShortlist;
 
-  /// Already on the shortlist; tapping removes.
+  /// The candidate is on this vacancy's shortlist; tapping removes them. Same wording as the application stage of the same name (stageShortlisted), which is the same idea reached a different way.
   ///
   /// In en, this message translates to:
   /// **'Shortlisted'**
@@ -3076,6 +3076,18 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Nobody is at this stage. Clear the filter to see every applicant.'**
   String get applicantsNoneAtStage;
+
+  /// §7.3: one vacancy's shortlist, opened from that vacancy. A shortlist is always per-vacancy — an employer filling two roles keeps two.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortlist'**
+  String get shortlistTitle;
+
+  /// Empty state. Deliberately not “you have shortlisted nobody”: BR-02 takes a candidate who hides their profile out of this list without anyone having removed them, exactly as it does the saved list.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is shortlisted yet'**
+  String get shortlistEmpty;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

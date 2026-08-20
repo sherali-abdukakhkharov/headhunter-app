@@ -145,6 +145,45 @@ class CandidateSearchRepository {
     }
   }
 
+  /// `GET /vacancies/:vacancyId/shortlist` — §7.3's vacancy-specific
+  /// shortlist.
+  ///
+  /// Under `/vacancies`, not `/candidate-search`, even though the candidate
+  /// search controller serves it — the same prefix the PUT and DELETE below
+  /// already use.
+  ///
+  /// **Not a stored copy of what was shortlisted.** The server re-runs its card
+  /// query with "is on this vacancy's shortlist" as the only condition, so the
+  /// same BR-02 gate applies as everywhere else: a candidate who hides their
+  /// profile leaves this list without having been removed from it, and returns
+  /// if they choose to be findable again. Same shape as [saved], for the same
+  /// reason.
+  ///
+  /// Ordered by profile recency, **not** by when each candidate was
+  /// shortlisted — the endpoint sorts `recent` — so nothing here is a ranking.
+  Future<List<CandidateCard>> shortlist(
+    String vacancyId, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/vacancies/$vacancyId/shortlist',
+        queryParameters: {'limit': limit, 'offset': offset},
+      );
+
+      final items = response.data?['items'];
+      if (items is! List) return const [];
+
+      return [
+        for (final item in items)
+          if (item is Map<String, dynamic>) CandidateCard.fromJson(item),
+      ];
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   /// `PUT`/`DELETE /vacancies/:vacancyId/shortlist/:candidateUserId`
   Future<void> setShortlisted(
     String vacancyId,
@@ -172,6 +211,15 @@ CandidateSearchRepository candidateSearchRepository(Ref ref) =>
 @riverpod
 Future<List<CandidateCard>> savedCandidates(Ref ref) =>
     ref.watch(candidateSearchRepositoryProvider).saved();
+
+/// One vacancy's shortlist (§7.3).
+///
+/// Keyed by vacancy, because a shortlist belongs to one: an employer filling
+/// two roles keeps two, and a provider that held "the shortlist" would show the
+/// wrong one after any navigation between them.
+@riverpod
+Future<List<CandidateCard>> vacancyShortlist(Ref ref, String vacancyId) =>
+    ref.watch(candidateSearchRepositoryProvider).shortlist(vacancyId);
 
 /// One candidate, as BR-09 permits this employer to see them (§7.3).
 ///

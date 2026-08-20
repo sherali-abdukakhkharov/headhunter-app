@@ -495,5 +495,9 @@
   "notesEmpty": "Заметок пока нет.",
   "notesNewLabel": "Новая заметка",
   "notesNewHint": "Просит 8м, возможно согласится на 6,5 — перезвонить в четверг",
-  "applicantsNoneAtStage": "На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех."
+  "applicantsNoneAtStage": "На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.",
+  "shortlistTitle": "Шорт-лист",
+  "shortlistEmpty": "В шорт-листе пока никого нет",
+  "searchShortlist": "В шорт-лист",
+  "searchShortlisted": "В шорт-листе"
 }

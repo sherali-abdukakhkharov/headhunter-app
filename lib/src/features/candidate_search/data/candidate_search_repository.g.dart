@@ -103,6 +103,112 @@ final class SavedCandidatesProvider
 
 String _$savedCandidatesHash() => r'12905c9a0a98c4de1c27b23b6fdeb25d201e9220';
 
+/// One vacancy's shortlist (§7.3).
+///
+/// Keyed by vacancy, because a shortlist belongs to one: an employer filling
+/// two roles keeps two, and a provider that held "the shortlist" would show the
+/// wrong one after any navigation between them.
+
+@ProviderFor(vacancyShortlist)
+final vacancyShortlistProvider = VacancyShortlistFamily._();
+
+/// One vacancy's shortlist (§7.3).
+///
+/// Keyed by vacancy, because a shortlist belongs to one: an employer filling
+/// two roles keeps two, and a provider that held "the shortlist" would show the
+/// wrong one after any navigation between them.
+
+final class VacancyShortlistProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<CandidateCard>>,
+          List<CandidateCard>,
+          FutureOr<List<CandidateCard>>
+        >
+    with
+        $FutureModifier<List<CandidateCard>>,
+        $FutureProvider<List<CandidateCard>> {
+  /// One vacancy's shortlist (§7.3).
+  ///
+  /// Keyed by vacancy, because a shortlist belongs to one: an employer filling
+  /// two roles keeps two, and a provider that held "the shortlist" would show the
+  /// wrong one after any navigation between them.
+  VacancyShortlistProvider._({
+    required VacancyShortlistFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'vacancyShortlistProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$vacancyShortlistHash();
+
+  @override
+  String toString() {
+    return r'vacancyShortlistProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<CandidateCard>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<CandidateCard>> create(Ref ref) {
+    final argument = this.argument as String;
+    return vacancyShortlist(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VacancyShortlistProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$vacancyShortlistHash() => r'fdab523644536531ab1d23667b5d41abd00db916';
+
+/// One vacancy's shortlist (§7.3).
+///
+/// Keyed by vacancy, because a shortlist belongs to one: an employer filling
+/// two roles keeps two, and a provider that held "the shortlist" would show the
+/// wrong one after any navigation between them.
+
+final class VacancyShortlistFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<CandidateCard>>, String> {
+  VacancyShortlistFamily._()
+    : super(
+        retry: null,
+        name: r'vacancyShortlistProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One vacancy's shortlist (§7.3).
+  ///
+  /// Keyed by vacancy, because a shortlist belongs to one: an employer filling
+  /// two roles keeps two, and a provider that held "the shortlist" would show the
+  /// wrong one after any navigation between them.
+
+  VacancyShortlistProvider call(String vacancyId) =>
+      VacancyShortlistProvider._(argument: vacancyId, from: this);
+
+  @override
+  String toString() => r'vacancyShortlistProvider';
+}
+
 /// One candidate, as BR-09 permits this employer to see them (§7.3).
 ///
 /// Deliberately **not** `keepAlive`. Reading a candidate is a logged access to

@@ -723,7 +723,7 @@ class AppL10nUz extends AppL10n {
   }
 
   @override
-  String get searchShortlist => 'Short-listga';
+  String get searchShortlist => 'Short-listga qo\'shish';
 
   @override
   String get searchShortlisted => 'Short-listda';
@@ -1737,6 +1737,12 @@ class AppL10nUz extends AppL10n {
   @override
   String get applicantsNoneAtStage =>
       'Bu bosqichda hech kim yo\'q. Hamma arizachini ko\'rish uchun filtrni tozalang.';
+
+  @override
+  String get shortlistTitle => 'Short-list';
+
+  @override
+  String get shortlistEmpty => 'Short-listda hozircha hech kim yo\'q';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -2456,7 +2462,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   }
 
   @override
-  String get searchShortlist => 'Шорт-листга';
+  String get searchShortlist => 'Шорт-листга қўшиш';
 
   @override
   String get searchShortlisted => 'Шорт-листда';
@@ -3469,6 +3475,12 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get applicantsNoneAtStage =>
       'Бу босқичда ҳеч ким йўқ. Ҳамма аризачини кўриш учун филтрни тозаланг.';
+
+  @override
+  String get shortlistTitle => 'Шорт-лист';
+
+  @override
+  String get shortlistEmpty => 'Шорт-листда ҳозирча ҳеч ким йўқ';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -4190,7 +4202,7 @@ class AppL10nUzLatn extends AppL10nUz {
   }
 
   @override
-  String get searchShortlist => 'Short-listga';
+  String get searchShortlist => 'Short-listga qo\'shish';
 
   @override
   String get searchShortlisted => 'Short-listda';
@@ -5204,4 +5216,10 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get applicantsNoneAtStage =>
       'Bu bosqichda hech kim yo\'q. Hamma arizachini ko\'rish uchun filtrni tozalang.';
+
+  @override
+  String get shortlistTitle => 'Short-list';
+
+  @override
+  String get shortlistEmpty => 'Short-listda hozircha hech kim yo\'q';
 }
