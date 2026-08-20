@@ -5,8 +5,7 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
-import 'package:jobbridge_app/src/features/candidate_search/data/candidate_search_repository.dart';
-import 'package:jobbridge_app/src/features/candidate_search/data/search_config_controller.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/find_candidates_action.dart';
 import 'package:jobbridge_app/src/features/profile/presentation/schema_field_widget.dart';
 import 'package:jobbridge_app/src/features/vacancy/data/vacancy_controller.dart';
 import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_status.dart';
@@ -240,7 +239,19 @@ class _Actions extends ConsumerWidget {
               HhButton.secondary(
                 label: l10n.searchFromVacancy,
                 iconPath: HhIconPath.search,
-                onPressed: () => _findCandidates(context, ref),
+                onPressed: () => findCandidatesForVacancy(context, ref, id),
+              ),
+              // §7.3, beside the search that fills it. Hidden on a draft for
+              // the same reason as the search: a draft's shortlist can only be
+              // empty, because the one way onto it is from a search that a
+              // draft cannot open.
+              const SizedBox(height: HhSpace.sm),
+              HhButton.secondary(
+                label: l10n.shortlistTitle,
+                iconPath: HhIconPath.bookmark,
+                onPressed: () => context.go(
+                  '${Routes.employerVacancies}/$id/shortlist',
+                ),
               ),
             ],
 
@@ -266,31 +277,6 @@ class _Actions extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  /// UAT-06: opens candidate search with this vacancy's requirements applied.
-  ///
-  /// The prefill is fetched *before* navigating, so the search tab is never
-  /// entered showing the previous search's filters and then reshuffled a
-  /// moment later. A failed prefill leaves the employer where they are with a
-  /// reason, rather than on a search screen that quietly ignored the vacancy.
-  Future<void> _findCandidates(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final router = GoRouter.of(context);
-
-    try {
-      final filters = await ref
-          .read(candidateSearchRepositoryProvider)
-          .prefill(id);
-
-      await ref
-          .read(searchConfigControllerProvider.notifier)
-          .prefillFrom(id, filters);
-
-      router.go(Routes.employerCandidates);
-    } on ApiException catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(e.message)));
-    }
   }
 
   Future<void> _save(BuildContext context, WidgetRef ref) async {

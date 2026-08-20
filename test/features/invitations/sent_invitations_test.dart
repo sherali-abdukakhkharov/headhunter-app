@@ -123,6 +123,13 @@ class _CountingCandidates implements CandidateSearchRepository {
     String candidateUserId, {
     required bool shortlisted,
   }) async {}
+
+  @override
+  Future<List<CandidateCard>> shortlist(
+    String vacancyId, {
+    int limit = 20,
+    int offset = 0,
+  }) async => const [];
 }
 
 Invitation _entry({

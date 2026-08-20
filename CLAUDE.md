@@ -40,6 +40,7 @@ Open both at once in one editor window with
 | [TODO.md](TODO.md) | Working checklist and what is blocked on whom. |
 | [MEMORY.md](MEMORY.md) | Why decisions were made; traps already paid for. |
 | [README.md](README.md) | Prerequisites, commands, run instructions. |
+| [CHANGELOG.md](CHANGELOG.md) | What each release shipped, and **how a release is cut** — the version in `pubspec.yaml` is what a device reports, so a tag alone is not a release. |
 
 Before implementing anything from the spec, check ARCHITECTURE.md - several
 requirements have already been designed against, and the reasoning is not
@@ -52,13 +53,18 @@ import the `design.dart` barrel and build screens from the `Hh*` components. Do
 not hand-roll a `Container` where a component exists, and do not introduce a
 colour, radius or elevation that is not a token.
 
-Three rules the components encode:
+Four rules the components encode:
 
 - **One control size for everyone** — every control is 52px with a persistent
   label. There is no dense/simple mode; only the *fields* differ by work category.
 - **Status is never colour alone** — always `HhBadge` (icon + word), for vacancy,
   application, verification, invitation and complaint state alike.
 - **One elevation level.** `HhElevation.card` or `HhElevation.sheet`, nothing else.
+- **The brand mark takes a ground, not colours.** `HhBrandMark(ground: …)` — navy
+  is two-tone with the *right* figure turquoise, light and turquoise are mono navy.
+  "Turquoise on white" and "both figures turquoise" are documented misuses, and
+  selecting by ground makes them unwritable. It also drops to a single figure
+  below 20pt on its own, which **changes its aspect** from 23 : 19.8 to 10.7 : 19.8.
 
 `/_design` renders the whole catalogue; reach it from the debug-only action in the
 health screen's app bar. **After changing anything in the design system, run the
@@ -210,7 +216,7 @@ node tool/spec_from_docx.js <source.docx> ..\headhunter-backend\docs\SPEC.md
 
 ```
 lib/
-  main.dart                     ProviderScope + HeadhunterApp
+  main.dart                     ProviderScope + JobBridgeApp
   src/
     app.dart                    MaterialApp.router wiring
     core/
@@ -237,6 +243,20 @@ lib/
 
 Feature-first: a feature owns its data, domain and presentation. Only put
 things in `core/` or `shared/` when a second feature actually needs them.
+
+## There is one piece of native code, and it is not a plugin
+
+`android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries a
+`MethodChannel` that hands a downloaded file to the OS through a `FileProvider`.
+Every pub package that does this applies the Kotlin Gradle Plugin — the warning
+this project emptied by removing `telegram_login`, and one future Flutter versions
+refuse — and the app module's *own* Kotlin does not appear on that list.
+
+So **before adding a dependency that exists to reach the platform, check whether
+the channel can carry it**, and check what is already resolved: `path_provider` was
+already transitive and `androidx.core` was already on the compile classpath, so
+`build.gradle.kts` was never touched. ARCHITECTURE.md §9 has the details, including
+what the provider may share and why every download re-requests.
 
 ## Gotcha: Riverpod 3 retries failing providers by default
 

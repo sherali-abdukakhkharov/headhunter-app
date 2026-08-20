@@ -279,10 +279,69 @@ certificates, with **progress, success, failure and retry** states.
 
 - Upload via `dio` with an `onSendProgress` callback surfaced into state; support
   cancellation via `CancelToken` where the platform allows (§12.4).
-- Download through **short-lived signed URLs** obtained from the API. The client
-  must never cache or share a URL as if it were permanent (§11.1).
 - Validate type and size client-side for fast feedback, but treat the server as
   authoritative (§12.5).
+
+### Download is a path on this API, not a signed URL
+
+This section used to say "short-lived signed URLs". **It is not what shipped**,
+and the difference matters: every file DTO carries a `downloadPath` — a path on
+this API — and there is no storage URL anywhere in the contract (§11.1).
+
+**Follow it verbatim. Never construct it.** The path is scoped to whatever
+entitles the caller to the file, so the same CV is
+`/applications/…/files/…/content` for an employer holding an application,
+`/invitations/…` for one whose invitation was accepted, and `/unlocks/…` for one
+who paid. Three routes for one file: a client that built the path would be right
+a third of the time.
+
+And **every open re-downloads**. BR-09 is re-evaluated per download, which is the
+whole reason the path is server-built: holding a path is not holding permission,
+so a candidate who withdraws stops being readable mid-session. A cached copy that
+answered the next tap would defeat the only check that notices.
+
+### The app's own Kotlin is the platform layer, and there is no plugin
+
+Handing a downloaded file to the OS needs `FileProvider` and an intent, and every
+pub package that wraps them is written in Kotlin and therefore **applies the
+Kotlin Gradle Plugin** — the build warning this project deliberately emptied on
+2026-08-19 by removing `telegram_login`, and one that future Flutter versions
+will refuse outright.
+
+The app module's Kotlin is **not** a plugin and does not appear on that list:
+`android/app/build.gradle.kts` has no `kotlin("android")` id and still carries a
+working `kotlin { compilerOptions { } }` block, because Flutter's built-in support
+provides it. So the whole feature is thirty lines in `MainActivity.kt` behind a
+`MethodChannel`, and `AttachmentOpener` is the Dart side.
+
+**Before accepting any dependency that exists to reach the platform, check
+whether the app's own Kotlin can do it, and check what is already resolved.**
+`path_provider` turned out to be transitive already, and `androidx.core` was
+already on the compile classpath at 1.15.0 through the Flutter embedding — so
+`build.gradle.kts` was never touched. Both answers were in the repo and neither
+needed a build.
+
+Three things the same channel could carry and does not yet: `ACTION_DIAL` for the
+phone number (the contact block offers **copy** only because `url_launcher` looked
+expensive, which it no longer is), `mailto:`, and `ACTION_SEND` to share a
+vacancy. The last needs a deep-link scheme first — sharing today would send a
+title with no way back into the app.
+
+The cost to be honest about: **native code written on this machine cannot be
+compiled on it.** Gradle will not start (see §11), so `MainActivity.kt` ships
+unverified until somebody builds. The mitigation is
+`test/core/files/attachment_opener_test.dart`, which asserts the *contract across
+the boundary* — channel name, provider authority, the read-only flag, the cache
+scope — because those four fail silently at a tap rather than loudly at a build.
+
+### What the provider may share
+
+`res/xml/file_paths.xml` exposes **one cache subdirectory and nothing else**, and
+the Kotlin re-checks containment with `canonicalPath` on top of that. The
+directory next door holds the `flutter_secure_storage` token pair, so a channel
+that could be talked into naming an arbitrary path would be the one way this app
+hands out a file nobody was entitled to. Never `<external-path>`: a candidate's CV
+on shared storage is readable by other apps and survives an uninstall.
 
 ---
 

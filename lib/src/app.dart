@@ -9,8 +9,8 @@ import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
 
 /// Root widget: wires the router and theme together.
-class HeadhunterApp extends ConsumerWidget {
-  const HeadhunterApp({super.key});
+class JobBridgeApp extends ConsumerWidget {
+  const JobBridgeApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

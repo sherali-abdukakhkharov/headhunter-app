@@ -987,6 +987,28 @@ The cost to know about: the automatic switch **changes the widget's aspect**, fr
 23 : 19.8 to 10.7 : 19.8, because the solo crop is taller than wide. A rule that
 enforces itself still has to say what it did.
 
+### 2026-08-20 - A score computed from nothing is still a number on screen
+The saved-candidates list and the new vacancy shortlist both come back from the
+same server helper, which runs the card query with **no filters and no scoring
+groups** — and `scoreExpression([])` returns a literal 100, because with nothing
+asked there is nothing to have failed. So every card in both lists carries
+`matchScore: 100`, and the shipped saved list had been badging every person on it
+as a 100% match since M7.
+
+Nobody computed that. The fix is not a different number — 0 would be as wrong,
+and picking one in Dart would be the client inventing a figure the server owns —
+it is **not rendering the badge where no filter produced it**:
+`CandidateResultCard(showMatch: false)` in both lists, true on the search screen.
+
+The general shape, worth more than the instance: **a field that is technically
+present in a response is not automatically an answer to a question somebody
+asked.** Two lists using one endpoint means one of them may be reading a column
+that only means something for the other. When a value's meaning depends on the
+*request*, the widget that paints it needs to know which request it came from —
+which is also why the same card takes `vacancyId` rather than reading
+`isShortlisted` on its own: outside a vacancy that flag is false for everybody,
+including people who are shortlisted somewhere.
+
 ### 2026-08-20 - A logged endpoint must never be fanned out per row
 The employer's sent list has `candidateUserId` on every row and no name, and the
 one route that would resolve a name is

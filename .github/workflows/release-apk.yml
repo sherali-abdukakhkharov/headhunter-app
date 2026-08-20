@@ -2,8 +2,16 @@
 # latest build is always one click away.
 #
 # The download link never changes:
-#   https://github.com/<owner>/<repo>/releases/latest/download/headhunter.apk
+#   https://github.com/<owner>/<repo>/releases/latest/download/jobbridge.apk
 # GitHub resolves `latest` server-side, so README needs no edit per release.
+#
+# `headhunter.apk` is uploaded beside it as a byte-identical alias, because that
+# was the asset name until 1.1.0 and `latest/download/headhunter.apk` is already
+# in circulation - in this repo's own README, in docs/RELEASE.md and in whatever
+# chat it was pasted into. Renaming the asset alone would turn every one of
+# those links into a 404 against the *newest* release, which reads as the build
+# being broken rather than as the file having moved. The alias is temporary and
+# TODO.md carries the removal.
 #
 # Trigger: push a version tag.
 #   git tag v1.0.1 && git push origin v1.0.1
@@ -54,9 +62,12 @@ jobs:
       - run: flutter pub get
 
       # Fail before the build rather than after it. A missing secret otherwise
-      # produces a *debug-signed* release APK that installs happily and then
-      # cannot complete a Telegram login, which is a confusing way to lose an
-      # afternoon.
+      # produces a *debug-signed* release APK, and Gradle's fallback makes that
+      # a warning rather than an error - so the run goes green and publishes a
+      # file signed with the wrong key. It installs fine on a clean phone, which
+      # is what makes it expensive: Android refuses to install an update whose
+      # signature differs, so every tester who took the debug-signed build has
+      # to uninstall before the next real one will land.
       - name: Check signing secrets are present
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -103,7 +114,7 @@ jobs:
           if [ -n "$url" ]; then
             echo "API base URL: $url"
           else
-            echo "::warning::No API_BASE_URL set; using the production flavor default (https://api.headhunter.uz), which may not exist yet."
+            echo "::warning::No API_BASE_URL set; using AppFlavor.production's default (https://hh.qitmir.uz)."
           fi
 
       - name: Build the production APK
@@ -117,35 +128,45 @@ jobs:
 
       # A stable name, deliberately. `latest/download/<name>` only works if the
       # asset name is identical in every release, so the version lives in the
-      # release title and tag - not in the filename.
+      # release title and tag - not in the filename. Which is also why the old
+      # name is copied rather than dropped: see the note at the top of this file.
       - name: Stage the artifact
         id: artifact
         run: |
           mkdir -p dist
           cp build/app/outputs/flutter-apk/app-production-release.apk \
-             dist/headhunter.apk
-          echo "size=$(du -h dist/headhunter.apk | cut -f1)" >> "$GITHUB_OUTPUT"
-          echo "sha256=$(sha256sum dist/headhunter.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+             dist/jobbridge.apk
+          cp dist/jobbridge.apk dist/headhunter.apk
+          echo "size=$(du -h dist/jobbridge.apk | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum dist/jobbridge.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
       # Also kept as a build artifact, so a workflow_dispatch run that creates no
-      # release still leaves something downloadable.
+      # release still leaves something downloadable. Only the real name here -
+      # the alias exists for URLs already in circulation, and a CI artifact has
+      # none.
       - uses: actions/upload-artifact@v4
         with:
-          name: headhunter-apk
-          path: dist/headhunter.apk
+          name: jobbridge-apk
+          path: dist/jobbridge.apk
           retention-days: 30
 
       - name: Publish the release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/headhunter.apk
+          files: |
+            dist/jobbridge.apk
+            dist/headhunter.apk
           generate_release_notes: true
           body: |
             ### Download
 
-            **[headhunter.apk](https://github.com/${{ github.repository }}/releases/latest/download/headhunter.apk)** — ${{ steps.artifact.outputs.size }}
+            **[jobbridge.apk](https://github.com/${{ github.repository }}/releases/latest/download/jobbridge.apk)** — ${{ steps.artifact.outputs.size }}
 
             Android only. Enable "install from unknown sources" if your phone asks.
 
             `SHA-256: ${{ steps.artifact.outputs.sha256 }}`
+
+            <sub>`headhunter.apk` is the same file under the pre-1.1.0 name, kept
+            so links shared earlier keep working. It will be dropped once those
+            are updated — use `jobbridge.apk`.</sub>

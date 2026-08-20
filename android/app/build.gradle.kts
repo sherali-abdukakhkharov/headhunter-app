@@ -15,10 +15,10 @@ plugins {
 //
 // When it is absent (a fresh clone, or anyone building debug) the release build
 // falls back to debug signing so `flutter run --release` still works. That
-// fallback is deliberately loud in the build log, because a release APK signed
-// with a debug key has a different SHA-256 - and Telegram login only works for a
-// fingerprint registered with BotFather, so a silently debug-signed release APK
-// would install fine and then fail to log anyone in.
+// fallback is deliberately loud in the build log, because the APK it produces is
+// indistinguishable from a real one until the *next* release: Android refuses an
+// update whose signing certificate changed, so every phone that took the
+// debug-signed build has to uninstall before a properly signed one will install.
 val keystoreProperties = Properties().apply {
     val file = rootProject.file("key.properties")
     if (file.exists()) file.inputStream().use { load(it) }
@@ -63,9 +63,10 @@ android {
             } else {
                 logger.warn(
                     "WARNING: no android/key.properties - signing this RELEASE " +
-                    "build with the DEBUG key. It will install, but Telegram " +
-                    "login will fail: the fingerprint is not the one registered " +
-                    "with BotFather. See docs/RELEASE.md."
+                    "build with the DEBUG key. It will install, but no properly " +
+                    "signed build can ever update it: Android refuses an update " +
+                    "whose signature changed. Do not hand this to a tester. " +
+                    "See docs/RELEASE.md."
                 )
                 signingConfigs.getByName("debug")
             }

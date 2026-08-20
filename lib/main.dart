@@ -16,7 +16,7 @@ void main() {
       // button). Return a Duration here instead if a screen ever genuinely
       // wants automatic backoff.
       retry: (retryCount, error) => null,
-      child: const HeadhunterApp(),
+      child: const JobBridgeApp(),
     ),
   );
 }

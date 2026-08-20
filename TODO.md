@@ -578,9 +578,11 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       creates a second application (§12.4)
 - [x] Application list with all §8.1 stages; withdraw offered only while the
       application is live
-- [ ] Vacancy **detail** screen — the feed card is built, the full
-      `GET /discovery/vacancies/:id` view with requirements, Share and Report
-      is not
+- [x] ~~Vacancy **detail** screen~~ — **built 2026-08-20**; see the entry
+      further down this list, which records what it renders. Left checked-off
+      here rather than deleted because two open boxes in this section had
+      already been answered lower down, and a list that contradicts itself gets
+      read as the pessimistic half being current
 - [x] **Vacancy filters (§5.5), 2026-08-20.** The repository had taken filters
       since M6 and nothing ever sent any. Six of §5.5's nine now work —
       occupation, region/district, employment type, work format, shift and
@@ -620,7 +622,10 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       Worth pairing with the employer side, which already filters candidates on
       experience and language (§7.1) — so the shapes exist, on the other
       resource
-- [ ] Deadline-expired / closed vacancy rendering (UAT-15)
+- [x] ~~Deadline-expired / closed vacancy rendering (UAT-15)~~ — **built
+      2026-08-20**, and the entry below says why it distinguishes only "gone"
+      from "broken": the server answers `vacancy.not_found` for unknown, closed,
+      expired and moderated-away alike, deliberately
 - [x] Employer: applications per vacancy, stage moves and §6.5's
       hired-vs-required counts. **Stage moves are forward only, skipping
       allowed** (§8.1) — real hiring skips, and backwards is refused by the
@@ -898,8 +903,41 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
          `isShortlisted` and nothing about invitations, so a search result cannot
          show "already invited" and the employer learns it from a 409. Handled
          honestly meanwhile — that refusal reads as a fact, not a failure
-- [ ] Vacancy shortlist screen — the repository covers it; it needs a vacancy
-      to hang off, which is `GET /vacancies/:id/shortlist`
+- [x] **Vacancy shortlist screen (§7.3), 2026-08-20** — the last M7 item, and
+      the note above was wrong about the state of it: the repository had the
+      `PUT` and the `DELETE` and **no `GET`**, so `isShortlisted` was parsed on
+      every card and rendered nowhere, and `setShortlisted` was called from
+      nowhere at all. The whole feature was dead code with a screen missing at
+      each end.
+      **A shortlist is per-vacancy, so the vacancy is part of the list's
+      identity rather than a filter over one.** The screen hangs off the vacancy
+      (`/employer/vacancies/:id/shortlist`, beside `applicants`), and the
+      provider is keyed by vacancy — an employer filling two roles keeps two,
+      and the same candidate can be on both, one or neither.
+      **The card's shortlist action exists only where a vacancy does.** Absent,
+      not disabled: `isShortlisted` is false for everybody in a list fetched
+      without a vacancy — *including* people who are shortlisted somewhere — so
+      a control there could only lie. That is what makes the search screen pass
+      the vacancy the **results** were fetched under rather than the one
+      currently configured.
+      Three things found while building it:
+      1. **The match badge was claiming a number nobody computed.** With no
+         filters the server has nothing to have matched and scores every card
+         **100** — so the shipped saved-candidates list has been telling
+         employers that every person on it is a 100% match. `showMatch: false`
+         in both lists; the search screen keeps it.
+      2. **Both toggles reverted their own labels.** The card renders a value
+         from a list its parent loaded, and a successful write left that value
+         alone — so "Save" stayed "Save" and read as a failure. A local override
+         per card, rather than re-fetching a list and reordering the rows under
+         the finger that tapped.
+      3. **A prefill could leave stale results on screen.** UAT-06 writes the
+         configuration from the vacancy editor and navigates, which does not go
+         through the path that clears results, and this screen keeps its state
+         across tab switches — so the previous search's cards could sit under
+         somebody else's requirements, the one state the screen's own doc says
+         must never happen. Results are painted only while they answer the
+         configuration on screen, the vacancy included
 - [x] **The brand mark, its lockups and the Android launcher icon, 2026-08-20.**
       §01 of the design document, delivered by the designer and implemented as
       `HhBrandMark` / `HhBrandWordmark` / `HhBrandLockup` /
@@ -1329,10 +1367,27 @@ this opens. Deep links moved to M8.
       back to debug signing with a loud warning when absent, so a fresh clone
       still builds. Verified: the release APK is signed with SHA-256 `7C:1C:…`,
       not the debug key. See [docs/RELEASE.md](docs/RELEASE.md)
-- [?] **Register the release SHA-256 with BotFather** and fill
-      `AppFlavor.production.telegramRedirectUri` — until then Telegram login is
-      unavailable in a downloaded APK, by design. RELEASE.md §4
-- [ ] App icons and launch screen
+- [-] ~~**Register the release SHA-256 with BotFather** and fill
+      `AppFlavor.production.telegramRedirectUri`~~ — **dead 2026-08-20.** The
+      field it names was deleted with the rest of the Telegram client code on
+      2026-08-19, so this was an instruction to edit something that no longer
+      exists. Phone + OTP binds to no signing certificate; a release key needs
+      registering nowhere. RELEASE.md §4 now says what a downloaded build
+      actually needs — an SMS provider — and the fingerprint mechanics moved to
+      docs/TELEGRAM_LOGIN.md, where they belong if the feature is ever revived
+- [x] ~~App icons and launch screen~~ — **shipped 2026-08-20** with §01 of the
+      design document: a vector adaptive launcher icon, the legacy round/square
+      mipmaps, and a navy platform launch window. The one part still unverified
+      is API 24/25, which is tracked in M7 above
+- [ ] **Drop the `headhunter.apk` release alias.** The asset was renamed to
+      `jobbridge.apk` on 2026-08-20 and the old name is uploaded beside it,
+      byte-identical, because `latest/download/headhunter.apk` was already in
+      the README, in RELEASE.md and in whatever chat it had been pasted into —
+      renaming alone would have turned every one of those into a 404 against
+      the *newest* release, which reads as a broken build rather than a moved
+      file. Both names ship until the links that matter are updated; then delete
+      the `cp` and the second `files:` entry in `release-apk.yml`. **Not before
+      one release has carried both**, or the alias buys nothing
 - [ ] Walk **all 24** UAT scenarios and keep the evidence — the 2026-08-10
       revision added UAT-16 – UAT-24. UAT-20 – UAT-23 need the providers' test
       environments, so book those *before* the acceptance window, not inside it

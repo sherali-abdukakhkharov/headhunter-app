@@ -212,23 +212,7 @@ class AuthRepository {
     }
   }
 
-  /// `POST /auth/telegram` — trades a Telegram OIDC ID token for a session.
-  ///
-  /// **Deprecated 2026-08-05**: the app signs in with phone + OTP (§4.1,
-  /// UAT-01). Nothing calls this. It is kept, with its tests and the endpoint
-  /// behind it, because the flow is correct and re-enabling it is cheaper than
-  /// rebuilding it — see docs/TELEGRAM_LOGIN.md.
-  ///
-  /// The token is a bearer credential with a very short life: the backend
-  /// accepts it for five minutes from its `iat`, not until `exp`, so it must be
-  /// posted immediately and **never cached**.
-  ///
-  /// The account's locale comes from the `x-lang` header the interceptor stack
-  /// already sets, so there is nothing to pass for language.
-  ///
-  /// Throws [ApiException]. A 4xx here is meaningful rather than generic: the
-  /// backend refuses a login that carries no Telegram-verified phone number
-   /// Device fields the backend records against the session, so the sessions
+  /// Device fields the backend records against the session, so the sessions
   /// screen (§4.2) can name devices.
   ///
   /// `platform` is validated server-side against `['android', 'ios']`, so it is

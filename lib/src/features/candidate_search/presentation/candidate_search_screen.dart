@@ -217,7 +217,18 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
     }
 
     final results = _results;
-    if (results == null) return const SizedBox.shrink();
+    final shown = _shown;
+
+    // The class doc promises a result list never sits under filters it does not
+    // answer, and clearing on edit is not enough on its own: a prefill arrives
+    // from the vacancy editor (UAT-06), which writes the configuration and
+    // navigates here without going through `_apply`. This screen keeps its
+    // state across tab switches, so the previous search's cards would otherwise
+    // still be on screen under somebody else's requirements.
+    if (results == null || shown == null || !_answers(shown, config)) {
+      return const SizedBox.shrink();
+    }
+
     if (results.isEmpty) {
       return HhEmptyState(
         title: l10n.stateEmptyTitle,
@@ -240,10 +251,26 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
           );
         }
 
-        return CandidateResultCard(card: results[index]);
+        return CandidateResultCard(
+          card: results[index],
+          // The vacancy the *results* were fetched under, not the one currently
+          // configured. They are the same here — a difference is what
+          // `_answers` refuses to paint — and taking it from `shown` is what
+          // keeps `isShortlisted` on each card and the vacancy the toggle
+          // writes to the same vacancy.
+          vacancyId: shown.vacancyId,
+        );
       },
     );
   }
+
+  /// Whether [shown]'s results are an answer to [current].
+  ///
+  /// The vacancy matters as well as the filters: it decides `isShortlisted` on
+  /// every card, so results fetched for one vacancy would mislabel the
+  /// shortlist of another.
+  static bool _answers(SearchConfig shown, SearchConfig current) =>
+      _sameFilters(shown, current) && shown.vacancyId == current.vacancyId;
 
   Future<void> _editFilters(SearchConfig config) async {
     final edited = await showFilterBuilder(context, initial: config);
@@ -332,10 +359,36 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
 /// opens for one. The model this renders has no phone field at all, which is
 /// what makes the guarantee structural instead of a habit — and a test asserts
 /// the rendered card contains no digits from a candidate's number.
+///
+/// ## Two of the actions depend on where the card is
+///
+/// **Shortlisting needs a vacancy**, so [vacancyId] decides whether the action
+/// exists at all rather than whether it is enabled. A shortlist is per-vacancy
+/// (§7.3) and `isShortlisted` is only meaningful when the request that produced
+/// the card named one — in the saved list it is false for everybody, including
+/// people who *are* shortlisted somewhere.
+///
+/// **The match score is only a number where a filter set produced it.** With no
+/// filters the server has nothing to have matched and scores every card 100, so
+/// the saved list and a shortlist would each claim a perfect match for everyone
+/// on them. That reads as a computed result and is not one, which is why
+/// [showMatch] is false in both.
 class CandidateResultCard extends ConsumerStatefulWidget {
-  const CandidateResultCard({required this.card, super.key});
+  const CandidateResultCard({
+    required this.card,
+    this.vacancyId,
+    this.showMatch = true,
+    super.key,
+  });
 
   final CandidateCard card;
+
+  /// The vacancy this card is being looked at for, if any. Enables §7.3's
+  /// shortlist toggle.
+  final String? vacancyId;
+
+  /// Whether [CandidateCard.matchScore] answers a question somebody asked.
+  final bool showMatch;
 
   @override
   ConsumerState<CandidateResultCard> createState() =>
@@ -344,6 +397,19 @@ class CandidateResultCard extends ConsumerStatefulWidget {
 
 class _CandidateResultCardState extends ConsumerState<CandidateResultCard> {
   bool _busy = false;
+
+  /// Local overrides for the two flags this card can change.
+  ///
+  /// The card is handed a value from a list its parent loaded, and the toggles
+  /// below write to the server rather than to that list — so without these the
+  /// button says "Save" again the moment the request succeeds, which reads as
+  /// the save having failed. Re-fetching the whole list to move one label would
+  /// also reorder the rows under the finger that tapped.
+  bool? _saved;
+  bool? _shortlisted;
+
+  bool get _isSaved => _saved ?? widget.card.isSaved;
+  bool get _isShortlisted => _shortlisted ?? widget.card.isShortlisted;
 
   @override
   Widget build(BuildContext context) {
@@ -387,15 +453,21 @@ class _CandidateResultCardState extends ConsumerState<CandidateResultCard> {
               style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
             ),
 
-            const SizedBox(height: HhSpace.sm),
-            HhBadge(
-              label: l10n.searchMatch(card.matchScore),
-              tone: card.matchScore >= 70 ? HhTone.success : HhTone.neutral,
-              iconPath: HhIconPath.checkCircle,
-            ),
+            if (widget.showMatch) ...[
+              const SizedBox(height: HhSpace.sm),
+              HhBadge(
+                label: l10n.searchMatch(card.matchScore),
+                tone: card.matchScore >= 70 ? HhTone.success : HhTone.neutral,
+                iconPath: HhIconPath.checkCircle,
+              ),
+            ],
 
             const SizedBox(height: HhSpace.sm),
-            Row(
+            // A Wrap rather than a Row: three text actions fit at 360pt, and at
+            // 2.0x text scale they do not. Wrapping to a second line is the one
+            // failure mode here that still leaves every action reachable.
+            Wrap(
+              spacing: HhSpace.md,
               children: [
                 // §7.3's "View profile" — and the *only* place on this screen
                 // where BR-09 can open at all. The card carries nothing that
@@ -408,11 +480,18 @@ class _CandidateResultCardState extends ConsumerState<CandidateResultCard> {
                     candidateUserId: card.candidateUserId,
                   ),
                 ),
-                const SizedBox(width: HhSpace.md),
                 HhButton.text(
-                  label: card.isSaved ? l10n.vacancySaved : l10n.vacancySave,
+                  label: _isSaved ? l10n.vacancySaved : l10n.vacancySave,
                   onPressed: _busy ? null : _toggleSaved,
                 ),
+                // Only with a vacancy to shortlist *to* — see the class doc.
+                if (widget.vacancyId != null)
+                  HhButton.text(
+                    label: _isShortlisted
+                        ? l10n.searchShortlisted
+                        : l10n.searchShortlist,
+                    onPressed: _busy ? null : _toggleShortlisted,
+                  ),
               ],
             ),
           ],
@@ -423,17 +502,47 @@ class _CandidateResultCardState extends ConsumerState<CandidateResultCard> {
 
   Future<void> _toggleSaved() async {
     final messenger = ScaffoldMessenger.of(context);
+    final next = !_isSaved;
     setState(() => _busy = true);
 
     try {
       await ref
           .read(candidateSearchRepositoryProvider)
-          .setSaved(
-            widget.card.candidateUserId,
-            saved: !widget.card.isSaved,
-          );
+          .setSaved(widget.card.candidateUserId, saved: next);
 
       ref.invalidate(savedCandidatesProvider);
+      if (mounted) setState(() => _saved = next);
+    } on ApiException catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// §7.3's shortlist, which is per-vacancy.
+  ///
+  /// The vacancy's own list is invalidated by name rather than every shortlist:
+  /// un-shortlisting somebody while looking at that vacancy's shortlist has to
+  /// remove the row, and no other vacancy's list changed.
+  Future<void> _toggleShortlisted() async {
+    final vacancyId = widget.vacancyId;
+    if (vacancyId == null) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    final next = !_isShortlisted;
+    setState(() => _busy = true);
+
+    try {
+      await ref
+          .read(candidateSearchRepositoryProvider)
+          .setShortlisted(
+            vacancyId,
+            widget.card.candidateUserId,
+            shortlisted: next,
+          );
+
+      ref.invalidate(vacancyShortlistProvider(vacancyId));
+      if (mounted) setState(() => _shortlisted = next);
     } on ApiException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     } finally {

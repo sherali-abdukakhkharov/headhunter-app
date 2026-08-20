@@ -59,8 +59,13 @@ class SavedCandidatesScreen extends ConsumerWidget {
             AsyncData(:final value) => ListView.builder(
               padding: const EdgeInsets.all(HhSpace.gutter),
               itemCount: value.length,
-              itemBuilder: (context, index) =>
-                  CandidateResultCard(card: value[index]),
+              itemBuilder: (context, index) => CandidateResultCard(
+                card: value[index],
+                // No filters were asked, so there is nothing to have matched
+                // and the server scores every one of these 100. A badge saying
+                // "100% match" for a whole list reads as a computed result.
+                showMatch: false,
+              ),
             ),
             _ => const Center(child: CircularProgressIndicator()),
           },

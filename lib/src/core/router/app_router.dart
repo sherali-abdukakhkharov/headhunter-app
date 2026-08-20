@@ -13,6 +13,7 @@ import 'package:jobbridge_app/src/features/applications/presentation/application
 import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:jobbridge_app/src/features/candidate_search/presentation/candidate_search_screen.dart';
+import 'package:jobbridge_app/src/features/candidate_search/presentation/vacancy_shortlist_screen.dart';
 import 'package:jobbridge_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
@@ -180,6 +181,17 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                       path: 'applicants',
                       name: 'vacancyApplicants',
                       builder: (context, state) => VacancyApplicantsScreen(
+                        vacancyId: state.pathParameters['id']!,
+                      ),
+                    ),
+                    // §7.3. A child of the vacancy rather than of the search
+                    // tab, because the vacancy is what the list belongs to:
+                    // reached cold, the path carries the only thing the screen
+                    // needs, and back goes to the vacancy it was opened from.
+                    GoRoute(
+                      path: 'shortlist',
+                      name: 'vacancyShortlist',
+                      builder: (context, state) => VacancyShortlistScreen(
                         vacancyId: state.pathParameters['id']!,
                       ),
                     ),

@@ -99,7 +99,7 @@ after M11 while being delivered before M8.
 | M4 | Employer profile + verification status | after M1 |
 | M5 | Vacancy create/edit + statuses (employer) | after M2 + M4 |
 | M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
-| M7 | Candidate search + invitations + shortlists (employer) | search done; **invitations complete** — inbox and send 2026-08-19, sent list and §7.4 counts 2026-08-20; shortlist screen remains |
+| M7 | Candidate search + invitations + shortlists (employer) | **done** — search §7.1–§7.3, invitations (inbox and send 2026-08-19, sent list and §7.4 counts 2026-08-20) and the per-vacancy shortlist (2026-08-20). Two carried notes in TODO.md, both backend asks rather than client work: `candidateName` on a sent invitation, and an invitation state on `CandidateCard` |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
 | M8 | Chat + interviews | after M6 + M7 **+ M12** (§9.1 gates employer-initiated chat on the unlock) |
@@ -266,7 +266,10 @@ Added by the 2026-08-10 revision:
 - Result list with sort options and candidate cards per §7.3 - **no phone numbers
   on cards** (§11.1, BR-09).
 - Prefill from a vacancy, still editable (UAT-06).
-- Save candidates, vacancy shortlists, private notes.
+- Save candidates, vacancy shortlists, private notes. **Saving is about a person
+  and shortlisting is about a person for a role** — so a shortlist hangs off its
+  vacancy rather than being a filter over the saved list, and the shortlist
+  action appears only on a card that was fetched for a vacancy.
 - Send invitations and track responses (UAT-07); general invitations (§8.2).
 - Locally retained last search configuration (§7.2).
 
