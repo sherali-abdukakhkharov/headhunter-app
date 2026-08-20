@@ -479,5 +479,17 @@
   "accountDeleteConfirmTitle": "Ҳисобни ўчириш сўралсинми?",
   "accountDeleteConfirmBody": "Ҳисобингизни ўчиришни бошлаймиз. Буни иловадан қайтариб бўлмайди.",
   "accountDeleteRequestedTitle": "Ўчириш сўралди",
-  "accountDeleteRequestedBody": "Сўровингиз қайд этилди. Кейин нима бўлишини қўллаб-қувватлаш хизмати айтади."
+  "accountDeleteRequestedBody": "Сўровингиз қайд этилди. Кейин нима бўлишини қўллаб-қувватлаш хизмати айтади.",
+  "filtersRegion": "Вилоят ёки туман",
+  "filtersEmploymentType": "Бандлик тури",
+  "filtersWorkFormat": "Иш формати",
+  "filtersShift": "Смена",
+  "filtersSalaryFrom": "Маош, дан",
+  "filtersSalaryNegotiableNote": "Маоши келишилган вакансиялар ҳам кўрсатилади.",
+  "filtersPublishedFrom": "Чоп этилган, дан",
+  "filtersUnavailableTitle": "Учта филтр ҳозирча мавжуд эмас",
+  "filtersUnavailableBody": "Тажриба, тил ва маошнинг юқори чегараси бўйича ҳозирча филтрлаш мумкин эмас. Қолгани ишлайди.",
+  "feedFilteredNote": "{count} филтр қўлланган",
+  "feedFilteredEmpty": "Бу филтрларга мос вакансия йўқ. Уларни кенгайтириб кўринг.",
+  "feedSavedUnfiltered": "Сақланган вакансиялар филтрланмайди."
 }

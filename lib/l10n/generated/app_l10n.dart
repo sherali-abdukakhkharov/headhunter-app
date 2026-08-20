@@ -2980,6 +2980,78 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Your request has been recorded. Support can tell you what happens next.'**
   String get accountDeleteRequestedBody;
+
+  /// One place, not a set: the feed query takes a single `regionId`. Both are ids in the **region** dictionary, since districts are its children (section 5.1) rather than a type of their own, so choosing a district sets `regionId` to it.
+  ///
+  /// In en, this message translates to:
+  /// **'Region or district'**
+  String get filtersRegion;
+
+  /// One of section 5.5's nine filters. Multi-select.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment type'**
+  String get filtersEmploymentType;
+
+  /// One of section 5.5's nine filters. Multi-select.
+  ///
+  /// In en, this message translates to:
+  /// **'Work format'**
+  String get filtersWorkFormat;
+
+  /// One of section 5.5's nine filters. Multi-select.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift'**
+  String get filtersShift;
+
+  /// The lower half of section 5.5's pay range. There is no upper half: the feed query has no parameter for it, and a control that does nothing to the list is worse than one that is absent.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from'**
+  String get filtersSalaryFrom;
+
+  /// The server's rule, stated where somebody would otherwise conclude the filter is broken: a negotiable vacancy passes a pay floor because it has not said no to the figure, and excluding it would hide much of the seasonal work.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies with negotiable pay are still shown.'**
+  String get filtersSalaryNegotiableNote;
+
+  /// Section 5.5's publication date. Matched on or after, and sent as `YYYY-MM-DD` — the server compares against the date it published in its own zone, so the client must not turn this into an instant.
+  ///
+  /// In en, this message translates to:
+  /// **'Published from'**
+  String get filtersPublishedFrom;
+
+  /// Says out loud what section 5.5 lists and the API cannot do, rather than leaving somebody hunting for a control that is not there. Removed the day the query parameters exist.
+  ///
+  /// In en, this message translates to:
+  /// **'Three filters are not available yet'**
+  String get filtersUnavailableTitle;
+
+  /// Names the three rather than apologising generically, and says the rest works — otherwise a reader has no way to tell which of the controls above to trust.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.'**
+  String get filtersUnavailableBody;
+
+  /// Shown above a filtered feed. A set of ids counts once however many it holds — three occupations is one narrowing decision, and a badge reading 5 for one row of chips tells nobody anything.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} filters applied'**
+  String feedFilteredNote(int count);
+
+  /// A filtered feed with no results is a different fact from an empty feed: one is fixed by changing the filters, the other by waiting for employers to publish. Telling somebody with four filters set that there are no vacancies would simply be false.
+  ///
+  /// In en, this message translates to:
+  /// **'No vacancies match these filters. Try widening them.'**
+  String get feedFilteredEmpty;
+
+  /// Shown on the saved tab while filters are set. The other two feeds are the server choosing what to show; saved is a list the candidate curated, and a filter making a saved vacancy disappear from it reads as data loss rather than as narrowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved vacancies are never filtered.'**
+  String get feedSavedUnfiltered;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

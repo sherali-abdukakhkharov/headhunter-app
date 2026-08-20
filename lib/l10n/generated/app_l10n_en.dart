@@ -1683,4 +1683,45 @@ class AppL10nEn extends AppL10n {
   @override
   String get accountDeleteRequestedBody =>
       'Your request has been recorded. Support can tell you what happens next.';
+
+  @override
+  String get filtersRegion => 'Region or district';
+
+  @override
+  String get filtersEmploymentType => 'Employment type';
+
+  @override
+  String get filtersWorkFormat => 'Work format';
+
+  @override
+  String get filtersShift => 'Shift';
+
+  @override
+  String get filtersSalaryFrom => 'Pay from';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Vacancies with negotiable pay are still shown.';
+
+  @override
+  String get filtersPublishedFrom => 'Published from';
+
+  @override
+  String get filtersUnavailableTitle => 'Three filters are not available yet';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count filters applied';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'No vacancies match these filters. Try widening them.';
+
+  @override
+  String get feedSavedUnfiltered => 'Saved vacancies are never filtered.';
 }

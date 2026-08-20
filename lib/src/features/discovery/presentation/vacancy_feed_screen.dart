@@ -7,7 +7,9 @@ import 'package:jobbridge_app/src/features/applications/data/application_reposit
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/discovery/data/feed_filter_controller.dart';
 import 'package:jobbridge_app/src/features/discovery/domain/vacancy_card.dart';
+import 'package:jobbridge_app/src/features/discovery/presentation/feed_filter_sheet.dart';
 import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_detail_screen.dart';
 
 /// The candidate's vacancy feeds (§5.6).
@@ -29,6 +31,18 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final items = ref.watch(vacancyFeedProvider(_feed));
+    final filters = ref.watch(feedFilterControllerProvider);
+
+    // How many filters are set, or zero while they are still loading. Saved is
+    // never filtered, so the count is irrelevant there.
+    final applied = switch (filters) {
+      AsyncData(:final value) when _feed != Feed.saved => value.count,
+      _ => 0,
+    };
+    final filtersSet = switch (filters) {
+      AsyncData(:final value) => !value.isEmpty,
+      _ => false,
+    };
 
     return Scaffold(
       body: SafeArea(
@@ -50,6 +64,47 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
               ),
             ),
 
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: HhSpace.gutter,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _feed == Feed.saved && filtersSet
+                        // The saved tab is deliberately unfiltered, and saying
+                        // so is the difference between a rule and a bug: a
+                        // candidate who set four filters and sees unfiltered
+                        // saved cards would otherwise conclude the filters
+                        // stopped working.
+                        ? Text(
+                            l10n.feedSavedUnfiltered,
+                            style: HhTypography.caption.copyWith(
+                              color: HhColors.inkMuted,
+                            ),
+                          )
+                        : applied > 0
+                            ? Text(
+                                l10n.feedFilteredNote(applied),
+                                style: HhTypography.caption.copyWith(
+                                  color: HhColors.inkMuted,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                  ),
+                  const SizedBox(width: HhSpace.sm),
+                  HhButton.secondary(
+                    label: l10n.filtersEdit,
+                    iconPath: HhIconPath.filters,
+                    compact: true,
+                    expand: false,
+                    onPressed: () => showFeedFilters(context),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: HhSpace.md),
+
             Expanded(
               child: switch (items) {
                 // hasError first: retry is disabled app-wide, so a failure is
@@ -68,7 +123,18 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
                 ),
                 AsyncData(:final value) when value.isEmpty => HhEmptyState(
                   title: l10n.stateEmptyTitle,
-                  message: l10n.feedEmpty,
+                  // A filtered feed with nothing in it is a different fact from
+                  // an empty one: one is fixed by widening the filters, the
+                  // other by waiting for employers to publish. Telling somebody
+                  // with four filters set that there are no vacancies would
+                  // simply be false.
+                  message: applied > 0
+                      ? l10n.feedFilteredEmpty
+                      : l10n.feedEmpty,
+                  actionLabel: applied > 0 ? l10n.filtersEdit : null,
+                  onAction: applied > 0
+                      ? () => showFeedFilters(context)
+                      : null,
                 ),
                 AsyncData(:final value) => ListView.builder(
                   padding: const EdgeInsets.symmetric(

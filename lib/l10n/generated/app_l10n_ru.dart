@@ -1697,4 +1697,45 @@ class AppL10nRu extends AppL10n {
   @override
   String get accountDeleteRequestedBody =>
       'Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка.';
+
+  @override
+  String get filtersRegion => 'Область или район';
+
+  @override
+  String get filtersEmploymentType => 'Тип занятости';
+
+  @override
+  String get filtersWorkFormat => 'Формат работы';
+
+  @override
+  String get filtersShift => 'Смена';
+
+  @override
+  String get filtersSalaryFrom => 'Оплата от';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Вакансии с оплатой по договорённости тоже показываются.';
+
+  @override
+  String get filtersPublishedFrom => 'Опубликовано с';
+
+  @override
+  String get filtersUnavailableTitle => 'Три фильтра пока недоступны';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Пока нельзя фильтровать по опыту, языку и верхней границе оплаты. Остальное работает.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return 'Применено фильтров: $count';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Под эти фильтры вакансий нет. Попробуйте расширить их.';
+
+  @override
+  String get feedSavedUnfiltered => 'Сохранённые вакансии не фильтруются.';
 }

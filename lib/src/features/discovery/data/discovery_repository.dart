@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/features/discovery/data/feed_filter_controller.dart';
+import 'package:jobbridge_app/src/features/discovery/domain/feed_filters.dart';
 import 'package:jobbridge_app/src/features/discovery/domain/vacancy_card.dart';
 import 'package:jobbridge_app/src/features/discovery/domain/vacancy_detail.dart';
 import 'package:jobbridge_app/src/features/profile/data/profile_repository.dart';
@@ -111,8 +113,19 @@ DiscoveryRepository discoveryRepository(Ref ref) =>
 
 /// One feed's contents.
 @riverpod
-Future<List<VacancyCard>> vacancyFeed(Ref ref, Feed feed) =>
-    ref.watch(discoveryRepositoryProvider).feed(feed);
+Future<List<VacancyCard>> vacancyFeed(Ref ref, Feed feed) async {
+  // **Saved is deliberately unfiltered.** The other two feeds are the server
+  // choosing what to show; saved is a list the candidate curated, and an
+  // occupation filter making a saved vacancy disappear from it reads as data
+  // loss rather than as a narrowing. §5.5 lists the two as separate things.
+  final filters = feed == Feed.saved
+      ? const FeedFilters()
+      : await ref.watch(feedFilterControllerProvider.future);
+
+  return ref
+      .watch(discoveryRepositoryProvider)
+      .feed(feed, filters: filters.toQuery());
+}
 
 /// One vacancy in full (§5.6).
 @riverpod

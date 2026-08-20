@@ -581,7 +581,45 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [ ] Vacancy **detail** screen — the feed card is built, the full
       `GET /discovery/vacancies/:id` view with requirements, Share and Report
       is not
-- [ ] Vacancy filters per §5.5 — the repository takes them, no filter UI yet
+- [x] **Vacancy filters (§5.5), 2026-08-20.** The repository had taken filters
+      since M6 and nothing ever sent any. Six of §5.5's nine now work —
+      occupation, region/district, employment type, work format, shift and
+      publication date — plus the lower half of the pay range, persisted between
+      sessions the way the employer's search config is.
+      Four decisions worth keeping:
+      **Saved is never filtered.** The other two feeds are the server choosing
+      what to show; saved is a list the candidate curated, and an occupation
+      filter making a saved vacancy vanish from it reads as data loss. The tab
+      says so while filters are set, because otherwise it reads as the filters
+      having stopped working.
+      **A filtered empty feed says something different** from an empty one: one
+      is fixed by widening the filters, the other by waiting for employers to
+      publish, and telling somebody with four filters set that there are no
+      vacancies would simply be false.
+      **The pay note is on screen**: a negotiable vacancy *passes* a pay floor,
+      which is the server's rule and would otherwise read as a broken filter.
+      **The feed watches the filters rather than keying on them**, so all eight
+      existing `invalidate` call sites keep working — none of them would know
+      which filter set to name. That needs [FeedFilters] to have a deep `==`,
+      which is tested.
+      One thing found while building it: `FeedFilters.fromJson` reads **locally
+      stored** data, not a server response, so a field of the wrong type is an
+      older build's format rather than a contract violation. Every field is read
+      defensively; a cast would have lost the whole set over one renamed key
+- [!] **Backend ask: three of §5.5's nine vacancy filters have no query
+      parameter.** `FeedQueryDto` accepts `occupationIds`, `category`,
+      `regionId`, `districtId`, `employmentTypeIds`, `workFormatIds`,
+      `shiftIds`, `salaryFrom` and `publishedFrom` — and nothing for
+      **experience**, **language**, or the pay range's **upper bound**, all three
+      of which §5.5 lists by name.
+      They are deliberately not modelled and not offered: a filter a candidate
+      can set and the server ignores is worse than one that was never there,
+      because the result list looks like an answer. The filter screen says which
+      three are missing rather than leaving somebody hunting for a control, and
+      that notice is deleted the day the parameters exist.
+      Worth pairing with the employer side, which already filters candidates on
+      experience and language (§7.1) — so the shapes exist, on the other
+      resource
 - [ ] Deadline-expired / closed vacancy rendering (UAT-15)
 - [x] Employer: applications per vacancy, stage moves and §6.5's
       hired-vs-required counts. **Stage moves are forward only, skipping

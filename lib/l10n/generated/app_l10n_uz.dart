@@ -1682,6 +1682,47 @@ class AppL10nUz extends AppL10n {
   @override
   String get accountDeleteRequestedBody =>
       'So\'rovingiz qayd etildi. Keyin nima bo\'lishini qo\'llab-quvvatlash xizmati aytadi.';
+
+  @override
+  String get filtersRegion => 'Viloyat yoki tuman';
+
+  @override
+  String get filtersEmploymentType => 'Bandlik turi';
+
+  @override
+  String get filtersWorkFormat => 'Ish formati';
+
+  @override
+  String get filtersShift => 'Smena';
+
+  @override
+  String get filtersSalaryFrom => 'Maosh, dan';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Maoshi kelishilgan vakansiyalar ham ko\'rsatiladi.';
+
+  @override
+  String get filtersPublishedFrom => 'Chop etilgan, dan';
+
+  @override
+  String get filtersUnavailableTitle => 'Uchta filtr hozircha mavjud emas';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Tajriba, til va maoshning yuqori chegarasi bo\'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count filtr qo\'llangan';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Bu filtrlarga mos vakansiya yo\'q. Ularni kengaytirib ko\'ring.';
+
+  @override
+  String get feedSavedUnfiltered => 'Saqlangan vakansiyalar filtrlanmaydi.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3359,6 +3400,47 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get accountDeleteRequestedBody =>
       'Сўровингиз қайд этилди. Кейин нима бўлишини қўллаб-қувватлаш хизмати айтади.';
+
+  @override
+  String get filtersRegion => 'Вилоят ёки туман';
+
+  @override
+  String get filtersEmploymentType => 'Бандлик тури';
+
+  @override
+  String get filtersWorkFormat => 'Иш формати';
+
+  @override
+  String get filtersShift => 'Смена';
+
+  @override
+  String get filtersSalaryFrom => 'Маош, дан';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Маоши келишилган вакансиялар ҳам кўрсатилади.';
+
+  @override
+  String get filtersPublishedFrom => 'Чоп этилган, дан';
+
+  @override
+  String get filtersUnavailableTitle => 'Учта филтр ҳозирча мавжуд эмас';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Тажриба, тил ва маошнинг юқори чегараси бўйича ҳозирча филтрлаш мумкин эмас. Қолгани ишлайди.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count филтр қўлланган';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Бу филтрларга мос вакансия йўқ. Уларни кенгайтириб кўринг.';
+
+  @override
+  String get feedSavedUnfiltered => 'Сақланган вакансиялар филтрланмайди.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5039,4 +5121,45 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get accountDeleteRequestedBody =>
       'So\'rovingiz qayd etildi. Keyin nima bo\'lishini qo\'llab-quvvatlash xizmati aytadi.';
+
+  @override
+  String get filtersRegion => 'Viloyat yoki tuman';
+
+  @override
+  String get filtersEmploymentType => 'Bandlik turi';
+
+  @override
+  String get filtersWorkFormat => 'Ish formati';
+
+  @override
+  String get filtersShift => 'Smena';
+
+  @override
+  String get filtersSalaryFrom => 'Maosh, dan';
+
+  @override
+  String get filtersSalaryNegotiableNote =>
+      'Maoshi kelishilgan vakansiyalar ham ko\'rsatiladi.';
+
+  @override
+  String get filtersPublishedFrom => 'Chop etilgan, dan';
+
+  @override
+  String get filtersUnavailableTitle => 'Uchta filtr hozircha mavjud emas';
+
+  @override
+  String get filtersUnavailableBody =>
+      'Tajriba, til va maoshning yuqori chegarasi bo\'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.';
+
+  @override
+  String feedFilteredNote(int count) {
+    return '$count filtr qo\'llangan';
+  }
+
+  @override
+  String get feedFilteredEmpty =>
+      'Bu filtrlarga mos vakansiya yo\'q. Ularni kengaytirib ko\'ring.';
+
+  @override
+  String get feedSavedUnfiltered => 'Saqlangan vakansiyalar filtrlanmaydi.';
 }

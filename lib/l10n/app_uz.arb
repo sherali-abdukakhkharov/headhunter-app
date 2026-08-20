@@ -479,5 +479,17 @@
   "accountDeleteConfirmTitle": "Hisobni o'chirish so'ralsinmi?",
   "accountDeleteConfirmBody": "Hisobingizni o'chirishni boshlaymiz. Buni ilovadan qaytarib bo'lmaydi.",
   "accountDeleteRequestedTitle": "O'chirish so'raldi",
-  "accountDeleteRequestedBody": "So'rovingiz qayd etildi. Keyin nima bo'lishini qo'llab-quvvatlash xizmati aytadi."
+  "accountDeleteRequestedBody": "So'rovingiz qayd etildi. Keyin nima bo'lishini qo'llab-quvvatlash xizmati aytadi.",
+  "filtersRegion": "Viloyat yoki tuman",
+  "filtersEmploymentType": "Bandlik turi",
+  "filtersWorkFormat": "Ish formati",
+  "filtersShift": "Smena",
+  "filtersSalaryFrom": "Maosh, dan",
+  "filtersSalaryNegotiableNote": "Maoshi kelishilgan vakansiyalar ham ko'rsatiladi.",
+  "filtersPublishedFrom": "Chop etilgan, dan",
+  "filtersUnavailableTitle": "Uchta filtr hozircha mavjud emas",
+  "filtersUnavailableBody": "Tajriba, til va maoshning yuqori chegarasi bo'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.",
+  "feedFilteredNote": "{count} filtr qo'llangan",
+  "feedFilteredEmpty": "Bu filtrlarga mos vakansiya yo'q. Ularni kengaytirib ko'ring.",
+  "feedSavedUnfiltered": "Saqlangan vakansiyalar filtrlanmaydi."
 }

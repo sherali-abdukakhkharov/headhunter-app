@@ -2205,5 +2205,58 @@
   "accountDeleteRequestedBody": "Your request has been recorded. Support can tell you what happens next.",
   "@accountDeleteRequestedBody": {
     "description": "Points at support rather than at a date, because the server returns `purgeAfter: null` and there is no retention period to quote yet."
+  },
+  "filtersRegion": "Region or district",
+  "@filtersRegion": {
+    "description": "One place, not a set: the feed query takes a single `regionId`. Both are ids in the **region** dictionary, since districts are its children (section 5.1) rather than a type of their own, so choosing a district sets `regionId` to it."
+  },
+  "filtersEmploymentType": "Employment type",
+  "@filtersEmploymentType": {
+    "description": "One of section 5.5's nine filters. Multi-select."
+  },
+  "filtersWorkFormat": "Work format",
+  "@filtersWorkFormat": {
+    "description": "One of section 5.5's nine filters. Multi-select."
+  },
+  "filtersShift": "Shift",
+  "@filtersShift": {
+    "description": "One of section 5.5's nine filters. Multi-select."
+  },
+  "filtersSalaryFrom": "Pay from",
+  "@filtersSalaryFrom": {
+    "description": "The lower half of section 5.5's pay range. There is no upper half: the feed query has no parameter for it, and a control that does nothing to the list is worse than one that is absent."
+  },
+  "filtersSalaryNegotiableNote": "Vacancies with negotiable pay are still shown.",
+  "@filtersSalaryNegotiableNote": {
+    "description": "The server's rule, stated where somebody would otherwise conclude the filter is broken: a negotiable vacancy passes a pay floor because it has not said no to the figure, and excluding it would hide much of the seasonal work."
+  },
+  "filtersPublishedFrom": "Published from",
+  "@filtersPublishedFrom": {
+    "description": "Section 5.5's publication date. Matched on or after, and sent as `YYYY-MM-DD` — the server compares against the date it published in its own zone, so the client must not turn this into an instant."
+  },
+  "filtersUnavailableTitle": "Three filters are not available yet",
+  "@filtersUnavailableTitle": {
+    "description": "Says out loud what section 5.5 lists and the API cannot do, rather than leaving somebody hunting for a control that is not there. Removed the day the query parameters exist."
+  },
+  "filtersUnavailableBody": "Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.",
+  "@filtersUnavailableBody": {
+    "description": "Names the three rather than apologising generically, and says the rest works — otherwise a reader has no way to tell which of the controls above to trust."
+  },
+  "feedFilteredNote": "{count} filters applied",
+  "@feedFilteredNote": {
+    "description": "Shown above a filtered feed. A set of ids counts once however many it holds — three occupations is one narrowing decision, and a badge reading 5 for one row of chips tells nobody anything.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "feedFilteredEmpty": "No vacancies match these filters. Try widening them.",
+  "@feedFilteredEmpty": {
+    "description": "A filtered feed with no results is a different fact from an empty feed: one is fixed by changing the filters, the other by waiting for employers to publish. Telling somebody with four filters set that there are no vacancies would simply be false."
+  },
+  "feedSavedUnfiltered": "Saved vacancies are never filtered.",
+  "@feedSavedUnfiltered": {
+    "description": "Shown on the saved tab while filters are set. The other two feeds are the server choosing what to show; saved is a list the candidate curated, and a filter making a saved vacancy disappear from it reads as data loss rather than as narrowing."
   }
 }

@@ -479,5 +479,17 @@
   "accountDeleteConfirmTitle": "Запросить удаление аккаунта?",
   "accountDeleteConfirmBody": "Мы начнём удаление вашего аккаунта. Отменить это из приложения будет нельзя.",
   "accountDeleteRequestedTitle": "Удаление запрошено",
-  "accountDeleteRequestedBody": "Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка."
+  "accountDeleteRequestedBody": "Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка.",
+  "filtersRegion": "Область или район",
+  "filtersEmploymentType": "Тип занятости",
+  "filtersWorkFormat": "Формат работы",
+  "filtersShift": "Смена",
+  "filtersSalaryFrom": "Оплата от",
+  "filtersSalaryNegotiableNote": "Вакансии с оплатой по договорённости тоже показываются.",
+  "filtersPublishedFrom": "Опубликовано с",
+  "filtersUnavailableTitle": "Три фильтра пока недоступны",
+  "filtersUnavailableBody": "Пока нельзя фильтровать по опыту, языку и верхней границе оплаты. Остальное работает.",
+  "feedFilteredNote": "Применено фильтров: {count}",
+  "feedFilteredEmpty": "Под эти фильтры вакансий нет. Попробуйте расширить их.",
+  "feedSavedUnfiltered": "Сохранённые вакансии не фильтруются."
 }
