@@ -3,6 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -83,7 +87,7 @@ class AdminRepository {
   /// machine is the natural key, exactly as `(employer, candidate)` is for a
   /// Candidate Unlock.
   ///
-  /// Throws [VerificationAlreadyDecided] on that 409, because it is the normal
+  /// Throws [AdminDecisionConflict] on that 409, because it is the normal
   /// outcome of two administrators working one queue rather than a fault.
   Future<void> decideVerification(
     String employerUserId,
@@ -96,10 +100,74 @@ class AdminRepository {
         data: {'decision': decision.wire, 'reason': ?reason},
       );
     } on DioException catch (e) {
-      final conflict = _alreadyDecided(e);
-      if (conflict != null) throw conflict;
+      throw _alreadyDecided(e, 'employer.verification_not_pending') ??
+          ApiException.fromDioException(e);
+    }
+  }
 
+  /// `GET /admin/moderation` — vacancies awaiting a decision (§10.2, BR-04).
+  ///
+  /// Oldest first, like the verification queue, and for the same reason.
+  Future<List<ModerationQueueItem>> moderationQueue({int offset = 0}) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/moderation',
+        queryParameters: {'limit': adminPageSize, 'offset': offset},
+      );
+
+      final items = response.data?['items'];
+      if (items is! List) return const [];
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(ModerationQueueItem.fromJson)
+          .toList();
+    } on DioException catch (e) {
       throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /admin/moderation/:vacancyId` — the vacancy, in full, for review.
+  ///
+  /// The one route in this repository whose response is **not** a DTO: see
+  /// [VacancyReview] for what arrives and why the client reads two spellings of
+  /// it. A 404 means the vacancy is gone, which the caller renders as an
+  /// ordinary outcome rather than a fault.
+  Future<VacancyReview> vacancyForReview(String vacancyId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/moderation/$vacancyId',
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return VacancyReview.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /admin/moderation/:vacancyId` — publish it, or send it back (BR-04).
+  ///
+  /// No idempotency key, for the same reason as the verification decision: the
+  /// route is a transition, so a retry that lands after the first succeeded
+  /// answers 409 `vacancy.not_under_moderation` rather than deciding twice.
+  Future<void> moderateVacancy(
+    String vacancyId,
+    ModerationDecision decision, {
+    String? reason,
+  }) async {
+    try {
+      await _dio.post<void>(
+        '/admin/moderation/$vacancyId',
+        data: {'decision': decision.wire, 'reason': ?reason},
+      );
+    } on DioException catch (e) {
+      throw _alreadyDecided(e, 'vacancy.not_under_moderation') ??
+          ApiException.fromDioException(e);
     }
   }
 
@@ -108,16 +176,16 @@ class AdminRepository {
   /// Matched on `code` and not on the status alone. 409 is also what a
   /// concurrent write elsewhere in this API means, and telling an administrator
   /// "somebody decided it already" about a different conflict would send them
-  /// looking for a decision nobody made.
-  VerificationAlreadyDecided? _alreadyDecided(DioException e) {
+  /// looking for a decision nobody made. [code] is passed in rather than
+  /// matched against a set, so a route cannot accidentally accept the other
+  /// route's conflict as its own.
+  AdminDecisionConflict? _alreadyDecided(DioException e, String code) {
     if (e.response?.statusCode != 409) return null;
 
     final data = e.response?.data;
-    if (data is! Map || data['code'] != 'employer.verification_not_pending') {
-      return null;
-    }
+    if (data is! Map || data['code'] != code) return null;
 
-    return VerificationAlreadyDecided(ApiException.fromDioException(e).message);
+    return AdminDecisionConflict(ApiException.fromDioException(e).message);
   }
 }
 
@@ -158,21 +226,24 @@ Future<AdminDashboard> adminDashboard(Ref ref) {
       .dashboard(from: range?.fromWire, to: range?.toWire);
 }
 
-/// One loaded stretch of §10.2's verification queue.
+/// One loaded stretch of an admin queue.
 ///
 /// The same shape as the Coin ledger's page, and for the same reason: an append
 /// that fails leaves the items already on screen perfectly valid, so folding
 /// the failure into `AsyncError` would replace a working queue with an error
 /// page over one missing page.
+///
+/// Generic because §10.2 has two queues with identical paging and identical
+/// removal semantics, and the only thing that differs is what identifies a row.
 @immutable
-class VerificationQueuePage {
-  const VerificationQueuePage({
+class AdminQueuePage<T> {
+  const AdminQueuePage({
     required this.items,
     required this.hasMore,
     this.isLoadingMore = false,
   });
 
-  final List<VerificationQueueItem> items;
+  final List<T> items;
 
   /// Whether the last page came back **full**, which is the only evidence the
   /// client has that another one exists — the endpoint returns no total.
@@ -180,24 +251,34 @@ class VerificationQueuePage {
 
   final bool isLoadingMore;
 
-  VerificationQueuePage copyWith({bool? isLoadingMore}) =>
-      VerificationQueuePage(
-        items: items,
-        hasMore: hasMore,
-        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      );
+  AdminQueuePage<T> copyWith({bool? isLoadingMore}) => AdminQueuePage<T>(
+    items: items,
+    hasMore: hasMore,
+    isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+  );
+
+  /// The page with [items] replaced, keeping [hasMore].
+  ///
+  /// Used to drop a decided row **without re-reading the queue**: the server's
+  /// ordering means everything above it is older, so a refetch would reshuffle
+  /// nothing and cost a request — and it would move the list under the finger
+  /// of an administrator working down a page, which is how the next row gets
+  /// decided by accident. The dashboard's counter is invalidated instead,
+  /// because that figure genuinely did change.
+  AdminQueuePage<T> withItems(List<T> items) =>
+      AdminQueuePage<T>(items: items, hasMore: hasMore);
 }
 
-/// §10.2's verification queue, oldest first.
+/// §10.2's employer verification queue, oldest first.
 @riverpod
 class VerificationQueue extends _$VerificationQueue {
   @override
-  Future<VerificationQueuePage> build() async {
+  Future<AdminQueuePage<VerificationQueueItem>> build() async {
     final items = await ref
         .watch(adminRepositoryProvider)
         .verificationQueue();
 
-    return VerificationQueuePage(
+    return AdminQueuePage(
       items: items,
       hasMore: items.length == adminPageSize,
     );
@@ -217,7 +298,7 @@ class VerificationQueue extends _$VerificationQueue {
           .verificationQueue(offset: page.items.length);
 
       state = AsyncData(
-        VerificationQueuePage(
+        AdminQueuePage(
           items: [...page.items, ...next],
           hasMore: next.length == adminPageSize,
         ),
@@ -228,27 +309,75 @@ class VerificationQueue extends _$VerificationQueue {
     }
   }
 
-  /// Drops one item without re-reading the queue.
-  ///
-  /// A decision removes exactly the row that was decided, and the server's
-  /// ordering means everything above it is *older* — so a refetch would
-  /// reshuffle nothing and cost a request. It would also move the list under
-  /// the finger of an administrator working down a page, which is how the
-  /// second item gets decided by accident.
-  ///
-  /// The dashboard's counter is invalidated by the caller instead, because that
-  /// figure genuinely did change.
+  /// Drops one decided employer — see [AdminQueuePage.withItems].
   void remove(String employerUserId) {
     final page = state.value;
     if (page == null) return;
 
     state = AsyncData(
-      VerificationQueuePage(
-        items: page.items
+      page.withItems(
+        page.items
             .where((item) => item.employerUserId != employerUserId)
             .toList(),
-        hasMore: page.hasMore,
       ),
     );
   }
 }
+
+/// §10.2's vacancy moderation queue, oldest first (BR-04).
+@riverpod
+class ModerationQueue extends _$ModerationQueue {
+  @override
+  Future<AdminQueuePage<ModerationQueueItem>> build() async {
+    final items = await ref.watch(adminRepositoryProvider).moderationQueue();
+
+    return AdminQueuePage(
+      items: items,
+      hasMore: items.length == adminPageSize,
+    );
+  }
+
+  Future<void> loadMore() async {
+    final page = state.value;
+    if (page == null || page.isLoadingMore || !page.hasMore) return;
+
+    state = AsyncData(page.copyWith(isLoadingMore: true));
+
+    try {
+      final next = await ref
+          .read(adminRepositoryProvider)
+          .moderationQueue(offset: page.items.length);
+
+      state = AsyncData(
+        AdminQueuePage(
+          items: [...page.items, ...next],
+          hasMore: next.length == adminPageSize,
+        ),
+      );
+    } on ApiException {
+      state = AsyncData(page.copyWith(isLoadingMore: false));
+      rethrow;
+    }
+  }
+
+  /// Drops one decided vacancy — see [AdminQueuePage.withItems].
+  void remove(String vacancyId) {
+    final page = state.value;
+    if (page == null) return;
+
+    state = AsyncData(
+      page.withItems(
+        page.items.where((item) => item.vacancyId != vacancyId).toList(),
+      ),
+    );
+  }
+}
+
+/// One vacancy, loaded for §10.2's review.
+///
+/// A family rather than a notifier: unlike a queue this is read once per screen
+/// and never appended to, and keying it by id is what lets a moderator open two
+/// reviews in a session without the second overwriting the first.
+@riverpod
+Future<VacancyReview> vacancyForReview(Ref ref, String vacancyId) =>
+    ref.watch(adminRepositoryProvider).vacancyForReview(vacancyId);

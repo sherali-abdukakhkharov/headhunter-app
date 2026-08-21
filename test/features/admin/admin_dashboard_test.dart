@@ -6,6 +6,9 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
+import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
@@ -38,17 +41,32 @@ class _FakeAdmin implements AdminRepository {
     return data;
   }
 
-  // The dashboard has no business reading the queue itself — it renders a
-  // counter the same response already carried. These throw so that a screen
-  // which started fanning out fails here loudly.
+  // The dashboard has no business reading a queue itself — it renders counters
+  // the same response already carried. These throw so that a screen which
+  // started fanning out fails here loudly.
   @override
   Future<List<VerificationQueueItem>> verificationQueue({int offset = 0}) =>
-      throw UnsupportedError('The dashboard must not fetch the queue.');
+      throw UnsupportedError('The dashboard must not fetch a queue.');
+
+  @override
+  Future<List<ModerationQueueItem>> moderationQueue({int offset = 0}) =>
+      throw UnsupportedError('The dashboard must not fetch a queue.');
+
+  @override
+  Future<VacancyReview> vacancyForReview(String vacancyId) =>
+      throw UnsupportedError('The dashboard must not read a vacancy.');
 
   @override
   Future<void> decideVerification(
     String employerUserId,
     VerificationDecision decision, {
+    String? reason,
+  }) => throw UnsupportedError('The dashboard must not decide anything.');
+
+  @override
+  Future<void> moderateVacancy(
+    String vacancyId,
+    ModerationDecision decision, {
     String? reason,
   }) => throw UnsupportedError('The dashboard must not decide anything.');
 }
@@ -218,7 +236,7 @@ void main() {
       expect(find.text('2026-06-10 — 2026-07-09'), findsOneWidget);
     });
 
-    testWidgets('only the queue that has a screen offers a way into it', (
+    testWidgets('only the queues that have a screen offer a way in', (
       tester,
     ) async {
       await pump(tester);
@@ -227,10 +245,11 @@ void main() {
       expect(find.text('Vacancies awaiting moderation'), findsOneWidget);
       expect(find.text('Open complaints'), findsOneWidget);
 
-      // One chevron, on the verification row. A number that navigated to a
-      // placeholder would be worse than one that does not navigate, so the
-      // affordance follows the destination rather than the row.
-      expect(chevrons(), findsOneWidget);
+      // Two chevrons: §10.2's two queues have screens and the complaint queue
+      // does not. A number that navigated to a placeholder would be worse than
+      // one that does not navigate, so the affordance follows the destination
+      // rather than the row.
+      expect(chevrons(), findsNWidgets(2));
     });
 
     testWidgets('an empty set of queues is a sentence, not three zeros', (

@@ -17,6 +17,40 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.3.0+7 — 2026-08-21
+
+The second gate. With 1.2.0 an administrator could verify an employer; now they
+can also pass a vacancy — so between the two, a job can travel from an employer
+signing up to a candidate applying without anybody touching the database.
+
+### Added
+
+- **Vacancy moderation (§10.2)** — the queue of vacancies waiting to be
+  published, and the review screen where you decide. **No vacancy reaches a
+  candidate until this happens** (BR-04), and for one with an age or gender limit
+  this is the *only* way it can ever go live.
+  The queue joins employer verification behind two segments in the Moderation
+  tab, oldest first, and each row says how long it has been waiting and whether
+  it carries a limit to judge. Tapping one opens the whole posting: what the job
+  is, what it pays, where and when, the description exactly as the employer wrote
+  it, and every structured requirement with required and preferred told apart.
+  **A limit is shown first, above the title**, with the reason the employer chose
+  and their own words underneath — because that is why the vacancy is on your
+  screen instead of published already. The screen says what you are being asked
+  to decide: a limit is allowed only where the reason requires it, so judge the
+  reason.
+  **Publishing puts it in front of candidates straight away**, and the
+  confirmation says so — including that approving a limited vacancy approves the
+  limit with it. Sending one back needs a reason, and the employer reads it word
+  for word: they can edit and submit again, and your reason is the only guidance
+  they get.
+  If a colleague decided the same vacancy first, that is not an error — the
+  screen says it has left the queue and takes you back to the next one.
+
+- **The two counters on the dashboard now open the queue they name.** Employers
+  awaiting verification opens the employer segment, vacancies awaiting moderation
+  opens the vacancy one.
+
 ## 1.2.0+6 — 2026-08-21
 
 The administrator role has screens for the first time, and the first of them

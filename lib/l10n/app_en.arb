@@ -2831,5 +2831,93 @@
   "adminDecisionRecorded": "Decision recorded.",
   "@adminDecisionRecorded": {
     "description": "Confirms the decision landed. §10.4 makes every administrator action an audit row, so \"recorded\" is literal rather than reassurance."
+  },
+  "adminQueueTitle": "Moderation",
+  "@adminQueueTitle": {
+    "description": "Heading over §10.2's two queues. The nav label is \"Moderatsiya\" and this repeats it deliberately: a shell tab has no app bar, so without it the segmented control is the only thing naming the screen."
+  },
+  "adminQueueEmployers": "Employers",
+  "@adminQueueEmployers": {
+    "description": "First segment: §10.2's employer verification queue. Named for the object rather than the action, so it reads beside the second segment."
+  },
+  "adminQueueVacancies": "Vacancies",
+  "@adminQueueVacancies": {
+    "description": "Second segment: the vacancy moderation queue (BR-04)."
+  },
+  "adminModerationEmpty": "No vacancy is waiting",
+  "@adminModerationEmpty": {
+    "description": "Empty moderation queue. A good state, so not phrased as an absence of results."
+  },
+  "adminModerationEmptyBody": "Vacancies appear here as employers submit them for publication.",
+  "@adminModerationEmptyBody": {
+    "description": "Explains how the list fills up rather than restating that it is empty."
+  },
+  "adminRestrictionFlag": "Age or gender limit",
+  "@adminRestrictionFlag": {
+    "description": "Badge on a queue row whose vacancy carries a BR-12 age or gender restriction. Warning-toned, and it is not an accusation: the tone means \"waiting on a person\", and a restriction is exactly what §10.2 will not let through unreviewed."
+  },
+  "adminReviewTitle": "Review",
+  "@adminReviewTitle": {
+    "description": "App-bar title on §10.2's vacancy review. Generic, because the vacancy's own title is the heading in the body and an employer's words do not belong in a chrome bar where they would be truncated."
+  },
+  "adminVacancyGoneTitle": "This vacancy has left the queue",
+  "@adminVacancyGoneTitle": {
+    "description": "The review answered 404. Most often a colleague decided it first, so this is an outcome and not a fault — its own notice, a way back, and no retry, the same treatment UAT-15 gives the candidate detail screen."
+  },
+  "adminVacancyGoneBody": "Somebody may have decided it already, or the employer may have withdrawn it.",
+  "@adminVacancyGoneBody": {
+    "description": "Names the likely reason without claiming to know which: the route answers 404 for decided, withdrawn and deleted alike."
+  },
+  "adminPublish": "Publish",
+  "@adminPublish": {
+    "description": "§10.2's approval, named for what it does. BR-04 makes approving the act that publishes, so \"Approve\" would understate it — there is no approve-without-publishing."
+  },
+  "adminSendBack": "Send back",
+  "@adminSendBack": {
+    "description": "§10.2's rejection. \"Send back\" rather than \"Reject\", because §6.4 returns an edited rejection to draft — it is a correction path, not an ending."
+  },
+  "adminPublishTitle": "Publish this vacancy?",
+  "@adminPublishTitle": {
+    "description": "Confirmation heading for publishing a vacancy."
+  },
+  "adminPublishBody": "Candidates see it straight away. If it carries an age or gender limit, publishing approves that limit too — this queue is the only way one can ever go live.",
+  "@adminPublishBody": {
+    "description": "Two consequences, and the second is the one a moderator can miss: for a BR-12 restricted vacancy this queue is the only route to publication, so approving the vacancy is approving the restriction with it."
+  },
+  "adminSendBackTitle": "Send this vacancy back?",
+  "@adminSendBackTitle": {
+    "description": "Confirmation heading for returning a vacancy to the employer."
+  },
+  "adminSendBackBody": "The employer can edit it and submit again. Your reason is the only guidance they get, so name what has to change.",
+  "@adminSendBackBody": {
+    "description": "Says what survives and what the reason is for: §6.4 puts an edited rejection back in draft, so the reason is an instruction rather than a verdict."
+  },
+  "adminRestrictionJudge": "A limit is only allowed where the reason genuinely requires it. Judge the reason, not the limit.",
+  "@adminRestrictionJudge": {
+    "description": "The BR-12 question, stated as a question rather than as a warning: §10.2 asks a person to decide whether the stated reason genuinely requires the limit. Without this the card is four labels and no task."
+  },
+  "adminRestrictionAge": "Age limit",
+  "@adminRestrictionAge": {
+    "description": "Label over the age bound. Shown as a range with an open end where only one side was set."
+  },
+  "adminRestrictionGender": "Gender limit",
+  "@adminRestrictionGender": {
+    "description": "Label over the gender bound — a dictionary id resolved to a label (BR-13)."
+  },
+  "adminRestrictionReason": "Reason the employer chose",
+  "@adminRestrictionReason": {
+    "description": "Label over the BR-12 justification the employer picked from the enumerated list — the thing §10.2 actually asks a moderator to judge."
+  },
+  "adminRestrictionNote": "In their own words",
+  "@adminRestrictionNote": {
+    "description": "Label over the employer's own elaboration, shown verbatim (§2.4). A moderator judging a paraphrase would be judging something the employer did not say."
+  },
+  "adminPreviousReason": "Sent back before, for this",
+  "@adminPreviousReason": {
+    "description": "This vacancy has been round the loop before. Worth showing: a second rejection for the same thing means the first reason did not land, which is the moderator's problem to fix rather than repeat."
+  },
+  "adminVacancyWhere": "Where the work is",
+  "@adminVacancyWhere": {
+    "description": "Heading over region, district and street address on the review."
   }
 }

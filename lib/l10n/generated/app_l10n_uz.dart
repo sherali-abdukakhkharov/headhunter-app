@@ -2191,6 +2191,77 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminDecisionRecorded => 'Qaror qayd etildi.';
+
+  @override
+  String get adminQueueTitle => 'Moderatsiya';
+
+  @override
+  String get adminQueueEmployers => 'Ish beruvchilar';
+
+  @override
+  String get adminQueueVacancies => 'Vakansiyalar';
+
+  @override
+  String get adminModerationEmpty => 'Kutayotgan vakansiya yo\'q';
+
+  @override
+  String get adminModerationEmptyBody =>
+      'Ish beruvchilar e\'lon qilish uchun yuborgan sayin vakansiyalar shu yerda paydo bo\'ladi.';
+
+  @override
+  String get adminRestrictionFlag => 'Yosh yoki jins cheklovi';
+
+  @override
+  String get adminReviewTitle => 'Ko‘rib chiqish';
+
+  @override
+  String get adminVacancyGoneTitle => 'Bu vakansiya navbatdan chiqib ketgan';
+
+  @override
+  String get adminVacancyGoneBody =>
+      'Kimdir uni allaqachon hal qilgan yoki ish beruvchi qaytarib olgan bo‘lishi mumkin.';
+
+  @override
+  String get adminPublish => 'E\'lon qilish';
+
+  @override
+  String get adminSendBack => 'Qaytarish';
+
+  @override
+  String get adminPublishTitle => 'Bu vakansiyani e\'lon qilasizmi?';
+
+  @override
+  String get adminPublishBody =>
+      'Nomzodlar uni darhol ko\'radi. Agar yosh yoki jins cheklovi bo\'lsa, e\'lon qilish o\'sha cheklovni ham tasdiqlaydi — cheklovli vakansiya faqat shu navbat orqali e\'lon qilinishi mumkin.';
+
+  @override
+  String get adminSendBackTitle => 'Bu vakansiyani qaytarasizmi?';
+
+  @override
+  String get adminSendBackBody =>
+      'Ish beruvchi uni tuzatib qayta yuborishi mumkin. Ularga faqat sizning sababingiz yetadi — nimani o\'zgartirish kerakligini aytib bering.';
+
+  @override
+  String get adminRestrictionJudge =>
+      'Cheklov faqat sabab uni haqiqatan talab qilsa ruxsat etiladi. Cheklovni emas, sababni baholang.';
+
+  @override
+  String get adminRestrictionAge => 'Yosh cheklovi';
+
+  @override
+  String get adminRestrictionGender => 'Jins cheklovi';
+
+  @override
+  String get adminRestrictionReason => 'Ish beruvchi tanlagan sabab';
+
+  @override
+  String get adminRestrictionNote => 'O\'z so\'zlari bilan';
+
+  @override
+  String get adminPreviousReason => 'Avval shu sabab bilan qaytarilgan';
+
+  @override
+  String get adminVacancyWhere => 'Ish joyi';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -4373,6 +4444,77 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminDecisionRecorded => 'Қарор қайд этилди.';
+
+  @override
+  String get adminQueueTitle => 'Модерация';
+
+  @override
+  String get adminQueueEmployers => 'Иш берувчилар';
+
+  @override
+  String get adminQueueVacancies => 'Вакансиялар';
+
+  @override
+  String get adminModerationEmpty => 'Кутаётган вакансия йўқ';
+
+  @override
+  String get adminModerationEmptyBody =>
+      'Иш берувчилар эълон қилиш учун юборган сайин вакансиялар шу ерда пайдо бўлади.';
+
+  @override
+  String get adminRestrictionFlag => 'Ёш ёки жинс чеклови';
+
+  @override
+  String get adminReviewTitle => 'Кўриб чиқиш';
+
+  @override
+  String get adminVacancyGoneTitle => 'Бу вакансия навбатдан чиқиб кетган';
+
+  @override
+  String get adminVacancyGoneBody =>
+      'Кимдир уни аллақачон ҳал қилган ёки иш берувчи қайтариб олган бўлиши мумкин.';
+
+  @override
+  String get adminPublish => 'Эълон қилиш';
+
+  @override
+  String get adminSendBack => 'Қайтариш';
+
+  @override
+  String get adminPublishTitle => 'Бу вакансияни эълон қиласизми?';
+
+  @override
+  String get adminPublishBody =>
+      'Номзодлар уни дарҳол кўради. Агар ёш ёки жинс чеклови бўлса, эълон қилиш ўша чекловни ҳам тасдиқлайди — чекловли вакансия фақат шу навбат орқали эълон қилиниши мумкин.';
+
+  @override
+  String get adminSendBackTitle => 'Бу вакансияни қайтарасизми?';
+
+  @override
+  String get adminSendBackBody =>
+      'Иш берувчи уни тузатиб қайта юбориши мумкин. Уларга фақат сизнинг сабабингиз етади — нимани ўзгартириш кераклигини айтиб беринг.';
+
+  @override
+  String get adminRestrictionJudge =>
+      'Чеклов фақат сабаб уни ҳақиқатан талаб қилса рухсат этилади. Чекловни эмас, сабабни баҳоланг.';
+
+  @override
+  String get adminRestrictionAge => 'Ёш чеклови';
+
+  @override
+  String get adminRestrictionGender => 'Жинс чеклови';
+
+  @override
+  String get adminRestrictionReason => 'Иш берувчи танлаган сабаб';
+
+  @override
+  String get adminRestrictionNote => 'Ўз сўзлари билан';
+
+  @override
+  String get adminPreviousReason => 'Аввал шу сабаб билан қайтарилган';
+
+  @override
+  String get adminVacancyWhere => 'Иш жойи';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -6562,4 +6704,75 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminDecisionRecorded => 'Qaror qayd etildi.';
+
+  @override
+  String get adminQueueTitle => 'Moderatsiya';
+
+  @override
+  String get adminQueueEmployers => 'Ish beruvchilar';
+
+  @override
+  String get adminQueueVacancies => 'Vakansiyalar';
+
+  @override
+  String get adminModerationEmpty => 'Kutayotgan vakansiya yo\'q';
+
+  @override
+  String get adminModerationEmptyBody =>
+      'Ish beruvchilar e\'lon qilish uchun yuborgan sayin vakansiyalar shu yerda paydo bo\'ladi.';
+
+  @override
+  String get adminRestrictionFlag => 'Yosh yoki jins cheklovi';
+
+  @override
+  String get adminReviewTitle => 'Ko‘rib chiqish';
+
+  @override
+  String get adminVacancyGoneTitle => 'Bu vakansiya navbatdan chiqib ketgan';
+
+  @override
+  String get adminVacancyGoneBody =>
+      'Kimdir uni allaqachon hal qilgan yoki ish beruvchi qaytarib olgan bo‘lishi mumkin.';
+
+  @override
+  String get adminPublish => 'E\'lon qilish';
+
+  @override
+  String get adminSendBack => 'Qaytarish';
+
+  @override
+  String get adminPublishTitle => 'Bu vakansiyani e\'lon qilasizmi?';
+
+  @override
+  String get adminPublishBody =>
+      'Nomzodlar uni darhol ko\'radi. Agar yosh yoki jins cheklovi bo\'lsa, e\'lon qilish o\'sha cheklovni ham tasdiqlaydi — cheklovli vakansiya faqat shu navbat orqali e\'lon qilinishi mumkin.';
+
+  @override
+  String get adminSendBackTitle => 'Bu vakansiyani qaytarasizmi?';
+
+  @override
+  String get adminSendBackBody =>
+      'Ish beruvchi uni tuzatib qayta yuborishi mumkin. Ularga faqat sizning sababingiz yetadi — nimani o\'zgartirish kerakligini aytib bering.';
+
+  @override
+  String get adminRestrictionJudge =>
+      'Cheklov faqat sabab uni haqiqatan talab qilsa ruxsat etiladi. Cheklovni emas, sababni baholang.';
+
+  @override
+  String get adminRestrictionAge => 'Yosh cheklovi';
+
+  @override
+  String get adminRestrictionGender => 'Jins cheklovi';
+
+  @override
+  String get adminRestrictionReason => 'Ish beruvchi tanlagan sabab';
+
+  @override
+  String get adminRestrictionNote => 'O\'z so\'zlari bilan';
+
+  @override
+  String get adminPreviousReason => 'Avval shu sabab bilan qaytarilgan';
+
+  @override
+  String get adminVacancyWhere => 'Ish joyi';
 }

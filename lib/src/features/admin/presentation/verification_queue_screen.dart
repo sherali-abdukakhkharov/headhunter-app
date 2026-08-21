@@ -4,11 +4,12 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/files/attachment_opener.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
-import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/queue_wait.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
-import 'package:jobbridge_app/src/features/admin/presentation/verification_decision_sheet.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_decision_sheet.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 
 /// §10.2's employer verification queue — the administrator's half of BR-03.
@@ -34,37 +35,39 @@ import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_
 /// indefinitely, and sorting by name — the obvious "improvement" — would undo
 /// that silently. The card says how long its submission has waited, because
 /// that is the fact the ordering is *for* and a timestamp does not give it.
-class VerificationQueueScreen extends ConsumerWidget {
-  const VerificationQueueScreen({super.key});
+///
+/// ## A list, not a screen
+///
+/// §10.2's two queues share one shell tab, and `AdminQueueScreen` owns the
+/// scaffold and the segmented control that names them. A `Scaffold` here would
+/// put a second one inside the first.
+class VerificationQueueList extends ConsumerWidget {
+  const VerificationQueueList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final queue = ref.watch(verificationQueueProvider);
 
-    return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async => ref.invalidate(verificationQueueProvider),
-          child: switch (queue) {
-            AsyncValue(hasError: true, :final error?) => ListView(
-              padding: const EdgeInsets.all(HhSpace.gutter),
-              children: [
-                HhErrorState(
-                  title: l10n.stateErrorTitle,
-                  message: error is ApiException
-                      ? error.message
-                      : l10n.stateErrorBody,
-                  retryLabel: l10n.commonRetry,
-                  onRetry: () => ref.invalidate(verificationQueueProvider),
-                ),
-              ],
+    return RefreshIndicator(
+      onRefresh: () async => ref.invalidate(verificationQueueProvider),
+      child: switch (queue) {
+        AsyncValue(hasError: true, :final error?) => ListView(
+          padding: const EdgeInsets.all(HhSpace.gutter),
+          children: [
+            HhErrorState(
+              title: l10n.stateErrorTitle,
+              message: error is ApiException
+                  ? error.message
+                  : l10n.stateErrorBody,
+              retryLabel: l10n.commonRetry,
+              onRetry: () => ref.invalidate(verificationQueueProvider),
             ),
-            AsyncData(:final value) => _Queue(page: value),
-            _ => const Center(child: CircularProgressIndicator()),
-          },
+          ],
         ),
-      ),
+        AsyncData(:final value) => _Queue(page: value),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
     );
   }
 }
@@ -72,7 +75,7 @@ class VerificationQueueScreen extends ConsumerWidget {
 class _Queue extends ConsumerWidget {
   const _Queue({required this.page});
 
-  final VerificationQueuePage page;
+  final AdminQueuePage<VerificationQueueItem> page;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,8 +84,6 @@ class _Queue extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(HhSpace.gutter),
       children: [
-        Text(l10n.adminVerificationTitle, style: HhTypography.title),
-
         if (page.items.isEmpty)
           Padding(
             padding: const EdgeInsets.only(top: HhSpace.lg),
@@ -92,7 +93,6 @@ class _Queue extends ConsumerWidget {
             ),
           )
         else ...[
-          const SizedBox(height: HhSpace.xs),
           Text(l10n.adminVerificationFifo, style: HhTypography.caption),
           const SizedBox(height: HhSpace.lg),
           for (final item in page.items) ...[
@@ -162,7 +162,7 @@ class _SubmissionCard extends ConsumerWidget {
                       : HhIconPath.person,
                 ),
                 Text(
-                  l10n.adminWaitingDays(_daysWaiting(item.submittedAt)),
+                  l10n.adminWaitingDays(daysWaiting(item.submittedAt)),
                   style: HhTypography.caption,
                 ),
               ],
@@ -207,18 +207,20 @@ class _SubmissionCard extends ConsumerWidget {
           // that is fine.
           HhButton(
             label: l10n.adminVerify,
-            onPressed: () => _decide(context, VerificationDecision.verified),
+            onPressed: () =>
+                _decide(context, ref, VerificationDecision.verified),
           ),
           const SizedBox(height: HhSpace.sm),
           HhButton.secondary(
             label: l10n.adminRequestChanges,
             onPressed: () =>
-                _decide(context, VerificationDecision.changesRequired),
+                _decide(context, ref, VerificationDecision.changesRequired),
           ),
           const SizedBox(height: HhSpace.sm),
           HhButton.text(
             label: l10n.adminReject,
-            onPressed: () => _decide(context, VerificationDecision.rejected),
+            onPressed: () =>
+                _decide(context, ref, VerificationDecision.rejected),
           ),
         ],
       ),
@@ -227,28 +229,50 @@ class _SubmissionCard extends ConsumerWidget {
 
   Future<void> _decide(
     BuildContext context,
+    WidgetRef ref,
     VerificationDecision decision,
   ) async {
-    final decided = await showVerificationDecisionSheet(
+    final l10n = AppL10n.of(context);
+    final subject = item.displayName ?? l10n.adminEmployerUnnamed;
+
+    final outcome = await showAdminDecisionSheet(
       context,
-      item,
-      decision,
+      title: switch (decision) {
+        VerificationDecision.verified => l10n.adminVerifyTitle,
+        VerificationDecision.changesRequired => l10n.adminRequestChangesTitle,
+        VerificationDecision.rejected => l10n.adminRejectTitle,
+      },
+      subject: subject,
+      body: switch (decision) {
+        VerificationDecision.verified => l10n.adminVerifyBody,
+        VerificationDecision.changesRequired => l10n.adminRequestChangesBody,
+        VerificationDecision.rejected => l10n.adminRejectBody,
+      },
+      confirmLabel: switch (decision) {
+        VerificationDecision.verified => l10n.adminVerify,
+        VerificationDecision.changesRequired => l10n.adminRequestChanges,
+        VerificationDecision.rejected => l10n.adminReject,
+      },
+      needsReason: decision.needsReason,
+      send: (reason) => ref
+          .read(adminRepositoryProvider)
+          .decideVerification(
+            item.employerUserId,
+            decision,
+            reason: reason,
+          ),
     );
-    if (!decided || !context.mounted) return;
 
-    HhToast.show(context, message: AppL10n.of(context).adminDecisionRecorded);
-  }
+    if (outcome == AdminDecisionOutcome.dismissed) return;
 
-  /// Whole days between the submission and now, floored at zero.
-  ///
-  /// **Instants, never wall clocks.** The submitted timestamp carries the
-  /// platform's offset, so subtracting it from a local `now` is five hours out
-  /// for an administrator abroad — in the direction that *understates* how long
-  /// somebody has been waiting. The same rule the interview card's `hasPassed`
-  /// follows, and for the same reason.
-  static int _daysWaiting(ZonedTimestamp submitted) {
-    final elapsed = DateTime.now().toUtc().difference(submitted.instant).inDays;
-    return elapsed < 0 ? 0 : elapsed;
+    // The row leaves on a 409 as well as on success — the work is done either
+    // way — and only the confirmation differs.
+    ref.read(verificationQueueProvider.notifier).remove(item.employerUserId);
+    ref.invalidate(adminDashboardProvider);
+
+    if (outcome == AdminDecisionOutcome.sent && context.mounted) {
+      HhToast.show(context, message: l10n.adminDecisionRecorded);
+    }
   }
 }
 

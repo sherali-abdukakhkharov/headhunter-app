@@ -10,7 +10,8 @@ import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
-import 'package:jobbridge_app/src/features/admin/presentation/verification_queue_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/vacancy_review_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
@@ -176,7 +177,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               // §10. The administrator's tabs land one at a time like every
               // other shell's; the rest keep the placeholder.
               Routes.adminDashboard => const AdminDashboardScreen(),
-              Routes.adminQueue => const VerificationQueueScreen(),
+              Routes.adminQueue => const AdminQueueScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [
@@ -227,6 +228,20 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                       ),
                     ),
                   ],
+                ),
+
+              // §10.2. A child of the moderation tab, so the review keeps the
+              // shell's nav bar and back returns to the queue it came from.
+              // The segment name is in the path rather than the query here —
+              // `?queue=` chooses which *list* the tab shows, and this is not a
+              // list.
+              if (tab.path == Routes.adminQueue)
+                GoRoute(
+                  path: '${Routes.adminQueueVacancies}/:id',
+                  name: 'adminVacancyReview',
+                  builder: (context, state) => VacancyReviewScreen(
+                    vacancyId: state.pathParameters['id']!,
+                  ),
                 ),
             ],
           ),

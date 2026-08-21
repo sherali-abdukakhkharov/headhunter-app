@@ -1567,7 +1567,7 @@ this opens. Deep links moved to M8.
       server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
-## M10 - Admin module *(§10.1 and §10.2's verification half done 2026-08-21)*
+## M10 - Admin module *(§10.1 and §10.2's two queues done 2026-08-21)*
 
 **The whole admin API was already built** — `src/modules/admin` on the backend
 covers §10.1 through §10.5, audit log and retention included. So nothing in this
@@ -1639,22 +1639,71 @@ remaining item is a screen.
       `path`, followed verbatim, and **nothing prefetches**, because §11.1 logs
       every read of protected data and a speculative fetch would write audit
       entries nobody asked for
+- [x] **Vacancy moderation (§10.2, BR-04), 2026-08-21 — the mirror of BR-03, and
+      the other half of making the product work end to end.** No vacancy reaches
+      a candidate until a moderator passes it, and for a **BR-12 restricted**
+      vacancy this queue is the *only* route to publication there is. With the
+      verification queue beside it, both gates are now answerable from a phone.
+      **The queue tab holds both of §10.2's queues behind two segments**, because
+      §10.2 is one section and the shell is capped at five tabs — the same cap
+      that kept Wallet off the employer's bar. Two segments at 360pt give each
+      about 175pt, which fits both labels in all four variants; the filters that
+      were kept off `HhSegmented` had five and nine.
+      **Which queue is showing lives in the *location*, not in state.** The shell
+      keeps a branch across tab switches, so a segment held in a `State` would
+      ignore a later `go` — and §10.1 has a counter per queue, so both counters
+      would land on whichever was last looked at. That is the class of bug
+      `switchRoleAndGo` exists to prevent one level up, so `?queue=` is a query
+      parameter and tapping a segment navigates. Pinned three ways, including an
+      unrecognised value landing somewhere real.
+      **Unlike verification, the row is not the review.** §10.2 asks for the
+      details, the requirements and the contact information by name, and
+      approving a job posting on its title is not reviewing it — so the row opens
+      `/admin/queue/vacancies/:id`, a child of the tab so back returns to the
+      queue. What the row *does* carry is the thing that decides how urgently it
+      needs opening: whether there is a BR-12 restriction to judge.
+      **The restriction comes first on the review, above the title**, because it
+      is why the vacancy is on that screen rather than published already — with
+      the bound, the justification the employer picked, and their own words
+      verbatim (§2.4). And it states the *task*: a limit is allowed only where
+      the reason requires it, so judge the reason. Four labels and no question
+      would have been a card nobody knows what to do with.
+      **Approving is publishing**, so the confirmation says both halves: it goes
+      live now, and for a restricted vacancy approving the vacancy approves the
+      restriction with it. There is no approve-without-publishing, and §10.2's
+      pause-or-remove is a different route on a *published* vacancy — see below.
+      The requirements render through the **same widget §5.6 uses**, extracted
+      for this: a moderator shown a *preference* drawn as a requirement would
+      reject a vacancy for a condition it never imposed, and that rule is the
+      first thing a second copy would lose
 - [!] **Backend ask: `GET /admin/moderation/:vacancyId` returns the raw database
-      row.** `VacancyReviewDto.vacancy` is typed `Record<string, unknown>` and
-      `loadVacancy` puts the selected columns in it unchanged, so the keys are
-      **snake_case** while `requirements` beside it is camelCase and every other
-      vacancy route returns a camelCase DTO. A client review screen would have to
-      carry a second parser for the same object, spelled differently.
-      *This is why the vacancy-moderation half of §10.2 is not built yet*, and it
-      is the only thing standing in the way: the queue list is already fine
-      (`ModerationQueueItemDto` is camelCase and carries the BR-12 restriction),
-      but approving a vacancy on its title alone is not reviewing it, and §10.2
-      asks for the details and the requirements by name. One DTO and the screen
-      follows
-- [ ] Vacancy moderation (§10.2, BR-04) — approve or reject with a mandatory
-      reason, plus §10.2's pause-or-remove for one already published. **BR-04 is
-      the mirror of BR-03**: no vacancy reaches a candidate until a moderator
-      passes it, so this is the other half of making the product work end to end
+      row, and the review is missing two things §10.2 names.**
+      1. `VacancyReviewDto.vacancy` is typed `Record<string, unknown>` and
+         `loadVacancy` puts the selected columns in it unchanged, so the keys are
+         **snake_case** while `requirements` beside it is camelCase and every
+         other vacancy route returns a camelCase DTO.
+         **Not blocking, and handled the way `unlock_required` was**: `VacancyReview`
+         reads *either* spelling for every field, so one build is correct before
+         and after the DTO lands and there is no release in between. Pinned by a
+         test that parses both shapes and asserts they agree, and
+         mutation-verified. Worth knowing that the coupling is narrower than it
+         first looks — `VacancyDto.fields` is keyed by **schema field code** and
+         the codes *are* the column names, which the employer dashboard already
+         relies on (`fields['worker_count']`).
+      2. **No employer name and no contact information.** The row carries
+         `employer_user_id` and neither, and §10.2 asks for "contact information"
+         by name. The queue row shows the name, so a moderator arriving the usual
+         way knows whose vacancy it is and one arriving cold does not — the same
+         shape as the `candidateName` ask on `InvitationDto`, and it wants the
+         same answer: a name on the DTO, not a second request per review
+- [ ] **§10.2's pause-or-remove has no entry point yet.**
+      `PUT /admin/vacancies/:vacancyId/status` exists and takes `paused` or
+      `closed` with a mandatory reason, for a vacancy that is **already
+      published** — a complaint upheld, a policy breach. Nothing in the app can
+      reach one: there is no admin vacancy list and no admin vacancy search, so
+      the only paths to a live vacancy are the complaint queue (next) and user
+      management. It lands with whichever of those comes first, rather than as a
+      screen that needs an id typed into it
 - [ ] Complaint queues
 - [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
 - [ ] Dictionary management with four localized labels + skill merge, designed for

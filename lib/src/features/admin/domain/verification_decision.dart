@@ -35,18 +35,3 @@ enum VerificationDecision {
   /// Whether the server will refuse this decision without a reason.
   bool get needsReason => this != VerificationDecision.verified;
 }
-
-/// Somebody already decided this submission.
-///
-/// Its own type rather than an [Exception] rendered as a failure, because a
-/// FIFO queue worked by more than one administrator produces this **normally**:
-/// two people open the top item, one decides, the other's request answers 409
-/// `employer.verification_not_pending`. Nothing went wrong — the work is done —
-/// so the screen says so and reloads the queue rather than offering a retry
-/// that would 409 again.
-class VerificationAlreadyDecided implements Exception {
-  const VerificationAlreadyDecided(this.message);
-
-  /// The server's own sentence, already in the caller's language.
-  final String message;
-}

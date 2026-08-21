@@ -2212,4 +2212,75 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get adminDecisionRecorded => 'Решение зафиксировано.';
+
+  @override
+  String get adminQueueTitle => 'Модерация';
+
+  @override
+  String get adminQueueEmployers => 'Работодатели';
+
+  @override
+  String get adminQueueVacancies => 'Вакансии';
+
+  @override
+  String get adminModerationEmpty => 'Нет вакансий на модерации';
+
+  @override
+  String get adminModerationEmptyBody =>
+      'Вакансии появятся здесь, когда работодатели отправят их на публикацию.';
+
+  @override
+  String get adminRestrictionFlag => 'Ограничение по возрасту или полу';
+
+  @override
+  String get adminReviewTitle => 'Проверка';
+
+  @override
+  String get adminVacancyGoneTitle => 'Эта вакансия больше не в очереди';
+
+  @override
+  String get adminVacancyGoneBody =>
+      'Возможно, решение уже принято, или работодатель отозвал её.';
+
+  @override
+  String get adminPublish => 'Опубликовать';
+
+  @override
+  String get adminSendBack => 'Вернуть';
+
+  @override
+  String get adminPublishTitle => 'Опубликовать эту вакансию?';
+
+  @override
+  String get adminPublishBody =>
+      'Кандидаты увидят её сразу. Если есть ограничение по возрасту или полу, публикация одобряет и его — иначе такая вакансия не может быть опубликована вообще.';
+
+  @override
+  String get adminSendBackTitle => 'Вернуть эту вакансию?';
+
+  @override
+  String get adminSendBackBody =>
+      'Работодатель сможет исправить её и отправить снова. Ваша причина — единственное указание, которое он получит, поэтому напишите, что нужно изменить.';
+
+  @override
+  String get adminRestrictionJudge =>
+      'Ограничение допустимо только там, где причина действительно его требует. Оценивайте причину, а не ограничение.';
+
+  @override
+  String get adminRestrictionAge => 'Ограничение по возрасту';
+
+  @override
+  String get adminRestrictionGender => 'Ограничение по полу';
+
+  @override
+  String get adminRestrictionReason => 'Причина, выбранная работодателем';
+
+  @override
+  String get adminRestrictionNote => 'Их собственными словами';
+
+  @override
+  String get adminPreviousReason => 'Ранее возвращена по этой причине';
+
+  @override
+  String get adminVacancyWhere => 'Место работы';
 }

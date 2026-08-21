@@ -73,6 +73,27 @@ abstract final class Routes {
   static const adminUsers = '/admin/users';
   static const adminDictionaries = '/admin/dictionaries';
 
+  /// Which of §10.2's two queues the moderation tab is showing.
+  ///
+  /// **A query parameter rather than screen state**, and that is the whole
+  /// reason it exists. The shell keeps a branch's state across tab switches, so
+  /// a segment held in a `State` would ignore a later `go` — §10.1's dashboard
+  /// has a counter per queue, and both would land on whichever one was last
+  /// looked at. Putting it in the location keeps the rule this router already
+  /// runs on: the destination decides what is shown.
+  static const adminQueueParam = 'queue';
+  static const adminQueueVerification = 'verification';
+  static const adminQueueVacancies = 'vacancies';
+
+  /// The moderation tab, showing one named queue.
+  static String adminQueueWith(String queue) =>
+      '$adminQueue?$adminQueueParam=$queue';
+
+  /// §10.2's vacancy review, a child of the moderation tab so it keeps the
+  /// shell's nav bar and the back gesture returns to the queue.
+  static String adminVacancyReviewFor(String vacancyId) =>
+      '$adminQueue/$adminQueueVacancies/$vacancyId';
+
   // --- Development surfaces ------------------------------------------------
 
   /// Developer tools: the role switcher, the design catalogue, the health probe

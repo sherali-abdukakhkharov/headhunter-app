@@ -88,23 +88,34 @@ class VacancyDetail {
 
   /// Requirements grouped by their schema field, mandatory ones first within
   /// each group.
-  ///
-  /// Grouping is the client's job because the server sends a flat list — one
-  /// row per requirement — and a screen that rendered it flat would put
-  /// "Russian" and "forklift licence" in the same undifferentiated column.
-  Map<String, List<VacancyRequirement>> get byField {
-    final grouped = <String, List<VacancyRequirement>>{};
-    for (final requirement in requirements) {
-      (grouped[requirement.fieldCode] ??= []).add(requirement);
-    }
+  Map<String, List<VacancyRequirement>> get byField =>
+      groupRequirementsByField(requirements);
+}
 
-    for (final rows in grouped.values) {
-      rows.sort((a, b) {
-        if (a.isMandatory == b.isMandatory) return 0;
-        return a.isMandatory ? -1 : 1;
-      });
-    }
-
-    return grouped;
+/// Groups a flat requirement list by schema field, mandatory rows first.
+///
+/// Grouping is the client's job because the server sends a flat list — one row
+/// per requirement — and a screen that rendered it flat would put "Russian" and
+/// "forklift licence" in the same undifferentiated column.
+///
+/// A function rather than a method on [VacancyDetail], because §10.2's
+/// moderation review reads the same rows without a [VacancyDetail] around them:
+/// `GET /admin/moderation/:vacancyId` sends `requirements` in exactly this
+/// shape beside the vacancy itself.
+Map<String, List<VacancyRequirement>> groupRequirementsByField(
+  List<VacancyRequirement> requirements,
+) {
+  final grouped = <String, List<VacancyRequirement>>{};
+  for (final requirement in requirements) {
+    (grouped[requirement.fieldCode] ??= []).add(requirement);
   }
+
+  for (final rows in grouped.values) {
+    rows.sort((a, b) {
+      if (a.isMandatory == b.isMandatory) return 0;
+      return a.isMandatory ? -1 : 1;
+    });
+  }
+
+  return grouped;
 }

@@ -501,6 +501,53 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-21 - A shell branch keeps its state, so a segment belongs in the URL
+§10.2 has two queues and the admin shell is capped at five tabs, so both live
+behind one segmented control. The obvious implementation — the selected segment
+in a `State` — is wrong here, and the reason generalises to every shell tab that
+grows a sub-selection.
+
+`StatefulShellRoute.indexedStack` **keeps each branch alive** across tab
+switches; that is what makes tab switching feel like moving between places. So a
+segment held in widget state survives, and a later `context.go` to that tab
+finds the screen already built and changes nothing. §10.1's dashboard has a
+counter per queue: both would open the tab and both would show whichever queue
+was last looked at, silently.
+
+That is the same failure `switchRoleAndGo` exists to prevent one level up — the
+location is authoritative, and state that shadows it wins by accident. So the
+segment is `?queue=verification|vacancies`, tapping one navigates, and an
+unrecognised value falls back to a real queue rather than an empty screen.
+
+The rule: **if two different places can send a user to one tab expecting
+different contents, the difference belongs in the location.** A query parameter
+also makes it linkable for free, which M8's deep links will want.
+
+### 2026-08-21 - A tolerant reader beats waiting for the DTO
+`GET /admin/moderation/:vacancyId` returns the vacancy as the **stored row** —
+snake_case, `Record<string, unknown>` — while `requirements` beside it is
+camelCase and every other vacancy route answers with a DTO. The first instinct
+was to record a backend ask and not build the screen, which is what happened for
+a day.
+
+The better answer was the one `unlock_required` had already found: **read both
+spellings.** `VacancyReview._string` and `._int` each try the DTO key and fall
+back to the column name, so one build is correct against today's server and
+against the DTO when it lands, with no release in between and no flag to
+remember. A test parses both shapes and asserts they agree; mutating either
+lookup away fails it.
+
+Worth knowing *why* this is cheap rather than a hack: `VacancyDto.fields` is
+keyed by **schema field code**, and in this product the field codes *are* the
+column names — the employer dashboard already reads `fields['worker_count']`. So
+the storage coupling was there before, and it is confined to the handful of
+columns that are not fields (`employer_user_id`, `moderation_reason`,
+`published_at`), which the class lists rather than reaching for ad hoc.
+
+`salary_from` is the other half of the lesson: Postgres `numeric` arrives as a
+**string**, so `as int` throws on a perfectly valid `"5000000.00"`. Any numeric
+column read straight off a row wants a num-or-string parse.
+
 ### 2026-08-21 - "Pending timers" in the router test means a screen went real
 Wiring §10.1's dashboard into the admin shell broke two tests in
 `app_router_test.dart` that touch no admin code: the two that loop over every

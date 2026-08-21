@@ -6,6 +6,10 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/files/attachment_opener.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/verification_queue_screen.dart';
@@ -50,7 +54,7 @@ class _FakeAdmin implements AdminRepository {
     ));
 
     if (employerUserId == conflictOn) {
-      throw const VerificationAlreadyDecided(
+      throw const AdminDecisionConflict(
         'This employer has already been reviewed.',
       );
     }
@@ -59,6 +63,22 @@ class _FakeAdmin implements AdminRepository {
   @override
   Future<AdminDashboard> dashboard({String? from, String? to}) =>
       throw UnsupportedError('The queue screen must not read the dashboard.');
+
+  // §10.2's other queue lives behind the other segment and has its own suite.
+  @override
+  Future<List<ModerationQueueItem>> moderationQueue({int offset = 0}) =>
+      throw UnsupportedError('The verification list is not the other queue.');
+
+  @override
+  Future<VacancyReview> vacancyForReview(String vacancyId) =>
+      throw UnsupportedError('The verification list reads no vacancy.');
+
+  @override
+  Future<void> moderateVacancy(
+    String vacancyId,
+    ModerationDecision decision, {
+    String? reason,
+  }) => throw UnsupportedError('The verification list moderates nothing.');
 }
 
 class _RecordingOpener implements AttachmentOpener {
@@ -142,7 +162,7 @@ void main() {
           locale: const Locale('en'),
           localizationsDelegates: AppL10n.localizationsDelegates,
           supportedLocales: AppL10n.supportedLocales,
-          home: const VerificationQueueScreen(),
+          home: const Scaffold(body: VerificationQueueList()),
         ),
       ),
     );
@@ -472,20 +492,24 @@ void main() {
         find.text('This employer has already been reviewed.'),
         findsOneWidget,
       );
-      // One left, on Beta's card. Two things happened at once and both are the
-      // point: the sheet's action came off, because every decision would 409
-      // again, and Alfa's row left the queue in the same beat — the work *is*
-      // done. Its dismiss reads "Back" rather than "Cancel", because there is
-      // nothing left to cancel.
-      expect(find.widgetWithText(HhButton, 'Verify'), findsOneWidget);
+      // The sheet's action came off — every retry would 409 again — leaving the
+      // two cards' buttons behind it. Its dismiss reads "Back" rather than
+      // "Cancel", because there is nothing left to cancel.
+      expect(find.widgetWithText(HhButton, 'Verify'), findsNWidgets(2));
       expect(find.widgetWithText(HhButton, 'Cancel'), findsNothing);
       expect(fake.decisions.length, 1);
+
+      // Still there while the sheet is open, and that is deliberate: the row
+      // leaves when the sheet closes, so a card does not vanish behind a notice
+      // the administrator is still reading. `findsWidgets` rather than a count,
+      // because the sheet names its subject too.
+      expect(find.text('Alfa'), findsWidgets);
 
       await tester.tap(find.widgetWithText(HhButton, 'Back'));
       await tester.pumpAndSettle();
 
       // The work *is* done, so the row leaves exactly as it would have on
-      // success. Only the toast differs.
+      // success. Only the confirmation differs.
       expect(find.text('Alfa'), findsNothing);
       expect(find.text('Beta'), findsOneWidget);
       expect(find.text('Decision recorded.'), findsNothing);

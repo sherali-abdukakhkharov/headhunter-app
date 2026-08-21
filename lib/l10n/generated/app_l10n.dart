@@ -3868,6 +3868,138 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Decision recorded.'**
   String get adminDecisionRecorded;
+
+  /// Heading over §10.2's two queues. The nav label is "Moderatsiya" and this repeats it deliberately: a shell tab has no app bar, so without it the segmented control is the only thing naming the screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderation'**
+  String get adminQueueTitle;
+
+  /// First segment: §10.2's employer verification queue. Named for the object rather than the action, so it reads beside the second segment.
+  ///
+  /// In en, this message translates to:
+  /// **'Employers'**
+  String get adminQueueEmployers;
+
+  /// Second segment: the vacancy moderation queue (BR-04).
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies'**
+  String get adminQueueVacancies;
+
+  /// Empty moderation queue. A good state, so not phrased as an absence of results.
+  ///
+  /// In en, this message translates to:
+  /// **'No vacancy is waiting'**
+  String get adminModerationEmpty;
+
+  /// Explains how the list fills up rather than restating that it is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies appear here as employers submit them for publication.'**
+  String get adminModerationEmptyBody;
+
+  /// Badge on a queue row whose vacancy carries a BR-12 age or gender restriction. Warning-toned, and it is not an accusation: the tone means "waiting on a person", and a restriction is exactly what §10.2 will not let through unreviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Age or gender limit'**
+  String get adminRestrictionFlag;
+
+  /// App-bar title on §10.2's vacancy review. Generic, because the vacancy's own title is the heading in the body and an employer's words do not belong in a chrome bar where they would be truncated.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get adminReviewTitle;
+
+  /// The review answered 404. Most often a colleague decided it first, so this is an outcome and not a fault — its own notice, a way back, and no retry, the same treatment UAT-15 gives the candidate detail screen.
+  ///
+  /// In en, this message translates to:
+  /// **'This vacancy has left the queue'**
+  String get adminVacancyGoneTitle;
+
+  /// Names the likely reason without claiming to know which: the route answers 404 for decided, withdrawn and deleted alike.
+  ///
+  /// In en, this message translates to:
+  /// **'Somebody may have decided it already, or the employer may have withdrawn it.'**
+  String get adminVacancyGoneBody;
+
+  /// §10.2's approval, named for what it does. BR-04 makes approving the act that publishes, so "Approve" would understate it — there is no approve-without-publishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get adminPublish;
+
+  /// §10.2's rejection. "Send back" rather than "Reject", because §6.4 returns an edited rejection to draft — it is a correction path, not an ending.
+  ///
+  /// In en, this message translates to:
+  /// **'Send back'**
+  String get adminSendBack;
+
+  /// Confirmation heading for publishing a vacancy.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish this vacancy?'**
+  String get adminPublishTitle;
+
+  /// Two consequences, and the second is the one a moderator can miss: for a BR-12 restricted vacancy this queue is the only route to publication, so approving the vacancy is approving the restriction with it.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates see it straight away. If it carries an age or gender limit, publishing approves that limit too — this queue is the only way one can ever go live.'**
+  String get adminPublishBody;
+
+  /// Confirmation heading for returning a vacancy to the employer.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this vacancy back?'**
+  String get adminSendBackTitle;
+
+  /// Says what survives and what the reason is for: §6.4 puts an edited rejection back in draft, so the reason is an instruction rather than a verdict.
+  ///
+  /// In en, this message translates to:
+  /// **'The employer can edit it and submit again. Your reason is the only guidance they get, so name what has to change.'**
+  String get adminSendBackBody;
+
+  /// The BR-12 question, stated as a question rather than as a warning: §10.2 asks a person to decide whether the stated reason genuinely requires the limit. Without this the card is four labels and no task.
+  ///
+  /// In en, this message translates to:
+  /// **'A limit is only allowed where the reason genuinely requires it. Judge the reason, not the limit.'**
+  String get adminRestrictionJudge;
+
+  /// Label over the age bound. Shown as a range with an open end where only one side was set.
+  ///
+  /// In en, this message translates to:
+  /// **'Age limit'**
+  String get adminRestrictionAge;
+
+  /// Label over the gender bound — a dictionary id resolved to a label (BR-13).
+  ///
+  /// In en, this message translates to:
+  /// **'Gender limit'**
+  String get adminRestrictionGender;
+
+  /// Label over the BR-12 justification the employer picked from the enumerated list — the thing §10.2 actually asks a moderator to judge.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason the employer chose'**
+  String get adminRestrictionReason;
+
+  /// Label over the employer's own elaboration, shown verbatim (§2.4). A moderator judging a paraphrase would be judging something the employer did not say.
+  ///
+  /// In en, this message translates to:
+  /// **'In their own words'**
+  String get adminRestrictionNote;
+
+  /// This vacancy has been round the loop before. Worth showing: a second rejection for the same thing means the first reason did not land, which is the moderator's problem to fix rather than repeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent back before, for this'**
+  String get adminPreviousReason;
+
+  /// Heading over region, district and street address on the review.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the work is'**
+  String get adminVacancyWhere;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -24,12 +24,12 @@ import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 ///
 /// ## A counter is a way in, or it has no chevron
 ///
-/// The verification counter navigates. The other two do not, because their
-/// screens do not exist yet — and a number that navigates to "this arrives in
-/// M10" is worse than one that does not navigate at all. [_QueueRow] takes an
-/// optional `onTap` and shows the chevron only where there is one, so the next
-/// admin slice turns each of them on by passing a destination and nothing else
-/// about this screen changes.
+/// The two §10.2 counters navigate, each to its own segment of the moderation
+/// tab. The complaint counter does not, because its screen does not exist yet —
+/// and a number that navigates to "this arrives in M10" is worse than one that
+/// does not navigate at all. [_QueueRow] takes an optional `onTap` and shows
+/// the chevron only where there is one, so the next admin slice turns it on by
+/// passing a destination and nothing else about this screen changes.
 ///
 /// ## The header is not the employer's navy panel
 ///
@@ -165,15 +165,22 @@ class _Queues extends StatelessWidget {
             icon: HhIconPath.shieldCheck,
             label: l10n.adminAwaitingVerification,
             count: data.awaitingVerification,
-            // The only queue with a screen. §10.2's other half and the
-            // complaint queue follow, and each is one argument here.
-            onTap: () => GoRouter.of(context).go(Routes.adminQueue),
+            // Each counter names its queue in the location, so both land on the
+            // segment they describe. Screen state would not: the shell keeps
+            // the branch, so the second counter tapped would show the first
+            // one's list.
+            onTap: () => GoRouter.of(context).go(
+              Routes.adminQueueWith(Routes.adminQueueVerification),
+            ),
           ),
           const Divider(height: 1, color: HhColors.borderFaint),
           _QueueRow(
             icon: HhIconPath.briefcase,
             label: l10n.adminAwaitingModeration,
             count: data.awaitingModeration,
+            onTap: () => GoRouter.of(context).go(
+              Routes.adminQueueWith(Routes.adminQueueVacancies),
+            ),
           ),
           const Divider(height: 1, color: HhColors.borderFaint),
           _QueueRow(

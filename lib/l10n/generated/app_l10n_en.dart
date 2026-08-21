@@ -2191,4 +2191,75 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get adminDecisionRecorded => 'Decision recorded.';
+
+  @override
+  String get adminQueueTitle => 'Moderation';
+
+  @override
+  String get adminQueueEmployers => 'Employers';
+
+  @override
+  String get adminQueueVacancies => 'Vacancies';
+
+  @override
+  String get adminModerationEmpty => 'No vacancy is waiting';
+
+  @override
+  String get adminModerationEmptyBody =>
+      'Vacancies appear here as employers submit them for publication.';
+
+  @override
+  String get adminRestrictionFlag => 'Age or gender limit';
+
+  @override
+  String get adminReviewTitle => 'Review';
+
+  @override
+  String get adminVacancyGoneTitle => 'This vacancy has left the queue';
+
+  @override
+  String get adminVacancyGoneBody =>
+      'Somebody may have decided it already, or the employer may have withdrawn it.';
+
+  @override
+  String get adminPublish => 'Publish';
+
+  @override
+  String get adminSendBack => 'Send back';
+
+  @override
+  String get adminPublishTitle => 'Publish this vacancy?';
+
+  @override
+  String get adminPublishBody =>
+      'Candidates see it straight away. If it carries an age or gender limit, publishing approves that limit too — this queue is the only way one can ever go live.';
+
+  @override
+  String get adminSendBackTitle => 'Send this vacancy back?';
+
+  @override
+  String get adminSendBackBody =>
+      'The employer can edit it and submit again. Your reason is the only guidance they get, so name what has to change.';
+
+  @override
+  String get adminRestrictionJudge =>
+      'A limit is only allowed where the reason genuinely requires it. Judge the reason, not the limit.';
+
+  @override
+  String get adminRestrictionAge => 'Age limit';
+
+  @override
+  String get adminRestrictionGender => 'Gender limit';
+
+  @override
+  String get adminRestrictionReason => 'Reason the employer chose';
+
+  @override
+  String get adminRestrictionNote => 'In their own words';
+
+  @override
+  String get adminPreviousReason => 'Sent back before, for this';
+
+  @override
+  String get adminVacancyWhere => 'Where the work is';
 }

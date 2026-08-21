@@ -174,15 +174,19 @@ final class AdminDashboardProvider
 
 String _$adminDashboardHash() => r'5c11edb05ad9248cc6955cea9dadb11e78c71683';
 
-/// §10.2's verification queue, oldest first.
+/// §10.2's employer verification queue, oldest first.
 
 @ProviderFor(VerificationQueue)
 final verificationQueueProvider = VerificationQueueProvider._();
 
-/// §10.2's verification queue, oldest first.
+/// §10.2's employer verification queue, oldest first.
 final class VerificationQueueProvider
-    extends $AsyncNotifierProvider<VerificationQueue, VerificationQueuePage> {
-  /// §10.2's verification queue, oldest first.
+    extends
+        $AsyncNotifierProvider<
+          VerificationQueue,
+          AdminQueuePage<VerificationQueueItem>
+        > {
+  /// §10.2's employer verification queue, oldest first.
   VerificationQueueProvider._()
     : super(
         from: null,
@@ -202,30 +206,200 @@ final class VerificationQueueProvider
   VerificationQueue create() => VerificationQueue();
 }
 
-String _$verificationQueueHash() => r'8a6ae86b3751a977392fc43046a38682930ca983';
+String _$verificationQueueHash() => r'b56cffc47fa830c952b568887f6fbc540ba9cd5c';
 
-/// §10.2's verification queue, oldest first.
+/// §10.2's employer verification queue, oldest first.
 
 abstract class _$VerificationQueue
-    extends $AsyncNotifier<VerificationQueuePage> {
-  FutureOr<VerificationQueuePage> build();
+    extends $AsyncNotifier<AdminQueuePage<VerificationQueueItem>> {
+  FutureOr<AdminQueuePage<VerificationQueueItem>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
-            as $Ref<AsyncValue<VerificationQueuePage>, VerificationQueuePage>;
+            as $Ref<
+              AsyncValue<AdminQueuePage<VerificationQueueItem>>,
+              AdminQueuePage<VerificationQueueItem>
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<VerificationQueuePage>,
-                VerificationQueuePage
+                AsyncValue<AdminQueuePage<VerificationQueueItem>>,
+                AdminQueuePage<VerificationQueueItem>
               >,
-              AsyncValue<VerificationQueuePage>,
+              AsyncValue<AdminQueuePage<VerificationQueueItem>>,
               Object?,
               Object?
             >;
     return element.handleCreate(ref, build);
   }
+}
+
+/// §10.2's vacancy moderation queue, oldest first (BR-04).
+
+@ProviderFor(ModerationQueue)
+final moderationQueueProvider = ModerationQueueProvider._();
+
+/// §10.2's vacancy moderation queue, oldest first (BR-04).
+final class ModerationQueueProvider
+    extends
+        $AsyncNotifierProvider<
+          ModerationQueue,
+          AdminQueuePage<ModerationQueueItem>
+        > {
+  /// §10.2's vacancy moderation queue, oldest first (BR-04).
+  ModerationQueueProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'moderationQueueProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$moderationQueueHash();
+
+  @$internal
+  @override
+  ModerationQueue create() => ModerationQueue();
+}
+
+String _$moderationQueueHash() => r'c94c728743e49747d38f07b550a46bba49a82e98';
+
+/// §10.2's vacancy moderation queue, oldest first (BR-04).
+
+abstract class _$ModerationQueue
+    extends $AsyncNotifier<AdminQueuePage<ModerationQueueItem>> {
+  FutureOr<AdminQueuePage<ModerationQueueItem>> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<AdminQueuePage<ModerationQueueItem>>,
+              AdminQueuePage<ModerationQueueItem>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AdminQueuePage<ModerationQueueItem>>,
+                AdminQueuePage<ModerationQueueItem>
+              >,
+              AsyncValue<AdminQueuePage<ModerationQueueItem>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// One vacancy, loaded for §10.2's review.
+///
+/// A family rather than a notifier: unlike a queue this is read once per screen
+/// and never appended to, and keying it by id is what lets a moderator open two
+/// reviews in a session without the second overwriting the first.
+
+@ProviderFor(vacancyForReview)
+final vacancyForReviewProvider = VacancyForReviewFamily._();
+
+/// One vacancy, loaded for §10.2's review.
+///
+/// A family rather than a notifier: unlike a queue this is read once per screen
+/// and never appended to, and keying it by id is what lets a moderator open two
+/// reviews in a session without the second overwriting the first.
+
+final class VacancyForReviewProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<VacancyReview>,
+          VacancyReview,
+          FutureOr<VacancyReview>
+        >
+    with $FutureModifier<VacancyReview>, $FutureProvider<VacancyReview> {
+  /// One vacancy, loaded for §10.2's review.
+  ///
+  /// A family rather than a notifier: unlike a queue this is read once per screen
+  /// and never appended to, and keying it by id is what lets a moderator open two
+  /// reviews in a session without the second overwriting the first.
+  VacancyForReviewProvider._({
+    required VacancyForReviewFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'vacancyForReviewProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$vacancyForReviewHash();
+
+  @override
+  String toString() {
+    return r'vacancyForReviewProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<VacancyReview> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<VacancyReview> create(Ref ref) {
+    final argument = this.argument as String;
+    return vacancyForReview(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VacancyForReviewProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$vacancyForReviewHash() => r'bfc15e47760fa7081c0d9376c420d87b959e4349';
+
+/// One vacancy, loaded for §10.2's review.
+///
+/// A family rather than a notifier: unlike a queue this is read once per screen
+/// and never appended to, and keying it by id is what lets a moderator open two
+/// reviews in a session without the second overwriting the first.
+
+final class VacancyForReviewFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<VacancyReview>, String> {
+  VacancyForReviewFamily._()
+    : super(
+        retry: null,
+        name: r'vacancyForReviewProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One vacancy, loaded for §10.2's review.
+  ///
+  /// A family rather than a notifier: unlike a queue this is read once per screen
+  /// and never appended to, and keying it by id is what lets a moderator open two
+  /// reviews in a session without the second overwriting the first.
+
+  VacancyForReviewProvider call(String vacancyId) =>
+      VacancyForReviewProvider._(argument: vacancyId, from: this);
+
+  @override
+  String toString() => r'vacancyForReviewProvider';
 }
