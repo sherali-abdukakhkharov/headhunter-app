@@ -59,6 +59,36 @@ class VacancyReview {
   /// the requirement groups. Null until an occupation is picked.
   String? get category => _string('category', 'category');
 
+  /// Whose vacancy this is. The only identification the row carries today.
+  String? get employerUserId => _string('employer_user_id', 'employerUserId');
+
+  /// The employer's name and how to reach them (§10.2), **read before the
+  /// server sends them**.
+  ///
+  /// All three are null against today's API: `loadVacancy` selects the
+  /// `vacancies` columns and nothing joins the employer, so the review has an
+  /// `employer_user_id` and no name, phone or e-mail — which §10.2 lists by
+  /// name. That is recorded as a backend ask in TODO.md.
+  ///
+  /// They are parsed here anyway, and that is the point: the day the join
+  /// lands the fields appear on the review with **no client release**, the
+  /// same way `Invitation.candidateName` was written before `InvitationDto`
+  /// carried it. A client that has to ship in lockstep with a server change
+  /// turns a one-line join into a coordinated release, and a store review
+  /// stands between the two.
+  ///
+  /// Showing an employer's phone to an *administrator* is BR-09's admin
+  /// branch, not a hole in it: §11.1 releases contact data to this role and
+  /// logs every read. The candidate rule — nothing before a paid unlock — is
+  /// about the employer role (§6.6).
+  String? get employerName => _string('employer_name', 'employerName');
+  String? get employerPhone => _string('employer_phone', 'employerPhone');
+  String? get employerEmail => _string('employer_email', 'employerEmail');
+
+  /// Whether anything at all identifies the employer beyond their id.
+  bool get hasEmployerContact =>
+      employerName != null || employerPhone != null || employerEmail != null;
+
   /// `draft`, `under_moderation`, `active`, `paused`, `closed`, `rejected`.
   String? get status => _string('status', 'status');
 

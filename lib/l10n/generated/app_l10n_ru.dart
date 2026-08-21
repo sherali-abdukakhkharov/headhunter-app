@@ -2283,4 +2283,159 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get adminVacancyWhere => 'Место работы';
+
+  @override
+  String get adminVacancyEmployer => 'Работодатель';
+
+  @override
+  String get adminVacancyEmployerPhone => 'Телефон';
+
+  @override
+  String get adminVacancyEmployerEmail => 'Эл. почта';
+
+  @override
+  String get adminComplaintsTitle => 'Жалобы';
+
+  @override
+  String get adminComplaintsEmpty => 'Жалоб нет';
+
+  @override
+  String get adminComplaintsEmptyBody => 'Ни одна жалоба не ждёт решения.';
+
+  @override
+  String get adminComplaintKindVacancy => 'Вакансия';
+
+  @override
+  String get adminComplaintKindUser => 'Пользователь';
+
+  @override
+  String get adminComplaintKindProfile => 'Профиль';
+
+  @override
+  String get adminComplaintKindMessage => 'Сообщение';
+
+  @override
+  String get adminComplaintKindUnknown => 'Неизвестный тип';
+
+  @override
+  String get adminComplaintKindUnknownBody =>
+      'Эта версия приложения не может показать тип объекта. Обновите приложение, чтобы рассмотреть жалобу.';
+
+  @override
+  String get adminComplaintTitle => 'Жалоба';
+
+  @override
+  String get adminComplaintGoneTitle => 'Жалоба не найдена';
+
+  @override
+  String get adminComplaintGoneBody =>
+      'Её уже рассмотрели, либо её не существовало. Решать больше нечего.';
+
+  @override
+  String get adminComplaintReported => 'О чём сообщили';
+
+  @override
+  String get adminComplaintTarget => 'Объект жалобы';
+
+  @override
+  String get adminComplaintTargetGone => 'Объект жалобы удалён';
+
+  @override
+  String get adminComplaintTargetGoneBody =>
+      'Он был удалён после подачи жалобы. Жалоба сохранена, поэтому результат всё ещё можно зафиксировать.';
+
+  @override
+  String get adminComplaintEmployerAccount => 'Аккаунт работодателя';
+
+  @override
+  String get adminComplaintRemedy => 'Сначала примите меру';
+
+  @override
+  String get adminComplaintRemedyBody =>
+      'Отметка «удовлетворена» ничего не выполняет. Сначала примите меру здесь.';
+
+  @override
+  String get adminComplaintNoRemedy =>
+      'Здесь принимать меру не к чему. Зафиксируйте результат ниже.';
+
+  @override
+  String get adminComplaintOutcome => 'Зафиксируйте результат';
+
+  @override
+  String get adminComplaintOutcomeBody =>
+      'Рассмотрение жалобы больше нигде не фиксируется, поэтому написанное вами — единственный её отчёт.';
+
+  @override
+  String get adminComplaintUphold => 'Удовлетворить';
+
+  @override
+  String get adminComplaintDismiss => 'Отклонить';
+
+  @override
+  String get adminComplaintUpholdTitle => 'Удовлетворить эту жалобу?';
+
+  @override
+  String get adminComplaintUpholdBody =>
+      'Жалоба закроется как удовлетворённая. Если нужна мера, примите её до фиксации.';
+
+  @override
+  String get adminComplaintDismissTitle => 'Отклонить эту жалобу?';
+
+  @override
+  String get adminComplaintDismissBody =>
+      'Жалоба закроется без каких-либо мер. Укажите причину — это единственный отчёт о решении.';
+
+  @override
+  String get adminResolutionLabel => 'Решение (хранится в журнале аудита)';
+
+  @override
+  String get adminResolutionHint =>
+      'Вакансия приостановлена, работодателя попросили убрать номер телефона из описания';
+
+  @override
+  String get adminPauseVacancy => 'Приостановить вакансию';
+
+  @override
+  String get adminCloseVacancy => 'Снять вакансию';
+
+  @override
+  String get adminPauseVacancyTitle => 'Приостановить вакансию?';
+
+  @override
+  String get adminPauseVacancyBody =>
+      'Она сразу уйдёт из ленты и может быть возобновлена после исправления работодателем.';
+
+  @override
+  String get adminCloseVacancyTitle => 'Снять вакансию?';
+
+  @override
+  String get adminCloseVacancyBody =>
+      'Она уйдёт из ленты навсегда. Снятую вакансию нельзя открыть заново — если работодатель может исправить, приостановите её.';
+
+  @override
+  String get adminWarnUser => 'Предупредить';
+
+  @override
+  String get adminWarnUserTitle => 'Отправить предупреждение?';
+
+  @override
+  String get adminWarnUserBody =>
+      'Аккаунт не изменится. Предупреждение и его причина будут зафиксированы, а пользователь — уведомлён.';
+
+  @override
+  String get adminWarnReasonLabel =>
+      'Предупреждение (пользователь прочитает дословно)';
+
+  @override
+  String get adminWarnReasonHint =>
+      'Указывать контактные данные в публичном описании вакансии нельзя — пожалуйста, уберите их';
+
+  @override
+  String get adminAccountStatusActive => 'Активен';
+
+  @override
+  String get adminAccountStatusRestricted => 'Ограничен';
+
+  @override
+  String get adminAccountStatusBlocked => 'Заблокирован';
 }

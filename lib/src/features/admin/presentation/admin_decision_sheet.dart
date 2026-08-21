@@ -10,6 +10,13 @@ import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
 /// [AdminDecisionConflict] for the 409 that means somebody decided first, and
 /// [ApiException] for anything else; the sheet renders both and the caller acts
 /// on the returned [AdminDecisionOutcome].
+///
+/// [reasonLabel] and [reasonHint] override the field's wording, and the reason
+/// they can be overridden is the default's parenthesis: it tells the
+/// administrator the *employer* reads the text verbatim. That is true of a
+/// verification refusal and of pausing a live vacancy, and false of a complaint
+/// resolution — which nothing shows to the reporter. A label that promises the
+/// wrong audience is worse than a generic one.
 Future<AdminDecisionOutcome> showAdminDecisionSheet(
   BuildContext context, {
   required String title,
@@ -18,6 +25,8 @@ Future<AdminDecisionOutcome> showAdminDecisionSheet(
   required String confirmLabel,
   required bool needsReason,
   required Future<void> Function(String? reason) send,
+  String? reasonLabel,
+  String? reasonHint,
 }) async =>
     await showModalBottomSheet<AdminDecisionOutcome>(
       context: context,
@@ -30,6 +39,8 @@ Future<AdminDecisionOutcome> showAdminDecisionSheet(
         confirmLabel: confirmLabel,
         needsReason: needsReason,
         send: send,
+        reasonLabel: reasonLabel,
+        reasonHint: reasonHint,
       ),
     ) ??
     AdminDecisionOutcome.dismissed;
@@ -66,6 +77,8 @@ class _DecisionSheet extends StatefulWidget {
     required this.confirmLabel,
     required this.needsReason,
     required this.send,
+    this.reasonLabel,
+    this.reasonHint,
   });
 
   final String title;
@@ -79,6 +92,11 @@ class _DecisionSheet extends StatefulWidget {
   final String confirmLabel;
   final bool needsReason;
   final Future<void> Function(String? reason) send;
+
+  /// Wording for the reason field, where "the employer reads it word for word"
+  /// is not who reads it. Null keeps the verification and moderation default.
+  final String? reasonLabel;
+  final String? reasonHint;
 
   @override
   State<_DecisionSheet> createState() => _DecisionSheetState();
@@ -159,9 +177,9 @@ class _DecisionSheetState extends State<_DecisionSheet> {
                 if (widget.needsReason && !_settled) ...[
                   const SizedBox(height: HhSpace.lg),
                   HhTextField(
-                    label: l10n.adminReasonLabel,
+                    label: widget.reasonLabel ?? l10n.adminReasonLabel,
                     controller: _reason,
-                    hintText: l10n.adminReasonHint,
+                    hintText: widget.reasonHint ?? l10n.adminReasonHint,
                     maxLines: 4,
                     // The server's own ceiling, so the field stops where the
                     // API would have refused rather than after it.

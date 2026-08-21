@@ -94,6 +94,11 @@ abstract final class Routes {
   static String adminVacancyReviewFor(String vacancyId) =>
       '$adminQueue/$adminQueueVacancies/$vacancyId';
 
+  /// §10.2's complaint review, a child of the complaints tab for the same
+  /// reason: back returns to the queue with its place kept.
+  static String adminComplaintFor(String complaintId) =>
+      '$adminComplaints/$complaintId';
+
   // --- Development surfaces ------------------------------------------------
 
   /// Developer tools: the role switcher, the design catalogue, the health probe

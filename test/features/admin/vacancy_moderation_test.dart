@@ -7,12 +7,10 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
-import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
-import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/moderation_queue_screen.dart';
@@ -21,8 +19,10 @@ import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_provider
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
 
+import 'admin_fake.dart';
+
 /// §10.2's vacancy moderation — the administrator's half of BR-04.
-class _FakeAdmin implements AdminRepository {
+class _FakeAdmin extends FakeAdminBase {
   _FakeAdmin({
     this.pages = const [],
     this.review,
@@ -72,21 +72,8 @@ class _FakeAdmin implements AdminRepository {
   }
 
   // The other half of §10.2 lives behind the other segment and has its own
-  // suite; the dashboard has one too.
-  @override
-  Future<AdminDashboard> dashboard({String? from, String? to}) =>
-      throw UnsupportedError('Moderation does not read the dashboard.');
-
-  @override
-  Future<List<VerificationQueueItem>> verificationQueue({int offset = 0}) =>
-      throw UnsupportedError('Moderation is not the verification queue.');
-
-  @override
-  Future<void> decideVerification(
-    String employerUserId,
-    VerificationDecision decision, {
-    String? reason,
-  }) => throw UnsupportedError('Moderation verifies nobody.');
+  // suite, the complaint queue has a third, and the dashboard a fourth. All of
+  // them refuse through [FakeAdminBase] — moderation verifies nobody.
 }
 
 /// An ISO-8601 timestamp [ago] before now, in the platform's `+05:00`.
@@ -154,6 +141,7 @@ Map<String, dynamic> _storedRow({
   'restriction_justification_id': justificationId,
   'restriction_justification_note': justificationNote,
   'moderation_reason': moderationReason,
+  'employer_user_id': 'usr-employer',
 };
 
 VacancyReview _review({
@@ -279,6 +267,72 @@ void main() {
       expect(empty.requirements, isEmpty);
       expect(empty.restriction, isNull);
       expect(empty.salaryIsNegotiable, isFalse);
+    });
+  });
+
+  group('the employer card is written before the server sends it', () {
+    test('the name and contact are read in either spelling', () {
+      final stored = _review(
+        row: {
+          ..._storedRow(),
+          'employer_name': 'Qurilish Servis MChJ',
+          'employer_phone': '+998901234567',
+          'employer_email': 'hr@qurilish.uz',
+        },
+      );
+      final dto = _review(
+        row: {
+          ..._storedRow(),
+          'employerName': 'Qurilish Servis MChJ',
+          'employerPhone': '+998901234567',
+          'employerEmail': 'hr@qurilish.uz',
+        },
+      );
+
+      expect(stored.employerName, dto.employerName);
+      expect(stored.employerPhone, dto.employerPhone);
+      expect(stored.employerEmail, dto.employerEmail);
+      expect(stored.hasEmployerContact, isTrue);
+    });
+
+    test("today's response carries none of them", () {
+      // `loadVacancy` selects the `vacancies` columns and nothing joins the
+      // employer, so the review has an `employer_user_id` and no name, phone
+      // or e-mail — which §10.2 lists by name. Recorded as a backend ask.
+      final today = _review(row: _storedRow());
+
+      expect(today.employerUserId, 'usr-employer');
+      expect(today.employerName, isNull);
+      expect(today.hasEmployerContact, isFalse);
+    });
+
+    testWidgets('so the card is absent, and appears with no release', (
+      tester,
+    ) async {
+      await pumpReview(tester);
+      expect(find.text('Employer'), findsNothing);
+
+      // The same build, the same day the join lands. This is the whole reason
+      // the fields are parsed against a server that does not send them — the
+      // `Invitation.candidateName` idiom, which spared a coordinated release
+      // and a store review between the two halves of a one-line change.
+      await pumpReview(
+        tester,
+        review: _review(
+          row: {
+            ..._storedRow(),
+            'employer_name': 'Qurilish Servis MChJ',
+            'employer_phone': '+998901234567',
+          },
+        ),
+      );
+
+      await tester.scrollUntilVisible(find.text('Employer'), 200);
+      expect(find.text('Qurilish Servis MChJ'), findsOneWidget);
+      expect(find.text('+998901234567'), findsOneWidget);
+      // Only what arrived: there is no "not provided" row, so an employer with
+      // no e-mail on file is not reported as a gap in the response.
+      expect(find.text('E-mail'), findsNothing);
     });
   });
 

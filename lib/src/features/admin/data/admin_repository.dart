@@ -4,6 +4,9 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
+import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
+import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
@@ -168,6 +171,141 @@ class AdminRepository {
     } on DioException catch (e) {
       throw _alreadyDecided(e, 'vacancy.not_under_moderation') ??
           ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /admin/complaints` — open complaints over all four target kinds.
+  ///
+  /// **One queue, not four**, which is the server's own design: M6 made
+  /// `complaints` a generic table so §10.2 reviews reported users, vacancies,
+  /// messages and profiles from one place. Oldest first, like the other two.
+  ///
+  /// [targetType] is the server's filter and is left unused for now — see
+  /// `ComplaintQueueList` for why a four-way filter is not a segmented
+  /// control. It is on the signature because the route takes it and a caller
+  /// that wants one queue's worth should not have to widen this first.
+  Future<List<Complaint>> complaintQueue({
+    ComplaintTarget? targetType,
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/complaints',
+        queryParameters: {
+          'limit': adminPageSize,
+          'offset': offset,
+          // Never the `unknown` sentinel: it is a client-side fallback for a
+          // value this build does not know, and sending its empty wire string
+          // would be a filter the server rejects.
+          if (targetType != null && targetType != ComplaintTarget.unknown)
+            'targetType': targetType.wire,
+        },
+      );
+
+      final items = response.data?['items'];
+      if (items is! List) return const [];
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(Complaint.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /admin/complaints/:id` — the complaint and enough of its target.
+  ///
+  /// A 404 (`complaint.not_found`) is rendered as an outcome rather than a
+  /// fault, like the vacancy review's.
+  Future<ComplaintDetail> complaint(String complaintId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/complaints/$complaintId',
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return ComplaintDetail.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /admin/complaints/:id/review` — action it, or dismiss it (§10.2).
+  ///
+  /// [resolution] is required by the server on **both** outcomes, so it is a
+  /// positional argument rather than an optional one: a `String?` here would
+  /// let a caller send a dismissal with nothing recorded and learn about it
+  /// from a 403.
+  ///
+  /// Throws [AdminDecisionConflict] on 409 `complaint.not_open` — two
+  /// administrators working one queue, and the work is done either way.
+  Future<void> reviewComplaint(
+    String complaintId,
+    ComplaintOutcome outcome,
+    String resolution,
+  ) async {
+    try {
+      await _dio.post<void>(
+        '/admin/complaints/$complaintId/review',
+        data: {'outcome': outcome.wire, 'resolution': resolution},
+      );
+    } on DioException catch (e) {
+      throw _alreadyDecided(e, 'complaint.not_open') ??
+          ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PUT /admin/vacancies/:vacancyId/status` — pause or remove a **live**
+  /// vacancy (§10.2).
+  ///
+  /// The route §10.2 asks for and nothing could reach until now: the
+  /// moderation queue only ever holds `under_moderation`, and this applies to
+  /// a vacancy already published. A complaint about one is the way in.
+  ///
+  /// Its 409 is `vacancy.transition_not_allowed` and it is **deliberately not**
+  /// mapped to [AdminDecisionConflict]. That conflict means "somebody decided
+  /// this before you and the work is done"; this one means the vacancy is not
+  /// in a state the action applies to — already closed, never published — and
+  /// telling an administrator their colleague handled it would send them
+  /// looking for a decision nobody made. The server's own message says which,
+  /// and the client offers the action only where the transition table allows
+  /// it (see [VacancyAdminStatus.availableFor]), so this 409 means the
+  /// vacancy moved under the screen.
+  Future<void> administrateVacancy(
+    String vacancyId,
+    VacancyAdminStatus status,
+    String reason,
+  ) async {
+    try {
+      await _dio.put<void>(
+        '/admin/vacancies/$vacancyId/status',
+        data: {'status': status.wire, 'reason': reason},
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /admin/users/:userId/warn` — the mild remedy (§10.4).
+  ///
+  /// Changes no account status: the audit row **is** the record, which is the
+  /// proportionate answer to an upheld complaint that does not warrant
+  /// restricting somebody. Restrict, block and unblock live on
+  /// `PUT /admin/users/:userId/status` and land with §10.4's user screen,
+  /// because a temporary restriction needs an until-date and this does not.
+  Future<void> warnUser(String userId, String reason) async {
+    try {
+      await _dio.post<void>(
+        '/admin/users/$userId/warn',
+        data: {'reason': reason},
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
     }
   }
 
@@ -372,6 +510,64 @@ class ModerationQueue extends _$ModerationQueue {
     );
   }
 }
+
+/// §10.2's complaint queue, oldest first, all four target kinds together.
+@riverpod
+class ComplaintQueue extends _$ComplaintQueue {
+  @override
+  Future<AdminQueuePage<Complaint>> build() async {
+    final items = await ref.watch(adminRepositoryProvider).complaintQueue();
+
+    return AdminQueuePage(
+      items: items,
+      hasMore: items.length == adminPageSize,
+    );
+  }
+
+  Future<void> loadMore() async {
+    final page = state.value;
+    if (page == null || page.isLoadingMore || !page.hasMore) return;
+
+    state = AsyncData(page.copyWith(isLoadingMore: true));
+
+    try {
+      final next = await ref
+          .read(adminRepositoryProvider)
+          .complaintQueue(offset: page.items.length);
+
+      state = AsyncData(
+        AdminQueuePage(
+          items: [...page.items, ...next],
+          hasMore: next.length == adminPageSize,
+        ),
+      );
+    } on ApiException {
+      state = AsyncData(page.copyWith(isLoadingMore: false));
+      rethrow;
+    }
+  }
+
+  /// Drops one reviewed complaint — see [AdminQueuePage.withItems].
+  void remove(String complaintId) {
+    final page = state.value;
+    if (page == null) return;
+
+    state = AsyncData(
+      page.withItems(
+        page.items.where((item) => item.id != complaintId).toList(),
+      ),
+    );
+  }
+}
+
+/// One complaint and its target, loaded for §10.2's review.
+///
+/// Keyed by id for the same reason the vacancy review is: it is read once per
+/// screen, never appended to, and two reviews open in a session must not
+/// overwrite each other.
+@riverpod
+Future<ComplaintDetail> complaintDetail(Ref ref, String complaintId) =>
+    ref.watch(adminRepositoryProvider).complaint(complaintId);
 
 /// One vacancy, loaded for §10.2's review.
 ///

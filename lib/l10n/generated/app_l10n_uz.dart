@@ -2262,6 +2262,163 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminVacancyWhere => 'Ish joyi';
+
+  @override
+  String get adminVacancyEmployer => 'Ish beruvchi';
+
+  @override
+  String get adminVacancyEmployerPhone => 'Telefon';
+
+  @override
+  String get adminVacancyEmployerEmail => 'E-pochta';
+
+  @override
+  String get adminComplaintsTitle => 'Shikoyatlar';
+
+  @override
+  String get adminComplaintsEmpty => 'Shikoyat yo\'q';
+
+  @override
+  String get adminComplaintsEmptyBody =>
+      'Hech bir shikoyat qarorni kutmayapti.';
+
+  @override
+  String get adminComplaintKindVacancy => 'Vakansiya';
+
+  @override
+  String get adminComplaintKindUser => 'Foydalanuvchi';
+
+  @override
+  String get adminComplaintKindProfile => 'Profil';
+
+  @override
+  String get adminComplaintKindMessage => 'Xabar';
+
+  @override
+  String get adminComplaintKindUnknown => 'Noma\'lum tur';
+
+  @override
+  String get adminComplaintKindUnknownBody =>
+      'Ilovaning bu versiyasi bu obyekt turini ko\'rsata olmaydi. Ko\'rib chiqish uchun ilovani yangilang.';
+
+  @override
+  String get adminComplaintTitle => 'Shikoyat';
+
+  @override
+  String get adminComplaintGoneTitle => 'Bu shikoyat topilmadi';
+
+  @override
+  String get adminComplaintGoneBody =>
+      'Kimdir uni ko\'rib chiqqan yoki u hech qachon bo\'lmagan. Hal qiladigan narsa qolmadi.';
+
+  @override
+  String get adminComplaintReported => 'Nima haqida xabar qilingan';
+
+  @override
+  String get adminComplaintTarget => 'Shikoyat qilingan obyekt';
+
+  @override
+  String get adminComplaintTargetGone =>
+      'Shikoyat qilingan obyekt o\'chirilgan';
+
+  @override
+  String get adminComplaintTargetGoneBody =>
+      'U shikoyat berilgandan keyin o\'chirilgan. Shikoyat saqlanadi, shuning uchun natijani hali ham qayd etish mumkin.';
+
+  @override
+  String get adminComplaintEmployerAccount => 'Ish beruvchi hisobi';
+
+  @override
+  String get adminComplaintRemedy => 'Avval chora ko\'ring';
+
+  @override
+  String get adminComplaintRemedyBody =>
+      'Shikoyatni qabul qilingan deb qayd etish hech narsani amalga oshirmaydi. Avval shu yerda chora ko\'ring.';
+
+  @override
+  String get adminComplaintNoRemedy =>
+      'Bu yerda ko\'radigan chora yo\'q. Natijani pastda qayd eting.';
+
+  @override
+  String get adminComplaintOutcome => 'Natijani qayd eting';
+
+  @override
+  String get adminComplaintOutcomeBody =>
+      'Shikoyatni ko\'rib chiqishni boshqa hech narsa qayd etmaydi, shuning uchun yozganingiz — uning yagona bayoni.';
+
+  @override
+  String get adminComplaintUphold => 'Qabul qilish';
+
+  @override
+  String get adminComplaintDismiss => 'Rad etish';
+
+  @override
+  String get adminComplaintUpholdTitle => 'Bu shikoyat qabul qilinsinmi?';
+
+  @override
+  String get adminComplaintUpholdBody =>
+      'Shikoyat qabul qilingan holda yopiladi. Chora kerak bo\'lsa, buni qayd etishdan oldin ko\'ring.';
+
+  @override
+  String get adminComplaintDismissTitle => 'Bu shikoyat rad etilsinmi?';
+
+  @override
+  String get adminComplaintDismissBody =>
+      'Shikoyat hech qanday chorasiz yopiladi. Sababini yozing — bu qarorning yagona bayoni.';
+
+  @override
+  String get adminResolutionLabel => 'Qaror (audit jurnalida saqlanadi)';
+
+  @override
+  String get adminResolutionHint =>
+      'Vakansiya to\'xtatildi va ish beruvchidan tavsifdan telefon raqamini olib tashlash so\'raldi';
+
+  @override
+  String get adminPauseVacancy => 'Vakansiyani to\'xtatish';
+
+  @override
+  String get adminCloseVacancy => 'Vakansiyani olib tashlash';
+
+  @override
+  String get adminPauseVacancyTitle => 'Vakansiya to\'xtatilsinmi?';
+
+  @override
+  String get adminPauseVacancyBody =>
+      'Vakansiya darhol lentadan chiqadi va ish beruvchi tuzatgandan keyin qayta tiklanishi mumkin.';
+
+  @override
+  String get adminCloseVacancyTitle => 'Vakansiya olib tashlansinmi?';
+
+  @override
+  String get adminCloseVacancyBody =>
+      'Vakansiya lentadan butunlay chiqadi. Olib tashlangan vakansiya qayta ochilmaydi — ish beruvchi tuzatishi mumkin bo\'lsa, uni to\'xtating.';
+
+  @override
+  String get adminWarnUser => 'Ogohlantirish yuborish';
+
+  @override
+  String get adminWarnUserTitle => 'Ogohlantirish yuborilsinmi?';
+
+  @override
+  String get adminWarnUserBody =>
+      'Hisobi o\'zgarmaydi. Ogohlantirish va uning sababi qayd etiladi, foydalanuvchi esa xabardor qilinadi.';
+
+  @override
+  String get adminWarnReasonLabel =>
+      'Ogohlantirish (foydalanuvchi so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminWarnReasonHint =>
+      'Ommaviy vakansiya tavsifida aloqa ma\'lumotlarini ko\'rsatish mumkin emas — iltimos, olib tashlang';
+
+  @override
+  String get adminAccountStatusActive => 'Faol';
+
+  @override
+  String get adminAccountStatusRestricted => 'Cheklangan';
+
+  @override
+  String get adminAccountStatusBlocked => 'Bloklangan';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -4515,6 +4672,161 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminVacancyWhere => 'Иш жойи';
+
+  @override
+  String get adminVacancyEmployer => 'Иш берувчи';
+
+  @override
+  String get adminVacancyEmployerPhone => 'Телефон';
+
+  @override
+  String get adminVacancyEmployerEmail => 'Э-почта';
+
+  @override
+  String get adminComplaintsTitle => 'Шикоятлар';
+
+  @override
+  String get adminComplaintsEmpty => 'Шикоят йўқ';
+
+  @override
+  String get adminComplaintsEmptyBody => 'Ҳеч бир шикоят қарорни кутмаяпти.';
+
+  @override
+  String get adminComplaintKindVacancy => 'Вакансия';
+
+  @override
+  String get adminComplaintKindUser => 'Фойдаланувчи';
+
+  @override
+  String get adminComplaintKindProfile => 'Профил';
+
+  @override
+  String get adminComplaintKindMessage => 'Хабар';
+
+  @override
+  String get adminComplaintKindUnknown => 'Номаълум тур';
+
+  @override
+  String get adminComplaintKindUnknownBody =>
+      'Илованинг бу версияси бу объект турини кўрсата олмайди. Кўриб чиқиш учун иловани янгиланг.';
+
+  @override
+  String get adminComplaintTitle => 'Шикоят';
+
+  @override
+  String get adminComplaintGoneTitle => 'Бу шикоят топилмади';
+
+  @override
+  String get adminComplaintGoneBody =>
+      'Кимдир уни кўриб чиққан ёки у ҳеч қачон бўлмаган. Ҳал қиладиган нарса қолмади.';
+
+  @override
+  String get adminComplaintReported => 'Нима ҳақида хабар қилинган';
+
+  @override
+  String get adminComplaintTarget => 'Шикоят қилинган объект';
+
+  @override
+  String get adminComplaintTargetGone => 'Шикоят қилинган объект ўчирилган';
+
+  @override
+  String get adminComplaintTargetGoneBody =>
+      'У шикоят берилгандан кейин ўчирилган. Шикоят сақланади, шунинг учун натижани ҳали ҳам қайд этиш мумкин.';
+
+  @override
+  String get adminComplaintEmployerAccount => 'Иш берувчи ҳисоби';
+
+  @override
+  String get adminComplaintRemedy => 'Аввал чора кўринг';
+
+  @override
+  String get adminComplaintRemedyBody =>
+      'Шикоятни қабул қилинган деб қайд этиш ҳеч нарсани амалга оширмайди. Аввал шу ерда чора кўринг.';
+
+  @override
+  String get adminComplaintNoRemedy =>
+      'Бу ерда кўрадиган чора йўқ. Натижани пастда қайд этинг.';
+
+  @override
+  String get adminComplaintOutcome => 'Натижани қайд этинг';
+
+  @override
+  String get adminComplaintOutcomeBody =>
+      'Шикоятни кўриб чиқишни бошқа ҳеч нарса қайд этмайди, шунинг учун ёзганингиз — унинг ягона баёни.';
+
+  @override
+  String get adminComplaintUphold => 'Қабул қилиш';
+
+  @override
+  String get adminComplaintDismiss => 'Рад этиш';
+
+  @override
+  String get adminComplaintUpholdTitle => 'Бу шикоят қабул қилинсинми?';
+
+  @override
+  String get adminComplaintUpholdBody =>
+      'Шикоят қабул қилинган ҳолда ёпилади. Чора керак бўлса, буни қайд этишдан олдин кўринг.';
+
+  @override
+  String get adminComplaintDismissTitle => 'Бу шикоят рад этилсинми?';
+
+  @override
+  String get adminComplaintDismissBody =>
+      'Шикоят ҳеч қандай чорасиз ёпилади. Сабабини ёзинг — бу қарорнинг ягона баёни.';
+
+  @override
+  String get adminResolutionLabel => 'Қарор (аудит журналида сақланади)';
+
+  @override
+  String get adminResolutionHint =>
+      'Вакансия тўхтатилди ва иш берувчидан тавсифдан телефон рақамини олиб ташлаш сўралди';
+
+  @override
+  String get adminPauseVacancy => 'Вакансияни тўхтатиш';
+
+  @override
+  String get adminCloseVacancy => 'Вакансияни олиб ташлаш';
+
+  @override
+  String get adminPauseVacancyTitle => 'Вакансия тўхтатилсинми?';
+
+  @override
+  String get adminPauseVacancyBody =>
+      'Вакансия дарҳол лентадан чиқади ва иш берувчи тузатгандан кейин қайта тикланиши мумкин.';
+
+  @override
+  String get adminCloseVacancyTitle => 'Вакансия олиб ташлансинми?';
+
+  @override
+  String get adminCloseVacancyBody =>
+      'Вакансия лентадан бутунлай чиқади. Олиб ташланган вакансия қайта очилмайди — иш берувчи тузатиши мумкин бўлса, уни тўхтатинг.';
+
+  @override
+  String get adminWarnUser => 'Огоҳлантириш юбориш';
+
+  @override
+  String get adminWarnUserTitle => 'Огоҳлантириш юборилсинми?';
+
+  @override
+  String get adminWarnUserBody =>
+      'Ҳисоби ўзгармайди. Огоҳлантириш ва унинг сабаби қайд этилади, фойдаланувчи эса хабардор қилинади.';
+
+  @override
+  String get adminWarnReasonLabel =>
+      'Огоҳлантириш (фойдаланувчи сўзма-сўз ўқийди)';
+
+  @override
+  String get adminWarnReasonHint =>
+      'Оммавий вакансия тавсифида алоқа маълумотларини кўрсатиш мумкин эмас — илтимос, олиб ташланг';
+
+  @override
+  String get adminAccountStatusActive => 'Фаол';
+
+  @override
+  String get adminAccountStatusRestricted => 'Чекланган';
+
+  @override
+  String get adminAccountStatusBlocked => 'Блокланган';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -6775,4 +7087,161 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminVacancyWhere => 'Ish joyi';
+
+  @override
+  String get adminVacancyEmployer => 'Ish beruvchi';
+
+  @override
+  String get adminVacancyEmployerPhone => 'Telefon';
+
+  @override
+  String get adminVacancyEmployerEmail => 'E-pochta';
+
+  @override
+  String get adminComplaintsTitle => 'Shikoyatlar';
+
+  @override
+  String get adminComplaintsEmpty => 'Shikoyat yo\'q';
+
+  @override
+  String get adminComplaintsEmptyBody =>
+      'Hech bir shikoyat qarorni kutmayapti.';
+
+  @override
+  String get adminComplaintKindVacancy => 'Vakansiya';
+
+  @override
+  String get adminComplaintKindUser => 'Foydalanuvchi';
+
+  @override
+  String get adminComplaintKindProfile => 'Profil';
+
+  @override
+  String get adminComplaintKindMessage => 'Xabar';
+
+  @override
+  String get adminComplaintKindUnknown => 'Noma\'lum tur';
+
+  @override
+  String get adminComplaintKindUnknownBody =>
+      'Ilovaning bu versiyasi bu obyekt turini ko\'rsata olmaydi. Ko\'rib chiqish uchun ilovani yangilang.';
+
+  @override
+  String get adminComplaintTitle => 'Shikoyat';
+
+  @override
+  String get adminComplaintGoneTitle => 'Bu shikoyat topilmadi';
+
+  @override
+  String get adminComplaintGoneBody =>
+      'Kimdir uni ko\'rib chiqqan yoki u hech qachon bo\'lmagan. Hal qiladigan narsa qolmadi.';
+
+  @override
+  String get adminComplaintReported => 'Nima haqida xabar qilingan';
+
+  @override
+  String get adminComplaintTarget => 'Shikoyat qilingan obyekt';
+
+  @override
+  String get adminComplaintTargetGone =>
+      'Shikoyat qilingan obyekt o\'chirilgan';
+
+  @override
+  String get adminComplaintTargetGoneBody =>
+      'U shikoyat berilgandan keyin o\'chirilgan. Shikoyat saqlanadi, shuning uchun natijani hali ham qayd etish mumkin.';
+
+  @override
+  String get adminComplaintEmployerAccount => 'Ish beruvchi hisobi';
+
+  @override
+  String get adminComplaintRemedy => 'Avval chora ko\'ring';
+
+  @override
+  String get adminComplaintRemedyBody =>
+      'Shikoyatni qabul qilingan deb qayd etish hech narsani amalga oshirmaydi. Avval shu yerda chora ko\'ring.';
+
+  @override
+  String get adminComplaintNoRemedy =>
+      'Bu yerda ko\'radigan chora yo\'q. Natijani pastda qayd eting.';
+
+  @override
+  String get adminComplaintOutcome => 'Natijani qayd eting';
+
+  @override
+  String get adminComplaintOutcomeBody =>
+      'Shikoyatni ko\'rib chiqishni boshqa hech narsa qayd etmaydi, shuning uchun yozganingiz — uning yagona bayoni.';
+
+  @override
+  String get adminComplaintUphold => 'Qabul qilish';
+
+  @override
+  String get adminComplaintDismiss => 'Rad etish';
+
+  @override
+  String get adminComplaintUpholdTitle => 'Bu shikoyat qabul qilinsinmi?';
+
+  @override
+  String get adminComplaintUpholdBody =>
+      'Shikoyat qabul qilingan holda yopiladi. Chora kerak bo\'lsa, buni qayd etishdan oldin ko\'ring.';
+
+  @override
+  String get adminComplaintDismissTitle => 'Bu shikoyat rad etilsinmi?';
+
+  @override
+  String get adminComplaintDismissBody =>
+      'Shikoyat hech qanday chorasiz yopiladi. Sababini yozing — bu qarorning yagona bayoni.';
+
+  @override
+  String get adminResolutionLabel => 'Qaror (audit jurnalida saqlanadi)';
+
+  @override
+  String get adminResolutionHint =>
+      'Vakansiya to\'xtatildi va ish beruvchidan tavsifdan telefon raqamini olib tashlash so\'raldi';
+
+  @override
+  String get adminPauseVacancy => 'Vakansiyani to\'xtatish';
+
+  @override
+  String get adminCloseVacancy => 'Vakansiyani olib tashlash';
+
+  @override
+  String get adminPauseVacancyTitle => 'Vakansiya to\'xtatilsinmi?';
+
+  @override
+  String get adminPauseVacancyBody =>
+      'Vakansiya darhol lentadan chiqadi va ish beruvchi tuzatgandan keyin qayta tiklanishi mumkin.';
+
+  @override
+  String get adminCloseVacancyTitle => 'Vakansiya olib tashlansinmi?';
+
+  @override
+  String get adminCloseVacancyBody =>
+      'Vakansiya lentadan butunlay chiqadi. Olib tashlangan vakansiya qayta ochilmaydi — ish beruvchi tuzatishi mumkin bo\'lsa, uni to\'xtating.';
+
+  @override
+  String get adminWarnUser => 'Ogohlantirish yuborish';
+
+  @override
+  String get adminWarnUserTitle => 'Ogohlantirish yuborilsinmi?';
+
+  @override
+  String get adminWarnUserBody =>
+      'Hisobi o\'zgarmaydi. Ogohlantirish va uning sababi qayd etiladi, foydalanuvchi esa xabardor qilinadi.';
+
+  @override
+  String get adminWarnReasonLabel =>
+      'Ogohlantirish (foydalanuvchi so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminWarnReasonHint =>
+      'Ommaviy vakansiya tavsifida aloqa ma\'lumotlarini ko\'rsatish mumkin emas — iltimos, olib tashlang';
+
+  @override
+  String get adminAccountStatusActive => 'Faol';
+
+  @override
+  String get adminAccountStatusRestricted => 'Cheklangan';
+
+  @override
+  String get adminAccountStatusBlocked => 'Bloklangan';
 }

@@ -24,12 +24,14 @@ import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 ///
 /// ## A counter is a way in, or it has no chevron
 ///
-/// The two §10.2 counters navigate, each to its own segment of the moderation
-/// tab. The complaint counter does not, because its screen does not exist yet —
-/// and a number that navigates to "this arrives in M10" is worse than one that
-/// does not navigate at all. [_QueueRow] takes an optional `onTap` and shows
-/// the chevron only where there is one, so the next admin slice turns it on by
-/// passing a destination and nothing else about this screen changes.
+/// All three §10.2 counters navigate: two to their own segment of the
+/// moderation tab, and the third to the complaints tab. That was not true when
+/// this screen shipped — the complaint counter carried a number and no chevron,
+/// because a number that navigates to "this arrives in M10" is worse than one
+/// that does not navigate at all. [_QueueRow] takes an **optional** `onTap` and
+/// draws the chevron only where there is one, so turning that row on was
+/// passing a destination and changing nothing else here. Keep it optional: the
+/// same shape is what a fourth counter would need.
 ///
 /// ## The header is not the employer's navy panel
 ///
@@ -187,6 +189,10 @@ class _Queues extends StatelessWidget {
             icon: HhIconPath.alertTriangle,
             label: l10n.adminOpenComplaints,
             count: data.openComplaints,
+            // The third and last of §10.2's queues to get a way in. This row
+            // has carried a number and no chevron since the dashboard shipped,
+            // which was the whole point of making the destination optional.
+            onTap: () => GoRouter.of(context).go(Routes.adminComplaints),
           ),
         ],
       ),

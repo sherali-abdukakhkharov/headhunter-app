@@ -2262,4 +2262,159 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get adminVacancyWhere => 'Where the work is';
+
+  @override
+  String get adminVacancyEmployer => 'Employer';
+
+  @override
+  String get adminVacancyEmployerPhone => 'Phone';
+
+  @override
+  String get adminVacancyEmployerEmail => 'E-mail';
+
+  @override
+  String get adminComplaintsTitle => 'Complaints';
+
+  @override
+  String get adminComplaintsEmpty => 'Nothing reported';
+
+  @override
+  String get adminComplaintsEmptyBody =>
+      'No complaint is waiting for a decision.';
+
+  @override
+  String get adminComplaintKindVacancy => 'Vacancy';
+
+  @override
+  String get adminComplaintKindUser => 'Person';
+
+  @override
+  String get adminComplaintKindProfile => 'Profile';
+
+  @override
+  String get adminComplaintKindMessage => 'Message';
+
+  @override
+  String get adminComplaintKindUnknown => 'Unknown type';
+
+  @override
+  String get adminComplaintKindUnknownBody =>
+      'This version of the app cannot show what kind of thing this is. Update the app to review it.';
+
+  @override
+  String get adminComplaintTitle => 'Complaint';
+
+  @override
+  String get adminComplaintGoneTitle => 'This complaint is gone';
+
+  @override
+  String get adminComplaintGoneBody =>
+      'Somebody reviewed it, or it never existed. There is nothing left to decide.';
+
+  @override
+  String get adminComplaintReported => 'What was reported';
+
+  @override
+  String get adminComplaintTarget => 'The reported item';
+
+  @override
+  String get adminComplaintTargetGone => 'The reported item is gone';
+
+  @override
+  String get adminComplaintTargetGoneBody =>
+      'It was removed after the complaint was filed. The complaint is kept, so the outcome can still be recorded.';
+
+  @override
+  String get adminComplaintEmployerAccount => 'Employer account';
+
+  @override
+  String get adminComplaintRemedy => 'Act on it first';
+
+  @override
+  String get adminComplaintRemedyBody =>
+      'Recording a complaint as upheld does not carry anything out. Do that here first.';
+
+  @override
+  String get adminComplaintNoRemedy =>
+      'There is nothing to act on from here. Record the outcome below.';
+
+  @override
+  String get adminComplaintOutcome => 'Record the outcome';
+
+  @override
+  String get adminComplaintOutcomeBody =>
+      'Nothing else records a complaint review, so what you write is the whole account of it.';
+
+  @override
+  String get adminComplaintUphold => 'Uphold';
+
+  @override
+  String get adminComplaintDismiss => 'Dismiss';
+
+  @override
+  String get adminComplaintUpholdTitle => 'Uphold this complaint?';
+
+  @override
+  String get adminComplaintUpholdBody =>
+      'It closes as upheld. If a remedy was needed, apply it before recording this.';
+
+  @override
+  String get adminComplaintDismissTitle => 'Dismiss this complaint?';
+
+  @override
+  String get adminComplaintDismissBody =>
+      'It closes with nothing done. Say why — this is the only account of the decision.';
+
+  @override
+  String get adminResolutionLabel => 'Resolution (kept in the audit log)';
+
+  @override
+  String get adminResolutionHint =>
+      'The vacancy was paused and the employer asked to take the phone number out of the description';
+
+  @override
+  String get adminPauseVacancy => 'Pause this vacancy';
+
+  @override
+  String get adminCloseVacancy => 'Remove this vacancy';
+
+  @override
+  String get adminPauseVacancyTitle => 'Pause this vacancy?';
+
+  @override
+  String get adminPauseVacancyBody =>
+      'It leaves the feed now, and can be resumed once the employer has fixed it.';
+
+  @override
+  String get adminCloseVacancyTitle => 'Remove this vacancy?';
+
+  @override
+  String get adminCloseVacancyBody =>
+      'It leaves the feed for good. A removed vacancy cannot be reopened — pause it instead if the employer can fix it.';
+
+  @override
+  String get adminWarnUser => 'Warn this person';
+
+  @override
+  String get adminWarnUserTitle => 'Send a warning?';
+
+  @override
+  String get adminWarnUserBody =>
+      'Their account is not changed. The warning and its reason are recorded, and they are told.';
+
+  @override
+  String get adminWarnReasonLabel => 'Warning (they read it word for word)';
+
+  @override
+  String get adminWarnReasonHint =>
+      'Contact details in a public vacancy description are not allowed — please take them out';
+
+  @override
+  String get adminAccountStatusActive => 'Active';
+
+  @override
+  String get adminAccountStatusRestricted => 'Restricted';
+
+  @override
+  String get adminAccountStatusBlocked => 'Blocked';
 }

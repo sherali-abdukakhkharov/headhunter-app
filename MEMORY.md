@@ -501,6 +501,47 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-22 - One response, two timestamp contracts
+`GET /admin/complaints/:id` answers `{complaint, target}`, and the two halves do
+**not** obey the same timestamp rule. The controller runs the complaint's own
+`createdAt` through `formatWithOffset`; the `target` beside it is spread in from
+`resolveTarget` untouched, and two of the four resolved shapes select a
+`created_at`. So one field in the response carries `+05:00` and another carries
+`Z`, in the same JSON object.
+
+`ZonedTimestamp.parse` refuses a `Z` **by design** (API_CONTRACTS.md §2 is
+frozen: never `Z`, never offsetless), so a `createdAt` getter on the target would
+have thrown a `FormatException` at the repository boundary and taken the whole
+review down — for a field nothing needed. `ComplaintTargetDetail` therefore
+exposes **no timestamp at all**, and its doc comment says why so the next person
+does not add one back as an obvious improvement.
+
+The generalisable rule: **a `Record<string, unknown>` in a DTO is a hole in every
+whole-response convention**, not just in the naming one. The snake_case keys are
+the visible half and a tolerant reader handles them; the timestamp format is the
+invisible half, and it fails loudly at a boundary far from the cause. When a
+response embeds a raw row, check every convention the response is supposed to
+satisfy — not only the one that is easy to see. Recorded as an ask in
+docs/BACKEND_ASKS.md; the client's answer is a workaround, not a fix.
+
+### 2026-08-22 - `implements` on a repository fake taxes every sibling suite
+Each admin suite faked `AdminRepository` with `implements` and stubbed the routes
+its screen must not call with an `UnsupportedError`. That refusal is the
+assertion and is worth keeping — a verification test that silently fetched the
+moderation queue would be testing something else.
+
+But `implements` means **every** suite fails to compile when a route is added, so
+one new endpoint was an edit to three unrelated test files, and the complaint
+slice needed five stubs each. `test/features/admin/admin_fake.dart` now holds a
+`FakeAdminBase` that refuses everything and names the route it refused; each
+suite `extends` it and overrides only what its screen may reach. The assertion
+survives, and the next route is one edit.
+
+The rule: an `implements` fake of a **growing** interface is a maintenance tax
+paid by every sibling. Give it a refusing base as soon as there is a second
+suite. And give the base no working defaults — a fake that quietly returns an
+empty list is how a test passes without exercising the request it is about.
+
 ### 2026-08-21 - A shell branch keeps its state, so a segment belongs in the URL
 §10.2 has two queues and the admin shell is capped at five tabs, so both live
 behind one segmented control. The obvious implementation — the selected segment
@@ -1695,6 +1736,13 @@ scrolled anything. It is built for lazy lists, where "not found" *is* the signal
 `ensureVisible` is the right call here, but it only schedules the scroll; without
 a `pumpAndSettle` the frame never advances and the tap still lands off-screen.
 `ensureVisible` **then** `pumpAndSettle` is the working pair.
+
+*2026-08-22:* the lazy case bites too, just differently — `scrollUntilVisible`
+stops as soon as the child is **built**, which can leave it a few pixels past the
+bottom edge, and the tap then warns that the offset misses and does nothing. So
+the safe move in either kind of list is both calls: `scrollUntilVisible` **then**
+`ensureVisible`. `reveal` in `test/features/admin/complaint_review_test.dart` is
+the helper; reach for it rather than re-deriving this.
 
 ### 2026-08-10 - A `Text` in a `Row` overflows; it does not wrap
 `HhRemovableChip` painted a striped overflow bar the first time a filter chip

@@ -300,6 +300,169 @@ abstract class _$ModerationQueue
   }
 }
 
+/// §10.2's complaint queue, oldest first, all four target kinds together.
+
+@ProviderFor(ComplaintQueue)
+final complaintQueueProvider = ComplaintQueueProvider._();
+
+/// §10.2's complaint queue, oldest first, all four target kinds together.
+final class ComplaintQueueProvider
+    extends $AsyncNotifierProvider<ComplaintQueue, AdminQueuePage<Complaint>> {
+  /// §10.2's complaint queue, oldest first, all four target kinds together.
+  ComplaintQueueProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'complaintQueueProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$complaintQueueHash();
+
+  @$internal
+  @override
+  ComplaintQueue create() => ComplaintQueue();
+}
+
+String _$complaintQueueHash() => r'7e1675d29799f379e03125d4d7c8c857332d1d25';
+
+/// §10.2's complaint queue, oldest first, all four target kinds together.
+
+abstract class _$ComplaintQueue
+    extends $AsyncNotifier<AdminQueuePage<Complaint>> {
+  FutureOr<AdminQueuePage<Complaint>> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<AdminQueuePage<Complaint>>,
+              AdminQueuePage<Complaint>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AdminQueuePage<Complaint>>,
+                AdminQueuePage<Complaint>
+              >,
+              AsyncValue<AdminQueuePage<Complaint>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// One complaint and its target, loaded for §10.2's review.
+///
+/// Keyed by id for the same reason the vacancy review is: it is read once per
+/// screen, never appended to, and two reviews open in a session must not
+/// overwrite each other.
+
+@ProviderFor(complaintDetail)
+final complaintDetailProvider = ComplaintDetailFamily._();
+
+/// One complaint and its target, loaded for §10.2's review.
+///
+/// Keyed by id for the same reason the vacancy review is: it is read once per
+/// screen, never appended to, and two reviews open in a session must not
+/// overwrite each other.
+
+final class ComplaintDetailProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ComplaintDetail>,
+          ComplaintDetail,
+          FutureOr<ComplaintDetail>
+        >
+    with $FutureModifier<ComplaintDetail>, $FutureProvider<ComplaintDetail> {
+  /// One complaint and its target, loaded for §10.2's review.
+  ///
+  /// Keyed by id for the same reason the vacancy review is: it is read once per
+  /// screen, never appended to, and two reviews open in a session must not
+  /// overwrite each other.
+  ComplaintDetailProvider._({
+    required ComplaintDetailFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'complaintDetailProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$complaintDetailHash();
+
+  @override
+  String toString() {
+    return r'complaintDetailProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<ComplaintDetail> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ComplaintDetail> create(Ref ref) {
+    final argument = this.argument as String;
+    return complaintDetail(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ComplaintDetailProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$complaintDetailHash() => r'5f3b256dc535985a1df46fcb62e6dbd6fc6b5977';
+
+/// One complaint and its target, loaded for §10.2's review.
+///
+/// Keyed by id for the same reason the vacancy review is: it is read once per
+/// screen, never appended to, and two reviews open in a session must not
+/// overwrite each other.
+
+final class ComplaintDetailFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<ComplaintDetail>, String> {
+  ComplaintDetailFamily._()
+    : super(
+        retry: null,
+        name: r'complaintDetailProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One complaint and its target, loaded for §10.2's review.
+  ///
+  /// Keyed by id for the same reason the vacancy review is: it is read once per
+  /// screen, never appended to, and two reviews open in a session must not
+  /// overwrite each other.
+
+  ComplaintDetailProvider call(String complaintId) =>
+      ComplaintDetailProvider._(argument: complaintId, from: this);
+
+  @override
+  String toString() => r'complaintDetailProvider';
+}
+
 /// One vacancy, loaded for §10.2's review.
 ///
 /// A family rather than a notifier: unlike a queue this is read once per screen

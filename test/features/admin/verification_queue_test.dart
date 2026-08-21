@@ -5,19 +5,16 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/files/attachment_opener.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
-import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
-import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
-import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
-import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/verification_queue_screen.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'admin_fake.dart';
 
 /// §10.2's employer verification queue, and the administrator's half of BR-03.
-class _FakeAdmin implements AdminRepository {
+class _FakeAdmin extends FakeAdminBase {
   _FakeAdmin({this.pages = const [], this.conflictOn});
 
   /// One list per page, served in request order.
@@ -60,25 +57,10 @@ class _FakeAdmin implements AdminRepository {
     }
   }
 
-  @override
-  Future<AdminDashboard> dashboard({String? from, String? to}) =>
-      throw UnsupportedError('The queue screen must not read the dashboard.');
-
-  // §10.2's other queue lives behind the other segment and has its own suite.
-  @override
-  Future<List<ModerationQueueItem>> moderationQueue({int offset = 0}) =>
-      throw UnsupportedError('The verification list is not the other queue.');
-
-  @override
-  Future<VacancyReview> vacancyForReview(String vacancyId) =>
-      throw UnsupportedError('The verification list reads no vacancy.');
-
-  @override
-  Future<void> moderateVacancy(
-    String vacancyId,
-    ModerationDecision decision, {
-    String? reason,
-  }) => throw UnsupportedError('The verification list moderates nothing.');
+  // Everything else — the dashboard, §10.2's other two queues, every decision
+  // that is not a verification — refuses through [FakeAdminBase]. The refusal
+  // is the assertion: a verification test that fetched the moderation queue
+  // would be testing something else.
 }
 
 class _RecordingOpener implements AttachmentOpener {

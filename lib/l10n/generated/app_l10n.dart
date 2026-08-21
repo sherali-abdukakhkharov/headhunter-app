@@ -4000,6 +4000,288 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Where the work is'**
   String get adminVacancyWhere;
+
+  /// Heading over the employer name and contact block on §10.2’s vacancy review. The card renders only where the server sent at least one of the three fields, which today is never — see the backend ask in TODO.md.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer'**
+  String get adminVacancyEmployer;
+
+  /// Label on the employer’s phone number. Shown to an administrator, which is BR-09’s admin branch rather than a hole in it: §11.1 releases contact data to this role and logs the read.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get adminVacancyEmployerPhone;
+
+  /// Label on the employer’s e-mail address.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail'**
+  String get adminVacancyEmployerEmail;
+
+  /// §10.2’s third queue. One list over all four target kinds, because the server made complaints a single generic table for exactly that.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaints'**
+  String get adminComplaintsTitle;
+
+  /// Empty state for the complaint queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing reported'**
+  String get adminComplaintsEmpty;
+
+  /// Says the queue is empty rather than broken.
+  ///
+  /// In en, this message translates to:
+  /// **'No complaint is waiting for a decision.'**
+  String get adminComplaintsEmptyBody;
+
+  /// The complaint’s target kind. A meta chip rather than a badge: every complaint in this queue has the same *status*, open, and the kind is a classification — drawing it as a badge would spend the status vocabulary on something that is not a status.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancy'**
+  String get adminComplaintKindVacancy;
+
+  /// Target kind. "Person" rather than "user" because the reported thing is somebody, and the remedy is aimed at them.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get adminComplaintKindUser;
+
+  /// Target kind. Kept distinct from "person" because the reporter chose between the two and the audit trail keeps the choice — even though the server resolves both to the same row.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get adminComplaintKindProfile;
+
+  /// Target kind. The remedy for a reported message is aimed at its sender: nothing edits or removes a message, because §7’s chat history is evidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get adminComplaintKindMessage;
+
+  /// A target kind this build does not know. The row still draws — throwing on one unrecognised value would take the whole queue down.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown type'**
+  String get adminComplaintKindUnknown;
+
+  /// Shown in place of the target card for an unrecognised kind. Says what to do rather than showing an empty card.
+  ///
+  /// In en, this message translates to:
+  /// **'This version of the app cannot show what kind of thing this is. Update the app to review it.'**
+  String get adminComplaintKindUnknownBody;
+
+  /// App bar on §10.2’s complaint review.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint'**
+  String get adminComplaintTitle;
+
+  /// Title for a 404 complaint.not_found. Usually a colleague reviewed it first, so it gets a notice and a way back rather than a retry that would fail identically.
+  ///
+  /// In en, this message translates to:
+  /// **'This complaint is gone'**
+  String get adminComplaintGoneTitle;
+
+  /// Both causes of a 404, because the administrator cannot tell them apart and neither needs a different action.
+  ///
+  /// In en, this message translates to:
+  /// **'Somebody reviewed it, or it never existed. There is nothing left to decide.'**
+  String get adminComplaintGoneBody;
+
+  /// Heading over the reporter’s own words, shown verbatim (§2.4). The list clips them; this screen does not.
+  ///
+  /// In en, this message translates to:
+  /// **'What was reported'**
+  String get adminComplaintReported;
+
+  /// Heading over the resolved target — the vacancy, the person, or the message itself.
+  ///
+  /// In en, this message translates to:
+  /// **'The reported item'**
+  String get adminComplaintTarget;
+
+  /// A null target, which is a normal state: the server keeps a complaint past the life of what it was about, so the record of a decision survives the decision.
+  ///
+  /// In en, this message translates to:
+  /// **'The reported item is gone'**
+  String get adminComplaintTargetGone;
+
+  /// Says why the target is missing and that the decision is still worth recording — dismissing a complaint about a deleted vacancy is exactly what should happen to it.
+  ///
+  /// In en, this message translates to:
+  /// **'It was removed after the complaint was filed. The complaint is kept, so the outcome can still be recorded.'**
+  String get adminComplaintTargetGoneBody;
+
+  /// Stands in for a missing name on a person target. Not "no name": the server’s join is against candidate_profiles, so an employer resolves to a status and nothing else, and saying which beats an empty line.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer account'**
+  String get adminComplaintEmployerAccount;
+
+  /// Heading over the target actions. Above the outcome on purpose: recording a complaint as upheld does not carry anything out, and the two are separate requests the client cannot make atomic.
+  ///
+  /// In en, this message translates to:
+  /// **'Act on it first'**
+  String get adminComplaintRemedy;
+
+  /// The load-bearing sentence of the screen: an actioned complaint with no action taken is true about the record and false about the world.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording a complaint as upheld does not carry anything out. Do that here first.'**
+  String get adminComplaintRemedyBody;
+
+  /// Rendered rather than hiding the section: a moderator who cannot find the remedy assumes they missed it. Covers a gone target and a vacancy already closed — closed is terminal (BR-11), so no status change is left.
+  ///
+  /// In en, this message translates to:
+  /// **'There is nothing to act on from here. Record the outcome below.'**
+  String get adminComplaintNoRemedy;
+
+  /// Heading over uphold/dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Record the outcome'**
+  String get adminComplaintOutcome;
+
+  /// Why the resolution is mandatory on both outcomes: unlike a verification decision there is no BR-08 status row standing behind it, so the audit entry is the only record.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing else records a complaint review, so what you write is the whole account of it.'**
+  String get adminComplaintOutcomeBody;
+
+  /// The actioned outcome. Deliberately not "resolve": it claims something was done.
+  ///
+  /// In en, this message translates to:
+  /// **'Uphold'**
+  String get adminComplaintUphold;
+
+  /// The dismissed outcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get adminComplaintDismiss;
+
+  /// Confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Uphold this complaint?'**
+  String get adminComplaintUpholdTitle;
+
+  /// Restates the ordering at the point of no return, because this is the sheet where an administrator in a hurry skips the remedy.
+  ///
+  /// In en, this message translates to:
+  /// **'It closes as upheld. If a remedy was needed, apply it before recording this.'**
+  String get adminComplaintUpholdBody;
+
+  /// Confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss this complaint?'**
+  String get adminComplaintDismissTitle;
+
+  /// A dismissal is the contested half of the two, which is why the server makes the resolution mandatory on both.
+  ///
+  /// In en, this message translates to:
+  /// **'It closes with nothing done. Say why — this is the only account of the decision.'**
+  String get adminComplaintDismissBody;
+
+  /// Overrides the default reason label, whose parenthesis promises the *employer* reads the text verbatim. Nothing shows a resolution to the reporter, and a label naming the wrong audience is worse than a generic one.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution (kept in the audit log)'**
+  String get adminResolutionLabel;
+
+  /// An example that shows the field records both the finding and the remedy. An administrator given an empty box writes one word.
+  ///
+  /// In en, this message translates to:
+  /// **'The vacancy was paused and the employer asked to take the phone number out of the description'**
+  String get adminResolutionHint;
+
+  /// §10.2’s "pause a vacancy with an audit record", on a vacancy that is already published — the route nothing in the app could reach until the complaint queue existed. Offered only from `active`, per the transition table.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause this vacancy'**
+  String get adminPauseVacancy;
+
+  /// §10.2’s "remove a vacancy". "Remove" rather than "close": an employer closes their own vacancy, and this is somebody else doing it to them.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this vacancy'**
+  String get adminCloseVacancy;
+
+  /// Confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause this vacancy?'**
+  String get adminPauseVacancyTitle;
+
+  /// Names the reversibility, which is what makes a pause the proportionate answer while something is being checked.
+  ///
+  /// In en, this message translates to:
+  /// **'It leaves the feed now, and can be resumed once the employer has fixed it.'**
+  String get adminPauseVacancyBody;
+
+  /// Confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this vacancy?'**
+  String get adminCloseVacancyTitle;
+
+  /// BR-11 makes closed terminal, so the sheet says so and points at the reversible action instead. The one confirmation on this screen that cannot be undone.
+  ///
+  /// In en, this message translates to:
+  /// **'It leaves the feed for good. A removed vacancy cannot be reopened — pause it instead if the employer can fix it.'**
+  String get adminCloseVacancyBody;
+
+  /// §10.4’s mild remedy, reachable from a complaint because it is what an upheld complaint about a person most often deserves. Restrict and block need an until-date and land with §10.4’s own screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn this person'**
+  String get adminWarnUser;
+
+  /// Confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a warning?'**
+  String get adminWarnUserTitle;
+
+  /// Says exactly what a warning does and does not do: the audit row *is* the record, which is the clearest answer to why an audit log exists when six tables already record status changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Their account is not changed. The warning and its reason are recorded, and they are told.'**
+  String get adminWarnUserBody;
+
+  /// The person, not the employer, is who reads this one — which is why the sheet takes a label override at all.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning (they read it word for word)'**
+  String get adminWarnReasonLabel;
+
+  /// An example addressed to the person and actionable, because a warning they cannot act on is a warning that changes nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact details in a public vacancy description are not allowed — please take them out'**
+  String get adminWarnReasonHint;
+
+  /// An account in good standing. Badge, not colour alone — check-circle, the glyph that means a person was accepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get adminAccountStatusActive;
+
+  /// §4.2’s restricted account. Warning-toned rather than error-toned: some actions are refused at the point of use, which is not a lockout.
+  ///
+  /// In en, this message translates to:
+  /// **'Restricted'**
+  String get adminAccountStatusRestricted;
+
+  /// BR-10’s blocked account. x-circle, the glyph that means a negative outcome with a reason always attached.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get adminAccountStatusBlocked;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -6,12 +6,8 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
-import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
-import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
-import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
-import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
-import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
+import 'admin_fake.dart';
 
 /// §10.1's dashboard.
 ///
@@ -23,7 +19,7 @@ import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_sc
 ///   rather than on a plausible one;
 /// - `period.to` is a **fixed date well away from today**, so any preset that
 ///   counts back from `DateTime.now()` produces a range these tests reject.
-class _FakeAdmin implements AdminRepository {
+class _FakeAdmin extends FakeAdminBase {
   _FakeAdmin({required this.data, this.error});
 
   AdminDashboard data;
@@ -44,31 +40,9 @@ class _FakeAdmin implements AdminRepository {
   // The dashboard has no business reading a queue itself — it renders counters
   // the same response already carried. These throw so that a screen which
   // started fanning out fails here loudly.
-  @override
-  Future<List<VerificationQueueItem>> verificationQueue({int offset = 0}) =>
-      throw UnsupportedError('The dashboard must not fetch a queue.');
-
-  @override
-  Future<List<ModerationQueueItem>> moderationQueue({int offset = 0}) =>
-      throw UnsupportedError('The dashboard must not fetch a queue.');
-
-  @override
-  Future<VacancyReview> vacancyForReview(String vacancyId) =>
-      throw UnsupportedError('The dashboard must not read a vacancy.');
-
-  @override
-  Future<void> decideVerification(
-    String employerUserId,
-    VerificationDecision decision, {
-    String? reason,
-  }) => throw UnsupportedError('The dashboard must not decide anything.');
-
-  @override
-  Future<void> moderateVacancy(
-    String vacancyId,
-    ModerationDecision decision, {
-    String? reason,
-  }) => throw UnsupportedError('The dashboard must not decide anything.');
+  // The dashboard fetches no queue and decides nothing: every counter comes
+  // from the one `/admin/dashboard` request, and tapping a row navigates. Both
+  // halves of that are asserted by [FakeAdminBase] refusing the rest.
 }
 
 AdminDashboard _dashboard({
@@ -236,20 +210,20 @@ void main() {
       expect(find.text('2026-06-10 — 2026-07-09'), findsOneWidget);
     });
 
-    testWidgets('only the queues that have a screen offer a way in', (
-      tester,
-    ) async {
+    testWidgets('every queue with a screen offers a way in', (tester) async {
       await pump(tester);
 
       expect(find.text('Employers awaiting verification'), findsOneWidget);
       expect(find.text('Vacancies awaiting moderation'), findsOneWidget);
       expect(find.text('Open complaints'), findsOneWidget);
 
-      // Two chevrons: §10.2's two queues have screens and the complaint queue
-      // does not. A number that navigated to a placeholder would be worse than
-      // one that does not navigate, so the affordance follows the destination
-      // rather than the row.
-      expect(chevrons(), findsNWidgets(2));
+      // Three chevrons now that the complaint queue has a screen. It was two
+      // when this screen shipped, and the affordance follows the *destination*
+      // rather than the row — which is what let the third one turn on by
+      // passing an `onTap` and changing nothing else here. Kept as a count so
+      // that a fourth counter without a screen cannot quietly grow a chevron
+      // that leads to a placeholder.
+      expect(chevrons(), findsNWidgets(3));
     });
 
     testWidgets('an empty set of queues is a sentence, not three zeros', (

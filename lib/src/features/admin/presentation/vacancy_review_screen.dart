@@ -36,14 +36,17 @@ import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_requir
 /// UAT-15 gives the candidate's detail screen: its own notice, a way back, and
 /// **no retry** — retrying would fail identically.
 ///
-/// ## What is missing, and it is a contract gap rather than a choice
+/// ## The employer card is read before the server sends it
 ///
-/// `VacancyReviewDto` carries the vacancy's stored columns, which include
-/// `employer_user_id` and no employer **name**, and no contact information —
-/// which §10.2 lists by name. The queue row shows the name, so a moderator
-/// arriving the usual way knows whose vacancy this is; one arriving cold does
-/// not. Recorded as a backend ask in TODO.md rather than papered over with a
-/// second request per review.
+/// §10.2 lists the employer's contact information among what a moderator
+/// reviews, and `VacancyReviewDto` carries neither a name nor a way to reach
+/// them — only `employer_user_id`. That is a backend ask, recorded in TODO.md.
+///
+/// The card is written against the fields anyway and simply does not render
+/// while they are absent, so the join lands with **no client release**. The
+/// alternative — a second request per review to fetch the employer — would
+/// cost a round trip on every open and write an audit entry (§11.1) for a
+/// contact nobody asked to see.
 class VacancyReviewScreen extends ConsumerWidget {
   const VacancyReviewScreen({required this.vacancyId, super.key});
 
@@ -166,6 +169,13 @@ class _Review extends ConsumerWidget {
             ],
           ),
         ),
+
+        if (review.hasEmployerContact) ...[
+          const SizedBox(height: HhSpace.sectionGap),
+          Text(l10n.adminVacancyEmployer, style: HhTypography.label),
+          const SizedBox(height: HhSpace.sm),
+          _Employer(review: review),
+        ],
 
         const SizedBox(height: HhSpace.sectionGap),
         Text(l10n.adminVacancyWhere, style: HhTypography.label),
@@ -306,6 +316,54 @@ class _Review extends ConsumerWidget {
       HhToast.show(context, message: l10n.adminDecisionRecorded);
     }
     await navigator.maybePop();
+  }
+}
+
+/// Whose vacancy this is, and how to reach them (§10.2).
+///
+/// Placed above the description rather than beside the buttons: a moderator
+/// looking for a phone number is usually looking because something in the
+/// posting needs asking about, and that happens while reading it.
+///
+/// Only the fields that arrived are drawn — there is no "not provided" row.
+/// Today that means the card is absent entirely (see the class comment), and
+/// once the join lands an employer with no e-mail on file should not be
+/// reported as a gap in the response.
+class _Employer extends StatelessWidget {
+  const _Employer({required this.review});
+
+  final VacancyReview review;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return HhCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // The employer's own name, never translated (§2.4).
+          if (review.employerName case final name?)
+            Text(name, style: HhTypography.body),
+
+          if (review.employerPhone case final phone?) ...[
+            const SizedBox(height: HhSpace.sm),
+            Text(l10n.adminVacancyEmployerPhone, style: HhTypography.label),
+            // Rendered, not dialled. A `tel:` link needs url_launcher, and the
+            // one native capability this app has is the FileProvider channel —
+            // see ARCHITECTURE.md §9 before adding a plugin to reach the
+            // platform.
+            Text(phone, style: HhTypography.body),
+          ],
+
+          if (review.employerEmail case final email?) ...[
+            const SizedBox(height: HhSpace.sm),
+            Text(l10n.adminVacancyEmployerEmail, style: HhTypography.label),
+            Text(email, style: HhTypography.body),
+          ],
+        ],
+      ),
+    );
   }
 }
 

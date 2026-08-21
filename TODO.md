@@ -1567,7 +1567,7 @@ this opens. Deep links moved to M8.
       server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
-## M10 - Admin module *(§10.1 and §10.2's two queues done 2026-08-21)*
+## M10 - Admin module *(§10.1 done 2026-08-21; §10.2 complete 2026-08-22)*
 
 **The whole admin API was already built** — `src/modules/admin` on the backend
 covers §10.1 through §10.5, audit log and retention included. So nothing in this
@@ -1676,35 +1676,75 @@ remaining item is a screen.
       for this: a moderator shown a *preference* drawn as a requirement would
       reject a vacancy for a condition it never imposed, and that rule is the
       first thing a second copy would lose
-- [!] **Backend ask: `GET /admin/moderation/:vacancyId` returns the raw database
-      row, and the review is missing two things §10.2 names.**
-      1. `VacancyReviewDto.vacancy` is typed `Record<string, unknown>` and
-         `loadVacancy` puts the selected columns in it unchanged, so the keys are
-         **snake_case** while `requirements` beside it is camelCase and every
-         other vacancy route returns a camelCase DTO.
-         **Not blocking, and handled the way `unlock_required` was**: `VacancyReview`
-         reads *either* spelling for every field, so one build is correct before
-         and after the DTO lands and there is no release in between. Pinned by a
-         test that parses both shapes and asserts they agree, and
-         mutation-verified. Worth knowing that the coupling is narrower than it
-         first looks — `VacancyDto.fields` is keyed by **schema field code** and
-         the codes *are* the column names, which the employer dashboard already
-         relies on (`fields['worker_count']`).
-      2. **No employer name and no contact information.** The row carries
-         `employer_user_id` and neither, and §10.2 asks for "contact information"
-         by name. The queue row shows the name, so a moderator arriving the usual
-         way knows whose vacancy it is and one arriving cold does not — the same
-         shape as the `candidateName` ask on `InvitationDto`, and it wants the
-         same answer: a name on the DTO, not a second request per review
-- [ ] **§10.2's pause-or-remove has no entry point yet.**
-      `PUT /admin/vacancies/:vacancyId/status` exists and takes `paused` or
-      `closed` with a mandatory reason, for a vacancy that is **already
-      published** — a complaint upheld, a policy breach. Nothing in the app can
-      reach one: there is no admin vacancy list and no admin vacancy search, so
-      the only paths to a live vacancy are the complaint queue (next) and user
-      management. It lands with whichever of those comes first, rather than as a
-      screen that needs an id typed into it
-- [ ] Complaint queues
+- [x] **Complaint queue (§10.2), 2026-08-22 — and it closes §10.2.** The third
+      and last of the section's queues, and the one that gives
+      `PUT /admin/vacancies/:vacancyId/status` the entry point it never had (see
+      the item below, now closed). All three dashboard counters navigate.
+      **One queue over four target kinds, and no filter.** The server made
+      `complaints` a single generic table so §10.2 is one queue rather than four,
+      and a moderator works a queue — the oldest open complaint is the oldest
+      open complaint whatever it is about. The `targetType` filter is on the
+      route and has no control: four kinds plus "all" is five segments, and
+      `HhSegmented` was already ruled out at five for the vacancy status
+      filters. The kind is on every row instead, as a **meta chip rather than a
+      badge** — every complaint in this queue has the same *status*, `open`, and
+      spending the badge vocabulary on a classification is how that vocabulary
+      stops being learnable.
+      **The remedy comes before the outcome, and the ordering is the design.** A
+      review is *two* requests: `POST /admin/complaints/:id/review` records what
+      was decided, and pausing the vacancy or warning the person is its own route
+      with its own audit row. They are not one transaction and the client cannot
+      make them one — so the screen does not hide that behind a single "uphold"
+      button. Hiding it would leave a complaint marked `actioned` with nothing
+      done, or a vacancy paused with the complaint still open, and nothing on
+      screen to say which. Pinned by a geometry assertion, and mutation-verified.
+      **The resolution is mandatory on both outcomes**, unlike the other two
+      queues where only a refusal needs a reason: nothing else records a
+      complaint review — there is no BR-08 status row standing behind it — so the
+      audit entry is the whole account of it, and a *dismissal* is the half
+      somebody asks about later. It also gets its own field label: the default
+      one promises the employer reads the text verbatim, which is true of a
+      verification refusal and false here
+- [x] **§10.2's pause-or-remove, 2026-08-22.** `PUT /admin/vacancies/:vacancyId/status`
+      applies to a vacancy that is **already published**, and nothing in the app
+      could reach one — the moderation queue only ever holds `under_moderation`,
+      and there is no admin vacancy list. A complaint about a live vacancy is the
+      honest way in: it is the case §10.2 describes ("a complaint upheld, a
+      policy breach"), and it arrives with the mandatory reason already written
+      down by somebody else.
+      **The offered transitions come from the server's table**, not from the two
+      values the DTO accepts: `active → paused | closed`, `paused → closed`,
+      `closed` terminal (BR-11). A closed vacancy offers neither and the section
+      says so, because a button that answers 409 every time it is pressed is
+      worse than an absent one. Restating a server rule is safe in this
+      direction — the client is the stricter of the two — and the cost if the
+      table moves is a hidden action rather than a broken one.
+      Its 409 is `vacancy.transition_not_allowed` and is **deliberately not**
+      `AdminDecisionConflict`: that one means "somebody decided this and the work
+      is done", and this one means the vacancy is not in a state the action
+      applies to. Telling an administrator otherwise sends them looking for a
+      decision nobody made
+- [x] **Warn a user (§10.4), 2026-08-22** — reachable from a complaint because it
+      is what an upheld complaint about a person most often deserves, and because
+      a reported **message** is answered through its *sender*: nothing edits or
+      removes a message, since §7's chat history is evidence. A warning changes no
+      account status — the audit row **is** the record. Restrict, block and
+      unblock stay with §10.4's own screen, because a temporary restriction needs
+      an until-date and a warning does not
+- [!] **Backend asks are now one document: [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md).**
+      Three items, none blocking, each with the client's workaround and what
+      changes when it lands. The one worth doing is the employer name and contact
+      on `GET /admin/moderation/:vacancyId`, which §10.2 lists by name.
+      **The client half of that ask is closed as of 2026-08-22**: `VacancyReview`
+      parses `employerName`/`employerPhone`/`employerEmail` today and the card
+      renders only when one arrives, so the join appears on screen with **no
+      client release**. The same idiom as `InvitationDto.candidateName`, which was
+      asked for this way and shipped. The absent case has its own test.
+      Also recorded there, and new: `ComplaintDetailDto.target.created_at`
+      **breaks §2's frozen timestamp format** — the complaint's own `createdAt`
+      goes through `formatWithOffset` and the target is spread in untouched, so
+      it arrives with a `Z`. The client steps around it by exposing no timestamp
+      on the target at all; that is a workaround, not a fix
 - [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
 - [ ] Dictionary management with four localized labels + skill merge, designed for
       a phone (there is no web panel)

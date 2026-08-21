@@ -17,6 +17,53 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.4.0+8 — 2026-08-22
+
+§10.2 is finished. Complaints have a queue, and a published vacancy can finally
+be taken down — there was no way to reach one before this.
+
+### Added
+
+- **Complaints (§10.2)** — the third tab in the administrator's app, and one
+  list for everything that gets reported: vacancies, people, profiles and
+  messages together, oldest first. Every row says what kind of thing it is
+  about, how long it has waited, and what the person who reported it actually
+  wrote.
+  Opening one shows the report in full and the thing it is about — a vacancy
+  with its current state, a person with their name and account state, or the
+  reported message itself, exactly as it was sent.
+  **What you can do about it comes before recording what you decided**, because
+  those are two separate things: marking a complaint upheld records a decision,
+  it does not carry one out. So the actions sit above, and the outcome below,
+  with a line saying as much.
+  Both outcomes need you to write what was decided — including a dismissal.
+  Nothing else keeps a record of a complaint review, so what you write is the
+  whole account of it.
+  If the reported thing has since been deleted, the screen says so and you can
+  still record the outcome. A complaint is kept past the life of what it was
+  about on purpose.
+
+- **A live vacancy can be paused or removed (§10.2).** Reachable from a
+  complaint about it. Pausing takes it off the feed and can be undone once the
+  employer has fixed it; removing is permanent, and the confirmation says so and
+  points at pausing instead. Both need a reason, and the employer reads it word
+  for word. A vacancy that is already removed offers neither, rather than a
+  button that would fail.
+
+- **A person can be warned (§10.4).** From a complaint about them, or about a
+  message they sent. It changes nothing about their account — the warning and
+  its reason are recorded, and they are told. Restricting and blocking arrive
+  with the user screen.
+
+- **The last dashboard counter opens its queue.** All three now do.
+
+### Changed
+
+- **The vacancy review will show the employer's name and contact details the
+  moment the server sends them**, with no app update needed. §10.2 asks for
+  them and the server does not send them yet; the screen is written for them
+  and simply leaves the card out until they arrive.
+
 ## 1.3.0+7 — 2026-08-21
 
 The second gate. With 1.2.0 an administrator could verify an employer; now they

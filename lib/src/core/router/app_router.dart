@@ -11,6 +11,8 @@ import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/complaint_queue_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/complaint_review_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/vacancy_review_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
@@ -178,6 +180,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               // other shell's; the rest keep the placeholder.
               Routes.adminDashboard => const AdminDashboardScreen(),
               Routes.adminQueue => const AdminQueueScreen(),
+              Routes.adminComplaints => const ComplaintQueueScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [
@@ -241,6 +244,18 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                   name: 'adminVacancyReview',
                   builder: (context, state) => VacancyReviewScreen(
                     vacancyId: state.pathParameters['id']!,
+                  ),
+                ),
+
+              // §10.2's third queue. A plain `:id` because the complaints tab
+              // holds one list rather than two, so there is no segment to
+              // disambiguate against.
+              if (tab.path == Routes.adminComplaints)
+                GoRoute(
+                  path: ':id',
+                  name: 'adminComplaintReview',
+                  builder: (context, state) => ComplaintReviewScreen(
+                    complaintId: state.pathParameters['id']!,
                   ),
                 ),
             ],
