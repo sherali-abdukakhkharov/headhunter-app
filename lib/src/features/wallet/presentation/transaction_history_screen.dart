@@ -151,12 +151,12 @@ class _Body extends ConsumerWidget {
           ..._grouped(context, shown),
 
         if (page.isLoadingMore)
-          HhLoadingMore(label: l10n.walletLoadingMore)
+          HhLoadingMore(label: l10n.commonLoadingMore)
         else if (page.hasMore)
           Padding(
             padding: const EdgeInsets.only(top: HhSpace.sm),
             child: HhButton.text(
-              label: l10n.walletShowMore,
+              label: l10n.commonShowMore,
               onPressed: () => _loadMore(context, ref),
             ),
           ),

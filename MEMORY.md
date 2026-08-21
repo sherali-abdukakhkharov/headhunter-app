@@ -501,6 +501,35 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-21 - "Pending timers" in the router test means a screen went real
+Wiring §10.1's dashboard into the admin shell broke two tests in
+`app_router_test.dart` that touch no admin code: the two that loop over every
+`AppRole`. Both failed with `Pending timers` and a stack pointing at
+`ConsumerStatefulElement.unmount`, which reads like a router bug and is not one.
+
+The chain: a screen that `watch`es an **auto-dispose** provider schedules that
+provider's disposal as it unmounts. Riverpod hangs that on the widget vsync when
+a `ProviderScope` owns the container — but this test builds its container by hand
+and hands it to `UncontrolledProviderScope`, so there is no vsync and the
+scheduler falls back to a zero-duration `Timer`. A test that ends with such a
+screen still mounted leaves that timer un-run, and `fakeAsync` fails the test.
+
+Three things are worth knowing before debugging this again:
+
+- **`addTearDown` cannot fix it.** Those callbacks run after `fakeAsync` has
+  finished, so pumping there does not reach the timer. The unmount has to happen
+  inside the test body.
+- **One pump is not enough.** Disposing one provider un-listens the next, so the
+  scheduler queues a second timer while running the first — `pumpWidget(SizedBox)`
+  then *two* pumps.
+- **The blamed file is the one that built the tree**, not the one that watched
+  the provider. Any test ending on a shell whose screen fetches will do this, and
+  the admin shell is simply last in `AppRole.values`.
+
+The router test also gained an `_OfflineAdapter` on the real `dioProvider` while
+this was being chased. It turned out not to be the cause, and it stays anyway: a
+routing test that walks every destination should not open a socket per screen.
+
 ### 2026-08-20 - `ZonedTimestamp` has a second failure mode, and it is a comparison
 The type's doc comment warns about *displaying* the wrong field: read
 `wallClock`, never `.toLocal()`. §8.3's interviews found the other half of the

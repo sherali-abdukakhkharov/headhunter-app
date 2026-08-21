@@ -9,6 +9,8 @@ import 'package:jobbridge_app/src/core/auth/session_state.dart';
 import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/verification_queue_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
@@ -171,6 +173,10 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               // location by a frame during a switch.
               Routes.candidateMessages || Routes.employerMessages =>
                 ConversationsScreen(basePath: tab.path),
+              // §10. The administrator's tabs land one at a time like every
+              // other shell's; the rest keep the placeholder.
+              Routes.adminDashboard => const AdminDashboardScreen(),
+              Routes.adminQueue => const VerificationQueueScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [

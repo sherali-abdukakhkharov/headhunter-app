@@ -17,6 +17,39 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.2.0+6 — 2026-08-21
+
+The administrator role has screens for the first time, and the first of them
+unblocks everything on the employer side.
+
+### Added
+
+- **Employer verification (§10.2)** — the queue an administrator works through to
+  approve, send back, or refuse an employer's documents. **Nothing an employer
+  does works until this happens**: they cannot publish a vacancy and cannot invite
+  a candidate while unverified (BR-03), and until now there was no way to verify
+  anybody from inside the app at all. Approving one release opens both.
+  The queue is oldest first and says how long each submission has been waiting,
+  because that is what the order is for. Every document is there to open, and the
+  reason you type when you send something back or refuse it **is shown to the
+  employer word for word** — the field says so, because it is the only thing they
+  are given to act on. Approving needs no reason and does not ask for one.
+  If a colleague decided the same submission a moment earlier, that is not an
+  error: the row leaves your queue and the screen says it was already reviewed.
+
+- **Administrator dashboard (§10.1)** — what is waiting on a decision right now,
+  how many accounts are restricted or blocked, and the registrations, vacancies
+  and applications for a period you choose (7, 30 or 90 days).
+  Queue lengths and period figures are kept apart on purpose: "7 employers
+  awaiting verification" is true today, not true of last month, and putting it
+  under a date range would say the wrong thing. The verification count opens the
+  queue; the other two do not yet, because their screens are still to come.
+
+### Changed
+
+- "Show more" and "Loading more…" are now one pair of strings shared by the Coin
+  ledger and the verification queue, rather than a wallet-specific copy of each.
+
 ## 1.1.3+5 — 2026-08-20
 
 ### Added

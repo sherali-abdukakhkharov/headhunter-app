@@ -2057,18 +2057,6 @@ abstract class AppL10n {
   /// **'Nothing has moved in this wallet yet. Credits and unlocks both appear here, and neither is ever removed.'**
   String get walletActivityEmpty;
 
-  /// Loads the next page of ledger entries.
-  ///
-  /// In en, this message translates to:
-  /// **'Show more'**
-  String get walletShowMore;
-
-  /// Shown while a further page of the ledger is in flight.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading more…'**
-  String get walletLoadingMore;
-
   /// The balance the server recorded after one ledger entry. Read from the entry, never accumulated down the list.
   ///
   /// In en, this message translates to:
@@ -3628,6 +3616,258 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'What the candidate said'**
   String get interviewCandidateReply;
+
+  /// Loads the next page of a list. Shared: paging reads the same on a Coin ledger and on a moderation queue, and a second copy of "Show more" is a second thing to translate.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get commonShowMore;
+
+  /// Footer spinner label while the next page is in flight. Keeps the loaded rows visible, which a full-screen loader would not.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more…'**
+  String get commonLoadingMore;
+
+  /// §10.1's heading. In the body rather than an app bar, because a shell tab has none.
+  ///
+  /// In en, this message translates to:
+  /// **'Administration'**
+  String get adminDashboardTitle;
+
+  /// Heading over the three current-state queue counters. Deliberately not "Statistics": these are work items, and they come before the period figures because a queue is something to act on.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting on a decision'**
+  String get adminQueuesTitle;
+
+  /// §10.1's "profiles awaiting verification". Says employers, because §6.1 is the only verification in the product and "profiles" reads as candidates.
+  ///
+  /// In en, this message translates to:
+  /// **'Employers awaiting verification'**
+  String get adminAwaitingVerification;
+
+  /// §10.1's "vacancies awaiting moderation" (BR-04).
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies awaiting moderation'**
+  String get adminAwaitingModeration;
+
+  /// §10.1's open complaints, counted as current state like the other two queues.
+  ///
+  /// In en, this message translates to:
+  /// **'Open complaints'**
+  String get adminOpenComplaints;
+
+  /// All three queues are empty. Said as a sentence rather than three zeros, because three zeros read as a screen that failed to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is waiting on you.'**
+  String get adminQueuesClear;
+
+  /// Heading over the restricted and blocked counts. Named for what they are rather than "Users", which is the tab next door.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts under sanction'**
+  String get adminSanctionsTitle;
+
+  /// §4.2 restriction: the account still signs in, individual actions are gated. Counted apart from blocked because the remedies differ.
+  ///
+  /// In en, this message translates to:
+  /// **'Restricted'**
+  String get adminRestrictedUsers;
+
+  /// BR-10's shut-out. Never added to the restricted count: that would hide the more serious state inside the milder one.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get adminBlockedUsers;
+
+  /// Heading over §10.1's period-bounded figures. The heading is what keeps them from being read as current state.
+  ///
+  /// In en, this message translates to:
+  /// **'For the selected period'**
+  String get adminPeriodTitle;
+
+  /// A period preset, e.g. "30 days". Uzbek does not inflect, so it carries only the `other` branch, as elsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, one{{days} day} other{{days} days}}'**
+  String adminPeriodDays(int days);
+
+  /// §10.1's candidate counts. Its own key rather than the nav label, which carries a soft hyphen for the 70pt bar and would break mid-word here.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates'**
+  String get adminCandidates;
+
+  /// §10.1's employer counts.
+  ///
+  /// In en, this message translates to:
+  /// **'Employers'**
+  String get adminEmployers;
+
+  /// Vacancies published inside the period. "Published", not "active": the figure is period-bounded, and a vacancy live today may have been published before it.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies published'**
+  String get adminVacanciesPublished;
+
+  /// Applications submitted inside the period.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications submitted'**
+  String get adminApplicationsSubmitted;
+
+  /// Suffix under the total of a §10.1 count pair.
+  ///
+  /// In en, this message translates to:
+  /// **'in total'**
+  String get adminCountTotal;
+
+  /// Suffix under the newly-registered half of a §10.1 count pair.
+  ///
+  /// In en, this message translates to:
+  /// **'new'**
+  String get adminCountNew;
+
+  /// §10.2's employer verification queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer verification'**
+  String get adminVerificationTitle;
+
+  /// Says the ordering out loud, because it is what makes the queue fair and it is not visible from a list of names.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first — the submission at the top has waited longest.'**
+  String get adminVerificationFifo;
+
+  /// Empty queue. A good state, so it is not phrased as an absence of results.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is waiting'**
+  String get adminVerificationEmpty;
+
+  /// Explains how the list fills up rather than restating that it is empty, which is the rule for every empty state in the design.
+  ///
+  /// In en, this message translates to:
+  /// **'Submissions appear here as employers send their documents in.'**
+  String get adminVerificationEmptyBody;
+
+  /// §6.1 company employer, as a label on a review card. Its own key rather than employerTypeCompany, which is phrased as a first-person choice ("A company") for the chooser.
+  ///
+  /// In en, this message translates to:
+  /// **'Company'**
+  String get adminEmployerCompany;
+
+  /// §6.1 individual employer, as a label on a review card.
+  ///
+  /// In en, this message translates to:
+  /// **'Individual employer'**
+  String get adminEmployerIndividual;
+
+  /// Neither a legal nor a public name has been filled in. A real state: a profile can be complete enough for the server to accept a submission and still be thin on screen. Stated rather than left blank, so the card is not read as broken.
+  ///
+  /// In en, this message translates to:
+  /// **'No name on file'**
+  String get adminEmployerUnnamed;
+
+  /// How long this submission has waited — the actionable fact about a FIFO queue, which a submission date alone does not give. Zero has its own branch because "waiting 0 days" reads as a bug.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Submitted today} one{Waiting {days} day} other{Waiting {days} days}}'**
+  String adminWaitingDays(int days);
+
+  /// §10.2's uploaded evidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence'**
+  String get adminEvidenceTitle;
+
+  /// A submission with no files. Possible: the server refuses one missing a *required* document, not one missing an optional one.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents attached'**
+  String get adminEvidenceNone;
+
+  /// §10.2's approval. The verb, not "Approve", because §6.1 calls the resulting state verified and the badge the employer sees says the same word.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get adminVerify;
+
+  /// §10.2's "request changes" — the outcome the employer can act on, which is why it sits between approval and rejection rather than beside rejection.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for changes'**
+  String get adminRequestChanges;
+
+  /// §10.2's refusal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get adminReject;
+
+  /// Confirmation heading for an approval.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify this employer?'**
+  String get adminVerifyTitle;
+
+  /// Names the consequence rather than asking "are you sure?". BR-03 is one gate over two features, so both are said: an administrator approving a submission is unblocking vacancies *and* invitations at once.
+  ///
+  /// In en, this message translates to:
+  /// **'This is what lets them publish vacancies and invite candidates. Nothing else about their account changes.'**
+  String get adminVerifyBody;
+
+  /// Confirmation heading for sending a submission back.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this back for changes?'**
+  String get adminRequestChangesTitle;
+
+  /// Says what survives, because the difference between this outcome and rejection is exactly that the employer can act on it.
+  ///
+  /// In en, this message translates to:
+  /// **'They keep their profile and their files, and can submit again once they have fixed what you name below.'**
+  String get adminRequestChangesBody;
+
+  /// Confirmation heading for a refusal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject this submission?'**
+  String get adminRejectTitle;
+
+  /// The reason is the whole of what the employer is left with (§6.1 shows it verbatim), so the sheet says that before the field rather than after the refusal.
+  ///
+  /// In en, this message translates to:
+  /// **'They stay unverified and cannot publish or invite. Your reason is all they are given, so write what it would take to pass.'**
+  String get adminRejectBody;
+
+  /// The parenthesis is the load-bearing part: §6.1 shows this text to the employer verbatim (§2.4), so an administrator writing a note for their own records would be writing it to the person it is about.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (the employer reads it word for word)'**
+  String get adminReasonLabel;
+
+  /// An example that shows the field is addressed to the employer and has to be actionable. An administrator shown an empty box labelled "reason" writes one word.
+  ///
+  /// In en, this message translates to:
+  /// **'The registration certificate is unreadable — please upload a clearer scan'**
+  String get adminReasonHint;
+
+  /// Title on the notice for a 409 employer.verification_not_pending. Not an error: two administrators working one FIFO queue produce this normally, and the queue is reloaded rather than a retry offered.
+  ///
+  /// In en, this message translates to:
+  /// **'Already decided'**
+  String get adminAlreadyDecided;
+
+  /// Confirms the decision landed. §10.4 makes every administrator action an audit row, so "recorded" is literal rather than reassurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Decision recorded.'**
+  String get adminDecisionRecorded;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

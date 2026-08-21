@@ -273,12 +273,12 @@ class _Ledger extends ConsumerWidget {
           const SizedBox(height: HhSpace.sm),
         ],
         if (page.isLoadingMore)
-          HhLoadingMore(label: l10n.walletLoadingMore)
+          HhLoadingMore(label: l10n.commonLoadingMore)
         else if (page.hasMore)
           Padding(
             padding: const EdgeInsets.only(top: HhSpace.sm),
             child: HhButton.text(
-              label: l10n.walletShowMore,
+              label: l10n.commonShowMore,
               onPressed: () => _loadMore(context, ref),
             ),
           ),

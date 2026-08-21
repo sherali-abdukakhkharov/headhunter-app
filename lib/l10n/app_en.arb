@@ -1456,14 +1456,6 @@
   "@walletActivityEmpty": {
     "description": "Empty ledger. Says how the list fills up, and states BR-24's append-only guarantee in passing - an employer should learn early that nothing here can be quietly rewritten."
   },
-  "walletShowMore": "Show more",
-  "@walletShowMore": {
-    "description": "Loads the next page of ledger entries."
-  },
-  "walletLoadingMore": "Loading more…",
-  "@walletLoadingMore": {
-    "description": "Shown while a further page of the ledger is in flight."
-  },
   "walletBalanceAfter": "Balance {count}",
   "@walletBalanceAfter": {
     "description": "The balance the server recorded after one ledger entry. Read from the entry, never accumulated down the list.",
@@ -2661,5 +2653,183 @@
   "interviewCandidateReply": "What the candidate said",
   "@interviewCandidateReply": {
     "description": "Label above the note the candidate sent with their answer, on the employer's side. Their own words (§2.4) — and the point of the whole feature, because \"another time please\" is useless without the times."
+  },
+  "commonShowMore": "Show more",
+  "@commonShowMore": {
+    "description": "Loads the next page of a list. Shared: paging reads the same on a Coin ledger and on a moderation queue, and a second copy of \"Show more\" is a second thing to translate."
+  },
+  "commonLoadingMore": "Loading more…",
+  "@commonLoadingMore": {
+    "description": "Footer spinner label while the next page is in flight. Keeps the loaded rows visible, which a full-screen loader would not."
+  },
+  "adminDashboardTitle": "Administration",
+  "@adminDashboardTitle": {
+    "description": "§10.1's heading. In the body rather than an app bar, because a shell tab has none."
+  },
+  "adminQueuesTitle": "Waiting on a decision",
+  "@adminQueuesTitle": {
+    "description": "Heading over the three current-state queue counters. Deliberately not \"Statistics\": these are work items, and they come before the period figures because a queue is something to act on."
+  },
+  "adminAwaitingVerification": "Employers awaiting verification",
+  "@adminAwaitingVerification": {
+    "description": "§10.1's \"profiles awaiting verification\". Says employers, because §6.1 is the only verification in the product and \"profiles\" reads as candidates."
+  },
+  "adminAwaitingModeration": "Vacancies awaiting moderation",
+  "@adminAwaitingModeration": {
+    "description": "§10.1's \"vacancies awaiting moderation\" (BR-04)."
+  },
+  "adminOpenComplaints": "Open complaints",
+  "@adminOpenComplaints": {
+    "description": "§10.1's open complaints, counted as current state like the other two queues."
+  },
+  "adminQueuesClear": "Nothing is waiting on you.",
+  "@adminQueuesClear": {
+    "description": "All three queues are empty. Said as a sentence rather than three zeros, because three zeros read as a screen that failed to load."
+  },
+  "adminSanctionsTitle": "Accounts under sanction",
+  "@adminSanctionsTitle": {
+    "description": "Heading over the restricted and blocked counts. Named for what they are rather than \"Users\", which is the tab next door."
+  },
+  "adminRestrictedUsers": "Restricted",
+  "@adminRestrictedUsers": {
+    "description": "§4.2 restriction: the account still signs in, individual actions are gated. Counted apart from blocked because the remedies differ."
+  },
+  "adminBlockedUsers": "Blocked",
+  "@adminBlockedUsers": {
+    "description": "BR-10's shut-out. Never added to the restricted count: that would hide the more serious state inside the milder one."
+  },
+  "adminPeriodTitle": "For the selected period",
+  "@adminPeriodTitle": {
+    "description": "Heading over §10.1's period-bounded figures. The heading is what keeps them from being read as current state."
+  },
+  "adminPeriodDays": "{days, plural, one{{days} day} other{{days} days}}",
+  "@adminPeriodDays": {
+    "description": "A period preset, e.g. \"30 days\". Uzbek does not inflect, so it carries only the `other` branch, as elsewhere.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "adminCandidates": "Candidates",
+  "@adminCandidates": {
+    "description": "§10.1's candidate counts. Its own key rather than the nav label, which carries a soft hyphen for the 70pt bar and would break mid-word here."
+  },
+  "adminEmployers": "Employers",
+  "@adminEmployers": {
+    "description": "§10.1's employer counts."
+  },
+  "adminVacanciesPublished": "Vacancies published",
+  "@adminVacanciesPublished": {
+    "description": "Vacancies published inside the period. \"Published\", not \"active\": the figure is period-bounded, and a vacancy live today may have been published before it."
+  },
+  "adminApplicationsSubmitted": "Applications submitted",
+  "@adminApplicationsSubmitted": {
+    "description": "Applications submitted inside the period."
+  },
+  "adminCountTotal": "in total",
+  "@adminCountTotal": {
+    "description": "Suffix under the total of a §10.1 count pair."
+  },
+  "adminCountNew": "new",
+  "@adminCountNew": {
+    "description": "Suffix under the newly-registered half of a §10.1 count pair."
+  },
+  "adminVerificationTitle": "Employer verification",
+  "@adminVerificationTitle": {
+    "description": "§10.2's employer verification queue."
+  },
+  "adminVerificationFifo": "Oldest first — the submission at the top has waited longest.",
+  "@adminVerificationFifo": {
+    "description": "Says the ordering out loud, because it is what makes the queue fair and it is not visible from a list of names."
+  },
+  "adminVerificationEmpty": "Nobody is waiting",
+  "@adminVerificationEmpty": {
+    "description": "Empty queue. A good state, so it is not phrased as an absence of results."
+  },
+  "adminVerificationEmptyBody": "Submissions appear here as employers send their documents in.",
+  "@adminVerificationEmptyBody": {
+    "description": "Explains how the list fills up rather than restating that it is empty, which is the rule for every empty state in the design."
+  },
+  "adminEmployerCompany": "Company",
+  "@adminEmployerCompany": {
+    "description": "§6.1 company employer, as a label on a review card. Its own key rather than employerTypeCompany, which is phrased as a first-person choice (\"A company\") for the chooser."
+  },
+  "adminEmployerIndividual": "Individual employer",
+  "@adminEmployerIndividual": {
+    "description": "§6.1 individual employer, as a label on a review card."
+  },
+  "adminEmployerUnnamed": "No name on file",
+  "@adminEmployerUnnamed": {
+    "description": "Neither a legal nor a public name has been filled in. A real state: a profile can be complete enough for the server to accept a submission and still be thin on screen. Stated rather than left blank, so the card is not read as broken."
+  },
+  "adminWaitingDays": "{days, plural, =0{Submitted today} one{Waiting {days} day} other{Waiting {days} days}}",
+  "@adminWaitingDays": {
+    "description": "How long this submission has waited — the actionable fact about a FIFO queue, which a submission date alone does not give. Zero has its own branch because \"waiting 0 days\" reads as a bug.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "adminEvidenceTitle": "Evidence",
+  "@adminEvidenceTitle": {
+    "description": "§10.2's uploaded evidence."
+  },
+  "adminEvidenceNone": "No documents attached",
+  "@adminEvidenceNone": {
+    "description": "A submission with no files. Possible: the server refuses one missing a *required* document, not one missing an optional one."
+  },
+  "adminVerify": "Verify",
+  "@adminVerify": {
+    "description": "§10.2's approval. The verb, not \"Approve\", because §6.1 calls the resulting state verified and the badge the employer sees says the same word."
+  },
+  "adminRequestChanges": "Ask for changes",
+  "@adminRequestChanges": {
+    "description": "§10.2's \"request changes\" — the outcome the employer can act on, which is why it sits between approval and rejection rather than beside rejection."
+  },
+  "adminReject": "Reject",
+  "@adminReject": {
+    "description": "§10.2's refusal."
+  },
+  "adminVerifyTitle": "Verify this employer?",
+  "@adminVerifyTitle": {
+    "description": "Confirmation heading for an approval."
+  },
+  "adminVerifyBody": "This is what lets them publish vacancies and invite candidates. Nothing else about their account changes.",
+  "@adminVerifyBody": {
+    "description": "Names the consequence rather than asking \"are you sure?\". BR-03 is one gate over two features, so both are said: an administrator approving a submission is unblocking vacancies *and* invitations at once."
+  },
+  "adminRequestChangesTitle": "Send this back for changes?",
+  "@adminRequestChangesTitle": {
+    "description": "Confirmation heading for sending a submission back."
+  },
+  "adminRequestChangesBody": "They keep their profile and their files, and can submit again once they have fixed what you name below.",
+  "@adminRequestChangesBody": {
+    "description": "Says what survives, because the difference between this outcome and rejection is exactly that the employer can act on it."
+  },
+  "adminRejectTitle": "Reject this submission?",
+  "@adminRejectTitle": {
+    "description": "Confirmation heading for a refusal."
+  },
+  "adminRejectBody": "They stay unverified and cannot publish or invite. Your reason is all they are given, so write what it would take to pass.",
+  "@adminRejectBody": {
+    "description": "The reason is the whole of what the employer is left with (§6.1 shows it verbatim), so the sheet says that before the field rather than after the refusal."
+  },
+  "adminReasonLabel": "Reason (the employer reads it word for word)",
+  "@adminReasonLabel": {
+    "description": "The parenthesis is the load-bearing part: §6.1 shows this text to the employer verbatim (§2.4), so an administrator writing a note for their own records would be writing it to the person it is about."
+  },
+  "adminReasonHint": "The registration certificate is unreadable — please upload a clearer scan",
+  "@adminReasonHint": {
+    "description": "An example that shows the field is addressed to the employer and has to be actionable. An administrator shown an empty box labelled \"reason\" writes one word."
+  },
+  "adminAlreadyDecided": "Already decided",
+  "@adminAlreadyDecided": {
+    "description": "Title on the notice for a 409 employer.verification_not_pending. Not an error: two administrators working one FIFO queue produce this normally, and the queue is reloaded rather than a retry offered."
+  },
+  "adminDecisionRecorded": "Decision recorded.",
+  "@adminDecisionRecorded": {
+    "description": "Confirms the decision landed. §10.4 makes every administrator action an audit row, so \"recorded\" is literal rather than reassurance."
   }
 }

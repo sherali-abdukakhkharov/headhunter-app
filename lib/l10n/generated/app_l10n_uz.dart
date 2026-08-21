@@ -1116,12 +1116,6 @@ class AppL10nUz extends AppL10n {
       'Bu hamyonda hali hech qanday harakat bo\'lmagan. Kirim ham, chiqim ham shu yerda ko\'rinadi va biror yozuv hech qachon o\'chirilmaydi.';
 
   @override
-  String get walletShowMore => 'Ko\'proq ko\'rsatish';
-
-  @override
-  String get walletLoadingMore => 'Yana yuklanmoqda…';
-
-  @override
   String walletBalanceAfter(int count) {
     return 'Balans $count';
   }
@@ -2049,6 +2043,154 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get interviewCandidateReply => 'Nomzod nima dedi';
+
+  @override
+  String get commonShowMore => 'Ko\'proq ko\'rsatish';
+
+  @override
+  String get commonLoadingMore => 'Yana yuklanmoqda…';
+
+  @override
+  String get adminDashboardTitle => 'Boshqaruv';
+
+  @override
+  String get adminQueuesTitle => 'Qaror kutmoqda';
+
+  @override
+  String get adminAwaitingVerification =>
+      'Tasdiqlash kutayotgan ish beruvchilar';
+
+  @override
+  String get adminAwaitingModeration => 'Moderatsiya kutayotgan vakansiyalar';
+
+  @override
+  String get adminOpenComplaints => 'Ochiq shikoyatlar';
+
+  @override
+  String get adminQueuesClear => 'Sizni kutayotgan ish yo\'q.';
+
+  @override
+  String get adminSanctionsTitle => 'Cheklovdagi hisoblar';
+
+  @override
+  String get adminRestrictedUsers => 'Cheklangan';
+
+  @override
+  String get adminBlockedUsers => 'Bloklangan';
+
+  @override
+  String get adminPeriodTitle => 'Tanlangan davr uchun';
+
+  @override
+  String adminPeriodDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days kun',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminCandidates => 'Nomzodlar';
+
+  @override
+  String get adminEmployers => 'Ish beruvchilar';
+
+  @override
+  String get adminVacanciesPublished => 'E\'lon qilingan vakansiyalar';
+
+  @override
+  String get adminApplicationsSubmitted => 'Yuborilgan arizalar';
+
+  @override
+  String get adminCountTotal => 'jami';
+
+  @override
+  String get adminCountNew => 'yangi';
+
+  @override
+  String get adminVerificationTitle => 'Ish beruvchini tasdiqlash';
+
+  @override
+  String get adminVerificationFifo =>
+      'Eng eskisi birinchi — yuqoridagi ariza eng uzoq kutgan.';
+
+  @override
+  String get adminVerificationEmpty => 'Kutayotgan hech kim yo\'q';
+
+  @override
+  String get adminVerificationEmptyBody =>
+      'Ish beruvchilar hujjatlarini yuborgan sayin arizalar shu yerda paydo bo\'ladi.';
+
+  @override
+  String get adminEmployerCompany => 'Tashkilot';
+
+  @override
+  String get adminEmployerIndividual => 'Jismoniy shaxs';
+
+  @override
+  String get adminEmployerUnnamed => 'Nom kiritilmagan';
+
+  @override
+  String adminWaitingDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days kundan beri kutmoqda',
+      zero: 'Bugun yuborilgan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminEvidenceTitle => 'Hujjatlar';
+
+  @override
+  String get adminEvidenceNone => 'Hujjat ilova qilinmagan';
+
+  @override
+  String get adminVerify => 'Tasdiqlash';
+
+  @override
+  String get adminRequestChanges => 'O\'zgartirish so\'rash';
+
+  @override
+  String get adminReject => 'Rad etish';
+
+  @override
+  String get adminVerifyTitle => 'Bu ish beruvchini tasdiqlaysizmi?';
+
+  @override
+  String get adminVerifyBody =>
+      'Bu ularga vakansiya e\'lon qilish va nomzodlarni taklif qilish imkonini beradi. Hisobdagi boshqa hech narsa o\'zgarmaydi.';
+
+  @override
+  String get adminRequestChangesTitle => 'Tuzatish uchun qaytarasizmi?';
+
+  @override
+  String get adminRequestChangesBody =>
+      'Profil va fayllar saqlanadi — siz quyida aytgan narsani tuzatib, qaytadan yuborishlari mumkin.';
+
+  @override
+  String get adminRejectTitle => 'Bu arizani rad etasizmi?';
+
+  @override
+  String get adminRejectBody =>
+      'Ular tasdiqlanmagan holatda qoladi, e\'lon ham, taklif ham qila olmaydi. Ularga faqat sizning sababingiz yetadi — nima qilish kerakligini yozing.';
+
+  @override
+  String get adminReasonLabel => 'Sabab (ish beruvchi so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminReasonHint =>
+      'Ro\'yxatga olish guvohnomasi o\'qilmaydi — aniqroq nusxa yuklang';
+
+  @override
+  String get adminAlreadyDecided => 'Allaqachon hal qilingan';
+
+  @override
+  String get adminDecisionRecorded => 'Qaror qayd etildi.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -3161,12 +3303,6 @@ class AppL10nUzCyrl extends AppL10nUz {
       'Бу ҳамёнда ҳали ҳеч қандай ҳаракат бўлмаган. Кирим ҳам, чиқим ҳам шу ерда кўринади ва бирор ёзув ҳеч қачон ўчирилмайди.';
 
   @override
-  String get walletShowMore => 'Кўпроқ кўрсатиш';
-
-  @override
-  String get walletLoadingMore => 'Яна юкланмоқда…';
-
-  @override
   String walletBalanceAfter(int count) {
     return 'Баланс $count';
   }
@@ -4090,6 +4226,153 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get interviewCandidateReply => 'Номзод нима деди';
+
+  @override
+  String get commonShowMore => 'Кўпроқ кўрсатиш';
+
+  @override
+  String get commonLoadingMore => 'Яна юкланмоқда…';
+
+  @override
+  String get adminDashboardTitle => 'Бошқарув';
+
+  @override
+  String get adminQueuesTitle => 'Қарор кутмоқда';
+
+  @override
+  String get adminAwaitingVerification => 'Тасдиқлаш кутаётган иш берувчилар';
+
+  @override
+  String get adminAwaitingModeration => 'Модерация кутаётган вакансиялар';
+
+  @override
+  String get adminOpenComplaints => 'Очиқ шикоятлар';
+
+  @override
+  String get adminQueuesClear => 'Сизни кутаётган иш йўқ.';
+
+  @override
+  String get adminSanctionsTitle => 'Чекловдаги ҳисоблар';
+
+  @override
+  String get adminRestrictedUsers => 'Чекланган';
+
+  @override
+  String get adminBlockedUsers => 'Блокланган';
+
+  @override
+  String get adminPeriodTitle => 'Танланган давр учун';
+
+  @override
+  String adminPeriodDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days кун',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminCandidates => 'Номзодлар';
+
+  @override
+  String get adminEmployers => 'Иш берувчилар';
+
+  @override
+  String get adminVacanciesPublished => 'Эълон қилинган вакансиялар';
+
+  @override
+  String get adminApplicationsSubmitted => 'Юборилган аризалар';
+
+  @override
+  String get adminCountTotal => 'жами';
+
+  @override
+  String get adminCountNew => 'янги';
+
+  @override
+  String get adminVerificationTitle => 'Иш берувчини тасдиқлаш';
+
+  @override
+  String get adminVerificationFifo =>
+      'Энг эскиси биринчи — юқоридаги ариза энг узоқ кутган.';
+
+  @override
+  String get adminVerificationEmpty => 'Кутаётган ҳеч ким йўқ';
+
+  @override
+  String get adminVerificationEmptyBody =>
+      'Иш берувчилар ҳужжатларини юборган сайин аризалар шу ерда пайдо бўлади.';
+
+  @override
+  String get adminEmployerCompany => 'Ташкилот';
+
+  @override
+  String get adminEmployerIndividual => 'Жисмоний шахс';
+
+  @override
+  String get adminEmployerUnnamed => 'Ном киритилмаган';
+
+  @override
+  String adminWaitingDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days кундан бери кутмоқда',
+      zero: 'Бугун юборилган',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminEvidenceTitle => 'Ҳужжатлар';
+
+  @override
+  String get adminEvidenceNone => 'Ҳужжат илова қилинмаган';
+
+  @override
+  String get adminVerify => 'Тасдиқлаш';
+
+  @override
+  String get adminRequestChanges => 'Ўзгартириш сўраш';
+
+  @override
+  String get adminReject => 'Рад этиш';
+
+  @override
+  String get adminVerifyTitle => 'Бу иш берувчини тасдиқлайсизми?';
+
+  @override
+  String get adminVerifyBody =>
+      'Бу уларга вакансия эълон қилиш ва номзодларни таклиф қилиш имконини беради. Ҳисобдаги бошқа ҳеч нарса ўзгармайди.';
+
+  @override
+  String get adminRequestChangesTitle => 'Тузатиш учун қайтарасизми?';
+
+  @override
+  String get adminRequestChangesBody =>
+      'Профил ва файллар сақланади — сиз қуйида айтган нарсани тузатиб, қайтадан юборишлари мумкин.';
+
+  @override
+  String get adminRejectTitle => 'Бу аризани рад этасизми?';
+
+  @override
+  String get adminRejectBody =>
+      'Улар тасдиқланмаган ҳолатда қолади, эълон ҳам, таклиф ҳам қила олмайди. Уларга фақат сизнинг сабабингиз етади — нима қилиш кераклигини ёзинг.';
+
+  @override
+  String get adminReasonLabel => 'Сабаб (иш берувчи сўзма-сўз ўқийди)';
+
+  @override
+  String get adminReasonHint =>
+      'Рўйхатга олиш гувоҳномаси ўқилмайди — аниқроқ нусха юкланг';
+
+  @override
+  String get adminAlreadyDecided => 'Аллақачон ҳал қилинган';
+
+  @override
+  String get adminDecisionRecorded => 'Қарор қайд этилди.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -5204,12 +5487,6 @@ class AppL10nUzLatn extends AppL10nUz {
       'Bu hamyonda hali hech qanday harakat bo\'lmagan. Kirim ham, chiqim ham shu yerda ko\'rinadi va biror yozuv hech qachon o\'chirilmaydi.';
 
   @override
-  String get walletShowMore => 'Ko\'proq ko\'rsatish';
-
-  @override
-  String get walletLoadingMore => 'Yana yuklanmoqda…';
-
-  @override
   String walletBalanceAfter(int count) {
     return 'Balans $count';
   }
@@ -6137,4 +6414,152 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get interviewCandidateReply => 'Nomzod nima dedi';
+
+  @override
+  String get commonShowMore => 'Ko\'proq ko\'rsatish';
+
+  @override
+  String get commonLoadingMore => 'Yana yuklanmoqda…';
+
+  @override
+  String get adminDashboardTitle => 'Boshqaruv';
+
+  @override
+  String get adminQueuesTitle => 'Qaror kutmoqda';
+
+  @override
+  String get adminAwaitingVerification =>
+      'Tasdiqlash kutayotgan ish beruvchilar';
+
+  @override
+  String get adminAwaitingModeration => 'Moderatsiya kutayotgan vakansiyalar';
+
+  @override
+  String get adminOpenComplaints => 'Ochiq shikoyatlar';
+
+  @override
+  String get adminQueuesClear => 'Sizni kutayotgan ish yo\'q.';
+
+  @override
+  String get adminSanctionsTitle => 'Cheklovdagi hisoblar';
+
+  @override
+  String get adminRestrictedUsers => 'Cheklangan';
+
+  @override
+  String get adminBlockedUsers => 'Bloklangan';
+
+  @override
+  String get adminPeriodTitle => 'Tanlangan davr uchun';
+
+  @override
+  String adminPeriodDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days kun',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminCandidates => 'Nomzodlar';
+
+  @override
+  String get adminEmployers => 'Ish beruvchilar';
+
+  @override
+  String get adminVacanciesPublished => 'E\'lon qilingan vakansiyalar';
+
+  @override
+  String get adminApplicationsSubmitted => 'Yuborilgan arizalar';
+
+  @override
+  String get adminCountTotal => 'jami';
+
+  @override
+  String get adminCountNew => 'yangi';
+
+  @override
+  String get adminVerificationTitle => 'Ish beruvchini tasdiqlash';
+
+  @override
+  String get adminVerificationFifo =>
+      'Eng eskisi birinchi — yuqoridagi ariza eng uzoq kutgan.';
+
+  @override
+  String get adminVerificationEmpty => 'Kutayotgan hech kim yo\'q';
+
+  @override
+  String get adminVerificationEmptyBody =>
+      'Ish beruvchilar hujjatlarini yuborgan sayin arizalar shu yerda paydo bo\'ladi.';
+
+  @override
+  String get adminEmployerCompany => 'Tashkilot';
+
+  @override
+  String get adminEmployerIndividual => 'Jismoniy shaxs';
+
+  @override
+  String get adminEmployerUnnamed => 'Nom kiritilmagan';
+
+  @override
+  String adminWaitingDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days kundan beri kutmoqda',
+      zero: 'Bugun yuborilgan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminEvidenceTitle => 'Hujjatlar';
+
+  @override
+  String get adminEvidenceNone => 'Hujjat ilova qilinmagan';
+
+  @override
+  String get adminVerify => 'Tasdiqlash';
+
+  @override
+  String get adminRequestChanges => 'O\'zgartirish so\'rash';
+
+  @override
+  String get adminReject => 'Rad etish';
+
+  @override
+  String get adminVerifyTitle => 'Bu ish beruvchini tasdiqlaysizmi?';
+
+  @override
+  String get adminVerifyBody =>
+      'Bu ularga vakansiya e\'lon qilish va nomzodlarni taklif qilish imkonini beradi. Hisobdagi boshqa hech narsa o\'zgarmaydi.';
+
+  @override
+  String get adminRequestChangesTitle => 'Tuzatish uchun qaytarasizmi?';
+
+  @override
+  String get adminRequestChangesBody =>
+      'Profil va fayllar saqlanadi — siz quyida aytgan narsani tuzatib, qaytadan yuborishlari mumkin.';
+
+  @override
+  String get adminRejectTitle => 'Bu arizani rad etasizmi?';
+
+  @override
+  String get adminRejectBody =>
+      'Ular tasdiqlanmagan holatda qoladi, e\'lon ham, taklif ham qila olmaydi. Ularga faqat sizning sababingiz yetadi — nima qilish kerakligini yozing.';
+
+  @override
+  String get adminReasonLabel => 'Sabab (ish beruvchi so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminReasonHint =>
+      'Ro\'yxatga olish guvohnomasi o\'qilmaydi — aniqroq nusxa yuklang';
+
+  @override
+  String get adminAlreadyDecided => 'Allaqachon hal qilingan';
+
+  @override
+  String get adminDecisionRecorded => 'Qaror qayd etildi.';
 }

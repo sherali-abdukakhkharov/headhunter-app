@@ -1567,11 +1567,94 @@ this opens. Deep links moved to M8.
       server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
-## M10 - Admin module
+## M10 - Admin module *(§10.1 and §10.2's verification half done 2026-08-21)*
 
-- [ ] Admin shell behind the admin role
-- [ ] Dashboard counters (§10.1)
-- [ ] Employer verification + vacancy moderation with mandatory reasons
+**The whole admin API was already built** — `src/modules/admin` on the backend
+covers §10.1 through §10.5, audit log and retention included. So nothing in this
+milestone is blocked on a contract except the one gap recorded below, and every
+remaining item is a screen.
+
+- [x] **Admin shell behind the admin role** — structurally it already was: all
+      three shells are registered at once and the redirect chain has always
+      activated the role a path names. What was missing was any screen behind the
+      five tabs, so an administrator signed in and landed on a placeholder
+- [x] **Dashboard counters (§10.1), 2026-08-21.** `GET /admin/dashboard`, and the
+      screen splits what §10.1 writes as one paragraph, because it is two kinds of
+      fact. Four counters are bounded by the period; five are **current state**,
+      which is the backend's own distinction — what matters about a queue is how
+      long it is *now*. "7 awaiting verification" under a date range would say
+      seven employers waited during July, which is false and gets more false as
+      the period ages.
+      Four decisions worth keeping:
+      **The client never invents "today".** The first load sends no dates at all
+      and renders `period.from`/`period.to` from the response, because the
+      server's default thirty days is thirty days in `PLATFORM_TIME_ZONE` and the
+      device cannot compute that. The presets then count back from the **`to` the
+      server echoed**, so the only arithmetic in Dart is subtraction from a date
+      the server chose. Pinned by a fixture whose period ends on a date that is
+      not today on any machine, and mutation-verified: `DateTime.now()` fails it.
+      **A counter is a way in, or it has no chevron.** Verification navigates;
+      moderation and complaints do not, because their screens do not exist yet,
+      and a number that leads to a placeholder is worse than one that leads
+      nowhere. The next slice passes a destination and nothing else changes.
+      **Restricted and blocked are two figures.** §10.1 says "restricted users"
+      and the DTO carries both; summing them would hide the more serious state
+      inside the milder one, which have different remedies (§4.2 versus BR-10).
+      **The header is not the employer's navy panel.** §6.2 inverts to navy so
+      the two roles are instantly distinguishable, and §2.3 makes the switch a
+      runtime one — so reusing that panel here would defeat exactly the thing it
+      exists for. The administrator's surface is a work queue on the app's own
+      ground
+- [x] **Employer verification (§10.2), 2026-08-21 — and it unblocks the whole
+      employer side.** BR-03 gates every employer action: no vacancy may be
+      submitted and no invitation sent until the profile is verified, and there
+      was **no path through the product to grant that**. An employer could
+      register, complete a profile, upload documents and wait forever; the only
+      remedy was a hand-written API call. That is why this queue went first.
+      **The list is the review.** Every field §10.2 asks for arrives in the queue
+      response, evidence included, so there is no detail route: one would spend a
+      round trip re-fetching what is in hand and cost the administrator their
+      place in the queue.
+      **The order is the server's and nothing re-sorts it** — oldest first,
+      because a queue that is not FIFO is a queue somebody waits in
+      indefinitely. The card says how long its submission has *waited*, which is
+      the fact the ordering is for and which a timestamp does not give; computed
+      from the **instant**, never the wall clock, since the platform's +05:00
+      would understate the wait for an administrator abroad. Mutation-verified.
+      **The reason is required for anything but an approval.** The server refuses
+      with 403 `employer.verification_reason_required`; re-making that here turns
+      a refusal into a disabled button, and §6.1 shows the text to the employer
+      **verbatim** — a rejection with no reason is a screen saying the documents
+      were refused and not saying what to fix. So the label says the employer
+      reads it word for word.
+      **A 409 is an outcome, not a failure.** Two administrators working one FIFO
+      queue produce `employer.verification_not_pending` normally, and the work
+      *is* done — so the row leaves the queue exactly as it would on success and
+      only the confirmation differs. Told apart by `code`, not by status.
+      **A decided row leaves without a refetch**: everything above it is older,
+      so a reload would reorder nothing, cost a request, and shift the list under
+      the finger of somebody working down a page. Only §10.1's counter is
+      invalidated, because that figure did move.
+      Evidence opens through the existing `AttachmentOpener` — the server's own
+      `path`, followed verbatim, and **nothing prefetches**, because §11.1 logs
+      every read of protected data and a speculative fetch would write audit
+      entries nobody asked for
+- [!] **Backend ask: `GET /admin/moderation/:vacancyId` returns the raw database
+      row.** `VacancyReviewDto.vacancy` is typed `Record<string, unknown>` and
+      `loadVacancy` puts the selected columns in it unchanged, so the keys are
+      **snake_case** while `requirements` beside it is camelCase and every other
+      vacancy route returns a camelCase DTO. A client review screen would have to
+      carry a second parser for the same object, spelled differently.
+      *This is why the vacancy-moderation half of §10.2 is not built yet*, and it
+      is the only thing standing in the way: the queue list is already fine
+      (`ModerationQueueItemDto` is camelCase and carries the BR-12 restriction),
+      but approving a vacancy on its title alone is not reviewing it, and §10.2
+      asks for the details and the requirements by name. One DTO and the screen
+      follows
+- [ ] Vacancy moderation (§10.2, BR-04) — approve or reject with a mandatory
+      reason, plus §10.2's pause-or-remove for one already published. **BR-04 is
+      the mirror of BR-03**: no vacancy reaches a candidate until a moderator
+      passes it, so this is the other half of making the product work end to end
 - [ ] Complaint queues
 - [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
 - [ ] Dictionary management with four localized labels + skill merge, designed for

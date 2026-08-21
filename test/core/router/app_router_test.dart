@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +12,7 @@ import 'package:jobbridge_app/src/core/auth/session_controller.dart';
 import 'package:jobbridge_app/src/core/auth/session_state.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
@@ -57,9 +61,54 @@ class _FakeSessionController extends SessionController {
 /// Two long pumps rather than one: a deep link into a non-active role converges
 /// over *two* passes - the first allows the navigation and schedules the role
 /// switch, the second runs after that write fires the refresh listenable.
+/// Answers every request with a 503, immediately and without a socket.
+///
+/// **A routing test must not reach the network.** Shell tabs are real screens
+/// now, and a real screen fetches the moment it mounts — so without this the
+/// suite opens a connection per destination it walks through, and whichever
+/// request is still in flight when the test ends is reported as a pending
+/// timer, pointing at the router rather than at the screen.
+///
+/// 503 rather than a canned body: every screen here is expected to render its
+/// error arm, which is a state, not a failure of this test.
+class _OfflineAdapter implements HttpClientAdapter {
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async => ResponseBody.fromString('{}', 503);
+
+  @override
+  void close({bool force = false}) {}
+}
+
 Future<void> _pumpRoute(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
+  await tester.pump(const Duration(milliseconds: 400));
+}
+
+/// Tears the tree down **inside the test body**, where there is still a frame.
+///
+/// A screen that watches an auto-dispose provider schedules that provider's
+/// disposal as it unmounts, and a container built outside a `ProviderScope` —
+/// which is what [UncontrolledProviderScope] means here — has no widget vsync
+/// to hang that on, so it uses a zero-duration timer instead. Left to the
+/// framework's own teardown there is no frame left to run the timer on, and
+/// nothing registered with `addTearDown` can supply one either: those callbacks
+/// run after `fakeAsync` has finished, so a pump there cannot reach the timer.
+///
+/// The failure reads as "pending timers" attributed to the router, which is
+/// where the tree was built rather than where the provider was watched. Any
+/// test that ends with a **fetching** shell screen mounted needs this — in
+/// practice the ones that walk every role, since the administrator's shell is
+/// last in [AppRole.values] and its dashboard is real.
+Future<void> _unmountTree(WidgetTester tester) async {
+  await tester.pumpWidget(const SizedBox.shrink());
+  // Two frames, not one: disposing one provider un-listens the next, so the
+  // scheduler queues a second timer while running the first.
+  await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
 }
 
@@ -93,6 +142,9 @@ void main() {
         sessionControllerProvider.overrideWith(() => controller),
       ],
     );
+    // The real client with its real interceptors, minus the socket — see
+    // [_OfflineAdapter].
+    container.read(dioProvider).httpClientAdapter = _OfflineAdapter();
     addTearDown(container.dispose);
 
     final router = container.read(appRouterProvider);
@@ -272,6 +324,7 @@ void main() {
         final result = await settle(tester, SessionActive(roles: {role}));
         expect(result.location, Routes.homeFor(role), reason: role.name);
       }
+      await _unmountTree(tester);
     });
 
     testWidgets('a path for an ungranted role bounces to the own shell', (
@@ -398,6 +451,7 @@ void main() {
         ).map((t) => t.label(AppL10n.of(context))).toList();
         expect(bar.items.map((i) => i.label).toList(), expected);
       }
+      await _unmountTree(tester);
     });
 
     testWidgets('a candidate destination never appears in the employer shell', (

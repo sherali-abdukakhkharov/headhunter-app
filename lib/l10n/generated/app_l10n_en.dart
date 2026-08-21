@@ -1119,12 +1119,6 @@ class AppL10nEn extends AppL10n {
       'Nothing has moved in this wallet yet. Credits and unlocks both appear here, and neither is ever removed.';
 
   @override
-  String get walletShowMore => 'Show more';
-
-  @override
-  String get walletLoadingMore => 'Loading more…';
-
-  @override
   String walletBalanceAfter(int count) {
     return 'Balance $count';
   }
@@ -2048,4 +2042,153 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get interviewCandidateReply => 'What the candidate said';
+
+  @override
+  String get commonShowMore => 'Show more';
+
+  @override
+  String get commonLoadingMore => 'Loading more…';
+
+  @override
+  String get adminDashboardTitle => 'Administration';
+
+  @override
+  String get adminQueuesTitle => 'Waiting on a decision';
+
+  @override
+  String get adminAwaitingVerification => 'Employers awaiting verification';
+
+  @override
+  String get adminAwaitingModeration => 'Vacancies awaiting moderation';
+
+  @override
+  String get adminOpenComplaints => 'Open complaints';
+
+  @override
+  String get adminQueuesClear => 'Nothing is waiting on you.';
+
+  @override
+  String get adminSanctionsTitle => 'Accounts under sanction';
+
+  @override
+  String get adminRestrictedUsers => 'Restricted';
+
+  @override
+  String get adminBlockedUsers => 'Blocked';
+
+  @override
+  String get adminPeriodTitle => 'For the selected period';
+
+  @override
+  String adminPeriodDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '$days day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminCandidates => 'Candidates';
+
+  @override
+  String get adminEmployers => 'Employers';
+
+  @override
+  String get adminVacanciesPublished => 'Vacancies published';
+
+  @override
+  String get adminApplicationsSubmitted => 'Applications submitted';
+
+  @override
+  String get adminCountTotal => 'in total';
+
+  @override
+  String get adminCountNew => 'new';
+
+  @override
+  String get adminVerificationTitle => 'Employer verification';
+
+  @override
+  String get adminVerificationFifo =>
+      'Oldest first — the submission at the top has waited longest.';
+
+  @override
+  String get adminVerificationEmpty => 'Nobody is waiting';
+
+  @override
+  String get adminVerificationEmptyBody =>
+      'Submissions appear here as employers send their documents in.';
+
+  @override
+  String get adminEmployerCompany => 'Company';
+
+  @override
+  String get adminEmployerIndividual => 'Individual employer';
+
+  @override
+  String get adminEmployerUnnamed => 'No name on file';
+
+  @override
+  String adminWaitingDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Waiting $days days',
+      one: 'Waiting $days day',
+      zero: 'Submitted today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminEvidenceTitle => 'Evidence';
+
+  @override
+  String get adminEvidenceNone => 'No documents attached';
+
+  @override
+  String get adminVerify => 'Verify';
+
+  @override
+  String get adminRequestChanges => 'Ask for changes';
+
+  @override
+  String get adminReject => 'Reject';
+
+  @override
+  String get adminVerifyTitle => 'Verify this employer?';
+
+  @override
+  String get adminVerifyBody =>
+      'This is what lets them publish vacancies and invite candidates. Nothing else about their account changes.';
+
+  @override
+  String get adminRequestChangesTitle => 'Send this back for changes?';
+
+  @override
+  String get adminRequestChangesBody =>
+      'They keep their profile and their files, and can submit again once they have fixed what you name below.';
+
+  @override
+  String get adminRejectTitle => 'Reject this submission?';
+
+  @override
+  String get adminRejectBody =>
+      'They stay unverified and cannot publish or invite. Your reason is all they are given, so write what it would take to pass.';
+
+  @override
+  String get adminReasonLabel => 'Reason (the employer reads it word for word)';
+
+  @override
+  String get adminReasonHint =>
+      'The registration certificate is unreadable — please upload a clearer scan';
+
+  @override
+  String get adminAlreadyDecided => 'Already decided';
+
+  @override
+  String get adminDecisionRecorded => 'Decision recorded.';
 }

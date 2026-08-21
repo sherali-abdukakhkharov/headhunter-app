@@ -1129,12 +1129,6 @@ class AppL10nRu extends AppL10n {
       'В этом кошельке пока ничего не происходило. Здесь появляются и начисления, и списания, и ни одна запись никогда не удаляется.';
 
   @override
-  String get walletShowMore => 'Показать ещё';
-
-  @override
-  String get walletLoadingMore => 'Загружаем ещё…';
-
-  @override
   String walletBalanceAfter(int count) {
     return 'Баланс $count';
   }
@@ -2065,4 +2059,157 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get interviewCandidateReply => 'Что ответил кандидат';
+
+  @override
+  String get commonShowMore => 'Показать ещё';
+
+  @override
+  String get commonLoadingMore => 'Загружаем ещё…';
+
+  @override
+  String get adminDashboardTitle => 'Администрирование';
+
+  @override
+  String get adminQueuesTitle => 'Ожидают решения';
+
+  @override
+  String get adminAwaitingVerification => 'Работодатели, ожидающие проверки';
+
+  @override
+  String get adminAwaitingModeration => 'Вакансии, ожидающие модерации';
+
+  @override
+  String get adminOpenComplaints => 'Открытые жалобы';
+
+  @override
+  String get adminQueuesClear => 'Ничего не ждёт вашего решения.';
+
+  @override
+  String get adminSanctionsTitle => 'Аккаунты с ограничениями';
+
+  @override
+  String get adminRestrictedUsers => 'Ограничены';
+
+  @override
+  String get adminBlockedUsers => 'Заблокированы';
+
+  @override
+  String get adminPeriodTitle => 'За выбранный период';
+
+  @override
+  String adminPeriodDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дней',
+      many: '$days дней',
+      few: '$days дня',
+      one: '$days день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminCandidates => 'Кандидаты';
+
+  @override
+  String get adminEmployers => 'Работодатели';
+
+  @override
+  String get adminVacanciesPublished => 'Опубликованные вакансии';
+
+  @override
+  String get adminApplicationsSubmitted => 'Поданные заявки';
+
+  @override
+  String get adminCountTotal => 'всего';
+
+  @override
+  String get adminCountNew => 'новых';
+
+  @override
+  String get adminVerificationTitle => 'Проверка работодателей';
+
+  @override
+  String get adminVerificationFifo =>
+      'Сначала самые давние — заявка сверху ждёт дольше всех.';
+
+  @override
+  String get adminVerificationEmpty => 'Никто не ожидает';
+
+  @override
+  String get adminVerificationEmptyBody =>
+      'Заявки появятся здесь, когда работодатели пришлют документы.';
+
+  @override
+  String get adminEmployerCompany => 'Организация';
+
+  @override
+  String get adminEmployerIndividual => 'Физическое лицо';
+
+  @override
+  String get adminEmployerUnnamed => 'Название не указано';
+
+  @override
+  String adminWaitingDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Ждёт $days дней',
+      many: 'Ждёт $days дней',
+      few: 'Ждёт $days дня',
+      one: 'Ждёт $days день',
+      zero: 'Отправлено сегодня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminEvidenceTitle => 'Документы';
+
+  @override
+  String get adminEvidenceNone => 'Документы не приложены';
+
+  @override
+  String get adminVerify => 'Подтвердить';
+
+  @override
+  String get adminRequestChanges => 'Запросить изменения';
+
+  @override
+  String get adminReject => 'Отклонить';
+
+  @override
+  String get adminVerifyTitle => 'Подтвердить этого работодателя?';
+
+  @override
+  String get adminVerifyBody =>
+      'Это откроет им публикацию вакансий и приглашение кандидатов. Больше ничего в аккаунте не изменится.';
+
+  @override
+  String get adminRequestChangesTitle => 'Вернуть на доработку?';
+
+  @override
+  String get adminRequestChangesBody =>
+      'Профиль и файлы сохранятся — они смогут отправить заявку снова, исправив то, что вы укажете ниже.';
+
+  @override
+  String get adminRejectTitle => 'Отклонить эту заявку?';
+
+  @override
+  String get adminRejectBody =>
+      'Работодатель останется непроверенным и не сможет публиковать вакансии и приглашать. Ваша причина — всё, что он получит, поэтому напишите, что нужно исправить.';
+
+  @override
+  String get adminReasonLabel => 'Причина (работодатель прочитает её дословно)';
+
+  @override
+  String get adminReasonHint =>
+      'Свидетельство о регистрации не читается — загрузите более чёткий скан';
+
+  @override
+  String get adminAlreadyDecided => 'Решение уже принято';
+
+  @override
+  String get adminDecisionRecorded => 'Решение зафиксировано.';
 }
