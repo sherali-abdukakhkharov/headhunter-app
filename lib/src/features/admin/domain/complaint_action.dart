@@ -46,16 +46,26 @@ enum VacancyAdminStatus {
 
   /// The actions a vacancy in [status] can actually take.
   ///
-  /// This mirrors `TRANSITIONS` in the backend's `vacancy-status.ts`:
-  /// `active → paused | closed`, `paused → closed`, and `closed` is terminal.
-  /// A vacancy still in `draft`, `under_moderation` or `rejected` was never
-  /// published, so neither applies.
+  /// This mirrors the **administrative** transition table in the backend's
+  /// `vacancy-status.ts` — the one `PUT /admin/vacancies/:id/status` checks:
+  /// `active → paused | closed`, `paused → closed`, and `closed` is terminal
+  /// (BR-11). A vacancy still in `draft`, `under_moderation` or `rejected` was
+  /// never published, so neither applies.
+  ///
+  /// **Administrative specifically**, and that is the useful precision: that
+  /// file holds several tables. The employer's own transitions and
+  /// moderation's `active | rejected` decision are separate, so a change to
+  /// either of those does not reach this list and must not be mirrored into
+  /// it. `closed` being terminal is enforced by the table alone — a reopen
+  /// path would be a schema question rather than a table edit, so it would not
+  /// arrive quietly.
   ///
   /// Restating a server table in the client is safe here for the same reason
   /// the decision sheet's mandatory reason is: the client is the **stricter**
   /// of the two. The cost if the table ever moves is a hidden action rather
   /// than a button that answers 409 every time it is pressed, and that is the
-  /// direction to be wrong in.
+  /// direction to be wrong in. Confirmed against the backend on 2026-08-22,
+  /// including an undertaking to say before it moves.
   static List<VacancyAdminStatus> availableFor(String? status) =>
       switch (status) {
         'active' => const [

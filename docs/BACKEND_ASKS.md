@@ -114,28 +114,52 @@ either, and a DTO typing it `number` without a cast would be lying.
 
 ---
 
-## Open — not an ask yet, but a live constraint
+### 4. Six admin GETs had no response schema — **done 2026-08-22**
 
-**`docs/openapi.json` is the only contract document there is.** `/docs-json` has
-answered 404 since 2026-08-20, so the checked-in file is it. Both `@ApiOkResponse`
-decorators added on 2026-08-22 put `VacancyReviewDto` and `ComplaintDetailDto` in
-that file for the first time — they had no schema entry at all before.
+**`docs/openapi.json` is the only contract document there is**: `/docs-json` has
+answered 404 since 2026-08-20, so the checked-in file is it. Item 1 and 2's
+`@ApiOkResponse` decorators put `VacancyReviewDto` and `ComplaintDetailDto` in it
+for the first time, which surfaced that six admin GETs had **no `responses.200`
+content at all** — not a partial description, nothing.
 
-**Six admin GETs still have no documented response**, so their shapes are absent
-from that file:
+Three were asked for (`GET /admin/users`, `/admin/users/:userId`, `/admin/audit`
+— §10.4's slice) and three were deprioritised on the grounds that their item DTOs
+(`VerificationQueueItemDto`, `ModerationQueueItemDto`, `ComplaintDto`) already
+carry `@ApiProperty` so only the `{items}` wrapper was missing.
 
-| route | needed by |
-|---|---|
-| `GET /admin/users` | §10.4, next slice |
-| `GET /admin/users/:userId` | §10.4, next slice |
-| `GET /admin/audit` | §10.4, next slice |
-| `GET /admin/verification` | already consumed; item DTO is documented, only the `{items}` wrapper is not |
-| `GET /admin/moderation` | same |
-| `GET /admin/complaints` | same |
+**All six were done, and the deprioritisation was wrong** for a reason worth
+keeping: a missing wrapper means the *route* has no schema in the document, so
+`GET /admin/verification` was simply absent from it. "Partially described" was the
+wrong model. Three one-line decorators over DTOs that already existed was not
+worth deferring to a "next touched" that might never come.
 
-The first three are asked for; the last three are low value, since
-`VerificationQueueItemDto`, `ModerationQueueItemDto` and `ComplaintDto` all carry
-`@ApiProperty` and only the wrapper is undocumented.
+**The consequence is a rule, not a fix.** Every route in the API now declares a
+response or is deliberately excluded — the only exclusions being the two payment
+callbacks, whose audience is Payme and CLICK. So from here **a route missing from
+`docs/openapi.json` is a bug**: report it rather than working around it.
+
+Seven schemas appear in the document for the first time: the three above plus
+`AdminUserDto`, `StatusHistoryEntryDto`, `UserComplaintDto` and `AuditEntryDto`
+pulled in behind them.
+
+---
+
+## Facts §10.4 needs, from settling the above
+
+- **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto` +
+  `statusHistory` (`StatusHistoryEntryDto`) + `complaints` (`UserComplaintDto`).
+  This client assumed otherwise and was corrected before building on it: audit
+  rows reach a client only through `GET /admin/audit` → `AuditLogDto`, so showing
+  them on a user screen is **a different endpoint and a separate fetch**.
+- **It is emitted flat.** `AdminUserDetailDto` inherits from `AdminUserDto` in
+  TypeScript and the generator merged the properties into one schema rather than
+  an `allOf`, so expect ten on the object: `userId`, `phone`, `name`, `roles`,
+  `status`, `restrictedUntil`, `createdAt`, `lastLoginAt`, `statusHistory`,
+  `complaints`.
+- **`AuditEntryDto.details` is an opaque key/value bag.** Its keys differ per
+  `action`, are enumerated nowhere, and a client that guesses at them is wrong
+  for the next action added. Render as text; do not parse values. Any timestamp
+  inside carries §2's offset, formatted at the write site.
 
 ---
 
@@ -151,9 +175,18 @@ The first three are asked for; the last three are low value, since
 
 ## Client-side commitments made in return
 
-- **The client mirrors `TRANSITIONS` from `vacancy-status.ts`** and offers only
-  the transitions it allows, so a 409 `vacancy.transition_not_allowed` now means
-  the vacancy moved under the screen. The backend has undertaken to say before
-  that table moves; if it moves silently the client starts hiding a valid action,
-  which is the safe direction but still wrong. See
-  `VacancyAdminStatus.availableFor`.
+- **The client mirrors the administrative transition table** from
+  `vacancy-status.ts` and offers only the transitions it allows, so a 409
+  `vacancy.transition_not_allowed` now means the vacancy moved under the screen.
+  Written out and confirmed on 2026-08-22: pause from `active` only, close from
+  `active` or `paused`, neither from `closed`, `draft`, `under_moderation` or
+  `rejected`. The backend has undertaken to say before that table moves; if it
+  moves silently the client starts hiding a valid action, which is the safe
+  direction but still wrong. See `VacancyAdminStatus.availableFor`.
+
+  **The boundary is narrower than "that file"**, which is the useful part: the
+  employer's own transitions and moderation's `active | rejected` decision are
+  separate tables in the same file, so a change to either does not reach this
+  mirror and must not be copied into it. `closed` being terminal is enforced by
+  the table alone, so a reopen path would be a schema question rather than a
+  table edit — it would not arrive quietly.

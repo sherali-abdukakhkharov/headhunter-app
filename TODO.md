@@ -1755,14 +1755,36 @@ remaining item is a screen.
       formatted server-side.
       **One consequence for a screen not built yet:** the audit log's `details`
       is an opaque key/value bag. Render it as text; do not parse values
-- [!] **`docs/openapi.json` is the only contract document there is** —
-      `/docs-json` has answered 404 since 2026-08-20. Six admin GETs still have
-      no documented response, three of which §10.4 needs: `GET /admin/users`,
-      `GET /admin/users/:userId`, `GET /admin/audit`. Asked for; the other three
-      are queue wrappers whose *item* DTOs are already documented, so they are
-      low value. **Read the checked-in file rather than the running server**
-      before building §10.4
-- [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
+- [x] **Every route in the API now declares a response schema, 2026-08-22.**
+      `/docs-json` has answered 404 since 2026-08-20, so the checked-in
+      `docs/openapi.json` is the only contract document there is — and six admin
+      GETs had **no `responses.200` content at all**, not a partial description.
+      All six now do (asked for three, got all six), so from here **a route
+      missing from that file is a bug rather than a gap** — say so rather than
+      working around it. The only deliberate exclusions are the two payment
+      callbacks, whose audience is Payme and CLICK.
+      **Read the checked-in file, not the running server.**
+- [ ] **User search + warn/restrict/block/unblock with reason (UAT-14).** Three
+      facts to have before wiring it, all confirmed against the backend
+      2026-08-22:
+      1. **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto`
+         + `statusHistory` (`StatusHistoryEntryDto`, BR-08) + `complaints`
+         (`UserComplaintDto`). Audit rows are a **different endpoint and a
+         separate fetch** — `GET /admin/audit` → `AuditLogDto`. Design the user
+         screen around the two lists it actually gets.
+      2. **It is emitted flat, not as an `allOf`.** The generator merged the
+         inherited `AdminUserDto` properties into one schema, so expect ten on
+         the object: `userId`, `phone`, `name`, `roles`, `status`,
+         `restrictedUntil`, `createdAt`, `lastLoginAt`, `statusHistory`,
+         `complaints`.
+      3. `phone` is present because §11.1 releases contact data to this role and
+         logs the read — BR-09's admin branch, and it is also the search key
+- [ ] **§10.4's audit log** — `GET /admin/audit` → `AuditLogDto`.
+      `AuditEntryDto.details` is an **opaque key/value bag**: its keys differ per
+      `action`, are enumerated nowhere, and a client that guesses at them is
+      wrong for the next action added. **Render it as text; do not parse
+      values.** Any timestamp inside carries §2's offset — formatted at the write
+      site, because a `jsonb` bag admits no read-side fix (see MEMORY.md)
 - [ ] Dictionary management with four localized labels + skill merge, designed for
       a phone (there is no web panel)
 - [ ] **§10.5 wallet and payment administration** *(new, 2026-08-10)* — employer
