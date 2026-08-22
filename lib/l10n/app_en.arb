@@ -2924,13 +2924,9 @@
   "@adminVacancyEmployer": {
     "description": "Heading over the employer name and contact block on §10.2’s vacancy review. The card renders only where the server sent at least one of the three fields, which today is never — see the backend ask in TODO.md."
   },
-  "adminVacancyEmployerPhone": "Phone",
+  "adminVacancyEmployerPhone": "Sign-in number",
   "@adminVacancyEmployerPhone": {
-    "description": "Label on the employer’s phone number. Shown to an administrator, which is BR-09’s admin branch rather than a hole in it: §11.1 releases contact data to this role and logs the read."
-  },
-  "adminVacancyEmployerEmail": "E-mail",
-  "@adminVacancyEmployerEmail": {
-    "description": "Label on the employer’s e-mail address."
+    "description": "The *account* number (§4.1), not a contact detail — kept beside the published one because it is §10.4’s user-search key, so a moderator who wants this employer’s whole history has the string to paste. Drawn only when it differs from the contact number: one number under two labels reads as a data error."
   },
   "adminComplaintsTitle": "Complaints",
   "@adminComplaintsTitle": {
@@ -3107,5 +3103,9 @@
   "adminAccountStatusBlocked": "Blocked",
   "@adminAccountStatusBlocked": {
     "description": "BR-10’s blocked account. x-circle, the glyph that means a negative outcome with a reason always attached."
+  },
+  "adminVacancyEmployerContactPhone": "Contact number",
+  "@adminVacancyEmployerContactPhone": {
+    "description": "The number the employer published for their company (§6.1), and the one to call. Leads the card: it is what they chose to be reached on, and §6.1 makes it mandatory for a complete profile, so BR-03 guarantees a vacancy that reached review has one."
   }
 }

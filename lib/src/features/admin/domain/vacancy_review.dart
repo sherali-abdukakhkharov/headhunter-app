@@ -26,6 +26,23 @@ import 'package:jobbridge_app/src/features/discovery/domain/vacancy_detail.dart'
 /// genuinely storage-shaped is the handful of columns that are *not* fields
 /// (`employer_user_id`, `moderation_reason`, `published_at`), and those are
 /// listed here rather than reached for ad hoc.
+///
+/// It stays a row on purpose, and that was the server's answer rather than a
+/// backlog item: §10.2 reviews **what was submitted**, and a camelCase DTO over
+/// thirty columns means either hand-writing a second copy of the column list or
+/// a generic converter with one caller. The either-spelling readers below mean
+/// nothing is waiting on it.
+///
+/// ## Its timestamps are safe now, and were not
+///
+/// Four columns on this row — `published_at`, `closed_at`, `created_at`,
+/// `updated_at` — were serialised straight from `timestamptz` and arrived with
+/// a `Z`, which API_CONTRACTS.md §2 forbids and `ZonedTimestamp.parse` refuses.
+/// Nothing here read them, so nothing broke; the hazard was that the first
+/// person to add a `publishedAt` getter would have taken the screen down at the
+/// repository boundary. Fixed server-side 2026-08-22 (`formatRowTimestamps`),
+/// so such a getter is safe to add now — see `ComplaintTargetDetail` for the
+/// instance that led to it being found.
 @immutable
 class VacancyReview {
   const VacancyReview({required this.row, required this.requirements});
@@ -62,32 +79,58 @@ class VacancyReview {
   /// Whose vacancy this is. The only identification the row carries today.
   String? get employerUserId => _string('employer_user_id', 'employerUserId');
 
-  /// The employer's name and how to reach them (§10.2), **read before the
-  /// server sends them**.
+  /// The employer's name (§10.2), the same resolution the moderation queue
+  /// shows: a company's public name, else the individual's own.
   ///
-  /// All three are null against today's API: `loadVacancy` selects the
-  /// `vacancies` columns and nothing joins the employer, so the review has an
-  /// `employer_user_id` and no name, phone or e-mail — which §10.2 lists by
-  /// name. That is recorded as a backend ask in TODO.md.
-  ///
-  /// They are parsed here anyway, and that is the point: the day the join
-  /// lands the fields appear on the review with **no client release**, the
-  /// same way `Invitation.candidateName` was written before `InvitationDto`
-  /// carried it. A client that has to ship in lockstep with a server change
-  /// turns a one-line join into a coordinated release, and a store review
-  /// stands between the two.
-  ///
-  /// Showing an employer's phone to an *administrator* is BR-09's admin
-  /// branch, not a hole in it: §11.1 releases contact data to this role and
-  /// logs every read. The candidate rule — nothing before a paid unlock — is
-  /// about the employer role (§6.6).
+  /// Written here before the server sent it, which is why the card lit up on
+  /// the next fetch rather than in the next release — the
+  /// `Invitation.candidateName` idiom, and it paid for itself the same day
+  /// (asked 2026-08-21, shipped 2026-08-22). **Same expression as
+  /// `ModerationQueueItemDto.employerName`, with a server-side test asserting
+  /// the two agree**, so tapping a queue row cannot land on a review naming
+  /// somebody else.
   String? get employerName => _string('employer_name', 'employerName');
+
+  /// The number the employer **published for their company** (§6.1) — the one
+  /// to call.
+  ///
+  /// A different field from [employerPhone] and possibly a different number,
+  /// which is why the server sends both rather than one `COALESCE`: a
+  /// moderator dialling should know which of the two they are looking at.
+  /// §6.1 makes it mandatory for a complete profile, so BR-03 guarantees any
+  /// vacancy that reached review has one.
+  String? get employerContactPhone =>
+      _string('employer_contact_phone', 'employerContactPhone');
+
+  /// The **account** number — the login identity (§4.1), not a contact detail.
+  ///
+  /// Kept beside the published one rather than hidden, because it is §10.4's
+  /// user-search key: a moderator who wants this employer's whole history has
+  /// the thing to paste into it.
   String? get employerPhone => _string('employer_phone', 'employerPhone');
-  String? get employerEmail => _string('employer_email', 'employerEmail');
 
   /// Whether anything at all identifies the employer beyond their id.
+  ///
+  /// **There is no e-mail, and this is answered rather than deferred**: the
+  /// product has no e-mail column anywhere, because login is phone + OTP
+  /// (§4.1) and every contact field in it is a phone number. An
+  /// `employerEmail` getter was written here on 2026-08-22 in the hope the
+  /// join would carry one, and removed the same day. Do not add it back.
+  ///
+  /// Showing either phone to an *administrator* is BR-09's admin branch and
+  /// not a hole in it: §11.1 releases contact data to this role and logs every
+  /// read. The candidate rule — nothing before a paid unlock — is about the
+  /// employer role (§6.6).
   bool get hasEmployerContact =>
-      employerName != null || employerPhone != null || employerEmail != null;
+      employerName != null ||
+      employerContactPhone != null ||
+      employerPhone != null;
+
+  /// Whether the two numbers are the same, which they are for a sole trader
+  /// who published the number they signed up with. Drawn once when so, because
+  /// one number under two labels reads as a data error.
+  bool get employerPhonesAgree =>
+      employerContactPhone != null && employerContactPhone == employerPhone;
 
   /// `draft`, `under_moderation`, `active`, `paused`, `closed`, `rejected`.
   String? get status => _string('status', 'status');

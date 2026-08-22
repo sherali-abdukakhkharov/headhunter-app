@@ -4007,17 +4007,11 @@ abstract class AppL10n {
   /// **'Employer'**
   String get adminVacancyEmployer;
 
-  /// Label on the employer’s phone number. Shown to an administrator, which is BR-09’s admin branch rather than a hole in it: §11.1 releases contact data to this role and logs the read.
+  /// The *account* number (§4.1), not a contact detail — kept beside the published one because it is §10.4’s user-search key, so a moderator who wants this employer’s whole history has the string to paste. Drawn only when it differs from the contact number: one number under two labels reads as a data error.
   ///
   /// In en, this message translates to:
-  /// **'Phone'**
+  /// **'Sign-in number'**
   String get adminVacancyEmployerPhone;
-
-  /// Label on the employer’s e-mail address.
-  ///
-  /// In en, this message translates to:
-  /// **'E-mail'**
-  String get adminVacancyEmployerEmail;
 
   /// §10.2’s third queue. One list over all four target kinds, because the server made complaints a single generic table for exactly that.
   ///
@@ -4282,6 +4276,12 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Blocked'**
   String get adminAccountStatusBlocked;
+
+  /// The number the employer published for their company (§6.1), and the one to call. Leads the card: it is what they chose to be reached on, and §6.1 makes it mandatory for a complete profile, so BR-03 guarantees a vacancy that reached review has one.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact number'**
+  String get adminVacancyEmployerContactPhone;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

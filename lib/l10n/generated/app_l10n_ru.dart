@@ -2288,10 +2288,7 @@ class AppL10nRu extends AppL10n {
   String get adminVacancyEmployer => 'Работодатель';
 
   @override
-  String get adminVacancyEmployerPhone => 'Телефон';
-
-  @override
-  String get adminVacancyEmployerEmail => 'Эл. почта';
+  String get adminVacancyEmployerPhone => 'Номер для входа';
 
   @override
   String get adminComplaintsTitle => 'Жалобы';
@@ -2438,4 +2435,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get adminAccountStatusBlocked => 'Заблокирован';
+
+  @override
+  String get adminVacancyEmployerContactPhone => 'Контактный номер';
 }

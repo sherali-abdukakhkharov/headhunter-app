@@ -501,28 +501,49 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
-### 2026-08-22 - One response, two timestamp contracts
-`GET /admin/complaints/:id` answers `{complaint, target}`, and the two halves do
-**not** obey the same timestamp rule. The controller runs the complaint's own
-`createdAt` through `formatWithOffset`; the `target` beside it is spread in from
+### 2026-08-22 - One response, two timestamp contracts *(reported, fixed same day)*
+`GET /admin/complaints/:id` answers `{complaint, target}`, and the two halves did
+**not** obey the same timestamp rule. The controller ran the complaint's own
+`createdAt` through `formatWithOffset`; the `target` beside it was spread in from
 `resolveTarget` untouched, and two of the four resolved shapes select a
-`created_at`. So one field in the response carries `+05:00` and another carries
+`created_at`. So one field in the response carried `+05:00` and another carried
 `Z`, in the same JSON object.
 
 `ZonedTimestamp.parse` refuses a `Z` **by design** (API_CONTRACTS.md §2 is
 frozen: never `Z`, never offsetless), so a `createdAt` getter on the target would
 have thrown a `FormatException` at the repository boundary and taken the whole
 review down — for a field nothing needed. `ComplaintTargetDetail` therefore
-exposes **no timestamp at all**, and its doc comment says why so the next person
-does not add one back as an obvious improvement.
+exposes **no timestamp at all**.
 
-The generalisable rule: **a `Record<string, unknown>` in a DTO is a hole in every
-whole-response convention**, not just in the naming one. The snake_case keys are
-the visible half and a tolerant reader handles them; the timestamp format is the
-invisible half, and it fails loudly at a boundary far from the cause. When a
-response embeds a raw row, check every convention the response is supposed to
-satisfy — not only the one that is easy to see. Recorded as an ask in
-docs/BACKEND_ASKS.md; the client's answer is a workaround, not a fix.
+**The rule, and it got stronger when the report came back.** A
+`Record<string, unknown>` in a DTO is a hole in *every* whole-response
+convention, not just the naming one: the snake_case keys are the visible half and
+a tolerant reader handles them, the timestamp format is the invisible half, and it
+fails at a boundary far from the cause. The backend fixed it with
+`formatRowTimestamps` and found **two more members of the same class** that
+nobody had noticed:
+
+- `VacancyReviewDto.vacancy` carried four unformatted timestamps
+  (`published_at`, `closed_at`, `created_at`, `updated_at`) — in the *same
+  response* this client was already reading. It was invisible only because
+  `VacancyReview` happens to expose no timestamp off that row either. A
+  `publishedAt` getter added on 2026-08-21 would have taken the review down.
+- The audit log's `details` bag stored `restrictedUntil` via `toISOString()`. A
+  `jsonb` bag admits **no read-side fix** — nothing downstream can tell a
+  timestamp from any other string — so that one had to be fixed where it is
+  *written*. Consequence for the §10.4 audit screen when it gets built:
+  **`details` is an opaque key/value bag, render it as text, do not parse
+  values.**
+
+So: when a response embeds a raw row, check every convention the response is
+supposed to satisfy, not only the easy one. And a client convention that quietly
+avoids a field (no timestamp getter here, none there) hides the bug rather than
+surviving it — it was two accidents that kept this from being a crash.
+
+One process note worth keeping: this went to the backend as a written brief with
+the reasoning rather than as a bug title, and came back implemented, deployed and
+with the class swept, the same day. Write the *why*; it is what let somebody else
+find the two instances this client could not see.
 
 ### 2026-08-22 - `implements` on a repository fake taxes every sibling suite
 Each admin suite faked `AdminRepository` with `implements` and stubbed the routes

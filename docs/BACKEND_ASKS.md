@@ -1,125 +1,159 @@
 # Backend asks
 
-Contract gaps the client has hit, with the reasoning, so the backend session can
-act on them without re-deriving why. Spec citations are `§n`, `BR-nn`, `UAT-nn`
-against [SPEC.md](SPEC.md); the backend's own source of truth is
+Contract gaps the client has hit, with the reasoning and **what came of them**,
+so nobody re-derives a settled question. Spec citations are `§n`, `BR-nn`,
+`UAT-nn` against [SPEC.md](SPEC.md); the backend's own source of truth is
 `headhunter-backend/docs/API_CONTRACTS.md`.
 
-**Nothing here blocks the client.** Each item names how the client works today
-and what changes when the ask lands. That is deliberate: an ask that stops work
-gets guessed at, and a guess becomes a second thing to undo.
+**Nothing here has ever blocked the client**, which is deliberate: an ask that
+stops work gets guessed at, and a guess becomes a second thing to undo. Each item
+names how the client worked *without* the change.
 
-The pattern this file exists to repeat: `InvitationDto.candidateName` was asked
-for the same way, parsed by the client before it existed, and shipped — so the
-field appeared on screen with no client release and no coordinated deploy. Two
-of the three asks below are shaped for exactly that.
+The pattern this file exists to repeat: write the **reasoning**, not a bug title.
+Every item below went across as a brief explaining why it mattered and what the
+client was doing meanwhile; the two that should have been fixed were fixed and
+deployed the same day, and the third came back with an argument good enough to
+close it. One of them also came back with two more instances of its own bug class
+that this client could not have found.
 
 ---
 
-## 1. `GET /admin/moderation/:vacancyId` has no employer
+## Settled
 
-**Priority: this is the one worth doing.** §10.2 lists the employer's contact
-information among what a moderator reviews, and the review cannot show it.
+### 1. The moderator had no employer — **done 2026-08-22**
 
-`VacancyReviewDto.vacancy` is the `vacancies` row. It carries
-`employer_user_id`; nothing joins the employer, so there is no name, no phone
-and no e-mail. A moderator who arrives from the queue knows whose vacancy it is
-because the *queue row* carries `employerName`; one who opens the review from a
-deep link, a notification, or a reload does not.
+§10.2 lists the employer's contact information among what a moderator reviews,
+and `VacancyReviewDto.vacancy` carried only `employer_user_id`. A moderator
+arriving from the queue knew whose vacancy it was because the queue row carries
+`employerName`; one arriving from a deep link, a notification or a reload did
+not.
 
-**Asked for:** three fields on the review response.
+Shipped as three keys, flat beside the columns, snake_case:
 
-```
-employerName   string | null   the public name, or the legal name for a company
-employerPhone  string | null
-employerEmail  string | null
-```
-
-Same resolution `ModerationQueueItemDto.employerName` already does, so the query
-exists — it is being run for the list and not for the detail.
-
-**BR-09 is not in the way.** §11.1 releases contact data to the `admin` role and
-logs every read; the rule that gates phone and e-mail behind a paid Candidate
-Unlock (§6.6) is about the **employer** role reading a *candidate*. `AdminUserDto`
-already exposes `phone` to this role for the same reason.
-
-**Client state:** `VacancyReview` parses all three today and the employer card
-renders only when at least one arrives — so it is invisible now and appears the
-day the join lands, with no release. Pinned by
-`test/features/admin/vacancy_moderation_test.dart`, in the group *"the employer
-card is written before the server sends it"*, including the absent case.
-
-## 2. `ComplaintDetailDto.target.created_at` breaks the frozen timestamp format
-
-**A contract violation rather than a missing feature**, and worth fixing even
-though the client currently steps around it.
-
-`API_CONTRACTS.md` §2 is frozen: *every* timestamp in *every* response carries an
-explicit numeric offset, never `Z`, never offsetless — because Dart's
-`DateTime.parse` discards the offset and `toLocal()` then re-renders in the
-device zone. The admin controller honours this for the complaint itself:
-
-```ts
-complaint: { ...complaint, createdAt: formatWithOffset(complaint.createdAt, tz) }
-```
-
-The **target** beside it is spread in untouched, and two of the four resolved
-shapes carry a `created_at`:
-
-| kind | columns |
+| key | what it is |
 |---|---|
-| `message` | `id`, `body`, `sender_user_id`, `conversation_id`, **`created_at`** |
-| `user` / `profile` | `id`, `status`, **`created_at`**, `full_name` |
+| `employer_name` | a company's public name, else the individual's own |
+| `employer_phone` | the **account** number — the login identity, and §10.4's search key |
+| `employer_contact_phone` | the number the employer **published** for their company (§6.1) |
 
-So those arrive as `timestamptz` serialised by the driver — with a `Z`. §2's own
-implementation note says serialisation goes through one deliberate formatter with
-a test; this path bypasses it.
+Flat rather than nested because the moderation queue already identifies an
+employer that way, and one payload should not do it two ways depending on which
+screen asked. `employer_name` comes from the **same expression** both queues use,
+with a server-side test asserting the review's name equals the queue's for the
+same vacancy — so tapping a queue row cannot land on a review naming somebody
+else.
 
-**Asked for:** either run the target's timestamps through `formatWithOffset`, or
-drop them from the selection. Dropping them is fine — see the client note.
+**Two things came back different from the guess, and both cost a client release:**
 
-**Client state:** `ComplaintTargetDetail` deliberately exposes **no timestamp**.
-`ZonedTimestamp.parse` refuses a `Z` by design, so a `createdAt` getter would
-throw a `FormatException` at the repository boundary and take the whole review
-with it. Nothing is lost: a moderator judging a complaint needs when it was
-*reported*, which the complaint carries correctly. Pinned by
-`test/features/admin/complaint_review_test.dart` — *"a target carrying a Z
-timestamp does not throw"*, which also asserts the string really is one the
-contract refuses.
+- **There is no e-mail, anywhere.** Not deferred — answered. This product has no
+  e-mail column: login is phone + OTP (§4.1) and every contact field in it is a
+  phone number. An `employerEmail` getter was written on 2026-08-21 and removed
+  on 2026-08-22. Do not add it back; there is a test asserting an
+  `employer_email` key in the row is ignored.
+- **There is a third field, and it is the better one to show.** `employer_phone`
+  is the login identity; `employer_contact_phone` is what the employer published
+  for business contact, and §6.1 makes it mandatory for a complete profile, so
+  BR-03 guarantees any vacancy that reached review has one. Sent as two fields
+  rather than one `COALESCE` precisely so a moderator about to dial knows which
+  they have. The card leads with the published one and labels both; when they are
+  equal — a sole trader who published the number they signed up with — only one
+  is drawn.
 
-## 3. Two admin responses are raw rows rather than DTOs
+**What the idiom bought:** `employer_name` and `employer_phone` were already
+parsed when the join landed, so the card lit up **on the next fetch with no
+release**. The release that followed added the third field and dropped the dead
+one. That is the honest accounting: the bet paid, and it paid partially.
 
-**Cosmetic now.** Both are neutralised client-side and neither is worth a
-release on its own; do them when either endpoint is next touched.
+### 2. `ComplaintDetailDto.target.created_at` broke the frozen timestamp format — **done 2026-08-22**
 
-- `VacancyReviewDto.vacancy` — `Record<string, unknown>`, the selected columns
-  unchanged, so **snake_case** while `requirements` beside it is camelCase and
-  every other vacancy route answers with a camelCase DTO.
-- `ComplaintDetailDto.target` — `Record<string, unknown> | null`, the same
-  shape, per kind.
+`API_CONTRACTS.md` §2 is frozen: every timestamp carries an explicit numeric
+offset, never `Z`, never offsetless, because Dart's `DateTime.parse` discards the
+offset and `toLocal()` re-renders in the device zone. The controller honoured it
+for the complaint and spread the `target` in untouched, so **one field in that
+response carried `+05:00` and another carried `Z`**.
 
-**Client state:** `VacancyReview` and `ComplaintTargetDetail` each read **either
-spelling** for every field, so one build is correct before and after a typed DTO
-lands. Both have a test that parses the two shapes and asserts they agree.
+Fixed by formatting rather than dropping — and formatting was the right call,
+because dropping would have closed the report and left the class open. The sweep
+found two more members:
 
-Worth knowing that the first is narrower than it looks: `VacancyDto.fields` is
-keyed by **schema field code** and the codes *are* the column names — the
-employer dashboard already reads `fields['worker_count']`. What is genuinely
-storage-shaped is the handful of columns that are not fields.
+- `VacancyReviewDto.vacancy` had **four** unformatted timestamps (`published_at`,
+  `closed_at`, `created_at`, `updated_at`) — in the same response item 1 was
+  about. Invisible only because `VacancyReview` happens to expose no timestamp
+  off that row; a `publishedAt` getter would have thrown. It is safe to add one
+  now.
+- The audit log's `details` bag stored `restrictedUntil` via `toISOString()`. A
+  `jsonb` bag admits no read-side fix, so it is formatted where it is *written*.
+  **Consequence for §10.4's audit screen: `details` is an opaque key/value bag —
+  render it as text, do not parse values.**
 
-One real trap if this is picked up: `salary_from` is `numeric`, so it arrives as
-a **string** (`"5000000.00"`). The client takes either; a DTO that types it
-`number` without a cast would be lying.
+The mechanism is `formatRowTimestamps`, converting by runtime type. That is only
+safe because a calendar date is a `'YYYY-MM-DD'` string end to end
+(`--date-parser string`), so a `Date` is always an instant and never a
+`starts_on`; a test asserts it, so a change to the date parser fails loudly
+rather than rendering a deadline as a timestamp.
+
+`ComplaintTargetDetail` still exposes no timestamp, now on the merits rather than
+for safety: a moderator judging a complaint needs when it was *reported*, which
+the complaint carries.
+
+### 3. Two admin responses are raw rows rather than DTOs — **declined 2026-08-22, and rightly**
+
+Asked for `VacancyReviewDto.vacancy` and `ComplaintDetailDto.target` to become
+camelCase DTOs. Declined, with an argument worth recording:
+
+> `VacancyReviewDto.vacancy` being the row as stored **is the point** of a review
+> screen — §10.2 reviews what was submitted. A camelCase DTO means either
+> hand-writing a thirty-column mapping (a second copy of a column list, which the
+> one-declaration rule exists to prevent) or a generic snake→camel converter with
+> exactly one caller.
+
+Accepted. The client's either-spelling readers mean nothing is waiting on it, and
+both have a test that parses the two shapes and asserts they agree. `salary_from`
+is `numeric` and arrives as a **string** (`"5000000.00"`) — the reader takes
+either, and a DTO typing it `number` without a cast would be lying.
 
 ---
 
-## Considered and not asked for
+## Open — not an ask yet, but a live constraint
 
-- **A reporter name on `ComplaintDto`.** `reporterUserId` is a bare uuid and
-  there is no route that turns it into a name. Left alone on purpose: a
-  complaint is judged on what was reported and what the target actually says,
-  and inviting a moderator to weigh *who* complained is the wrong question in
-  the one place §10.2 asks for a fair reading. If repeat-reporter abuse becomes
-  real the ask is a count, not a name.
-- **Complaints filed *by* a given user.** Same reasoning, and nothing in §10
-  asks for it.
+**`docs/openapi.json` is the only contract document there is.** `/docs-json` has
+answered 404 since 2026-08-20, so the checked-in file is it. Both `@ApiOkResponse`
+decorators added on 2026-08-22 put `VacancyReviewDto` and `ComplaintDetailDto` in
+that file for the first time — they had no schema entry at all before.
+
+**Six admin GETs still have no documented response**, so their shapes are absent
+from that file:
+
+| route | needed by |
+|---|---|
+| `GET /admin/users` | §10.4, next slice |
+| `GET /admin/users/:userId` | §10.4, next slice |
+| `GET /admin/audit` | §10.4, next slice |
+| `GET /admin/verification` | already consumed; item DTO is documented, only the `{items}` wrapper is not |
+| `GET /admin/moderation` | same |
+| `GET /admin/complaints` | same |
+
+The first three are asked for; the last three are low value, since
+`VerificationQueueItemDto`, `ModerationQueueItemDto` and `ComplaintDto` all carry
+`@ApiProperty` and only the wrapper is undocumented.
+
+---
+
+## Considered and deliberately not asked for
+
+- **A reporter name on `ComplaintDto`.** `reporterUserId` is a bare uuid with no
+  route to a name, and it is off the screen on purpose: a complaint is judged on
+  what was reported and what the target says, and inviting a moderator to weigh
+  *who* complained is the wrong question in the one place §10.2 asks for a fair
+  reading. If repeat-reporter abuse becomes real, the ask is a count, not a name.
+- **Complaints filed *by* a given user.** Same reasoning, and nothing in §10 asks
+  for it.
+
+## Client-side commitments made in return
+
+- **The client mirrors `TRANSITIONS` from `vacancy-status.ts`** and offers only
+  the transitions it allows, so a 409 `vacancy.transition_not_allowed` now means
+  the vacancy moved under the screen. The backend has undertaken to say before
+  that table moves; if it moves silently the client starts hiding a valid action,
+  which is the safe direction but still wrong. See
+  `VacancyAdminStatus.availableFor`.

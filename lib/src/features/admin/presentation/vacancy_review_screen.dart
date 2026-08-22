@@ -36,17 +36,23 @@ import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_requir
 /// UAT-15 gives the candidate's detail screen: its own notice, a way back, and
 /// **no retry** — retrying would fail identically.
 ///
-/// ## The employer card is read before the server sends it
+/// ## The employer card was written before the server sent it
 ///
 /// §10.2 lists the employer's contact information among what a moderator
-/// reviews, and `VacancyReviewDto` carries neither a name nor a way to reach
-/// them — only `employer_user_id`. That is a backend ask, recorded in TODO.md.
+/// reviews, and `VacancyReviewDto` carried neither a name nor a way to reach
+/// them — only `employer_user_id`. The card was written against the fields
+/// anyway and simply did not render while they were absent.
 ///
-/// The card is written against the fields anyway and simply does not render
-/// while they are absent, so the join lands with **no client release**. The
-/// alternative — a second request per review to fetch the employer — would
-/// cost a round trip on every open and write an audit entry (§11.1) for a
-/// contact nobody asked to see.
+/// That was the whole bet, and it paid the next day: the join landed on
+/// 2026-08-22 and the card lit up **on the next fetch, with no client
+/// release**. The alternative — a second request per review to fetch the
+/// employer — would have cost a round trip on every open and written an audit
+/// entry (§11.1) for a contact nobody asked to see.
+///
+/// What did need a release is the shape being slightly different from the
+/// guess: there is no e-mail anywhere in this product (login is phone + OTP,
+/// §4.1), and there is a *third* field — the published company number beside
+/// the account one. Which is the honest cost of the idiom, and a small one.
 class VacancyReviewScreen extends ConsumerWidget {
   const VacancyReviewScreen({required this.vacancyId, super.key});
 
@@ -325,10 +331,24 @@ class _Review extends ConsumerWidget {
 /// looking for a phone number is usually looking because something in the
 /// posting needs asking about, and that happens while reading it.
 ///
-/// Only the fields that arrived are drawn — there is no "not provided" row.
-/// Today that means the card is absent entirely (see the class comment), and
-/// once the join lands an employer with no e-mail on file should not be
-/// reported as a gap in the response.
+/// ## Two numbers, and the labels are the point
+///
+/// The server sends the **published** company number and the **account**
+/// number as separate fields rather than one `COALESCE`, because they can
+/// differ and a moderator about to dial should know which they have. So the
+/// published one leads — §6.1 makes it mandatory, it is what the employer
+/// chose to be reached on, and calling somebody's login identity about a job
+/// posting is the wrong number to have picked.
+///
+/// The account number stays rather than being hidden, because it is §10.4's
+/// user-search key: a moderator who wants this employer's whole history has
+/// the string to paste. When the two agree — a sole trader who published the
+/// number they signed up with — only one is drawn, because one number under two
+/// labels reads as a data error.
+///
+/// Only the fields that arrived are drawn, and there is no "not provided" row:
+/// an employer whose profile is incomplete is a real state, and reporting it
+/// as a gap in the response would be reporting our own backlog.
 class _Employer extends StatelessWidget {
   const _Employer({required this.review});
 
@@ -346,9 +366,12 @@ class _Employer extends StatelessWidget {
           if (review.employerName case final name?)
             Text(name, style: HhTypography.body),
 
-          if (review.employerPhone case final phone?) ...[
+          if (review.employerContactPhone case final phone?) ...[
             const SizedBox(height: HhSpace.sm),
-            Text(l10n.adminVacancyEmployerPhone, style: HhTypography.label),
+            Text(
+              l10n.adminVacancyEmployerContactPhone,
+              style: HhTypography.label,
+            ),
             // Rendered, not dialled. A `tel:` link needs url_launcher, and the
             // one native capability this app has is the FileProvider channel —
             // see ARCHITECTURE.md §9 before adding a plugin to reach the
@@ -356,11 +379,12 @@ class _Employer extends StatelessWidget {
             Text(phone, style: HhTypography.body),
           ],
 
-          if (review.employerEmail case final email?) ...[
-            const SizedBox(height: HhSpace.sm),
-            Text(l10n.adminVacancyEmployerEmail, style: HhTypography.label),
-            Text(email, style: HhTypography.body),
-          ],
+          if (!review.employerPhonesAgree)
+            if (review.employerPhone case final phone?) ...[
+              const SizedBox(height: HhSpace.sm),
+              Text(l10n.adminVacancyEmployerPhone, style: HhTypography.label),
+              Text(phone, style: HhTypography.body),
+            ],
         ],
       ),
     );

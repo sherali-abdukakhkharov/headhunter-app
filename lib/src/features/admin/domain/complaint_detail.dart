@@ -22,20 +22,26 @@ import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 /// | | `created_at` |
 /// | `user` / `profile` | `id`, `status`, `created_at`, `full_name` |
 ///
-/// ## There is no timestamp here, and that is the interesting part
+/// ## There is no timestamp here, and it is worth knowing why not
 ///
-/// Two of those rows carry a `created_at`, and **it is not safe to parse**.
-/// The controller runs the complaint's own `createdAt` through
-/// `formatWithOffset`; the target is spread in untouched, so its `created_at`
-/// arrives however the driver serialises a `timestamptz` — with a `Z`.
-/// `ZonedTimestamp.parse` refuses `Z` by contract, so a `createdAt` getter
-/// here would throw a `FormatException` at the repository boundary and take
-/// the whole review with it.
+/// Two of those rows carry a `created_at`, and for one day it was **unsafe to
+/// parse**. The controller ran the complaint's own `createdAt` through
+/// `formatWithOffset` and spread the target in untouched, so one field in the
+/// response carried `+05:00` and another carried `Z` — which
+/// API_CONTRACTS.md §2 forbids and `ZonedTimestamp.parse` refuses by design. A
+/// `createdAt` getter here would have thrown a `FormatException` at the
+/// repository boundary and taken the whole review with it.
 ///
-/// So it is not exposed. That costs nothing to read: a moderator judging a
-/// complaint needs *when it was reported*, which the complaint carries
-/// correctly, not when the reported message was sent. **Do not add a
-/// timestamp here** without an offset from the server first.
+/// **Fixed server-side on 2026-08-22**, and the report found two more instances
+/// of the same class: `VacancyReviewDto.vacancy` had four unformatted
+/// timestamps in the *same response* this client was already reading, and the
+/// audit log's `details` bag stored one via `toISOString()`. So the format is
+/// now correct here and a getter would be safe.
+///
+/// It stays unexposed anyway, on the merits: a moderator judging a complaint
+/// needs *when it was reported*, which the complaint carries, not when the
+/// reported message was sent. Adding one would put a second date on the screen
+/// that answers a question nobody asked.
 @immutable
 class ComplaintTargetDetail {
   const ComplaintTargetDetail(this.row);

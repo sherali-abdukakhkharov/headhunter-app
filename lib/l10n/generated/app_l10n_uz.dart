@@ -2267,10 +2267,7 @@ class AppL10nUz extends AppL10n {
   String get adminVacancyEmployer => 'Ish beruvchi';
 
   @override
-  String get adminVacancyEmployerPhone => 'Telefon';
-
-  @override
-  String get adminVacancyEmployerEmail => 'E-pochta';
+  String get adminVacancyEmployerPhone => 'Kirish raqami';
 
   @override
   String get adminComplaintsTitle => 'Shikoyatlar';
@@ -2419,6 +2416,9 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminAccountStatusBlocked => 'Bloklangan';
+
+  @override
+  String get adminVacancyEmployerContactPhone => 'Aloqa raqami';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -4677,10 +4677,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get adminVacancyEmployer => 'Иш берувчи';
 
   @override
-  String get adminVacancyEmployerPhone => 'Телефон';
-
-  @override
-  String get adminVacancyEmployerEmail => 'Э-почта';
+  String get adminVacancyEmployerPhone => 'Кириш рақами';
 
   @override
   String get adminComplaintsTitle => 'Шикоятлар';
@@ -4827,6 +4824,9 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminAccountStatusBlocked => 'Блокланган';
+
+  @override
+  String get adminVacancyEmployerContactPhone => 'Алоқа рақами';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -7092,10 +7092,7 @@ class AppL10nUzLatn extends AppL10nUz {
   String get adminVacancyEmployer => 'Ish beruvchi';
 
   @override
-  String get adminVacancyEmployerPhone => 'Telefon';
-
-  @override
-  String get adminVacancyEmployerEmail => 'E-pochta';
+  String get adminVacancyEmployerPhone => 'Kirish raqami';
 
   @override
   String get adminComplaintsTitle => 'Shikoyatlar';
@@ -7244,4 +7241,7 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminAccountStatusBlocked => 'Bloklangan';
+
+  @override
+  String get adminVacancyEmployerContactPhone => 'Aloqa raqami';
 }

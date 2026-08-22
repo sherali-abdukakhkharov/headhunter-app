@@ -1731,20 +1731,37 @@ remaining item is a screen.
       account status — the audit row **is** the record. Restrict, block and
       unblock stay with §10.4's own screen, because a temporary restriction needs
       an until-date and a warning does not
-- [!] **Backend asks are now one document: [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md).**
-      Three items, none blocking, each with the client's workaround and what
-      changes when it lands. The one worth doing is the employer name and contact
-      on `GET /admin/moderation/:vacancyId`, which §10.2 lists by name.
-      **The client half of that ask is closed as of 2026-08-22**: `VacancyReview`
-      parses `employerName`/`employerPhone`/`employerEmail` today and the card
-      renders only when one arrives, so the join appears on screen with **no
-      client release**. The same idiom as `InvitationDto.candidateName`, which was
-      asked for this way and shipped. The absent case has its own test.
-      Also recorded there, and new: `ComplaintDetailDto.target.created_at`
-      **breaks §2's frozen timestamp format** — the complaint's own `createdAt`
-      goes through `formatWithOffset` and the target is spread in untouched, so
-      it arrives with a `Z`. The client steps around it by exposing no timestamp
-      on the target at all; that is a workaround, not a fix
+- [x] **The three backend asks are settled, 2026-08-22 — see
+      [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md)** for the full accounting.
+      Two implemented and deployed the same day they were written up, one
+      declined with an argument good enough to close it.
+      **The employer is on the review now.** `employer_name`, `employer_phone`
+      (the account/login number, and §10.4's search key) and
+      `employer_contact_phone` (the number published for the company, §6.1
+      mandatory). The card leads with the published one because that is what a
+      moderator would dial, labels both, and draws one when they agree.
+      Two things came back different from the guess and cost a client release:
+      **there is no e-mail anywhere in this product** — login is phone + OTP
+      (§4.1) and every contact field is a phone number, so the `employerEmail`
+      getter written on the 21st was removed on the 22nd — and there is a *third*
+      field nobody had asked for. The idiom still paid: name and phone were
+      already parsed, so the card lit up **on the next fetch with no release**,
+      and only the refinement needed one.
+      **The `Z` timestamp was a real contract break, and its class had two more
+      members.** `VacancyReviewDto.vacancy` carried four unformatted timestamps
+      in the *same response* — invisible only because nothing here reads a
+      timestamp off that row — and the audit log's `details` bag stored one via
+      `toISOString()`, which a `jsonb` bag admits no read-side fix for. All
+      formatted server-side.
+      **One consequence for a screen not built yet:** the audit log's `details`
+      is an opaque key/value bag. Render it as text; do not parse values
+- [!] **`docs/openapi.json` is the only contract document there is** —
+      `/docs-json` has answered 404 since 2026-08-20. Six admin GETs still have
+      no documented response, three of which §10.4 needs: `GET /admin/users`,
+      `GET /admin/users/:userId`, `GET /admin/audit`. Asked for; the other three
+      are queue wrappers whose *item* DTOs are already documented, so they are
+      low value. **Read the checked-in file rather than the running server**
+      before building §10.4
 - [ ] User search + warn/restrict/block/unblock with reason (UAT-14)
 - [ ] Dictionary management with four localized labels + skill merge, designed for
       a phone (there is no web panel)

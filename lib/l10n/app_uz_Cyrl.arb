@@ -653,8 +653,7 @@
   "adminPreviousReason": "Аввал шу сабаб билан қайтарилган",
   "adminVacancyWhere": "Иш жойи",
   "adminVacancyEmployer": "Иш берувчи",
-  "adminVacancyEmployerPhone": "Телефон",
-  "adminVacancyEmployerEmail": "Э-почта",
+  "adminVacancyEmployerPhone": "Кириш рақами",
   "adminComplaintsTitle": "Шикоятлар",
   "adminComplaintsEmpty": "Шикоят йўқ",
   "adminComplaintsEmptyBody": "Ҳеч бир шикоят қарорни кутмаяпти.",
@@ -698,5 +697,6 @@
   "adminWarnReasonHint": "Оммавий вакансия тавсифида алоқа маълумотларини кўрсатиш мумкин эмас — илтимос, олиб ташланг",
   "adminAccountStatusActive": "Фаол",
   "adminAccountStatusRestricted": "Чекланган",
-  "adminAccountStatusBlocked": "Блокланган"
+  "adminAccountStatusBlocked": "Блокланган",
+  "adminVacancyEmployerContactPhone": "Алоқа рақами"
 }

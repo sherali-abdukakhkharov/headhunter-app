@@ -653,8 +653,7 @@
   "adminPreviousReason": "Ранее возвращена по этой причине",
   "adminVacancyWhere": "Место работы",
   "adminVacancyEmployer": "Работодатель",
-  "adminVacancyEmployerPhone": "Телефон",
-  "adminVacancyEmployerEmail": "Эл. почта",
+  "adminVacancyEmployerPhone": "Номер для входа",
   "adminComplaintsTitle": "Жалобы",
   "adminComplaintsEmpty": "Жалоб нет",
   "adminComplaintsEmptyBody": "Ни одна жалоба не ждёт решения.",
@@ -698,5 +697,6 @@
   "adminWarnReasonHint": "Указывать контактные данные в публичном описании вакансии нельзя — пожалуйста, уберите их",
   "adminAccountStatusActive": "Активен",
   "adminAccountStatusRestricted": "Ограничен",
-  "adminAccountStatusBlocked": "Заблокирован"
+  "adminAccountStatusBlocked": "Заблокирован",
+  "adminVacancyEmployerContactPhone": "Контактный номер"
 }

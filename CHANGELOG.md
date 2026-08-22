@@ -17,6 +17,29 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.4.1+9 — 2026-08-22
+
+The vacancy review now shows the employer. 1.4.0 was written for this and the
+server started sending it the same day, so **the name and a phone number already
+appear in 1.4.0** — this release adds the second number and takes out a field
+that turned out not to exist.
+
+### Added
+
+- **Two phone numbers on the employer card, told apart.** The number the
+  employer **published for their company** comes first — that is what they chose
+  to be reached on, and calling somebody's sign-in number about a job posting is
+  the wrong number to have picked. The sign-in number is below it, labelled, and
+  is the one you can paste into the user search when it arrives. When they are
+  the same number, it is shown once.
+
+### Removed
+
+- **The e-mail row.** There is no e-mail address anywhere in this product —
+  signing in is a phone number and a code, and every contact detail in it is a
+  phone number. The row could never have appeared; it is gone rather than left
+  waiting for something that is not coming.
+
 ## 1.4.0+8 — 2026-08-22
 
 §10.2 is finished. Complaints have a queue, and a published vacancy can finally

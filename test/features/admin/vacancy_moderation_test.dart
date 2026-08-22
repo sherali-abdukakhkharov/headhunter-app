@@ -270,14 +270,14 @@ void main() {
     });
   });
 
-  group('the employer card is written before the server sends it', () {
-    test('the name and contact are read in either spelling', () {
+  group('the employer card names two numbers and tells them apart', () {
+    test('the name and both numbers are read in either spelling', () {
       final stored = _review(
         row: {
           ..._storedRow(),
           'employer_name': 'Qurilish Servis MChJ',
           'employer_phone': '+998901234567',
-          'employer_email': 'hr@qurilish.uz',
+          'employer_contact_phone': '+998712001122',
         },
       );
       final dto = _review(
@@ -285,37 +285,35 @@ void main() {
           ..._storedRow(),
           'employerName': 'Qurilish Servis MChJ',
           'employerPhone': '+998901234567',
-          'employerEmail': 'hr@qurilish.uz',
+          'employerContactPhone': '+998712001122',
         },
       );
 
       expect(stored.employerName, dto.employerName);
       expect(stored.employerPhone, dto.employerPhone);
-      expect(stored.employerEmail, dto.employerEmail);
+      expect(stored.employerContactPhone, dto.employerContactPhone);
       expect(stored.hasEmployerContact, isTrue);
+      expect(stored.employerPhonesAgree, isFalse);
     });
 
-    test("today's response carries none of them", () {
-      // `loadVacancy` selects the `vacancies` columns and nothing joins the
-      // employer, so the review has an `employer_user_id` and no name, phone
-      // or e-mail — which §10.2 lists by name. Recorded as a backend ask.
-      final today = _review(row: _storedRow());
+    test('a row with no employer keys is a shape, not a crash', () {
+      // The state the card was written for: it rendered nothing at all for the
+      // day between asking for these fields and getting them, and the same
+      // branch now covers an employer whose profile carries no name.
+      final bare = _review(row: _storedRow());
 
-      expect(today.employerUserId, 'usr-employer');
-      expect(today.employerName, isNull);
-      expect(today.hasEmployerContact, isFalse);
+      expect(bare.employerUserId, 'usr-employer');
+      expect(bare.employerName, isNull);
+      expect(bare.hasEmployerContact, isFalse);
+      expect(bare.employerPhonesAgree, isFalse);
     });
 
-    testWidgets('so the card is absent, and appears with no release', (
+    testWidgets('the published number leads and the sign-in number follows', (
       tester,
     ) async {
       await pumpReview(tester);
       expect(find.text('Employer'), findsNothing);
 
-      // The same build, the same day the join lands. This is the whole reason
-      // the fields are parsed against a server that does not send them — the
-      // `Invitation.candidateName` idiom, which spared a coordinated release
-      // and a store review between the two halves of a one-line change.
       await pumpReview(
         tester,
         review: _review(
@@ -323,15 +321,68 @@ void main() {
             ..._storedRow(),
             'employer_name': 'Qurilish Servis MChJ',
             'employer_phone': '+998901234567',
+            'employer_contact_phone': '+998712001122',
           },
         ),
       );
 
       await tester.scrollUntilVisible(find.text('Employer'), 200);
       expect(find.text('Qurilish Servis MChJ'), findsOneWidget);
+
+      // Both are shown, labelled, and the published one comes first: it is
+      // what the employer chose to be reached on, and calling somebody's login
+      // identity about a job posting is the wrong number to have picked. The
+      // sign-in number stays because it is §10.4's user-search key.
+      final contact = tester
+          .getTopLeft(find.text('+998712001122'))
+          .dy;
+      final signIn = tester.getTopLeft(find.text('+998901234567')).dy;
+      expect(contact, lessThan(signIn));
+    });
+
+    testWidgets('one number under two labels is drawn once', (tester) async {
+      await pumpReview(
+        tester,
+        review: _review(
+          row: {
+            ..._storedRow(),
+            'employer_name': 'Alisher Karimov',
+            // A sole trader who published the number they signed up with,
+            // which is the common case for an individual employer.
+            'employer_phone': '+998901234567',
+            'employer_contact_phone': '+998901234567',
+          },
+        ),
+      );
+
+      await tester.scrollUntilVisible(find.text('Employer'), 200);
       expect(find.text('+998901234567'), findsOneWidget);
-      // Only what arrived: there is no "not provided" row, so an employer with
-      // no e-mail on file is not reported as a gap in the response.
+      expect(find.text('Contact number'), findsOneWidget);
+      // Twice would read as a data error rather than as two fields.
+      expect(find.text('Sign-in number'), findsNothing);
+    });
+
+    testWidgets('there is no e-mail row, and there never will be', (
+      tester,
+    ) async {
+      await pumpReview(
+        tester,
+        review: _review(
+          row: {
+            ..._storedRow(),
+            'employer_name': 'Qurilish Servis MChJ',
+            'employer_contact_phone': '+998712001122',
+            // Ignored on purpose. This product has no e-mail column anywhere —
+            // login is phone + OTP (§4.1) and every contact field in it is a
+            // phone number. A getter for this was written on 2026-08-22 in the
+            // hope the join would carry one, and removed the same day.
+            'employer_email': 'hr@qurilish.uz',
+          },
+        ),
+      );
+
+      await tester.scrollUntilVisible(find.text('Employer'), 200);
+      expect(find.text('hr@qurilish.uz'), findsNothing);
       expect(find.text('E-mail'), findsNothing);
     });
   });

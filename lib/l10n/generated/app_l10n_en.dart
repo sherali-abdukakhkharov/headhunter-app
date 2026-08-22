@@ -2267,10 +2267,7 @@ class AppL10nEn extends AppL10n {
   String get adminVacancyEmployer => 'Employer';
 
   @override
-  String get adminVacancyEmployerPhone => 'Phone';
-
-  @override
-  String get adminVacancyEmployerEmail => 'E-mail';
+  String get adminVacancyEmployerPhone => 'Sign-in number';
 
   @override
   String get adminComplaintsTitle => 'Complaints';
@@ -2417,4 +2414,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get adminAccountStatusBlocked => 'Blocked';
+
+  @override
+  String get adminVacancyEmployerContactPhone => 'Contact number';
 }

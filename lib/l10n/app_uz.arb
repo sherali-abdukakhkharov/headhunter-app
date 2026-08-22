@@ -653,8 +653,7 @@
   "adminPreviousReason": "Avval shu sabab bilan qaytarilgan",
   "adminVacancyWhere": "Ish joyi",
   "adminVacancyEmployer": "Ish beruvchi",
-  "adminVacancyEmployerPhone": "Telefon",
-  "adminVacancyEmployerEmail": "E-pochta",
+  "adminVacancyEmployerPhone": "Kirish raqami",
   "adminComplaintsTitle": "Shikoyatlar",
   "adminComplaintsEmpty": "Shikoyat yo'q",
   "adminComplaintsEmptyBody": "Hech bir shikoyat qarorni kutmayapti.",
@@ -698,5 +697,6 @@
   "adminWarnReasonHint": "Ommaviy vakansiya tavsifida aloqa ma'lumotlarini ko'rsatish mumkin emas — iltimos, olib tashlang",
   "adminAccountStatusActive": "Faol",
   "adminAccountStatusRestricted": "Cheklangan",
-  "adminAccountStatusBlocked": "Bloklangan"
+  "adminAccountStatusBlocked": "Bloklangan",
+  "adminVacancyEmployerContactPhone": "Aloqa raqami"
 }
