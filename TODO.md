@@ -26,16 +26,25 @@ decision or on the backend.
       *Blocks UAT-01 on a real device with a real number, and blocks any
       production deploy — the backend refuses to boot with the static code set
       when `NODE_ENV=production`.*
-- [?] **Dictionary contract** - backend M2 must publish the dictionary endpoints
-      and version/ETag scheme. *Blocks every picker.*
-- [?] **Category field-schema contract** - the shape the server returns to drive
-      dynamic forms (ARCHITECTURE.md §6). Agree it with the backend before M3.
+- [x] ~~**Dictionary contract**~~ — **delivered.** `GET /dictionaries/:type` and
+      `/dictionaries/items` are consumed by `dictionary_repository.dart` and every
+      picker in the app runs on them. The marker was left stale here long after
+      M2 shipped; nothing has been blocked on this for weeks.
+- [x] ~~**Category field-schema contract**~~ — **delivered.**
+      `/schemas/candidate-profile` and `/schemas/vacancy` drive the schema-driven
+      forms (ARCHITECTURE.md §6), consumed by `profile_repository.dart`. Also
+      stale.
 - [-] ~~**Push provider** (FCM vs FCM+APNs)~~ - **no longer blocking.** Client
       deferred notifications to the last feature milestone (2026-08-04), so this
       decision is not needed until M9 opens. Backend recommends FCM-only with an
       APNs key in Firebase; still needs an Apple Developer account when we get
       there.
-- [?] **Time zone policy** for interview display (§8.3). *Blocks M8.*
+- [x] ~~**Time zone policy** for interview display (§8.3)~~ — **answered, and
+      the answer is in code.** Single platform zone `Asia/Tashkent`; every
+      timestamp carries an explicit numeric offset resolved for that instant and
+      never `Z` (API_CONTRACTS.md §2, frozen). `ZonedTimestamp` renders the
+      carried wall clock and never `.toLocal()`, and `Interview` consumes it.
+      Stale marker — M8's interview half shipped against this on 2026-08-20.
 - [?] **App icons and launch screen** - still Flutter defaults.
 - [?] **Payme and CLICK merchant credentials** for the providers' *test*
       environments (§12.6). Nothing in M13 can be finished without them, and
