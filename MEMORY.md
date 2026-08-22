@@ -501,6 +501,47 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-22 - Sending calendar dates is not the same as knowing what day they mean
+The §10.1 dashboard was displaying wrong counts for a day and this client could
+not have caught it, which is the part to carry.
+
+Six comparisons on the backend cast a `'YYYY-MM-DD'` to `::date` and compared it
+to a `timestamptz`. Postgres resolves that cast in the **session** zone, which is
+UTC on that deployment — so `created_at >= '2026-08-01'::date` meant *05:00
+Tashkent*. Anyone who registered between midnight and 05:00 was filed under the
+previous day: absent from a period starting that day, present in one ending the
+day before, both ends wrong in the same direction. It reached
+`GET /admin/dashboard`'s four period counts, `GET /admin/users`'
+`registeredFrom`/`registeredTo`, `POST /candidates/search`' `updatedSince` and
+`GET /vacancies/feed`' `publishedFrom`. Fixed 2026-08-22.
+
+**What held, and what did not.** `DashboardRange`/`DashboardPeriod` do pure
+calendar arithmetic — hand-split into a UTC-flagged `DateTime`, subtract whole
+days, format back to `'YYYY-MM-DD'` — and never construct an instant or ask the
+device for "today". So the fix needed no client change at all: the strings this
+sends mean what the field names say, now that the server resolves them honestly.
+That decision protected the **arithmetic**.
+
+It did not protect the **numbers on screen**, and conflating those two is the
+mistake to avoid. A moderator read "newly registered this period" as fact and it
+was understating the first day of every range. No amount of client-side
+correctness reaches a figure the server computed.
+
+So this is the second instance of the lesson two entries below — *a fixture the
+client author invents cannot catch this class of bug*. Every dashboard test here
+asserts against a fake, so all of them passed while the real figure was wrong,
+and a five-hour boundary shift is invisible by eye. The general rule: when a
+client sends a **date** and the server stores an **instant**, someone has to say
+which instant the date resolves to. That question does not disappear because the
+product is single-zone — single-zone is exactly the setting where nobody notices
+it is unanswered. Ask it at the contract, not at the screen.
+
+*Found by asking.* The question that turned it up was an offhand "if the filter
+semantics have anything non-obvious, a line in the descriptions would pre-empt
+what I'd otherwise ask mid-build" — explicitly not a request. Worth repeating:
+asking what a parameter *means* is cheap and finds things that asking whether it
+*works* does not.
+
 ### 2026-08-22 - One response, two timestamp contracts *(reported, fixed same day)*
 `GET /admin/complaints/:id` answers `{complaint, target}`, and the two halves did
 **not** obey the same timestamp rule. The controller ran the complaint's own

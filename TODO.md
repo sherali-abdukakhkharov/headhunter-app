@@ -1764,9 +1764,34 @@ remaining item is a screen.
       working around it. The only deliberate exclusions are the two payment
       callbacks, whose audience is Payme and CLICK.
       **Read the checked-in file, not the running server.**
-- [ ] **User search + warn/restrict/block/unblock with reason (UAT-14).** Three
-      facts to have before wiring it, all confirmed against the backend
-      2026-08-22:
+- [ ] **User search + warn/restrict/block/unblock with reason (UAT-14).**
+      **The filter semantics, confirmed at the contract 2026-08-22 and now in
+      `docs/openapi.json`** — they are not guessable and two of them change the
+      UI:
+      - `phone` — a **substring**, not a prefix, minimum 3 characters. A number
+        is remembered by its last digits, so the field must not say "starts
+        with".
+      - `name` — case-insensitive **substring**, minimum 2, matched against
+        **five** columns: candidate profile name, individual employer's own name,
+        company public name, company legal name, and the account's own
+        `full_name`. The response's `name` resolves by the same order of
+        preference, so a list and a detail cannot disagree. (Only seeded
+        administrators have `full_name` — it is what lets an administrator find a
+        colleague.)
+      - `role` — a user who **holds** this role, not one whose only role it is.
+        §2.3 lets an account hold several, so a candidate who also employs
+        matches either. The label must not read as "is a".
+      - `status` — exact.
+      - `registeredFrom` / `registeredTo` — **both inclusive**, calendar dates in
+        `Asia/Tashkent`. Same day for both means that one day.
+      - **Paging will bite before the filters do.** Results are ordered *newest
+        registration first*, then `limit`/`offset`. So an old account matching a
+        broad filter sits **past the page rather than outside the filter**, and
+        from the client those look identical. The empty state must not say "no
+        such user" when it means "not on this page" — narrow filters beat large
+        pages, and the screen should say so rather than leaving an administrator
+        to conclude somebody does not exist
+      Three more facts, same date:
       1. **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto`
          + `statusHistory` (`StatusHistoryEntryDto`, BR-08) + `complaints`
          (`UserComplaintDto`). Audit rows are a **different endpoint and a

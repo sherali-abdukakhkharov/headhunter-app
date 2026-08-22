@@ -125,6 +125,22 @@ class DashboardPeriod {
       );
 
   /// Inclusive start.
+  ///
+  /// **Both ends are inclusive calendar dates in `PLATFORM_TIME_ZONE`**, and
+  /// that was confirmed at the contract on 2026-08-22 rather than assumed: the
+  /// server had been casting these to `::date` and comparing against a
+  /// `timestamptz`, which Postgres resolves in the *session* zone — so a
+  /// period starting `2026-08-01` actually started at 05:00 Tashkent and missed
+  /// anyone who registered overnight. Every count on this screen was wrong at
+  /// both ends, in the same direction.
+  ///
+  /// Nothing here needed changing when it was fixed, which is the payoff of
+  /// keeping this type to **dates**: hand-split, UTC-flagged, whole-day
+  /// arithmetic, never an instant and never the device's idea of today. The
+  /// strings mean what the field names say and the server decides which
+  /// instants they resolve to. That is also the only reason a client can send a
+  /// date to a single-zone product safely — see MEMORY.md, because the
+  /// arithmetic being right did not stop the figures being wrong.
   final DateTime from;
 
   /// Inclusive end. The server's "today" in `PLATFORM_TIME_ZONE`, unless the

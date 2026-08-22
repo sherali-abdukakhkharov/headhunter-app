@@ -144,6 +144,38 @@ pulled in behind them.
 
 ---
 
+### 5. `registeredFrom` was inclusive of the wrong day — **found and fixed 2026-08-22**
+
+Not an ask — a bug found *because* of one. The question was an aside on item 4
+("if the filter semantics have anything non-obvious, a line in the descriptions
+would pre-empt what I'd otherwise ask mid-build"), explicitly not a request.
+
+Six comparisons across four modules cast a `'YYYY-MM-DD'` to `::date` and
+compared it to a `timestamptz`. Postgres resolves that cast in the **session**
+zone — UTC on this deployment — so `created_at >= '2026-08-01'::date` meant 05:00
+Tashkent. Anyone registering between midnight and 05:00 was filed under the
+previous day: absent from a period starting that day, present in one ending the
+day before.
+
+It reached **`GET /admin/dashboard`'s four period counts** — the ones this client
+renders as fact on §10.1 — plus `GET /admin/users`' `registeredFrom`/`To`,
+`POST /candidates/search`' `updatedSince`, and `GET /vacancies/feed`'
+`publishedFrom`. Fixed at all six against a real instant in the platform zone,
+with integration tests pinned at 02:00 Tashkent that also check the previous day
+does *not* reach into the range.
+
+**No client change was needed**, and that is the payoff of `DashboardPeriod`
+keeping to dates: hand-split, UTC-flagged, whole-day arithmetic, never an instant
+and never the device's idea of today. But the arithmetic being right did not stop
+the *figures* being wrong — see MEMORY.md, because that distinction is the lesson
+rather than the fix.
+
+**The transferable rule: when a client sends a date and the server stores an
+instant, ask which instant the date resolves to.** Single-zone products are
+exactly where nobody notices that question is unanswered.
+
+---
+
 ## Facts §10.4 needs, from settling the above
 
 - **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto` +
@@ -160,6 +192,26 @@ pulled in behind them.
   `action`, are enumerated nowhere, and a client that guesses at them is wrong
   for the next action added. Render as text; do not parse values. Any timestamp
   inside carries §2's offset, formatted at the write site.
+- **The filters are substrings, and `role` means "holds".** `phone` matches a
+  substring (min 3 characters — a number is remembered by its last digits), not a
+  prefix; `name` is a case-insensitive substring (min 2) over **five** columns,
+  and the response's `name` resolves by the same order of preference so a list
+  and a detail cannot disagree; `role` matches a user who *holds* that role, not
+  one whose only role it is (§2.3), so the label must not read as "is a";
+  `status` is exact.
+- **Paging bites before the filters do.** Results are ordered newest-registration
+  first, then `limit`/`offset`, so an old account matching a broad filter sits
+  **past the page rather than outside the filter** — indistinguishable from the
+  client. The empty state must not say "no such user" when it means "not on this
+  page".
+
+## Known noise on the backend side, so it is not mistaken for a contract problem
+
+Roughly twenty integration specs there mint a fixture phone from `Math.random()`
+and it has collided twice in one session (`users_phone_key`). A backend test
+failure that vanishes on re-run is usually that flaky *fixture*, not a flaky
+behaviour — worth knowing before treating such a report as evidence about the
+API. Tracked on their side.
 
 ---
 
