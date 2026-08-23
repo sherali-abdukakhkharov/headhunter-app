@@ -340,6 +340,7 @@ class _Attention extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final rows = <Widget>[
+      ..._profile(context, ref, l10n),
       ..._verification(context, ref, l10n),
       ..._rejected(context, l10n),
       ..._unreviewed(context, ref, l10n),
@@ -384,8 +385,51 @@ class _Attention extends ConsumerWidget {
     );
   }
 
+  /// §6.1's profile, and it outranks even verification.
+  ///
+  /// An employer with **no profile** used to produce no row at all: the
+  /// verification read 404s without one, which fell through to the default arm
+  /// — so the dashboard said "Nothing is waiting on you" to an account that
+  /// could not publish a vacancy, search a candidate or submit anything. The
+  /// audit found the app saying everything was fine and then refusing every
+  /// primary action.
+  ///
+  /// An incomplete profile is the same story with a number on it: BR-03 needs
+  /// all of §6.1, so 60% is not "mostly working".
+  List<Widget> _profile(BuildContext context, WidgetRef ref, AppL10n l10n) {
+    final editor = ref.watch(employerEditorProvider);
+
+    return switch (editor) {
+      AsyncData(value: EmployerEditorState(profile: null)) => [
+        _AttentionRow(
+          iconPath: HhIconPath.building,
+          color: HhColors.warningFg,
+          title: l10n.dashboardProfileTitle,
+          subtitle: l10n.dashboardProfileMissing,
+          onTap: () => context.go(Routes.employerCompany),
+        ),
+      ],
+      AsyncData(value: EmployerEditorState(profile: final profile?))
+          when !profile.isComplete =>
+        [
+          _AttentionRow(
+            iconPath: HhIconPath.building,
+            color: HhColors.warningFg,
+            title: l10n.dashboardProfileTitle,
+            subtitle: l10n.dashboardProfileIncomplete(
+              profile.completenessPercent,
+            ),
+            onTap: () => context.go(Routes.employerCompany),
+          ),
+        ],
+      // A failure adds no row. The screen already reports it where the header
+      // reads the same provider, and a second copy of one error is noise.
+      _ => const [],
+    };
+  }
+
   /// BR-03: an unverified employer cannot publish, search or unlock, so this
-  /// outranks everything.
+  /// outranks everything else.
   List<Widget> _verification(
     BuildContext context,
     WidgetRef ref,

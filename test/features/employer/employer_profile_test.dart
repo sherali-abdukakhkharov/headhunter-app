@@ -5,6 +5,7 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_repository.dart';
 import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
 import 'package:jobbridge_app/src/features/employer/presentation/employer_profile_screen.dart';
@@ -18,6 +19,10 @@ class _FakeEmployer implements EmployerRepository {
 
   /// Every body handed to `PUT /employers/me`.
   final saved = <Map<String, dynamic>>[];
+
+  /// How many times the verification state was read — the evidence for
+  /// MT-011, which is about a provider that was never invalidated.
+  int verificationReads = 0;
 
   @override
   Future<EmployerProfile?> fetchProfile() async => profile;
@@ -38,12 +43,17 @@ class _FakeEmployer implements EmployerRepository {
 
   @override
   Future<VerificationState> verification() async =>
-      state ??
-      VerificationState.fromJson(const {
-        'status': 'not_submitted',
-        'requiredEvidence': <dynamic>[],
-        'submissions': <dynamic>[],
-      });
+      _countedVerification();
+
+  VerificationState _countedVerification() {
+    verificationReads++;
+    return state ??
+        VerificationState.fromJson(const {
+          'status': 'not_submitted',
+          'requiredEvidence': <dynamic>[],
+          'submissions': <dynamic>[],
+        });
+  }
 
   @override
   Future<void> submitVerification(List<String> fileIds) async {}
@@ -66,6 +76,34 @@ EmployerProfile _profile({
     {'field': 'contactPhone'},
   ],
 });
+
+/// Fills §6.1's mandatory set through the notifier.
+///
+/// The region is a dictionary picker and this harness serves an empty
+/// dictionary, so there is no way to choose one through the form. Every test
+/// that needs a *saveable* profile needs all of these, which is the rule the
+/// first save now enforces.
+void _fill(WidgetTester tester, {required String type}) {
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(EmployerProfileScreen)),
+  );
+
+  container.read(employerEditorProvider.notifier)
+    ..edit('contactPhone', '+998901234567')
+    ..edit('regionId', 'reg-1')
+    ..edit('description', 'Uy qurilishi ishlari')
+    ..edit(
+      type == 'company' ? 'legalName' : 'fullName',
+      type == 'company' ? 'Uzum Technologies' : 'Ali Valiyev',
+    );
+
+  if (type == 'company') {
+    container.read(employerEditorProvider.notifier)
+      ..edit('publicName', 'Uzum')
+      ..edit('industryId', 'ind-1')
+      ..edit('contactPersonName', 'Aziza');
+  }
+}
 
 void main() {
   Future<_FakeEmployer> pump(
@@ -181,7 +219,11 @@ void main() {
       await tester.tap(find.text('An individual'));
       await tester.pump();
 
-      await tester.enterText(find.byType(TextField).first, 'Ali Valiyev');
+      // Through the notifier rather than the form: §6.1's mandatory set now
+      // gates the first save, and this harness serves an empty region
+      // dictionary, so the picker cannot be driven. What this test is about is
+      // the *body*, not the typing.
+      _fill(tester, type: 'individual');
       await tester.pump();
 
       await tester.tap(find.text('Save'));
@@ -314,6 +356,107 @@ void main() {
       // and a client that throws turns that into a fleet-wide outage.
       expect(tester.takeException(), isNull);
       expect(find.text('Not submitted'), findsWidgets);
+    });
+  });
+
+  group('a permanent choice is never made by default (MT-007)', () {
+    testWidgets('nothing is preselected, and no form is drawn yet', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      // The type used to default to Company, and the first Save locked it —
+      // so a premature tap committed a decision nobody made, with no route
+      // back. `employer.type_immutable` is the server's word for permanent.
+      expect(find.text('A company'), findsOneWidget);
+      expect(find.text('An individual'), findsOneWidget);
+      expect(
+        tester
+            .widgetList<HhRadioRow<String>>(find.byType(HhRadioRow<String>))
+            .every((row) => row.groupValue == null),
+        isTrue,
+      );
+
+      // Which fields exist *is* the answer to the question above them.
+      expect(find.text('Registered name'), findsNothing);
+      expect(find.text('Your full name'), findsNothing);
+      expect(find.text('Save'), findsNothing);
+    });
+
+    testWidgets('an empty first save writes nothing and says what is left', (
+      tester,
+    ) async {
+      final fake = await pump(tester);
+
+      await tester.tap(find.text('An individual'));
+      await tester.pump();
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // The 0%-complete, type-locked account the audit found: one tap, and
+      // vacancies, candidate search and verification all blocked with no reset.
+      expect(fake.saved, isEmpty);
+      expect(find.textContaining('Still needed'), findsOneWidget);
+      expect(find.text('Required'), findsWidgets);
+    });
+
+    testWidgets('and it goes through once §6.1 is answered', (tester) async {
+      final fake = await pump(tester);
+
+      await tester.tap(find.text('An individual'));
+      await tester.pump();
+      _fill(tester, type: 'individual');
+      await tester.pump();
+
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fake.saved, hasLength(1));
+      expect(find.textContaining('Still needed'), findsNothing);
+    });
+
+    testWidgets('a later edit is not held to the same bar', (tester) async {
+      // The first save is the strict one because it is what locks the type.
+      // Afterwards the type is settled, so refusing a half-finished edit would
+      // only lose somebody's typing.
+      final fake = await pump(
+        tester,
+        repository: _FakeEmployer(profile: _profile(type: 'individual')),
+      );
+
+      await tester.enterText(find.byType(TextField).first, 'Ali Valiyev');
+      await tester.pump();
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fake.saved, hasLength(1));
+    });
+  });
+
+  group('a save refreshes what depends on the profile (MT-011)', () {
+    testWidgets('verification is re-read rather than left on its 404', (
+      tester,
+    ) async {
+      final fake = await pump(tester);
+
+      await tester.tap(find.text('An individual'));
+      await tester.pump();
+      _fill(tester, type: 'individual');
+      await tester.pump();
+
+      final before = fake.verificationReads;
+
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // Until this, a successful first save left the verification card showing
+      // `employer.not_found` until somebody tapped Try again — a save that
+      // looked like it had not unlocked its next step.
+      expect(fake.verificationReads, greaterThan(before));
     });
   });
 }

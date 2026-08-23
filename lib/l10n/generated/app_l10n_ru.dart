@@ -2797,4 +2797,27 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get invitationAwaitingYou => 'Ждёт вашего ответа';
+
+  @override
+  String get employerTypeFirst =>
+      'Выберите выше, кто нанимает. От этого зависит, какие данные потребуются.';
+
+  @override
+  String get employerRequired => 'Обязательно';
+
+  @override
+  String employerMissingRequired(String fields) {
+    return 'Ещё нужно: $fields';
+  }
+
+  @override
+  String get dashboardProfileTitle => 'Заполните профиль компании';
+
+  @override
+  String get dashboardProfileMissing => 'Пока ничего не заполнено';
+
+  @override
+  String dashboardProfileIncomplete(int percent) {
+    return 'Заполнено $percent% — для вакансий и поиска кандидатов нужно всё';
+  }
 }

@@ -802,5 +802,11 @@
   "candidateHomeNoRecommendations": "Ҳозирча тавсиялар йўқ",
   "candidateHomeNoRecommendationsBody": "Тавсиялар сизнинг касбларингиз, жойлашувингиз ва иш шартларига қараб танланади. Шу орада янги эълонларни кўриб чиқинг.",
   "candidateHomeBrowseAll": "Янги вакансияларни кўриш",
-  "invitationAwaitingYou": "Жавобингиз кутилмоқда"
+  "invitationAwaitingYou": "Жавобингиз кутилмоқда",
+  "employerTypeFirst": "Юқорида ким иш берувчи эканини танланг. Сўраладиган маълумотлар шунга боғлиқ.",
+  "employerRequired": "Мажбурий",
+  "employerMissingRequired": "Ҳали керак: {fields}",
+  "dashboardProfileTitle": "Компания профилини тўлдиринг",
+  "dashboardProfileMissing": "Ҳали ҳеч нарса киритилмаган",
+  "dashboardProfileIncomplete": "{percent}% тўлдирилган — вакансия ва номзод қидируви учун ҳаммаси керак"
 }

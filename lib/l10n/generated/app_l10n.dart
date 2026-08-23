@@ -4906,6 +4906,42 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Awaiting your answer'**
   String get invitationAwaitingYou;
+
+  /// Shown in place of the form until the type question is answered. Which fields exist *is* the answer, so a form drawn before it is a form drawn for a guess.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who is hiring above. The details asked for depend on it.'**
+  String get employerTypeFirst;
+
+  /// On a mandatory field left empty, and only after Save has been refused over it.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get employerRequired;
+
+  /// Under a refused Save. Named rather than counted: "6 fields left" tells nobody which one, and §6.1's company form is taller than a phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Still needed: {fields}'**
+  String employerMissingRequired(String fields);
+
+  /// The employer has no profile, or an incomplete one. It outranks even verification: there is nothing to verify until §6.1's fields are filled, and the dashboard used to say "Nothing is waiting on you" to an account that could do nothing at all.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your company profile'**
+  String get dashboardProfileTitle;
+
+  /// No profile at all — the first thing an employer does.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has been entered yet'**
+  String get dashboardProfileMissing;
+
+  /// A started profile that BR-03 still refuses to publish from.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% filled in — vacancies and candidate search need all of it'**
+  String dashboardProfileIncomplete(int percent);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

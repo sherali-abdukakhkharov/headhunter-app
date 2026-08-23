@@ -2775,4 +2775,27 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get invitationAwaitingYou => 'Awaiting your answer';
+
+  @override
+  String get employerTypeFirst =>
+      'Choose who is hiring above. The details asked for depend on it.';
+
+  @override
+  String get employerRequired => 'Required';
+
+  @override
+  String employerMissingRequired(String fields) {
+    return 'Still needed: $fields';
+  }
+
+  @override
+  String get dashboardProfileTitle => 'Complete your company profile';
+
+  @override
+  String get dashboardProfileMissing => 'Nothing has been entered yet';
+
+  @override
+  String dashboardProfileIncomplete(int percent) {
+    return '$percent% filled in — vacancies and candidate search need all of it';
+  }
 }

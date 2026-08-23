@@ -802,5 +802,11 @@
   "candidateHomeNoRecommendations": "Пока нет рекомендаций",
   "candidateHomeNoRecommendationsBody": "Рекомендации подбираются по вашим профессиям, местоположению и предпочтениям. А пока посмотрите недавно опубликованные вакансии.",
   "candidateHomeBrowseAll": "Смотреть новые вакансии",
-  "invitationAwaitingYou": "Ждёт вашего ответа"
+  "invitationAwaitingYou": "Ждёт вашего ответа",
+  "employerTypeFirst": "Выберите выше, кто нанимает. От этого зависит, какие данные потребуются.",
+  "employerRequired": "Обязательно",
+  "employerMissingRequired": "Ещё нужно: {fields}",
+  "dashboardProfileTitle": "Заполните профиль компании",
+  "dashboardProfileMissing": "Пока ничего не заполнено",
+  "dashboardProfileIncomplete": "Заполнено {percent}% — для вакансий и поиска кандидатов нужно всё"
 }

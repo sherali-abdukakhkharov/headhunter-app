@@ -28,11 +28,11 @@ against that: one Critical was already fixed before the audit was written up.
 | MT-004 | High | Open — §10.3 dictionary management, the last placeholder in the shell |
 | MT-005 | High | Open — M9. The **backend routes exist** (`/notifications`, `/notifications/unread-count`, preferences, devices); the client has no screen. M9 was deferred to last by owner direction on 2026-08-04, which this audit reopens |
 | MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code |
-| MT-007 | High | Open — blank employer profile saves and locks the employer type |
+| MT-007 | High | **Fixed 1.8.0** — no default type, and the first save is held to §6.1 |
 | MT-008 | High | **Fixed 1.7.0** — the account screen is on the administrator's dashboard |
 | MT-009 | Medium | Open — CV purpose code sent to a uuid dictionary endpoint |
-| MT-010 | Medium | Open — employer prerequisites need a CTA rather than a snackbar |
-| MT-011 | Medium | Open — verification state stale after the employer profile is created |
+| MT-010 | Medium | **Half fixed 1.8.0** — an incomplete employer never sees "Nothing is waiting on you" again; the two BR-03 gates (New vacancy, Candidates) still answer with a snackbar and a global error rather than a corrective CTA |
+| MT-011 | Medium | **Fixed 1.8.0** — a save invalidates verification |
 | MT-012 | Medium | Open — raw wire codes and unformatted salary reach the UI |
 | MT-013 | Medium | Open — OTP submits before it can succeed; errors are global rather than inline |
 | MT-014 | Medium | Open — the offline message names the backend and the base URL |

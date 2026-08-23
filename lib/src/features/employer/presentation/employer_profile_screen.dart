@@ -57,13 +57,35 @@ class EmployerProfileScreen extends ConsumerWidget {
   }
 }
 
-class _Form extends ConsumerWidget {
+class _Form extends ConsumerStatefulWidget {
   const _Form({required this.state});
 
   final EmployerEditorState state;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_Form> createState() => _FormState();
+}
+
+class _FormState extends ConsumerState<_Form> {
+  /// Whether Save has been pressed and refused.
+  ///
+  /// Errors appear only after it. A form that opens with every mandatory field
+  /// already red is telling somebody off for not having filled in a form they
+  /// have not seen — and it hides which field they are actually on.
+  bool _attempted = false;
+
+  /// One key per mandatory field, so a refused save can scroll to the first
+  /// one that is empty. §6.1's company form is taller than a phone, so "the
+  /// button did nothing" is the failure this prevents.
+  final _keys = <String, GlobalKey>{};
+
+  GlobalKey _keyFor(String field) =>
+      _keys.putIfAbsent(field, GlobalKey.new);
+
+  EmployerEditorState get state => widget.state;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final isCompany = state.type == 'company';
 
@@ -96,31 +118,40 @@ class _Form extends ConsumerWidget {
                   const SizedBox(height: HhSpace.sectionGap),
                 ],
 
+                // Nothing below it until it is answered. Which fields exist
+                // *is* the answer — a company has a legal name and an industry
+                // and an individual has neither — so a form drawn before the
+                // question is a form drawn for a guess.
+                if (state.type == null)
+                  Text(
+                    l10n.employerTypeFirst,
+                    style: HhTypography.body.copyWith(
+                      color: HhColors.inkMuted,
+                    ),
+                  )
+                else ...[
                 Text(l10n.employerDetails, style: HhTypography.subtitle),
                 const SizedBox(height: HhSpace.md),
 
                 if (isCompany) ...[
-                  _text(context, ref, 'legalName', l10n.employerLegalName),
-                  _text(context, ref, 'publicName', l10n.employerPublicName),
+                  _text(
+                  'legalName', l10n.employerLegalName),
+                  _text(
+                  'publicName', l10n.employerPublicName),
                   _picker(
-                    context,
-                    ref,
-                    'industryId',
+                  'industryId',
                     l10n.employerIndustry,
                     DictionaryType.industry,
                   ),
                   _text(
-                    context,
-                    ref,
-                    'contactPersonName',
+                  'contactPersonName',
                     l10n.employerContactPerson,
                   ),
                 ] else
-                  _text(context, ref, 'fullName', l10n.employerFullName),
+                  _text(
+                  'fullName', l10n.employerFullName),
 
                 _text(
-                  context,
-                  ref,
                   'contactPhone',
                   l10n.employerContactPhone,
                   keyboardType: TextInputType.phone,
@@ -131,8 +162,6 @@ class _Form extends ConsumerWidget {
                 // because a district from the previous province is still a
                 // real id and would save without complaint.
                 _picker(
-                  context,
-                  ref,
                   'regionId',
                   l10n.employerRegion,
                   DictionaryType.region,
@@ -144,8 +173,6 @@ class _Form extends ConsumerWidget {
                   },
                 ),
                 _picker(
-                  context,
-                  ref,
                   'districtId',
                   l10n.employerDistrict,
                   DictionaryType.region,
@@ -153,10 +180,9 @@ class _Form extends ConsumerWidget {
                   requiresParent: true,
                 ),
 
-                _text(context, ref, 'address', l10n.employerAddress),
                 _text(
-                  context,
-                  ref,
+                  'address', l10n.employerAddress),
+                _text(
                   'description',
                   l10n.employerDescription,
                   maxLines: 4,
@@ -170,6 +196,8 @@ class _Form extends ConsumerWidget {
 
                 const SizedBox(height: HhSpace.sectionGap),
 
+                ],
+
                 // Sessions, sign-out and BR-14. The same row the candidate
                 // profile carries: §2.3 makes the role a runtime switch, so
                 // whichever shell somebody is in has to reach the account.
@@ -181,18 +209,30 @@ class _Form extends ConsumerWidget {
           ),
         ),
 
-        if (state.isDirty || state.isNew)
+        if ((state.isDirty || state.isNew) && state.type != null)
           _SaveBar(
             saving: state.isSaving,
+            // Named rather than counted: "6 fields left" tells nobody which,
+            // and the list is short enough to read.
+            missing: _attempted
+                ? [for (final f in state.missingRequired) _labelFor(f, l10n)]
+                : const [],
             onSave: () async {
               final messenger = ScaffoldMessenger.of(context);
               final savedMessage = l10n.profileSaved;
+
+              if (!state.canSave) {
+                setState(() => _attempted = true);
+                await _revealFirstMissing();
+                return;
+              }
 
               try {
                 final ok = await ref
                     .read(employerEditorProvider.notifier)
                     .save();
                 if (ok) {
+                  setState(() => _attempted = false);
                   messenger.showSnackBar(
                     SnackBar(
                       content: HhToast(message: savedMessage),
@@ -212,17 +252,27 @@ class _Form extends ConsumerWidget {
     );
   }
 
+  /// Whether this field is mandatory, empty, and has been asked for.
+  ///
+  /// All three: a mandatory field is not an error until Save has been refused
+  /// over it, and after the first save nothing is mandatory any more — the
+  /// type is settled by then, so a half-finished edit is ordinary work.
+  bool _isMissing(String field) =>
+      _attempted && state.missingRequired.contains(field);
+
   Widget _text(
-    BuildContext context,
-    WidgetRef ref,
     String field,
     String label, {
     int maxLines = 1,
     TextInputType? keyboardType,
   }) => Padding(
+    key: _keyFor(field),
     padding: const EdgeInsets.only(bottom: HhSpace.lg),
     child: HhTextField(
       label: label,
+      errorText: _isMissing(field)
+          ? AppL10n.of(context).employerRequired
+          : null,
       controller: _controllerFor(state.valueOf(field) as String? ?? ''),
       maxLines: maxLines,
       enabled: !state.isSaving,
@@ -235,8 +285,6 @@ class _Form extends ConsumerWidget {
   );
 
   Widget _picker(
-    BuildContext context,
-    WidgetRef ref,
     String field,
     String label,
     String type, {
@@ -245,9 +293,13 @@ class _Form extends ConsumerWidget {
     bool requiresParent = false,
     ValueChanged<String?>? onChanged,
   }) => Padding(
+    key: _keyFor(field),
     padding: const EdgeInsets.only(bottom: HhSpace.lg),
     child: HhDictionaryPicker(
       label: label,
+      errorText: _isMissing(field)
+          ? AppL10n.of(context).employerRequired
+          : null,
       type: type,
       value: state.valueOf(field) as String?,
       enabled: !state.isSaving,
@@ -261,6 +313,39 @@ class _Form extends ConsumerWidget {
           (id) => ref.read(employerEditorProvider.notifier).edit(field, id),
     ),
   );
+
+  /// Brings the topmost empty mandatory field into view.
+  ///
+  /// [EmployerEditorState.missingRequired] is in form order, so the first
+  /// entry is the one nearest the top. Without this a refused save on §6.1's
+  /// company form scrolls nowhere and reads as a button that does nothing.
+  Future<void> _revealFirstMissing() async {
+    final first = state.missingRequired.firstOrNull;
+    final target = first == null ? null : _keys[first]?.currentContext;
+    if (target == null) return;
+
+    await Scrollable.ensureVisible(
+      target,
+      alignment: 0.2,
+      duration: const Duration(milliseconds: 250),
+    );
+  }
+
+  /// The field's own label, so the list under Save names the same words the
+  /// fields do.
+  String _labelFor(String field, AppL10n l10n) => switch (field) {
+    'contactPhone' => l10n.employerContactPhone,
+    'regionId' => l10n.employerRegion,
+    'description' => l10n.employerDescription,
+    'legalName' => l10n.employerLegalName,
+    'publicName' => l10n.employerPublicName,
+    'industryId' => l10n.employerIndustry,
+    'contactPersonName' => l10n.employerContactPerson,
+    'fullName' => l10n.employerFullName,
+    // A requirement this build does not know a label for, which can only come
+    // from the server's list growing. Naming the code beats naming nothing.
+    _ => field,
+  };
 
   static TextEditingController _controllerFor(String text) =>
       TextEditingController.fromValue(
@@ -320,7 +405,10 @@ class _Standing extends StatelessWidget {
 class _TypeChooser extends ConsumerWidget {
   const _TypeChooser({required this.selected});
 
-  final String selected;
+  /// Null until the question is answered. No preselection: the choice is
+  /// permanent, and a default answer to a permanent question is a decision the
+  /// product made on somebody's behalf.
+  final String? selected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -381,10 +469,18 @@ class _TypeChooser extends ConsumerWidget {
 }
 
 class _SaveBar extends StatelessWidget {
-  const _SaveBar({required this.saving, required this.onSave});
+  const _SaveBar({
+    required this.saving,
+    required this.onSave,
+    this.missing = const [],
+  });
 
   final bool saving;
   final Future<void> Function() onSave;
+
+  /// The mandatory fields still empty, by label. Empty until a save has been
+  /// refused.
+  final List<String> missing;
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
@@ -394,10 +490,23 @@ class _SaveBar extends StatelessWidget {
     ),
     child: Padding(
       padding: const EdgeInsets.all(HhSpace.gutter),
-      child: HhButton(
-        label: AppL10n.of(context).commonSave,
-        loading: saving,
-        onPressed: saving ? null : onSave,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (missing.isNotEmpty) ...[
+            Text(
+              AppL10n.of(context).employerMissingRequired(missing.join(', ')),
+              style: HhTypography.caption.copyWith(color: HhColors.errorFg),
+            ),
+            const SizedBox(height: HhSpace.sm),
+          ],
+          HhButton(
+            label: AppL10n.of(context).commonSave,
+            loading: saving,
+            onPressed: saving ? null : onSave,
+          ),
+        ],
       ),
     ),
   );

@@ -17,6 +17,36 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.8.0+13 — 2026-08-24
+
+The employer's first ten minutes, from the 1.4.1 audit. It was possible to
+create an account that could do nothing, in one tap, and then be told nothing
+was wrong.
+
+### Fixed
+
+- **A company profile can no longer be created by accident.** The "who is
+  hiring" question used to arrive with *A company* already chosen, and the
+  first Save made that permanent — so tapping Save before reading anything
+  committed the wrong kind of account, and the choice then disappeared with no
+  way back. Nothing is preselected now, and the form below the question only
+  appears once it is answered: which details are asked for is what the answer
+  decides.
+- **And it cannot be created empty.** The first save is held to everything §6.1
+  asks for, because that save is what makes the choice permanent — and a
+  profile that satisfies it is one that can go straight to verification, rather
+  than the 0%-complete account that blocked vacancies, candidate search and
+  verification alike. What is still missing is named under the button and
+  marked on the fields, and the screen scrolls to the first one. Editing an
+  existing profile is unchanged: half-finished edits save as before.
+- **Saving a profile no longer leaves the verification section stale.** It used
+  to keep showing its earlier "no profile" error until you tapped Try again, so
+  a save that had worked looked like it had not.
+- **The dashboard no longer says "Nothing is waiting on you" to an employer who
+  cannot do anything.** An account with no company profile — or a half-filled
+  one — now has that at the top of the list, with the way to fix it. This was
+  the app saying everything was fine and then refusing every main action.
+
 ## 1.7.0+12 — 2026-08-24
 
 The first release answering the 1.4.1 QA audit. Candidates get a real home

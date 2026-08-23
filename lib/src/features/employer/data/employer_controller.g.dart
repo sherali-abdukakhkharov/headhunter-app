@@ -36,7 +36,7 @@ final class EmployerEditorProvider
   EmployerEditor create() => EmployerEditor();
 }
 
-String _$employerEditorHash() => r'0ab8750ffdd8e56187d0e087a0229c03eca69266';
+String _$employerEditorHash() => r'c6963cf477a7367b93e7a595f0883d7abf9f50e6';
 
 /// Loads and writes the employer profile (§6.1).
 

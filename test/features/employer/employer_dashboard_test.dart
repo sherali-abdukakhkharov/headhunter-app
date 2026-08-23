@@ -41,6 +41,8 @@ void main() {
     List<CandidateCard> saved = const [],
     String verification = 'verified',
     ApiException? vacanciesError,
+    EmployerProfile? employer,
+    bool hasProfile = true,
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -58,7 +60,11 @@ void main() {
           verificationProvider.overrideWith(
             () => _FakeVerification(verification),
           ),
-          employerEditorProvider.overrideWith(_FakeEditor.new),
+          employerEditorProvider.overrideWith(
+            () => _FakeEditor(
+              profile: hasProfile ? employer ?? _employer() : null,
+            ),
+          ),
           // §6.2's seventh widget makes its own request. Failed rather than
           // stubbed: the tile has its own suite, and what matters here is that
           // its failure stays inside it and the rest of the dashboard renders.
@@ -345,6 +351,41 @@ void main() {
       expect(find.text('Find candidates'), findsOneWidget);
     });
   });
+
+  group('an incomplete employer is never told nothing is waiting (MT-010)', () {
+    testWidgets('no profile at all is the first thing on the list', (
+      tester,
+    ) async {
+      await pump(tester, hasProfile: false);
+
+      // The audit's sequence: the dashboard said everything was fine, and then
+      // New vacancy and Candidates both refused. Without a profile the
+      // verification read 404s, which produced no row — so the *only* thing on
+      // the screen was "Nothing is waiting on you".
+      expect(find.text('Complete your company profile'), findsOneWidget);
+      expect(find.textContaining('Nothing is waiting on you'), findsNothing);
+    });
+
+    testWidgets('a half-filled one says how far it has to go', (tester) async {
+      await pump(
+        tester,
+        employer: _employer(complete: false, percent: 60),
+      );
+
+      // BR-03 needs all of §6.1, so 60% is not "mostly working".
+      expect(find.text('Complete your company profile'), findsOneWidget);
+      expect(find.textContaining('60% filled in'), findsOneWidget);
+    });
+
+    testWidgets('a complete one leaves the list to the real work', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      expect(find.text('Complete your company profile'), findsNothing);
+      expect(find.textContaining('Nothing is waiting on you'), findsOneWidget);
+    });
+  });
 }
 
 CandidateCard _card() => CandidateCard.fromJson(const {
@@ -375,7 +416,27 @@ class _FakeVerification extends Verification {
 }
 
 class _FakeEditor extends EmployerEditor {
+  _FakeEditor({this.profile});
+
+  /// Null is "no employer profile yet", which is its own attention row now —
+  /// see the MT-010 group.
+  final EmployerProfile? profile;
+
   @override
   Future<EmployerEditorState> build() async =>
-      const EmployerEditorState(type: 'organisation');
+      EmployerEditorState(
+        type: profile?.type ?? 'organisation',
+        profile: profile,
+      );
 }
+
+EmployerProfile _employer({bool complete = true, int percent = 100}) =>
+    EmployerProfile.fromJson({
+      'type': 'company',
+      'legalName': 'Uzum Technologies',
+      'verificationStatus': 'verified',
+      'completenessPercent': percent,
+      'isComplete': complete,
+      'canPublish': complete,
+      'missingFields': const <dynamic>[],
+    });

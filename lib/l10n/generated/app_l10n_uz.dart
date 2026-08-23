@@ -2780,6 +2780,29 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get invitationAwaitingYou => 'Javobingiz kutilmoqda';
+
+  @override
+  String get employerTypeFirst =>
+      'Yuqorida kim ish beruvchi ekanini tanlang. So‘raladigan ma’lumotlar shunga bog‘liq.';
+
+  @override
+  String get employerRequired => 'Majburiy';
+
+  @override
+  String employerMissingRequired(String fields) {
+    return 'Hali kerak: $fields';
+  }
+
+  @override
+  String get dashboardProfileTitle => 'Kompaniya profilini to‘ldiring';
+
+  @override
+  String get dashboardProfileMissing => 'Hali hech narsa kiritilmagan';
+
+  @override
+  String dashboardProfileIncomplete(int percent) {
+    return '$percent% to‘ldirilgan — vakansiya va nomzod qidiruvi uchun hammasi kerak';
+  }
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -5544,6 +5567,29 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get invitationAwaitingYou => 'Жавобингиз кутилмоқда';
+
+  @override
+  String get employerTypeFirst =>
+      'Юқорида ким иш берувчи эканини танланг. Сўраладиган маълумотлар шунга боғлиқ.';
+
+  @override
+  String get employerRequired => 'Мажбурий';
+
+  @override
+  String employerMissingRequired(String fields) {
+    return 'Ҳали керак: $fields';
+  }
+
+  @override
+  String get dashboardProfileTitle => 'Компания профилини тўлдиринг';
+
+  @override
+  String get dashboardProfileMissing => 'Ҳали ҳеч нарса киритилмаган';
+
+  @override
+  String dashboardProfileIncomplete(int percent) {
+    return '$percent% тўлдирилган — вакансия ва номзод қидируви учун ҳаммаси керак';
+  }
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -8322,4 +8368,27 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get invitationAwaitingYou => 'Javobingiz kutilmoqda';
+
+  @override
+  String get employerTypeFirst =>
+      'Yuqorida kim ish beruvchi ekanini tanlang. So‘raladigan ma’lumotlar shunga bog‘liq.';
+
+  @override
+  String get employerRequired => 'Majburiy';
+
+  @override
+  String employerMissingRequired(String fields) {
+    return 'Hali kerak: $fields';
+  }
+
+  @override
+  String get dashboardProfileTitle => 'Kompaniya profilini to‘ldiring';
+
+  @override
+  String get dashboardProfileMissing => 'Hali hech narsa kiritilmagan';
+
+  @override
+  String dashboardProfileIncomplete(int percent) {
+    return '$percent% to‘ldirilgan — vakansiya va nomzod qidiruvi uchun hammasi kerak';
+  }
 }

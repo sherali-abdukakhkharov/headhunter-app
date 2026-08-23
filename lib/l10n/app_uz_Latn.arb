@@ -802,5 +802,11 @@
   "candidateHomeNoRecommendations": "Hozircha tavsiyalar yo‘q",
   "candidateHomeNoRecommendationsBody": "Tavsiyalar sizning kasblaringiz, joylashuvingiz va ish shartlariga qarab tanlanadi. Shu orada yangi e’lonlarni ko‘rib chiqing.",
   "candidateHomeBrowseAll": "Yangi vakansiyalarni ko‘rish",
-  "invitationAwaitingYou": "Javobingiz kutilmoqda"
+  "invitationAwaitingYou": "Javobingiz kutilmoqda",
+  "employerTypeFirst": "Yuqorida kim ish beruvchi ekanini tanlang. So‘raladigan ma’lumotlar shunga bog‘liq.",
+  "employerRequired": "Majburiy",
+  "employerMissingRequired": "Hali kerak: {fields}",
+  "dashboardProfileTitle": "Kompaniya profilini to‘ldiring",
+  "dashboardProfileMissing": "Hali hech narsa kiritilmagan",
+  "dashboardProfileIncomplete": "{percent}% to‘ldirilgan — vakansiya va nomzod qidiruvi uchun hammasi kerak"
 }

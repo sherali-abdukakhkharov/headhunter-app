@@ -21,10 +21,18 @@ class EmployerEditorState {
 
   final EmployerProfile? profile;
 
-  /// The chosen employer type. Comes from [profile] once one exists, and is
-  /// **fixed from then on** — the server refuses a change with
-  /// `employer.type_immutable`, so the UI must not offer one.
-  final String type;
+  /// The chosen employer type, or **null while the question is unanswered**.
+  ///
+  /// Null rather than a default, and that is the fix for a real trap: it used
+  /// to default to `company`, so a first-time employer who tapped Save before
+  /// reading anything committed a company profile — and the server refuses a
+  /// later change with `employer.type_immutable`, so the chooser then
+  /// disappeared and the account was stuck as the wrong kind with no route
+  /// back. A default answer to a permanent question is a decision the product
+  /// made on somebody's behalf.
+  ///
+  /// Comes from [profile] once one exists, and is fixed from then on.
+  final String? type;
 
   /// Changed-but-unsaved values, keyed by the response field name.
   final Map<String, Object?> edits;
@@ -33,6 +41,55 @@ class EmployerEditorState {
 
   bool get isDirty => edits.isNotEmpty;
   bool get isNew => profile == null;
+
+  /// §6.1's mandatory fields for [type], mirrored from the server's own
+  /// `EMPLOYER_REQUIREMENTS`.
+  ///
+  /// Restating a server rule is safe in exactly one direction — where the
+  /// client is the stricter of the two — and this is that direction: the
+  /// server accepts a partial profile and computes a completeness percentage
+  /// from the same list, so a client that refuses to *create* one is refusing
+  /// a subset of what the server allows. If the list drifts, the cost is a
+  /// first save the client asks more of than it needs, not a write the server
+  /// rejects.
+  List<String> get requiredFields => switch (type) {
+    'company' => const [
+      'contactPhone',
+      'regionId',
+      'legalName',
+      'publicName',
+      'industryId',
+      'contactPersonName',
+      'description',
+    ],
+    'individual' => const [
+      'contactPhone',
+      'regionId',
+      'fullName',
+      'description',
+    ],
+    _ => const [],
+  };
+
+  /// Which of [requiredFields] are still empty, in the order the form shows
+  /// them — so "scroll to the first one" means the topmost.
+  List<String> get missingRequired => [
+    for (final field in requiredFields)
+      if (valueOf(field) case null || '') field,
+  ];
+
+  /// Whether Save may be offered.
+  ///
+  /// **The first save is the strict one.** It is what locks the type, so it is
+  /// the one that has to be deliberate — and a first save that satisfies §6.1
+  /// produces a *complete* profile, which is the state the next step
+  /// (verification) needs anyway. That removes the 0%-complete-and-locked
+  /// account the old form could create in one tap.
+  ///
+  /// Afterwards editing is ordinary: the type is settled, so a half-finished
+  /// edit costs nothing and refusing to save one would lose somebody's typing.
+  bool get canSave =>
+      type != null && !isSaving && (profile != null || missingRequired.isEmpty);
 
   /// True once the type can no longer change.
   bool get typeLocked => profile != null;
@@ -84,12 +141,9 @@ class EmployerEditor extends _$EmployerEditor {
 
     final profile = await ref.watch(employerRepositoryProvider).fetchProfile();
 
-    return EmployerEditorState(
-      profile: profile,
-      // A company by default only until the first save; `type` then comes from
-      // the server and stops being a choice.
-      type: profile?.type ?? 'company',
-    );
+    // No default: an unanswered question stays unanswered. See
+    // [EmployerEditorState.type].
+    return EmployerEditorState(profile: profile, type: profile?.type);
   }
 
   /// Chooses the employer type, before there is a profile.
@@ -139,6 +193,13 @@ class EmployerEditor extends _$EmployerEditor {
           isSaving: false,
         ),
       );
+
+      // Everything derived from the profile, and verification above all: a
+      // first save turns `employer.not_found` into "not submitted", and until
+      // this was here the verification card kept its 404 error until somebody
+      // tapped Try again — a successful save that looked like it had not
+      // unlocked its next step.
+      ref.invalidate(verificationProvider);
 
       return true;
     } on Object {
