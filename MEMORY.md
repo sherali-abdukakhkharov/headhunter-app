@@ -501,6 +501,31 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-24 - A shell tab can ship as a placeholder and nothing goes red
+An external QA audit of 1.4.1 opened with three Critical findings, and two of
+them were the same defect: the candidate's **default** tab and two administrator
+tabs rendered `ShellPlaceholderScreen` — "This screen arrives in M6" — in a
+signed, installable release. Every candidate saw it on every login and every
+restart.
+
+Nothing caught it. `flutter analyze` was clean, the suite was green, the router
+tests asserted that each role gets five destinations and that tapping one moves
+the location — which was all true. The shell was tested; what was *behind* it
+was not.
+
+The mechanism is worth remembering because it is a property of the design rather
+than an oversight: `app_router.dart` maps tab paths to screens with a `switch`
+whose default arm is the placeholder. That default is what lets a milestone land
+one tab at a time, and it is also what makes an unmapped tab a *successful*
+build.
+
+The guard is now `app_router_test.dart`'s release-shell gate, and its shape is
+the part to keep: it asserts the placeholder set is **exactly**
+`[/admin/dictionaries]`, not "few" and not "none". A test that allowed
+placeholders would have passed through all three of 1.4.1's; one that forbade
+them outright could not have been written while §10.3 is still open, so it would
+never have been written at all.
+
 ### 2026-08-23 - An `HhMetaChip` does not shrink its label, and only a widget test at 360pt says so
 §10.4's user row was drawn with four meta chips — two roles, "Registered
 2026-03-14" and "Last signed in 2026-08-20". It rendered perfectly on a wide

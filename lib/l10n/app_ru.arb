@@ -789,5 +789,18 @@
   "adminAuditDictionaryDeactivated": "Элемент справочника отключён",
   "adminAuditDictionaryMerged": "Элементы справочника объединены",
   "adminUserAuditAbout": "Всё, что делали с этим аккаунтом",
-  "adminUserAuditBy": "Всё, что сделал этот администратор"
+  "adminUserAuditBy": "Всё, что сделал этот администратор",
+  "candidateHomeTitle": "Главная",
+  "candidateHomeInvitations": "{count, plural, one{{count} приглашение ждёт вашего ответа} few{{count} приглашения ждут вашего ответа} many{{count} приглашений ждут вашего ответа} other{{count} приглашений ждут вашего ответа}}",
+  "candidateHomeApplications": "{count, plural, one{{count} отклик на рассмотрении} few{{count} отклика на рассмотрении} many{{count} откликов на рассмотрении} other{{count} откликов на рассмотрении}}",
+  "candidateHomeProfileEmpty": "Заполните профиль",
+  "candidateHomeProfileIncomplete": "Завершите профиль",
+  "candidateHomeProfileBody": "Чем полнее профиль, тем больше вакансий ему соответствует.",
+  "candidateHomeProfileHidden": "Работодатели пока не могут вас найти — чтобы профиль появился в поиске, он должен быть заполнен.",
+  "candidateHomeRecommended": "Рекомендуем вам",
+  "candidateHomeSeeAll": "Все",
+  "candidateHomeNoRecommendations": "Пока нет рекомендаций",
+  "candidateHomeNoRecommendationsBody": "Рекомендации подбираются по вашим профессиям, местоположению и предпочтениям. А пока посмотрите недавно опубликованные вакансии.",
+  "candidateHomeBrowseAll": "Смотреть новые вакансии",
+  "invitationAwaitingYou": "Ждёт вашего ответа"
 }

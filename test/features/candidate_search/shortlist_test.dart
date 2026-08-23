@@ -79,6 +79,7 @@ CandidateCard _card({
   String name = 'Aziza Karimova',
   bool shortlisted = false,
   int matchScore = 100,
+  List<Map<String, dynamic>> matchBreakdown = const [],
 }) => CandidateCard.fromJson({
   'candidateUserId': id,
   'fullName': name,
@@ -90,7 +91,7 @@ CandidateCard _card({
   'matchScore': matchScore,
   'skills': const <dynamic>[],
   'languages': const <dynamic>[],
-  'matchBreakdown': const <dynamic>[],
+  'matchBreakdown': matchBreakdown,
 });
 
 /// Serves canned responses so the repository can be tested without a server.
@@ -259,9 +260,32 @@ void main() {
 
   group('a match score is only a number where a filter produced it', () {
     testWidgets('a search card shows it', (tester) async {
-      await pumpCard(tester, card: _card(matchScore: 82));
+      await pumpCard(
+        tester,
+        card: _card(
+          matchScore: 82,
+          // A breakdown is the server's evidence that a requirement was
+          // weighed. Without one there is no question the score answers, and
+          // the fixture said so by carrying an empty list while the card
+          // still drew '100% match' — MT-019.
+          matchBreakdown: const [
+            {'group': 'skills', 'weight': 0.4, 'asked': 5, 'matched': 4},
+          ],
+        ),
+      );
 
       expect(find.text('82% match'), findsOneWidget);
+    });
+
+    testWidgets('a search card with nothing behind the score does not', (
+      tester,
+    ) async {
+      // The unfiltered search: the server scores every card 100 because it had
+      // nothing to match against, which reads as a judgement about a person
+      // and is not one.
+      await pumpCard(tester, card: _card());
+
+      expect(find.textContaining('% match'), findsNothing);
     });
 
     testWidgets('a shortlisted card does not', (tester) async {

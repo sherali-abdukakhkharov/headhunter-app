@@ -789,5 +789,18 @@
   "adminAuditDictionaryDeactivated": "Луғат банди ўчириб қўйилди",
   "adminAuditDictionaryMerged": "Луғат бандлари бирлаштирилди",
   "adminUserAuditAbout": "Бу ҳисоб устида қилинган ҳамма нарса",
-  "adminUserAuditBy": "Бу администратор қилган ҳамма нарса"
+  "adminUserAuditBy": "Бу администратор қилган ҳамма нарса",
+  "candidateHomeTitle": "Бош саҳифа",
+  "candidateHomeInvitations": "{count, plural, other{{count} та таклиф жавобингизни кутмоқда}}",
+  "candidateHomeApplications": "{count, plural, other{{count} та ариза кўриб чиқилмоқда}}",
+  "candidateHomeProfileEmpty": "Профилингизни тўлдиринг",
+  "candidateHomeProfileIncomplete": "Профилингизни якунланг",
+  "candidateHomeProfileBody": "Тўлиқроқ профил иш берувчилар жойлаётган ишларнинг кўпроғига мос келади.",
+  "candidateHomeProfileHidden": "Иш берувчилар сизни ҳали топа олмайди — профил қидирувда кўриниши учун тўлиқ бўлиши керак.",
+  "candidateHomeRecommended": "Сиз учун тавсия этилган",
+  "candidateHomeSeeAll": "Ҳаммаси",
+  "candidateHomeNoRecommendations": "Ҳозирча тавсиялар йўқ",
+  "candidateHomeNoRecommendationsBody": "Тавсиялар сизнинг касбларингиз, жойлашувингиз ва иш шартларига қараб танланади. Шу орада янги эълонларни кўриб чиқинг.",
+  "candidateHomeBrowseAll": "Янги вакансияларни кўриш",
+  "invitationAwaitingYou": "Жавобингиз кутилмоқда"
 }

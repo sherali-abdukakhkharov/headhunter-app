@@ -21,6 +21,8 @@ import 'package:jobbridge_app/src/features/admin/presentation/user_detail_screen
 import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
+import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/shell_placeholder_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -499,6 +501,72 @@ void main() {
           (t) => t.path == Routes.candidateMessages,
         ),
       );
+    });
+  });
+
+  group('the release shell has no unfinished screens left in it', () {
+    testWidgets('every tab but one resolves to a real screen', (tester) async {
+      // The audit's release-shell gate (MT-001, MT-002, MT-004). Three tabs
+      // shipped in 1.4.1 as `ShellPlaceholderScreen` — the candidate's default
+      // Home among them — and nothing failed when they did.
+      //
+      // Asserted as an **exact list** rather than "none": the last placeholder
+      // is §10.3's dictionary management, and a test that merely allowed
+      // placeholders would go on passing when a new one appeared. This one
+      // fails both ways — a tab that regresses into a placeholder, and the day
+      // dictionaries lands and this list stops being true.
+      final placeholders = <String>[];
+
+      for (final role in AppRole.values) {
+        for (final tab in ShellTabs.forRole(role)) {
+          final result = await settle(
+            tester,
+            SessionActive(roles: {role}),
+            initialLocation: tab.path,
+          );
+          expect(result.location, tab.path, reason: tab.path);
+
+          if (find.byType(ShellPlaceholderScreen).evaluate().isNotEmpty) {
+            placeholders.add(tab.path);
+          }
+        }
+      }
+
+      expect(placeholders, [Routes.adminDictionaries]);
+      await _unmountTree(tester);
+    });
+  });
+
+  group('§5.5 names its feed in the location', () {
+    testWidgets('a link to saved does not land on recommended', (
+      tester,
+    ) async {
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.candidate}),
+        initialLocation: Routes.candidateVacanciesWith(Feed.saved.wire),
+      );
+
+      // Home links to two of the three feeds, and the shell keeps each branch
+      // across tab switches — a segment held in `State` would ignore the
+      // `go` entirely and show whichever feed was last looked at.
+      expect(
+        result.router.routerDelegate.currentConfiguration.uri.toString(),
+        Routes.candidateVacanciesWith(Feed.saved.wire),
+      );
+      expect(
+        tester.widget<HhSegmented>(find.byType(HhSegmented)).selectedIndex,
+        Feed.values.indexOf(Feed.saved),
+      );
+
+      result.router.go(Routes.candidateVacanciesWith(Feed.recent.wire));
+      await _pumpRoute(tester);
+
+      expect(
+        tester.widget<HhSegmented>(find.byType(HhSegmented)).selectedIndex,
+        Feed.values.indexOf(Feed.recent),
+      );
+      await _unmountTree(tester);
     });
   });
 

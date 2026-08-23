@@ -3491,5 +3491,67 @@
   "adminUserAuditBy": "Everything this administrator has done",
   "@adminUserAuditBy": {
     "description": "The audit log filtered to this administrator. Offered only on an account that holds the admin role, because only an administrator ever writes an audit row and an empty answer would read as a bug."
+  },
+  "candidateHomeTitle": "Home",
+  "@candidateHomeTitle": {
+    "description": "§5.5's candidate home."
+  },
+  "candidateHomeInvitations": "{count, plural, one{{count} invitation awaits your answer} other{{count} invitations await your answer}}",
+  "@candidateHomeInvitations": {
+    "description": "Invitations still waiting on the candidate — §8.2 `sent` and nothing else, because `details_requested` is the candidate waiting on the employer.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "candidateHomeApplications": "{count, plural, one{{count} application in progress} other{{count} applications in progress}}",
+  "@candidateHomeApplications": {
+    "description": "Applications still live — the ones a candidate can still withdraw, which is the same set that can still change.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "candidateHomeProfileEmpty": "Start your profile",
+  "@candidateHomeProfileEmpty": {
+    "description": "A profile nothing has been entered into yet."
+  },
+  "candidateHomeProfileIncomplete": "Finish your profile",
+  "@candidateHomeProfileIncomplete": {
+    "description": "A profile that has been started and is not finished."
+  },
+  "candidateHomeProfileBody": "A fuller profile is matched to more of the work employers are posting.",
+  "@candidateHomeProfileBody": {
+    "description": "Why finishing it is worth doing, for a profile employers can already find."
+  },
+  "candidateHomeProfileHidden": "Employers cannot find you yet — your profile has to be complete before it appears in a search.",
+  "@candidateHomeProfileHidden": {
+    "description": "BR-02 is a threshold rather than a preference: an incomplete profile is not searchable at all, and that is the answer to \"why is nobody inviting me\"."
+  },
+  "candidateHomeRecommended": "Recommended for you",
+  "@candidateHomeRecommended": {
+    "description": "§5.5's recommended vacancies. Ranked server-side."
+  },
+  "candidateHomeSeeAll": "See all",
+  "@candidateHomeSeeAll": {
+    "description": "Hands over to the vacancies tab, on the recommended feed — named in the location, so it cannot land on whichever feed was last looked at."
+  },
+  "candidateHomeNoRecommendations": "No recommendations yet",
+  "@candidateHomeNoRecommendations": {
+    "description": "No recommendations — either the profile says too little to rank against, or nothing new is posted."
+  },
+  "candidateHomeNoRecommendationsBody": "Recommendations are matched to your occupations, location and work preferences. Newly published vacancies are always worth a look meanwhile.",
+  "@candidateHomeNoRecommendationsBody": {
+    "description": "Names both causes, because the fix differs: one is the profile, the other is time."
+  },
+  "candidateHomeBrowseAll": "Browse new vacancies",
+  "@candidateHomeBrowseAll": {
+    "description": "Sends the candidate to the recent feed, which needs no profile to be useful."
+  },
+  "invitationAwaitingYou": "Awaiting your answer",
+  "@invitationAwaitingYou": {
+    "description": "The candidate's side of §8.2's `sent`. The employer's list says \"Sent\"; the recipient's says what it means for them, because \"Sent\" on an inbox card reads as though they sent it."
   }
 }

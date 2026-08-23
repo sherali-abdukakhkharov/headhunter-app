@@ -100,7 +100,11 @@ class _InvitationCard extends StatelessWidget {
               runSpacing: 4,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                invitationStatusBadge(invitation.status, l10n),
+                invitationStatusBadge(
+                  invitation.status,
+                  l10n,
+                  received: true,
+                ),
                 Text(
                   wallClockStamp(invitation.createdAt.wallClock),
                   style: HhTypography.meta.copyWith(color: HhColors.inkMuted),

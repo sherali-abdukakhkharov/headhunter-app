@@ -17,6 +17,44 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.7.0+12 — 2026-08-24
+
+The first release answering the 1.4.1 QA audit. Candidates get a real home
+screen, administrators can sign out, and three smaller defects the audit found
+are gone.
+
+### Added
+
+- **A candidate home screen (§5.5).** It replaces the milestone note that had
+  been the default destination after every login and every restart.
+  It leads with **what is waiting on you** — invitations still to answer and
+  applications still in progress, each opening the tab that holds them. Then,
+  while a profile is unfinished, how complete it is and what that costs: an
+  incomplete profile is not searchable at all, so the card says employers
+  cannot find you yet rather than leaving that to be discovered. Then the work
+  the platform recommends, three at a time, with the full feed one tap away.
+  **A section that cannot load simply is not there.** Home is built from four
+  separate requests, and one of them failing must not make a candidate's first
+  screen look broken — every one of them has a tab of its own that reports the
+  failure properly.
+- **The administrator can reach their account and sign out.** The candidate and
+  the employer had this on their profile tab; the administrator's five tabs are
+  all work queues, so in a production build there was no way out of the app at
+  all. It is the same row, at the bottom of the dashboard.
+
+### Changed
+
+- **An invitation you have been sent no longer says "Sent".** On the
+  recipient's own list it now reads *Awaiting your answer* — the old wording is
+  the employer's side of the same event, and on an inbox card it read as though
+  you had sent something.
+- **A match percentage is only shown where something was matched.** Searching
+  with no requirements set scored every candidate at 100%, which reads as a
+  judgement about a person and was not one.
+- **The vacancies tab remembers which feed a link meant.** Opening "Saved" or
+  "Recommended" from elsewhere now arrives at that feed instead of whichever one
+  was last looked at.
+
 ## 1.6.0+11 — 2026-08-23
 
 §10.4 is finished: the audit log is in the app. Everything an administrator

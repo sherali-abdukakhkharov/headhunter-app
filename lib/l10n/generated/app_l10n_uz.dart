@@ -2724,6 +2724,62 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminUserAuditBy => 'Bu administrator qilgan hamma narsa';
+
+  @override
+  String get candidateHomeTitle => 'Bosh sahifa';
+
+  @override
+  String candidateHomeInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta taklif javobingizni kutmoqda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String candidateHomeApplications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta ariza ko‘rib chiqilmoqda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get candidateHomeProfileEmpty => 'Profilingizni to‘ldiring';
+
+  @override
+  String get candidateHomeProfileIncomplete => 'Profilingizni yakunlang';
+
+  @override
+  String get candidateHomeProfileBody =>
+      'To‘liqroq profil ish beruvchilar joylayotgan ishlarning ko‘prog‘iga mos keladi.';
+
+  @override
+  String get candidateHomeProfileHidden =>
+      'Ish beruvchilar sizni hali topa olmaydi — profil qidiruvda ko‘rinishi uchun to‘liq bo‘lishi kerak.';
+
+  @override
+  String get candidateHomeRecommended => 'Siz uchun tavsiya etilgan';
+
+  @override
+  String get candidateHomeSeeAll => 'Hammasi';
+
+  @override
+  String get candidateHomeNoRecommendations => 'Hozircha tavsiyalar yo‘q';
+
+  @override
+  String get candidateHomeNoRecommendationsBody =>
+      'Tavsiyalar sizning kasblaringiz, joylashuvingiz va ish shartlariga qarab tanlanadi. Shu orada yangi e’lonlarni ko‘rib chiqing.';
+
+  @override
+  String get candidateHomeBrowseAll => 'Yangi vakansiyalarni ko‘rish';
+
+  @override
+  String get invitationAwaitingYou => 'Javobingiz kutilmoqda';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -5432,6 +5488,62 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminUserAuditBy => 'Бу администратор қилган ҳамма нарса';
+
+  @override
+  String get candidateHomeTitle => 'Бош саҳифа';
+
+  @override
+  String candidateHomeInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та таклиф жавобингизни кутмоқда',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String candidateHomeApplications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та ариза кўриб чиқилмоқда',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get candidateHomeProfileEmpty => 'Профилингизни тўлдиринг';
+
+  @override
+  String get candidateHomeProfileIncomplete => 'Профилингизни якунланг';
+
+  @override
+  String get candidateHomeProfileBody =>
+      'Тўлиқроқ профил иш берувчилар жойлаётган ишларнинг кўпроғига мос келади.';
+
+  @override
+  String get candidateHomeProfileHidden =>
+      'Иш берувчилар сизни ҳали топа олмайди — профил қидирувда кўриниши учун тўлиқ бўлиши керак.';
+
+  @override
+  String get candidateHomeRecommended => 'Сиз учун тавсия этилган';
+
+  @override
+  String get candidateHomeSeeAll => 'Ҳаммаси';
+
+  @override
+  String get candidateHomeNoRecommendations => 'Ҳозирча тавсиялар йўқ';
+
+  @override
+  String get candidateHomeNoRecommendationsBody =>
+      'Тавсиялар сизнинг касбларингиз, жойлашувингиз ва иш шартларига қараб танланади. Шу орада янги эълонларни кўриб чиқинг.';
+
+  @override
+  String get candidateHomeBrowseAll => 'Янги вакансияларни кўриш';
+
+  @override
+  String get invitationAwaitingYou => 'Жавобингиз кутилмоқда';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -8154,4 +8266,60 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminUserAuditBy => 'Bu administrator qilgan hamma narsa';
+
+  @override
+  String get candidateHomeTitle => 'Bosh sahifa';
+
+  @override
+  String candidateHomeInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta taklif javobingizni kutmoqda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String candidateHomeApplications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta ariza ko‘rib chiqilmoqda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get candidateHomeProfileEmpty => 'Profilingizni to‘ldiring';
+
+  @override
+  String get candidateHomeProfileIncomplete => 'Profilingizni yakunlang';
+
+  @override
+  String get candidateHomeProfileBody =>
+      'To‘liqroq profil ish beruvchilar joylayotgan ishlarning ko‘prog‘iga mos keladi.';
+
+  @override
+  String get candidateHomeProfileHidden =>
+      'Ish beruvchilar sizni hali topa olmaydi — profil qidiruvda ko‘rinishi uchun to‘liq bo‘lishi kerak.';
+
+  @override
+  String get candidateHomeRecommended => 'Siz uchun tavsiya etilgan';
+
+  @override
+  String get candidateHomeSeeAll => 'Hammasi';
+
+  @override
+  String get candidateHomeNoRecommendations => 'Hozircha tavsiyalar yo‘q';
+
+  @override
+  String get candidateHomeNoRecommendationsBody =>
+      'Tavsiyalar sizning kasblaringiz, joylashuvingiz va ish shartlariga qarab tanlanadi. Shu orada yangi e’lonlarni ko‘rib chiqing.';
+
+  @override
+  String get candidateHomeBrowseAll => 'Yangi vakansiyalarni ko‘rish';
+
+  @override
+  String get invitationAwaitingYou => 'Javobingiz kutilmoqda';
 }

@@ -2735,4 +2735,66 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get adminUserAuditBy => 'Всё, что сделал этот администратор';
+
+  @override
+  String get candidateHomeTitle => 'Главная';
+
+  @override
+  String candidateHomeInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count приглашений ждут вашего ответа',
+      many: '$count приглашений ждут вашего ответа',
+      few: '$count приглашения ждут вашего ответа',
+      one: '$count приглашение ждёт вашего ответа',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String candidateHomeApplications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count откликов на рассмотрении',
+      many: '$count откликов на рассмотрении',
+      few: '$count отклика на рассмотрении',
+      one: '$count отклик на рассмотрении',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get candidateHomeProfileEmpty => 'Заполните профиль';
+
+  @override
+  String get candidateHomeProfileIncomplete => 'Завершите профиль';
+
+  @override
+  String get candidateHomeProfileBody =>
+      'Чем полнее профиль, тем больше вакансий ему соответствует.';
+
+  @override
+  String get candidateHomeProfileHidden =>
+      'Работодатели пока не могут вас найти — чтобы профиль появился в поиске, он должен быть заполнен.';
+
+  @override
+  String get candidateHomeRecommended => 'Рекомендуем вам';
+
+  @override
+  String get candidateHomeSeeAll => 'Все';
+
+  @override
+  String get candidateHomeNoRecommendations => 'Пока нет рекомендаций';
+
+  @override
+  String get candidateHomeNoRecommendationsBody =>
+      'Рекомендации подбираются по вашим профессиям, местоположению и предпочтениям. А пока посмотрите недавно опубликованные вакансии.';
+
+  @override
+  String get candidateHomeBrowseAll => 'Смотреть новые вакансии';
+
+  @override
+  String get invitationAwaitingYou => 'Ждёт вашего ответа';
 }

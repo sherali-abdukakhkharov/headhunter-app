@@ -8,6 +8,53 @@ decision or on the backend.
 
 ---
 
+## The 1.4.1 QA audit (2026-08-23)
+
+A full QA, UX, business-logic, API, accessibility and localization audit of the
+**1.4.1** APK against the DEV database, delivered as
+[mobile-test-audit.md](mobile-test-audit.md): 3 Critical, 5 High, 10 Medium, 1
+Low, verdict **NO-GO for 1.4.1**. Findings are `MT-nnn` and each carries
+evidence, a root cause and acceptance criteria — read those before starting a
+fix rather than working from the summary table.
+
+**It audited 1.4.1, and two releases have landed since.** Read every row below
+against that: one Critical was already fixed before the audit was written up.
+
+| ID | Sev | State |
+|---|---|---|
+| MT-001 | Critical | **Fixed 1.7.0** — candidate Home is a real screen |
+| MT-002 | Critical | **Fixed 1.5.0**, before the audit was delivered — §10.4's user management, search and BR-10 actions |
+| MT-003 | Critical | **Backend/deployment**, and confirmed as such by the audit itself: `MODERATION_ENABLED=false` in the tested `.env`. The client already renders whatever status the API returns; the ask is the flag and a deployment smoke test |
+| MT-004 | High | Open — §10.3 dictionary management, the last placeholder in the shell |
+| MT-005 | High | Open — M9. The **backend routes exist** (`/notifications`, `/notifications/unread-count`, preferences, devices); the client has no screen. M9 was deferred to last by owner direction on 2026-08-04, which this audit reopens |
+| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code |
+| MT-007 | High | Open — blank employer profile saves and locks the employer type |
+| MT-008 | High | **Fixed 1.7.0** — the account screen is on the administrator's dashboard |
+| MT-009 | Medium | Open — CV purpose code sent to a uuid dictionary endpoint |
+| MT-010 | Medium | Open — employer prerequisites need a CTA rather than a snackbar |
+| MT-011 | Medium | Open — verification state stale after the employer profile is created |
+| MT-012 | Medium | Open — raw wire codes and unformatted salary reach the UI |
+| MT-013 | Medium | Open — OTP submits before it can succeed; errors are global rather than inline |
+| MT-014 | Medium | Open — the offline message names the backend and the base URL |
+| MT-015 | Medium | Open — duplicate semantics and unlabelled pickers. **Design-system change, so it needs a device run** |
+| MT-016 | Medium | Open — landscape clips the vacancy card's actions |
+| MT-017 | Medium | Open, and it is a **backend ask**: `GET /admin/complaints` returns complaints, not what they are about, and resolving a target is a per-kind query the detail route does one at a time. Recorded as such since the queue shipped |
+| MT-018 | Medium | **Fixed 1.7.0** — the recipient's invitation reads "Awaiting your answer" |
+| MT-019 | Low | **Fixed 1.7.0** — no match score without a match breakdown behind it |
+
+Two things the audit asked for that are now standing guarantees rather than
+fixes:
+
+- **A release-shell gate.** `app_router_test.dart` walks every tab of every
+  role and asserts the placeholders are **exactly** `[/admin/dictionaries]`. It
+  fails when a tab regresses into a placeholder *and* on the day §10.3 lands —
+  which is the point: a test that merely allowed placeholders would have gone on
+  passing through all three of 1.4.1's.
+- **The DEV static code is a master key.** `OTP_STATIC_CODE=666666` on a public
+  host admits anybody to any phone number. It was already recorded as blocking
+  production; the audit adds that it must be cleared before *any* real data goes
+  behind that deployment, not just before release.
+
 ## Blocked on someone else
 
 - [x] ~~**Design files**~~ - **shipped 2026-08-04** as a Claude Design project
@@ -601,7 +648,7 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       optional — a stacked bar is colour alone by construction, so each segment
       carries a swatch, a word **and** its figure
 
-## M6 - Discovery and applications *(candidate half done)*
+## M6 - Discovery and applications *(candidate half done; §5.5's home 2026-08-24)*
 
 - [x] Candidate feeds: recommended, recent, saved — three tabs over one list,
       because they differ only in endpoint. Ranking stays server-side

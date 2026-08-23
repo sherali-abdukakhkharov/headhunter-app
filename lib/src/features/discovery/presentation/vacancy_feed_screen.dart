@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
@@ -17,6 +19,18 @@ import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_detail
 /// Three tabs over one list widget, because they differ only in which endpoint
 /// fills them — recommended is ranked server-side, and ARCHITECTURE.md is
 /// explicit that ranking stays there.
+///
+/// ## Which feed is showing lives in the location
+///
+/// It was screen state until Home gained links to two of the three feeds. The
+/// shell keeps each branch across tab switches, so a `go` from Home to
+/// "Saved" would have arrived at whichever feed was last looked at — the same
+/// class of bug `?queue=` exists to prevent on the administrator's queue tab,
+/// and the reason both are query parameters rather than `State`.
+///
+/// Anything unrecognised, or absent, reads as recommended: that is what an
+/// unqualified "vacancies" means, and a mistyped deep link should land
+/// somewhere real.
 class VacancyFeedScreen extends ConsumerStatefulWidget {
   const VacancyFeedScreen({super.key});
 
@@ -25,18 +39,23 @@ class VacancyFeedScreen extends ConsumerStatefulWidget {
 }
 
 class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
-  Feed _feed = Feed.recommended;
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final items = ref.watch(vacancyFeedProvider(_feed));
+    final router = GoRouter.of(context);
+
+    final feed = Feed.fromWire(
+      GoRouterState.of(
+        context,
+      ).uri.queryParameters[Routes.candidateFeedParam],
+    );
+    final items = ref.watch(vacancyFeedProvider(feed));
     final filters = ref.watch(feedFilterControllerProvider);
 
     // How many filters are set, or zero while they are still loading. Saved is
     // never filtered, so the count is irrelevant there.
     final applied = switch (filters) {
-      AsyncData(:final value) when _feed != Feed.saved => value.count,
+      AsyncData(:final value) when feed != Feed.saved => value.count,
       _ => 0,
     };
     final filtersSet = switch (filters) {
@@ -58,9 +77,10 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
                   l10n.feedRecent,
                   l10n.feedSaved,
                 ],
-                selectedIndex: Feed.values.indexOf(_feed),
-                onChanged: (index) =>
-                    setState(() => _feed = Feed.values[index]),
+                selectedIndex: Feed.values.indexOf(feed),
+                onChanged: (index) => router.go(
+                  Routes.candidateVacanciesWith(Feed.values[index].wire),
+                ),
               ),
             ),
 
@@ -71,7 +91,7 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: _feed == Feed.saved && filtersSet
+                    child: feed == Feed.saved && filtersSet
                         // The saved tab is deliberately unfiltered, and saying
                         // so is the difference between a rule and a bug: a
                         // candidate who set four filters and sees unfiltered
@@ -118,7 +138,7 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
                         : l10n.stateErrorBody,
                     retryLabel: l10n.commonRetry,
                     onRetry: () =>
-                        ref.invalidate(vacancyFeedProvider(_feed)),
+                        ref.invalidate(vacancyFeedProvider(feed)),
                   ),
                 ),
                 AsyncData(:final value) when value.isEmpty => HhEmptyState(
@@ -142,7 +162,7 @@ class _VacancyFeedScreenState extends ConsumerState<VacancyFeedScreen> {
                   ),
                   itemCount: value.length,
                   itemBuilder: (context, index) =>
-                      VacancyFeedCard(card: value[index], feed: _feed),
+                      VacancyFeedCard(card: value[index], feed: feed),
                 ),
                 _ => const Center(child: CircularProgressIndicator()),
               },

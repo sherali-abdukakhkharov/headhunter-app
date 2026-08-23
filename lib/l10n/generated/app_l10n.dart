@@ -4828,6 +4828,84 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Everything this administrator has done'**
   String get adminUserAuditBy;
+
+  /// §5.5's candidate home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get candidateHomeTitle;
+
+  /// Invitations still waiting on the candidate — §8.2 `sent` and nothing else, because `details_requested` is the candidate waiting on the employer.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} invitation awaits your answer} other{{count} invitations await your answer}}'**
+  String candidateHomeInvitations(int count);
+
+  /// Applications still live — the ones a candidate can still withdraw, which is the same set that can still change.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} application in progress} other{{count} applications in progress}}'**
+  String candidateHomeApplications(int count);
+
+  /// A profile nothing has been entered into yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your profile'**
+  String get candidateHomeProfileEmpty;
+
+  /// A profile that has been started and is not finished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish your profile'**
+  String get candidateHomeProfileIncomplete;
+
+  /// Why finishing it is worth doing, for a profile employers can already find.
+  ///
+  /// In en, this message translates to:
+  /// **'A fuller profile is matched to more of the work employers are posting.'**
+  String get candidateHomeProfileBody;
+
+  /// BR-02 is a threshold rather than a preference: an incomplete profile is not searchable at all, and that is the answer to "why is nobody inviting me".
+  ///
+  /// In en, this message translates to:
+  /// **'Employers cannot find you yet — your profile has to be complete before it appears in a search.'**
+  String get candidateHomeProfileHidden;
+
+  /// §5.5's recommended vacancies. Ranked server-side.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get candidateHomeRecommended;
+
+  /// Hands over to the vacancies tab, on the recommended feed — named in the location, so it cannot land on whichever feed was last looked at.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get candidateHomeSeeAll;
+
+  /// No recommendations — either the profile says too little to rank against, or nothing new is posted.
+  ///
+  /// In en, this message translates to:
+  /// **'No recommendations yet'**
+  String get candidateHomeNoRecommendations;
+
+  /// Names both causes, because the fix differs: one is the profile, the other is time.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommendations are matched to your occupations, location and work preferences. Newly published vacancies are always worth a look meanwhile.'**
+  String get candidateHomeNoRecommendationsBody;
+
+  /// Sends the candidate to the recent feed, which needs no profile to be useful.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse new vacancies'**
+  String get candidateHomeBrowseAll;
+
+  /// The candidate's side of §8.2's `sent`. The employer's list says "Sent"; the recipient's says what it means for them, because "Sent" on an inbox card reads as though they sent it.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting your answer'**
+  String get invitationAwaitingYou;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

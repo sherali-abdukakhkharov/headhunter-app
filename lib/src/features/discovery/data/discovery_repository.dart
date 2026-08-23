@@ -13,11 +13,28 @@ part 'discovery_repository.g.dart';
 
 /// Which feed to show (§5.6). The paths differ; nothing else does.
 enum Feed {
-  recommended('/discovery/recommended'),
-  recent('/discovery/recent'),
-  saved('/discovery/saved');
+  recommended('recommended', '/discovery/recommended'),
+  recent('recent', '/discovery/recent'),
+  saved('saved', '/discovery/saved');
 
-  const Feed(this.path);
+  const Feed(this.wire, this.path);
+
+  /// Parses the value the vacancies tab carries in its location.
+  ///
+  /// Falls back to [recommended] rather than throwing: this reads a query
+  /// parameter, so a mistyped deep link must land somewhere real, and an
+  /// unqualified "vacancies" means the recommended feed.
+  factory Feed.fromWire(String? value) =>
+      values.firstWhere(
+        (feed) => feed.wire == value,
+        orElse: () => recommended,
+      );
+
+  /// The name this feed goes by in a route, **not** the last path segment —
+  /// they happen to agree today, and a route parameter that quietly followed
+  /// an endpoint rename would be a broken link nobody edited.
+  final String wire;
+
   final String path;
 }
 

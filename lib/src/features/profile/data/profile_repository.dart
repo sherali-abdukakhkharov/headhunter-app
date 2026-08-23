@@ -217,3 +217,18 @@ FieldValidationException? fieldErrorsFrom(DioException e) {
 @Riverpod(keepAlive: true)
 ProfileRepository profileRepository(Ref ref) =>
     ProfileRepository(ref.watch(dioProvider));
+
+/// The candidate's profile alone, without the form that describes it.
+///
+/// `ProfileEditor` fetches the profile **and** its category's schema, because
+/// the editor cannot draw a field it has no description of. Home needs neither
+/// the fields nor their descriptions — only how complete the profile is and
+/// whether it can be found — so watching the editor there would spend a second
+/// request on a form nobody opened.
+///
+/// The cost is that a candidate who opens Home and then their profile fetches
+/// the profile twice. That is the cheaper half of the trade, and it is the
+/// half that only happens when somebody navigates.
+@riverpod
+Future<CandidateProfile> candidateProfile(Ref ref) =>
+    ref.watch(profileRepositoryProvider).fetchProfile();

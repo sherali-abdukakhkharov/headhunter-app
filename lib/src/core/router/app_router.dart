@@ -28,6 +28,7 @@ import 'package:jobbridge_app/src/features/chat/presentation/conversations_scree
 import 'package:jobbridge_app/src/features/design_gallery/presentation/design_gallery_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dev_tools_screen.dart';
 import 'package:jobbridge_app/src/features/dev_tools/presentation/dictionary_probe_screen.dart';
+import 'package:jobbridge_app/src/features/discovery/presentation/candidate_home_screen.dart';
 import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_feed_screen.dart';
 import 'package:jobbridge_app/src/features/employer/presentation/employer_dashboard_screen.dart';
 import 'package:jobbridge_app/src/features/employer/presentation/employer_profile_screen.dart';
@@ -167,6 +168,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
             // milestone lands; the rest keep the placeholder, which names the
             // milestone that owns them.
             builder: (context, state) => switch (tab.path) {
+              Routes.candidateHome => const CandidateHomeScreen(),
               Routes.candidateProfile => const CandidateProfileScreen(),
               Routes.candidateVacancies => const VacancyFeedScreen(),
               Routes.candidateApplications => const ApplicationsScreen(),

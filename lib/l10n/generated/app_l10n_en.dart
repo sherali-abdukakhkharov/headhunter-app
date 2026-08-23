@@ -2717,4 +2717,62 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get adminUserAuditBy => 'Everything this administrator has done';
+
+  @override
+  String get candidateHomeTitle => 'Home';
+
+  @override
+  String candidateHomeInvitations(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invitations await your answer',
+      one: '$count invitation awaits your answer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String candidateHomeApplications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count applications in progress',
+      one: '$count application in progress',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get candidateHomeProfileEmpty => 'Start your profile';
+
+  @override
+  String get candidateHomeProfileIncomplete => 'Finish your profile';
+
+  @override
+  String get candidateHomeProfileBody =>
+      'A fuller profile is matched to more of the work employers are posting.';
+
+  @override
+  String get candidateHomeProfileHidden =>
+      'Employers cannot find you yet — your profile has to be complete before it appears in a search.';
+
+  @override
+  String get candidateHomeRecommended => 'Recommended for you';
+
+  @override
+  String get candidateHomeSeeAll => 'See all';
+
+  @override
+  String get candidateHomeNoRecommendations => 'No recommendations yet';
+
+  @override
+  String get candidateHomeNoRecommendationsBody =>
+      'Recommendations are matched to your occupations, location and work preferences. Newly published vacancies are always worth a look meanwhile.';
+
+  @override
+  String get candidateHomeBrowseAll => 'Browse new vacancies';
+
+  @override
+  String get invitationAwaitingYou => 'Awaiting your answer';
 }

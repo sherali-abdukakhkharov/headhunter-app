@@ -5,6 +5,7 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/account/presentation/account_entry_row.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
@@ -140,6 +141,16 @@ class _Body extends StatelessWidget {
 
         const SizedBox(height: HhSpace.sectionGap),
         _Period(data: data),
+
+        // §4.2 and BR-14, for the one role whose shell has no profile tab.
+        // The candidate and the employer reach the account screen from
+        // theirs; an administrator had five work queues and no way to sign
+        // out at all in a production build, where /_dev does not exist.
+        // Bottom of the dashboard rather than an app-bar action, because the
+        // shell provides no chrome and this is the same row both profiles
+        // already carry.
+        const SizedBox(height: HhSpace.sectionGap),
+        const AccountEntryRow(),
       ],
     );
   }

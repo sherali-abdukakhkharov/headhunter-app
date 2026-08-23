@@ -789,5 +789,18 @@
   "adminAuditDictionaryDeactivated": "Lug'at bandi o'chirib qo'yildi",
   "adminAuditDictionaryMerged": "Lug'at bandlari birlashtirildi",
   "adminUserAuditAbout": "Bu hisob ustida qilingan hamma narsa",
-  "adminUserAuditBy": "Bu administrator qilgan hamma narsa"
+  "adminUserAuditBy": "Bu administrator qilgan hamma narsa",
+  "candidateHomeTitle": "Bosh sahifa",
+  "candidateHomeInvitations": "{count, plural, other{{count} ta taklif javobingizni kutmoqda}}",
+  "candidateHomeApplications": "{count, plural, other{{count} ta ariza ko‘rib chiqilmoqda}}",
+  "candidateHomeProfileEmpty": "Profilingizni to‘ldiring",
+  "candidateHomeProfileIncomplete": "Profilingizni yakunlang",
+  "candidateHomeProfileBody": "To‘liqroq profil ish beruvchilar joylayotgan ishlarning ko‘prog‘iga mos keladi.",
+  "candidateHomeProfileHidden": "Ish beruvchilar sizni hali topa olmaydi — profil qidiruvda ko‘rinishi uchun to‘liq bo‘lishi kerak.",
+  "candidateHomeRecommended": "Siz uchun tavsiya etilgan",
+  "candidateHomeSeeAll": "Hammasi",
+  "candidateHomeNoRecommendations": "Hozircha tavsiyalar yo‘q",
+  "candidateHomeNoRecommendationsBody": "Tavsiyalar sizning kasblaringiz, joylashuvingiz va ish shartlariga qarab tanlanadi. Shu orada yangi e’lonlarni ko‘rib chiqing.",
+  "candidateHomeBrowseAll": "Yangi vakansiyalarni ko‘rish",
+  "invitationAwaitingYou": "Javobingiz kutilmoqda"
 }

@@ -22,7 +22,18 @@ String invitationStatusLabel(String status, AppL10n l10n) => switch (status) {
 /// rule as an unknown application stage or schema field kind. `sent` is the
 /// right fallback specifically because it is the *pre-answer* state: a status
 /// this app has never heard of is one it cannot claim was an answer.
-Widget invitationStatusBadge(String status, AppL10n l10n) => switch (status) {
+/// [received] is the candidate's side of the same invitation.
+///
+/// §8.2's `sent` is an **employer-side event verb**, and on the candidate's
+/// inbox it reads as though they sent something — at the one moment the card
+/// exists to ask them for an answer. Same status, same badge vocabulary, and
+/// the word that is true where it is being read. Nothing else differs: an
+/// accepted invitation is accepted from both sides.
+Widget invitationStatusBadge(
+  String status,
+  AppL10n l10n, {
+  bool received = false,
+}) => switch (status) {
   InvitationStatus.detailsRequested => HhBadge.invitationDetailsRequested(
     label: l10n.invitationDetailsRequested,
   ),
@@ -32,7 +43,9 @@ Widget invitationStatusBadge(String status, AppL10n l10n) => switch (status) {
   InvitationStatus.declined => HhBadge.invitationDeclined(
     label: l10n.invitationDeclined,
   ),
-  _ => HhBadge.invitationSent(label: l10n.invitationSent),
+  _ => HhBadge.invitationSent(
+    label: received ? l10n.invitationAwaitingYou : l10n.invitationSent,
+  ),
 };
 
 /// The button label for one of §8.2's three candidate responses.

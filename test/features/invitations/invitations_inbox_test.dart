@@ -157,6 +157,37 @@ void main() {
     return fake;
   }
 
+  group('a status is read from where the reader stands', () {
+    testWidgets('an unanswered invitation asks the candidate for an answer', (
+      tester,
+    ) async {
+      await pump(tester, items: [
+        _entry(id: 'a', status: InvitationStatus.sent, occupationId: 'occ-1'),
+      ]);
+
+      // MT-018. §8.2's status is `sent`, which is the employer's event verb —
+      // on the recipient's own inbox it reads as though they sent something,
+      // at the one moment the card exists to ask them for a reply.
+      expect(find.text('Awaiting your answer'), findsOneWidget);
+      expect(find.text('Sent'), findsNothing);
+    });
+
+    testWidgets('an answered one reads the same from both sides', (
+      tester,
+    ) async {
+      await pump(tester, items: [
+        _entry(
+          id: 'a',
+          status: InvitationStatus.accepted,
+          occupationId: 'occ-1',
+        ),
+      ]);
+
+      expect(find.text('Accepted'), findsOneWidget);
+      expect(find.text('Awaiting your answer'), findsNothing);
+    });
+  });
+
   group('the three actions follow the status, never a fixed row', () {
     testWidgets('a sent invitation offers all three', (tester) async {
       await pump(tester, items: [

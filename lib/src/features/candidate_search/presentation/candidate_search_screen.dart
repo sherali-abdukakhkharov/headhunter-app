@@ -453,7 +453,13 @@ class _CandidateResultCardState extends ConsumerState<CandidateResultCard> {
               style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
             ),
 
-            if (widget.showMatch) ...[
+            // And only where the server actually matched something. With no
+            // filters it has nothing to have matched and scores every card
+            // 100, which reads as a computed judgement about a person and is
+            // not one. `matchBreakdown` is the server's own evidence that a
+            // requirement was weighed, so it is the gate rather than the
+            // client's idea of which list this is.
+            if (widget.showMatch && card.matchBreakdown.isNotEmpty) ...[
               const SizedBox(height: HhSpace.sm),
               HhBadge(
                 label: l10n.searchMatch(card.matchScore),

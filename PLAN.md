@@ -98,7 +98,7 @@ after M11 while being delivered before M8.
 | M3 | Candidate profile: dynamic forms, completeness, privacy, CV | after M2 |
 | M4 | Employer profile + verification status | after M1 |
 | M5 | Vacancy create/edit + statuses (employer) | after M2 + M4 |
-| M6 | Vacancy discovery + applications (candidate) | after M2 + M3 |
+| M6 | Vacancy discovery + applications (candidate) | **candidate half done** — feeds, filters, detail, apply, save, applications and invitations; §5.5's home screen landed 2026-08-24, replacing the placeholder that was the 1.4.1 audit's first Critical |
 | M7 | Candidate search + invitations + shortlists (employer) | **done** — search §7.1–§7.3, invitations (inbox and send 2026-08-19, sent list and §7.4 counts 2026-08-20) and the per-vacancy shortlist (2026-08-20). Two carried notes in TODO.md, both backend asks rather than client work: `candidateName` on a sent invitation, and an invitation state on `CandidateCard` |
 | M12 | Employer wallet, Coins, Candidate Unlock | **client done** 2026-08-19 — the unlock is built and gated on a reason code today's server cannot send, so it activates when the backend lands |
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |

@@ -57,6 +57,22 @@ abstract final class Routes {
   static const candidateMessages = '/candidate/messages';
   static const candidateProfile = '/candidate/profile';
 
+  /// Which of §5.5's three feeds the vacancies tab is showing.
+  ///
+  /// In the **location** rather than in the screen's state, and the reason is
+  /// the one `?queue=` records: a `StatefulShellRoute` keeps each branch, so a
+  /// segment held in a `State` survives a later `go` and ignores it. Home links
+  /// to two of the three feeds, and without this both would land on whichever
+  /// one was last looked at.
+  ///
+  /// The value is a `Feed` wire name; anything unrecognised — or absent —
+  /// reads as recommended, which is what an unqualified "vacancies" means.
+  static const candidateFeedParam = 'feed';
+
+  /// The vacancies tab, showing one named feed.
+  static String candidateVacanciesWith(String feed) =>
+      '$candidateVacancies?$candidateFeedParam=$feed';
+
   // --- Employer shell ------------------------------------------------------
 
   static const employerHome = '/employer/home';
