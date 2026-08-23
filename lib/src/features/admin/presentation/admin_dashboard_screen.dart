@@ -7,6 +7,7 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
 
 /// §10.1's administrator dashboard, and the way into every other admin surface.
 ///
@@ -24,14 +25,16 @@ import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 ///
 /// ## A counter is a way in, or it has no chevron
 ///
-/// All three §10.2 counters navigate: two to their own segment of the
-/// moderation tab, and the third to the complaints tab. That was not true when
-/// this screen shipped — the complaint counter carried a number and no chevron,
-/// because a number that navigates to "this arrives in M10" is worse than one
-/// that does not navigate at all. [_QueueRow] takes an **optional** `onTap` and
-/// draws the chevron only where there is one, so turning that row on was
-/// passing a destination and changing nothing else here. Keep it optional: the
-/// same shape is what a fourth counter would need.
+/// Every current-state counter on this screen now navigates: §10.2's three
+/// queues to their own tab or segment, and the restricted and blocked figures
+/// to §10.4's user list filtered to that status. None of that was true when
+/// the screen shipped, because a number that navigates to "this arrives later"
+/// is worse than one that does not navigate at all. Both [_QueueRow] and
+/// [_Figure] take an **optional** `onTap` and draw the chevron only where
+/// there is one, so each of them turned on by passing a destination and
+/// changing nothing else here. Keep it optional — the two period figures
+/// below are counts of things that happened rather than queues anybody works,
+/// and they lead nowhere on purpose.
 ///
 /// ## The header is not the employer's navy panel
 ///
@@ -107,12 +110,28 @@ class _Body extends StatelessWidget {
                 child: _Figure(
                   value: data.restrictedUsers,
                   label: l10n.adminRestrictedUsers,
+                  // §10.4's list, filtered to this status. Each figure names
+                  // its own in the location for the reason the queue counters
+                  // do: the shell keeps a branch across tab switches, so two
+                  // counters writing screen state would both land on whichever
+                  // was tapped first. These two had carried a number and no
+                  // way in since the dashboard shipped.
+                  onTap: () => GoRouter.of(context).go(
+                    Routes.adminUsersWithStatus(
+                      UserAccountStatus.restricted.wire,
+                    ),
+                  ),
                 ),
               ),
               Expanded(
                 child: _Figure(
                   value: data.blockedUsers,
                   label: l10n.adminBlockedUsers,
+                  onTap: () => GoRouter.of(context).go(
+                    Routes.adminUsersWithStatus(
+                      UserAccountStatus.blocked.wire,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -382,17 +401,44 @@ class _CountPairRow extends StatelessWidget {
 /// end well?", and a count answers neither. The word is what carries the
 /// meaning, so it is never dropped to save a line.
 class _Figure extends StatelessWidget {
-  const _Figure({required this.value, required this.label});
+  const _Figure({required this.value, required this.label, this.onTap});
 
   final int value;
   final String label;
 
+  /// Absent while the figure leads nowhere — the two period-bounded ones are
+  /// counts of things that happened, not queues anybody works. The chevron
+  /// follows it, so the affordance cannot promise a destination there is none
+  /// of; the same rule [_QueueRow] follows.
+  final VoidCallback? onTap;
+
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('$value', style: HhTypography.title),
-      Text(label, style: HhTypography.caption),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final figure = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text('$value', style: HhTypography.title),
+            if (onTap != null) ...[
+              const SizedBox(width: HhSpace.xs),
+              const HhIcon(
+                HhIconPath.chevronRight,
+                size: 18,
+                color: HhColors.inkSubtle,
+              ),
+            ],
+          ],
+        ),
+        Text(label, style: HhTypography.caption),
+      ],
+    );
+
+    if (onTap == null) return figure;
+
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(onTap: onTap, child: figure),
+    );
+  }
 }

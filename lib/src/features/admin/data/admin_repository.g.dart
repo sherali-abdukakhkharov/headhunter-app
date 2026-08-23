@@ -566,3 +566,233 @@ final class VacancyForReviewFamily extends $Family
   @override
   String toString() => r'vacancyForReviewProvider';
 }
+
+/// §10.4's search results, or **null when nothing has been searched for**.
+///
+/// ## Nothing is fetched until an administrator asks
+///
+/// The other four §10 screens load on open. This one does not, and the reason
+/// is the same one that keeps the verification queue from prefetching
+/// evidence: §11.1 logs every read of protected data, and `GET /admin/users`
+/// hands back phone numbers, so opening the tab must not write a log line
+/// nobody asked for. A search is an act.
+///
+/// So `build` returns null rather than a page. Null and empty are different
+/// answers and the screen says two different things about them — "nothing has
+/// been searched for" and "nothing matches this" — which is the distinction
+/// §10.4's own paging makes so easy to lose.
+///
+/// Deliberately **not** `keepAlive`, for the reason
+/// `searchCandidate` gives: a list of other people's phone numbers should not
+/// outlive the screen that was entitled to ask for it.
+
+@ProviderFor(UserSearch)
+final userSearchProvider = UserSearchProvider._();
+
+/// §10.4's search results, or **null when nothing has been searched for**.
+///
+/// ## Nothing is fetched until an administrator asks
+///
+/// The other four §10 screens load on open. This one does not, and the reason
+/// is the same one that keeps the verification queue from prefetching
+/// evidence: §11.1 logs every read of protected data, and `GET /admin/users`
+/// hands back phone numbers, so opening the tab must not write a log line
+/// nobody asked for. A search is an act.
+///
+/// So `build` returns null rather than a page. Null and empty are different
+/// answers and the screen says two different things about them — "nothing has
+/// been searched for" and "nothing matches this" — which is the distinction
+/// §10.4's own paging makes so easy to lose.
+///
+/// Deliberately **not** `keepAlive`, for the reason
+/// `searchCandidate` gives: a list of other people's phone numbers should not
+/// outlive the screen that was entitled to ask for it.
+final class UserSearchProvider
+    extends $AsyncNotifierProvider<UserSearch, AdminQueuePage<AdminUser>?> {
+  /// §10.4's search results, or **null when nothing has been searched for**.
+  ///
+  /// ## Nothing is fetched until an administrator asks
+  ///
+  /// The other four §10 screens load on open. This one does not, and the reason
+  /// is the same one that keeps the verification queue from prefetching
+  /// evidence: §11.1 logs every read of protected data, and `GET /admin/users`
+  /// hands back phone numbers, so opening the tab must not write a log line
+  /// nobody asked for. A search is an act.
+  ///
+  /// So `build` returns null rather than a page. Null and empty are different
+  /// answers and the screen says two different things about them — "nothing has
+  /// been searched for" and "nothing matches this" — which is the distinction
+  /// §10.4's own paging makes so easy to lose.
+  ///
+  /// Deliberately **not** `keepAlive`, for the reason
+  /// `searchCandidate` gives: a list of other people's phone numbers should not
+  /// outlive the screen that was entitled to ask for it.
+  UserSearchProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userSearchProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userSearchHash();
+
+  @$internal
+  @override
+  UserSearch create() => UserSearch();
+}
+
+String _$userSearchHash() => r'507a551613e732f3be8c41eb4bdecbdc9ea09f7a';
+
+/// §10.4's search results, or **null when nothing has been searched for**.
+///
+/// ## Nothing is fetched until an administrator asks
+///
+/// The other four §10 screens load on open. This one does not, and the reason
+/// is the same one that keeps the verification queue from prefetching
+/// evidence: §11.1 logs every read of protected data, and `GET /admin/users`
+/// hands back phone numbers, so opening the tab must not write a log line
+/// nobody asked for. A search is an act.
+///
+/// So `build` returns null rather than a page. Null and empty are different
+/// answers and the screen says two different things about them — "nothing has
+/// been searched for" and "nothing matches this" — which is the distinction
+/// §10.4's own paging makes so easy to lose.
+///
+/// Deliberately **not** `keepAlive`, for the reason
+/// `searchCandidate` gives: a list of other people's phone numbers should not
+/// outlive the screen that was entitled to ask for it.
+
+abstract class _$UserSearch extends $AsyncNotifier<AdminQueuePage<AdminUser>?> {
+  FutureOr<AdminQueuePage<AdminUser>?> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<AdminQueuePage<AdminUser>?>,
+              AdminQueuePage<AdminUser>?
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AdminQueuePage<AdminUser>?>,
+                AdminQueuePage<AdminUser>?
+              >,
+              AsyncValue<AdminQueuePage<AdminUser>?>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// One account, loaded for §10.4's screen.
+///
+/// A family keyed by id, and **not** `keepAlive` — reading a user is a logged
+/// access to protected data (§11.1), and a cache that outlived the screen
+/// would keep answering with a status somebody may since have changed.
+
+@ProviderFor(adminUser)
+final adminUserProvider = AdminUserFamily._();
+
+/// One account, loaded for §10.4's screen.
+///
+/// A family keyed by id, and **not** `keepAlive` — reading a user is a logged
+/// access to protected data (§11.1), and a cache that outlived the screen
+/// would keep answering with a status somebody may since have changed.
+
+final class AdminUserProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AdminUserDetail>,
+          AdminUserDetail,
+          FutureOr<AdminUserDetail>
+        >
+    with $FutureModifier<AdminUserDetail>, $FutureProvider<AdminUserDetail> {
+  /// One account, loaded for §10.4's screen.
+  ///
+  /// A family keyed by id, and **not** `keepAlive` — reading a user is a logged
+  /// access to protected data (§11.1), and a cache that outlived the screen
+  /// would keep answering with a status somebody may since have changed.
+  AdminUserProvider._({
+    required AdminUserFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'adminUserProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$adminUserHash();
+
+  @override
+  String toString() {
+    return r'adminUserProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<AdminUserDetail> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AdminUserDetail> create(Ref ref) {
+    final argument = this.argument as String;
+    return adminUser(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AdminUserProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$adminUserHash() => r'7b8e63b05712f4262ffb6449cc568b769df144c6';
+
+/// One account, loaded for §10.4's screen.
+///
+/// A family keyed by id, and **not** `keepAlive` — reading a user is a logged
+/// access to protected data (§11.1), and a cache that outlived the screen
+/// would keep answering with a status somebody may since have changed.
+
+final class AdminUserFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<AdminUserDetail>, String> {
+  AdminUserFamily._()
+    : super(
+        retry: null,
+        name: r'adminUserProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One account, loaded for §10.4's screen.
+  ///
+  /// A family keyed by id, and **not** `keepAlive` — reading a user is a logged
+  /// access to protected data (§11.1), and a cache that outlived the screen
+  /// would keep answering with a status somebody may since have changed.
+
+  AdminUserProvider call(String userId) =>
+      AdminUserProvider._(argument: userId, from: this);
+
+  @override
+  String toString() => r'adminUserProvider';
+}

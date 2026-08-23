@@ -1576,7 +1576,8 @@ this opens. Deep links moved to M8.
       server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
-## M10 - Admin module *(§10.1 done 2026-08-21; §10.2 complete 2026-08-22)*
+## M10 - Admin module *(§10.1 done 2026-08-21; §10.2 complete 2026-08-22;
+§10.4 done bar the audit log 2026-08-23)*
 
 **The whole admin API was already built** — `src/modules/admin` on the backend
 covers §10.1 through §10.5, audit log and retention included. So nothing in this
@@ -1773,7 +1774,58 @@ remaining item is a screen.
       working around it. The only deliberate exclusions are the two payment
       callbacks, whose audience is Payme and CLICK.
       **Read the checked-in file, not the running server.**
-- [ ] **User search + warn/restrict/block/unblock with reason (UAT-14).**
+- [x] **User search + warn/restrict/block/unblock with reason (UAT-14),
+      2026-08-23 — and §10.1's last two dead-end counters now lead somewhere.**
+      The five decisions worth keeping:
+      **The tab does not search on open.** Every other §10 tab loads its list on
+      arrival; this one waits, because `GET /admin/users` answers with phone
+      numbers and §11.1 logs every read of protected data — so a tab that
+      searched on open would write a log line every time somebody passed through
+      it. That is the same rule that keeps the verification queue from
+      prefetching evidence. The one exception is arriving from a dashboard
+      counter, which *is* an administrator asking.
+      **Which status the list is filtered to lives in the location**, and only
+      that one of the six filters does. §10.1's "restricted users" and "blocked
+      users" are places; "phone contains 9012" is a question somebody typed. Both
+      figures had carried a number and no chevron since the dashboard shipped,
+      and turning them on was passing a destination — `_Figure` grew the same
+      optional `onTap` `_QueueRow` already had. In the *location* rather than in
+      state for the reason `?queue=` is: the shell keeps a branch across tab
+      switches, so two counters writing screen state would both land on
+      whichever was tapped first. Pinned, and mutation-verified: adopting the
+      parameter once instead of on every arrival fails two tests.
+      **The phone is normalised at the point it leaves.** The match is a raw
+      `LIKE` against an E.164 column, so `+998 90 123 45 67` pasted out of a chat
+      matches **nothing** — the spaces are in the pattern. Every character but
+      digits and a leading `+` is dropped in `toQuery()`, and the field goes on
+      showing what was typed.
+      **The offered actions come from the status**, not from the three values
+      the route accepts — and unlike the vacancy transition table there is a
+      second reason: `admin.status_unchanged` covers *two* unrelated situations
+      on the server. "Already in that state" is the ordinary race and the work is
+      done; "awaiting deletion" is BR-14's state, which no action may overwrite
+      and no retry will resolve. Never offering an action on a
+      `deletion_requested` account is what leaves the 409 meaning one thing, so
+      it can be mapped to `AdminDecisionConflict` honestly.
+      **The restriction's end date is an instant, not a day.** The server parses
+      `restrictedUntil` with `new Date(...)`, which reads a bare `2026-09-01` as
+      **UTC** midnight — 05:00 in Tashkent, so a restriction ended on the 1st
+      would run five hours into it. The client sends `2026-09-01T00:00:00+05:00`,
+      with the offset read from **the account's own `createdAt`** the way §8.3's
+      scheduling reads one, never a `+05:00` written into Dart. Mutation-verified
+      against a `+03:00` fixture. The sheet's caption says which end of the day
+      it is and what leaving it empty means.
+      Two smaller things: `showAdminDecisionSheet` grew an optional **date**
+      field rather than a second sheet — the one thing a second copy would drift
+      on is the 409 handling, which is the branch nobody exercises by hand — and
+      `admin.cannot_target_self` is left to the server, because **nothing in the
+      session carries the signed-in account's user id** and adding one to grey
+      out a button on one screen is a wider change than the problem.
+      *Not built here:* extending a live restriction. There is no
+      `restricted → restricted` on the server, so changing an end date means
+      lifting and re-restricting — two audit rows and a gap where the account is
+      active. Worth asking about if an administrator ever hits it; it is not
+      worth a contract change on a guess.
       **The filter semantics, confirmed at the contract 2026-08-22 and now in
       `docs/openapi.json`** — they are not guessable and two of them change the
       UI:
@@ -1837,6 +1889,16 @@ remaining item is a screen.
 ## M11 - Hardening
 
 - [ ] Small-screen and large-font-scale pass over every screen
+- [ ] **`HhMetaChip` does not shrink its label** — its `Row` is
+      `MainAxisSize.min` around an unconstrained `Text`, so a label wider than
+      its card overflows rather than truncating. `HhRemovableChip` already
+      solves this ("the label shrinks before the chip does") and the meta chip
+      never got the same treatment, because everything using it until §10.4 was
+      one word. Found by a widget test at 360pt, and **Russian would have
+      shipped it broken** while English fitted (MEMORY.md, 2026-08-23). §10.4
+      works around it by making dated facts captions; the component fix belongs
+      with this pass, and changing the design system means **running the gallery
+      on a device**
 - [ ] Cached primary screens open without blocking; loading states complete
 - [ ] Offline state explicit; retry safe; no duplicate writes
 - [ ] Crash reporting + structured logging, no sensitive data

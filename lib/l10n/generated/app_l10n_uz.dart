@@ -2419,6 +2419,210 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminVacancyEmployerContactPhone => 'Aloqa raqami';
+
+  @override
+  String get adminUsersTitle => 'Foydalanuvchilar';
+
+  @override
+  String get adminUserSearchPhone => 'Telefon raqami';
+
+  @override
+  String get adminUserSearchPhoneHint =>
+      'Oxirgi raqamlarining o\'zi ham yetadi';
+
+  @override
+  String get adminUserSearchPhoneTooShort => 'Kamida 3 ta raqam.';
+
+  @override
+  String get adminUserSearchName => 'Ism yoki nom';
+
+  @override
+  String get adminUserSearchNameHint =>
+      'Shaxs, kompaniya yoki uning yuridik nomi';
+
+  @override
+  String get adminUserSearchNameTooShort => 'Kamida 2 ta belgi.';
+
+  @override
+  String get adminUserSearchMore => 'Ko\'proq filtr';
+
+  @override
+  String get adminUserSearchFewer => 'Kamroq filtr';
+
+  @override
+  String get adminUserSearchRole => 'Quyidagi roli bor';
+
+  @override
+  String get adminUserSearchStatus => 'Hisob holati';
+
+  @override
+  String get adminUserSearchRegisteredFrom => 'Ro\'yxatdan o\'tgan (dan)';
+
+  @override
+  String get adminUserSearchRegisteredTo => 'Ro\'yxatdan o\'tgan (gacha)';
+
+  @override
+  String get adminUserSearchDatesReversed => 'Bu sanalar mos kela olmaydi';
+
+  @override
+  String get adminUserSearchDatesReversedBody =>
+      'Birinchi sana ikkinchisidan keyin turibdi, shuning uchun ular orasiga hech qanday hisob tushmaydi.';
+
+  @override
+  String get adminUserSearchRun => 'Qidirish';
+
+  @override
+  String get adminUserSearchClear => 'Filtrlarni tozalash';
+
+  @override
+  String get adminUserSearchIdle => 'Hisobni toping';
+
+  @override
+  String get adminUserSearchIdleBody =>
+      'Telefon raqamining oxirgi raqamlari bo\'yicha yoki hisob tanilgan istalgan nom bo\'yicha qidiring — shaxs ismi, kompaniyaning ochiq nomi yoki yuridik nomi. Siz so\'ramaguningizcha hech narsa o\'qilmaydi.';
+
+  @override
+  String get adminUserSearchEmpty => 'Mos keladigan hisob topilmadi';
+
+  @override
+  String get adminUserSearchEmptyBody =>
+      'Bu filtrlarga hech narsa mos kelmadi. Telefon raqami ichidagi istalgan qism bo\'yicha topiladi, shuning uchun oxirgi bir necha raqam boshqacha yozilgan to\'liq raqam topa olmagan hisobni topadi.';
+
+  @override
+  String get adminUserSearchOrder =>
+      'Eng yangi ro\'yxatdan o\'tganlar birinchi. Eskiroq hisob ro\'yxatning pastida turadi, yo\'q emas — sahifalab izlashdan ko\'ra qidiruvni toraytiring.';
+
+  @override
+  String get adminUserNoName => 'Hisobda ism yo\'q';
+
+  @override
+  String get adminUserNoPhone => 'Telefon raqami yo\'q';
+
+  @override
+  String adminUserRegistered(String date) {
+    return 'Ro\'yxatdan o\'tgan: $date';
+  }
+
+  @override
+  String adminUserLastLogin(String date) {
+    return 'Oxirgi kirish: $date';
+  }
+
+  @override
+  String get adminUserNeverSignedIn => 'Hech qachon kirmagan';
+
+  @override
+  String get adminAccountStatusDeletionRequested => 'O\'chirish so\'ralgan';
+
+  @override
+  String get adminUserTitle => 'Hisob';
+
+  @override
+  String get adminUserGoneTitle => 'Bu hisob endi yo\'q';
+
+  @override
+  String get adminUserGoneBody =>
+      'Topilmadi. Uni topgan qidiruvdan keyin o\'chirilgan bo\'lishi mumkin.';
+
+  @override
+  String get adminUserActions => 'Hisob bo\'yicha chora ko\'rish';
+
+  @override
+  String get adminUserNoActionsTitle =>
+      'Bu yerdan hech qanday chora ko\'rib bo\'lmaydi';
+
+  @override
+  String get adminUserNoActionsBody =>
+      'Bu hisob o\'chirilishini so\'ragan. So\'rov o\'z jarayoni orqali hal qilinadi, bu yerda cheklash yoki bloklash esa so\'rovni bekor qilib yuboradi.';
+
+  @override
+  String get adminUserRestrict => 'Cheklash';
+
+  @override
+  String get adminUserBlock => 'Bloklash';
+
+  @override
+  String get adminUserUnblock => 'Blokdan chiqarish';
+
+  @override
+  String get adminUserLiftRestriction => 'Cheklovni olib tashlash';
+
+  @override
+  String get adminUserRestrictTitle => 'Bu hisob cheklansinmi?';
+
+  @override
+  String get adminUserRestrictBody =>
+      'Hisob ularda qoladi va kira oladilar, lekin cheklov olib tashlanmaguncha biror narsani o\'zgartiradigan har qanday amal rad etiladi. Sizning sababingiz ularga ko\'rsatiladi.';
+
+  @override
+  String get adminUserBlockTitle => 'Bu hisob bloklansinmi?';
+
+  @override
+  String get adminUserBlockBody =>
+      'Sababni tushuntiruvchi xabardan boshqa hamma narsaga kirish yopiladi. Buni faqat administrator qaytara oladi.';
+
+  @override
+  String get adminUserUnblockTitle => 'Hisob blokdan chiqarilsinmi?';
+
+  @override
+  String get adminUserLiftRestrictionTitle => 'Cheklov olib tashlansinmi?';
+
+  @override
+  String get adminUserLiftBody =>
+      'Bundan buyon ularga hamma narsa yana ochiq bo\'ladi.';
+
+  @override
+  String get adminUserRestrictUntilLabel => 'Tugash sanasi';
+
+  @override
+  String get adminUserRestrictUntilCaption =>
+      'Cheklov shu kunning boshida, Toshkent vaqti bilan olib tashlanadi. Bo\'sh qoldirsangiz, administrator olib tashlagunicha qoladi.';
+
+  @override
+  String get adminUserStatusReasonLabel =>
+      'Sabab (ular so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminUserStatusReasonHint =>
+      'Nomzodlardan pul so\'raydigan vakansiyalarni qayta-qayta joylashtirgani uchun';
+
+  @override
+  String adminUserRestrictedUntil(String date) {
+    return '$date gacha cheklangan';
+  }
+
+  @override
+  String get adminUserRestrictedIndefinitely =>
+      'Administrator olib tashlagunicha cheklangan';
+
+  @override
+  String get adminUserHistory => 'Hisob tarixi';
+
+  @override
+  String get adminUserHistoryEmpty =>
+      'Bu hisobning holati hech qachon o\'zgarmagan.';
+
+  @override
+  String adminUserHistoryBy(String actor) {
+    return '$actor tomonidan';
+  }
+
+  @override
+  String get adminUserHistoryAutomatic =>
+      'Muddat o\'tgach, platforma tomonidan';
+
+  @override
+  String get adminUserComplaints => 'Bu hisob ustidan shikoyatlar';
+
+  @override
+  String get adminUserComplaintsEmpty =>
+      'Bu hisob ustidan hech kim shikoyat qilmagan.';
+
+  @override
+  String get adminUserComplaintOpen => 'Ochiq';
+
+  @override
+  String get adminUserComplaintClosed => 'Ko\'rib chiqilgan';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -4827,6 +5031,206 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminVacancyEmployerContactPhone => 'Алоқа рақами';
+
+  @override
+  String get adminUsersTitle => 'Фойдаланувчилар';
+
+  @override
+  String get adminUserSearchPhone => 'Телефон рақами';
+
+  @override
+  String get adminUserSearchPhoneHint => 'Охирги рақамларининг ўзи ҳам етади';
+
+  @override
+  String get adminUserSearchPhoneTooShort => 'Камида 3 та рақам.';
+
+  @override
+  String get adminUserSearchName => 'Исм ёки ном';
+
+  @override
+  String get adminUserSearchNameHint => 'Шахс, компания ёки унинг юридик номи';
+
+  @override
+  String get adminUserSearchNameTooShort => 'Камида 2 та белги.';
+
+  @override
+  String get adminUserSearchMore => 'Кўпроқ филтр';
+
+  @override
+  String get adminUserSearchFewer => 'Камроқ филтр';
+
+  @override
+  String get adminUserSearchRole => 'Қуйидаги роли бор';
+
+  @override
+  String get adminUserSearchStatus => 'Ҳисоб ҳолати';
+
+  @override
+  String get adminUserSearchRegisteredFrom => 'Рўйхатдан ўтган (дан)';
+
+  @override
+  String get adminUserSearchRegisteredTo => 'Рўйхатдан ўтган (гача)';
+
+  @override
+  String get adminUserSearchDatesReversed => 'Бу саналар мос кела олмайди';
+
+  @override
+  String get adminUserSearchDatesReversedBody =>
+      'Биринчи сана иккинчисидан кейин турибди, шунинг учун улар орасига ҳеч қандай ҳисоб тушмайди.';
+
+  @override
+  String get adminUserSearchRun => 'Қидириш';
+
+  @override
+  String get adminUserSearchClear => 'Филтрларни тозалаш';
+
+  @override
+  String get adminUserSearchIdle => 'Ҳисобни топинг';
+
+  @override
+  String get adminUserSearchIdleBody =>
+      'Телефон рақамининг охирги рақамлари бўйича ёки ҳисоб танилган исталган ном бўйича қидиринг — шахс исми, компаниянинг очиқ номи ёки юридик номи. Сиз сўрамагунингизча ҳеч нарса ўқилмайди.';
+
+  @override
+  String get adminUserSearchEmpty => 'Мос келадиган ҳисоб топилмади';
+
+  @override
+  String get adminUserSearchEmptyBody =>
+      'Бу филтрларга ҳеч нарса мос келмади. Телефон рақами ичидаги исталган қисм бўйича топилади, шунинг учун охирги бир неча рақам бошқача ёзилган тўлиқ рақам топа олмаган ҳисобни топади.';
+
+  @override
+  String get adminUserSearchOrder =>
+      'Энг янги рўйхатдан ўтганлар биринчи. Эскироқ ҳисоб рўйхатнинг пастида туради, йўқ эмас — саҳифалаб излашдан кўра қидирувни торайтиринг.';
+
+  @override
+  String get adminUserNoName => 'Ҳисобда исм йўқ';
+
+  @override
+  String get adminUserNoPhone => 'Телефон рақами йўқ';
+
+  @override
+  String adminUserRegistered(String date) {
+    return 'Рўйхатдан ўтган: $date';
+  }
+
+  @override
+  String adminUserLastLogin(String date) {
+    return 'Охирги кириш: $date';
+  }
+
+  @override
+  String get adminUserNeverSignedIn => 'Ҳеч қачон кирмаган';
+
+  @override
+  String get adminAccountStatusDeletionRequested => 'Ўчириш сўралган';
+
+  @override
+  String get adminUserTitle => 'Ҳисоб';
+
+  @override
+  String get adminUserGoneTitle => 'Бу ҳисоб энди йўқ';
+
+  @override
+  String get adminUserGoneBody =>
+      'Топилмади. Уни топган қидирувдан кейин ўчирилган бўлиши мумкин.';
+
+  @override
+  String get adminUserActions => 'Ҳисоб бўйича чора кўриш';
+
+  @override
+  String get adminUserNoActionsTitle =>
+      'Бу ердан ҳеч қандай чора кўриб бўлмайди';
+
+  @override
+  String get adminUserNoActionsBody =>
+      'Бу ҳисоб ўчирилишини сўраган. Сўров ўз жараёни орқали ҳал қилинади, бу ерда чеклаш ёки блоклаш эса сўровни бекор қилиб юборади.';
+
+  @override
+  String get adminUserRestrict => 'Чеклаш';
+
+  @override
+  String get adminUserBlock => 'Блоклаш';
+
+  @override
+  String get adminUserUnblock => 'Блокдан чиқариш';
+
+  @override
+  String get adminUserLiftRestriction => 'Чекловни олиб ташлаш';
+
+  @override
+  String get adminUserRestrictTitle => 'Бу ҳисоб чеклансинми?';
+
+  @override
+  String get adminUserRestrictBody =>
+      'Ҳисоб уларда қолади ва кира оладилар, лекин чеклов олиб ташланмагунча бирор нарсани ўзгартирадиган ҳар қандай амал рад этилади. Сизнинг сабабингиз уларга кўрсатилади.';
+
+  @override
+  String get adminUserBlockTitle => 'Бу ҳисоб блоклансинми?';
+
+  @override
+  String get adminUserBlockBody =>
+      'Сабабни тушунтирувчи хабардан бошқа ҳамма нарсага кириш ёпилади. Буни фақат администратор қайтара олади.';
+
+  @override
+  String get adminUserUnblockTitle => 'Ҳисоб блокдан чиқарилсинми?';
+
+  @override
+  String get adminUserLiftRestrictionTitle => 'Чеклов олиб ташлансинми?';
+
+  @override
+  String get adminUserLiftBody =>
+      'Бундан буён уларга ҳамма нарса яна очиқ бўлади.';
+
+  @override
+  String get adminUserRestrictUntilLabel => 'Тугаш санаси';
+
+  @override
+  String get adminUserRestrictUntilCaption =>
+      'Чеклов шу куннинг бошида, Тошкент вақти билан олиб ташланади. Бўш қолдирсангиз, администратор олиб ташлагунича қолади.';
+
+  @override
+  String get adminUserStatusReasonLabel => 'Сабаб (улар сўзма-сўз ўқийди)';
+
+  @override
+  String get adminUserStatusReasonHint =>
+      'Номзодлардан пул сўрайдиган вакансияларни қайта-қайта жойлаштиргани учун';
+
+  @override
+  String adminUserRestrictedUntil(String date) {
+    return '$date гача чекланган';
+  }
+
+  @override
+  String get adminUserRestrictedIndefinitely =>
+      'Администратор олиб ташлагунича чекланган';
+
+  @override
+  String get adminUserHistory => 'Ҳисоб тарихи';
+
+  @override
+  String get adminUserHistoryEmpty =>
+      'Бу ҳисобнинг ҳолати ҳеч қачон ўзгармаган.';
+
+  @override
+  String adminUserHistoryBy(String actor) {
+    return '$actor томонидан';
+  }
+
+  @override
+  String get adminUserHistoryAutomatic => 'Муддат ўтгач, платформа томонидан';
+
+  @override
+  String get adminUserComplaints => 'Бу ҳисоб устидан шикоятлар';
+
+  @override
+  String get adminUserComplaintsEmpty =>
+      'Бу ҳисоб устидан ҳеч ким шикоят қилмаган.';
+
+  @override
+  String get adminUserComplaintOpen => 'Очиқ';
+
+  @override
+  String get adminUserComplaintClosed => 'Кўриб чиқилган';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -7244,4 +7648,208 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminVacancyEmployerContactPhone => 'Aloqa raqami';
+
+  @override
+  String get adminUsersTitle => 'Foydalanuvchilar';
+
+  @override
+  String get adminUserSearchPhone => 'Telefon raqami';
+
+  @override
+  String get adminUserSearchPhoneHint =>
+      'Oxirgi raqamlarining o\'zi ham yetadi';
+
+  @override
+  String get adminUserSearchPhoneTooShort => 'Kamida 3 ta raqam.';
+
+  @override
+  String get adminUserSearchName => 'Ism yoki nom';
+
+  @override
+  String get adminUserSearchNameHint =>
+      'Shaxs, kompaniya yoki uning yuridik nomi';
+
+  @override
+  String get adminUserSearchNameTooShort => 'Kamida 2 ta belgi.';
+
+  @override
+  String get adminUserSearchMore => 'Ko\'proq filtr';
+
+  @override
+  String get adminUserSearchFewer => 'Kamroq filtr';
+
+  @override
+  String get adminUserSearchRole => 'Quyidagi roli bor';
+
+  @override
+  String get adminUserSearchStatus => 'Hisob holati';
+
+  @override
+  String get adminUserSearchRegisteredFrom => 'Ro\'yxatdan o\'tgan (dan)';
+
+  @override
+  String get adminUserSearchRegisteredTo => 'Ro\'yxatdan o\'tgan (gacha)';
+
+  @override
+  String get adminUserSearchDatesReversed => 'Bu sanalar mos kela olmaydi';
+
+  @override
+  String get adminUserSearchDatesReversedBody =>
+      'Birinchi sana ikkinchisidan keyin turibdi, shuning uchun ular orasiga hech qanday hisob tushmaydi.';
+
+  @override
+  String get adminUserSearchRun => 'Qidirish';
+
+  @override
+  String get adminUserSearchClear => 'Filtrlarni tozalash';
+
+  @override
+  String get adminUserSearchIdle => 'Hisobni toping';
+
+  @override
+  String get adminUserSearchIdleBody =>
+      'Telefon raqamining oxirgi raqamlari bo\'yicha yoki hisob tanilgan istalgan nom bo\'yicha qidiring — shaxs ismi, kompaniyaning ochiq nomi yoki yuridik nomi. Siz so\'ramaguningizcha hech narsa o\'qilmaydi.';
+
+  @override
+  String get adminUserSearchEmpty => 'Mos keladigan hisob topilmadi';
+
+  @override
+  String get adminUserSearchEmptyBody =>
+      'Bu filtrlarga hech narsa mos kelmadi. Telefon raqami ichidagi istalgan qism bo\'yicha topiladi, shuning uchun oxirgi bir necha raqam boshqacha yozilgan to\'liq raqam topa olmagan hisobni topadi.';
+
+  @override
+  String get adminUserSearchOrder =>
+      'Eng yangi ro\'yxatdan o\'tganlar birinchi. Eskiroq hisob ro\'yxatning pastida turadi, yo\'q emas — sahifalab izlashdan ko\'ra qidiruvni toraytiring.';
+
+  @override
+  String get adminUserNoName => 'Hisobda ism yo\'q';
+
+  @override
+  String get adminUserNoPhone => 'Telefon raqami yo\'q';
+
+  @override
+  String adminUserRegistered(String date) {
+    return 'Ro\'yxatdan o\'tgan: $date';
+  }
+
+  @override
+  String adminUserLastLogin(String date) {
+    return 'Oxirgi kirish: $date';
+  }
+
+  @override
+  String get adminUserNeverSignedIn => 'Hech qachon kirmagan';
+
+  @override
+  String get adminAccountStatusDeletionRequested => 'O\'chirish so\'ralgan';
+
+  @override
+  String get adminUserTitle => 'Hisob';
+
+  @override
+  String get adminUserGoneTitle => 'Bu hisob endi yo\'q';
+
+  @override
+  String get adminUserGoneBody =>
+      'Topilmadi. Uni topgan qidiruvdan keyin o\'chirilgan bo\'lishi mumkin.';
+
+  @override
+  String get adminUserActions => 'Hisob bo\'yicha chora ko\'rish';
+
+  @override
+  String get adminUserNoActionsTitle =>
+      'Bu yerdan hech qanday chora ko\'rib bo\'lmaydi';
+
+  @override
+  String get adminUserNoActionsBody =>
+      'Bu hisob o\'chirilishini so\'ragan. So\'rov o\'z jarayoni orqali hal qilinadi, bu yerda cheklash yoki bloklash esa so\'rovni bekor qilib yuboradi.';
+
+  @override
+  String get adminUserRestrict => 'Cheklash';
+
+  @override
+  String get adminUserBlock => 'Bloklash';
+
+  @override
+  String get adminUserUnblock => 'Blokdan chiqarish';
+
+  @override
+  String get adminUserLiftRestriction => 'Cheklovni olib tashlash';
+
+  @override
+  String get adminUserRestrictTitle => 'Bu hisob cheklansinmi?';
+
+  @override
+  String get adminUserRestrictBody =>
+      'Hisob ularda qoladi va kira oladilar, lekin cheklov olib tashlanmaguncha biror narsani o\'zgartiradigan har qanday amal rad etiladi. Sizning sababingiz ularga ko\'rsatiladi.';
+
+  @override
+  String get adminUserBlockTitle => 'Bu hisob bloklansinmi?';
+
+  @override
+  String get adminUserBlockBody =>
+      'Sababni tushuntiruvchi xabardan boshqa hamma narsaga kirish yopiladi. Buni faqat administrator qaytara oladi.';
+
+  @override
+  String get adminUserUnblockTitle => 'Hisob blokdan chiqarilsinmi?';
+
+  @override
+  String get adminUserLiftRestrictionTitle => 'Cheklov olib tashlansinmi?';
+
+  @override
+  String get adminUserLiftBody =>
+      'Bundan buyon ularga hamma narsa yana ochiq bo\'ladi.';
+
+  @override
+  String get adminUserRestrictUntilLabel => 'Tugash sanasi';
+
+  @override
+  String get adminUserRestrictUntilCaption =>
+      'Cheklov shu kunning boshida, Toshkent vaqti bilan olib tashlanadi. Bo\'sh qoldirsangiz, administrator olib tashlagunicha qoladi.';
+
+  @override
+  String get adminUserStatusReasonLabel =>
+      'Sabab (ular so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminUserStatusReasonHint =>
+      'Nomzodlardan pul so\'raydigan vakansiyalarni qayta-qayta joylashtirgani uchun';
+
+  @override
+  String adminUserRestrictedUntil(String date) {
+    return '$date gacha cheklangan';
+  }
+
+  @override
+  String get adminUserRestrictedIndefinitely =>
+      'Administrator olib tashlagunicha cheklangan';
+
+  @override
+  String get adminUserHistory => 'Hisob tarixi';
+
+  @override
+  String get adminUserHistoryEmpty =>
+      'Bu hisobning holati hech qachon o\'zgarmagan.';
+
+  @override
+  String adminUserHistoryBy(String actor) {
+    return '$actor tomonidan';
+  }
+
+  @override
+  String get adminUserHistoryAutomatic =>
+      'Muddat o\'tgach, platforma tomonidan';
+
+  @override
+  String get adminUserComplaints => 'Bu hisob ustidan shikoyatlar';
+
+  @override
+  String get adminUserComplaintsEmpty =>
+      'Bu hisob ustidan hech kim shikoyat qilmagan.';
+
+  @override
+  String get adminUserComplaintOpen => 'Ochiq';
+
+  @override
+  String get adminUserComplaintClosed => 'Ko\'rib chiqilgan';
 }

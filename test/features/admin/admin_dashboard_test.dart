@@ -217,13 +217,15 @@ void main() {
       expect(find.text('Vacancies awaiting moderation'), findsOneWidget);
       expect(find.text('Open complaints'), findsOneWidget);
 
-      // Three chevrons now that the complaint queue has a screen. It was two
-      // when this screen shipped, and the affordance follows the *destination*
-      // rather than the row — which is what let the third one turn on by
+      // Five chevrons now that §10.4's user list exists: §10.2's three queues,
+      // plus the restricted and blocked figures, which had carried a number
+      // and no way in since this screen shipped. It was two when it shipped
+      // and three when the complaint queue landed — the affordance follows the
+      // *destination* rather than the row, which is what lets one turn on by
       // passing an `onTap` and changing nothing else here. Kept as a count so
-      // that a fourth counter without a screen cannot quietly grow a chevron
-      // that leads to a placeholder.
-      expect(chevrons(), findsNWidgets(3));
+      // that a counter without a screen cannot quietly grow a chevron that
+      // leads to a placeholder.
+      expect(chevrons(), findsNWidgets(5));
     });
 
     testWidgets('an empty set of queues is a sentence, not three zeros', (

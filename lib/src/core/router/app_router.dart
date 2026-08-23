@@ -13,6 +13,8 @@ import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_sc
 import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/complaint_queue_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/complaint_review_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/user_detail_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/user_search_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/vacancy_review_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/vacancy_applicants_screen.dart';
@@ -181,6 +183,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               Routes.adminDashboard => const AdminDashboardScreen(),
               Routes.adminQueue => const AdminQueueScreen(),
               Routes.adminComplaints => const ComplaintQueueScreen(),
+              Routes.adminUsers => const UserSearchScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [
@@ -257,6 +260,18 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                   builder: (context, state) => ComplaintReviewScreen(
                     complaintId: state.pathParameters['id']!,
                   ),
+                ),
+
+              // §10.4. A child of the users tab, so back returns to the
+              // results the administrator searched for rather than to an
+              // empty search form — which is the whole reason the results
+              // live in a provider the branch keeps.
+              if (tab.path == Routes.adminUsers)
+                GoRoute(
+                  path: ':id',
+                  name: 'adminUserDetail',
+                  builder: (context, state) =>
+                      UserDetailScreen(userId: state.pathParameters['id']!),
                 ),
             ],
           ),

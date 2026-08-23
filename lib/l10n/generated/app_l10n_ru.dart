@@ -2438,4 +2438,201 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get adminVacancyEmployerContactPhone => 'Контактный номер';
+
+  @override
+  String get adminUsersTitle => 'Пользователи';
+
+  @override
+  String get adminUserSearchPhone => 'Номер телефона';
+
+  @override
+  String get adminUserSearchPhoneHint => 'Достаточно последних цифр';
+
+  @override
+  String get adminUserSearchPhoneTooShort => 'Не менее 3 цифр.';
+
+  @override
+  String get adminUserSearchName => 'Имя или название';
+
+  @override
+  String get adminUserSearchNameHint =>
+      'Человек, компания или её юридическое название';
+
+  @override
+  String get adminUserSearchNameTooShort => 'Не менее 2 символов.';
+
+  @override
+  String get adminUserSearchMore => 'Больше фильтров';
+
+  @override
+  String get adminUserSearchFewer => 'Меньше фильтров';
+
+  @override
+  String get adminUserSearchRole => 'Имеет роль';
+
+  @override
+  String get adminUserSearchStatus => 'Статус аккаунта';
+
+  @override
+  String get adminUserSearchRegisteredFrom => 'Зарегистрирован с';
+
+  @override
+  String get adminUserSearchRegisteredTo => 'Зарегистрирован по';
+
+  @override
+  String get adminUserSearchDatesReversed => 'Эти даты не совпадут';
+
+  @override
+  String get adminUserSearchDatesReversedBody =>
+      'Первая дата позже второй, поэтому между ними не окажется ни одного аккаунта.';
+
+  @override
+  String get adminUserSearchRun => 'Найти';
+
+  @override
+  String get adminUserSearchClear => 'Очистить фильтры';
+
+  @override
+  String get adminUserSearchIdle => 'Найдите аккаунт';
+
+  @override
+  String get adminUserSearchIdleBody =>
+      'Ищите по последним цифрам номера или по любому имени, под которым известен аккаунт: имени человека, публичному названию компании или её юридическому названию. Пока вы не спросите, ничего не читается.';
+
+  @override
+  String get adminUserSearchEmpty => 'Совпадений нет';
+
+  @override
+  String get adminUserSearchEmptyBody =>
+      'По этим фильтрам ничего не найдено. Номер ищется по любой части, поэтому последние несколько цифр находят аккаунт, который полный номер, набранный иначе, не найдёт.';
+
+  @override
+  String get adminUserSearchOrder =>
+      'Сначала самые новые регистрации. Более старый аккаунт находится ниже по списку, а не отсутствует — сузьте поиск, а не листайте до него.';
+
+  @override
+  String get adminUserNoName => 'Имя не указано';
+
+  @override
+  String get adminUserNoPhone => 'Номера телефона нет';
+
+  @override
+  String adminUserRegistered(String date) {
+    return 'Регистрация: $date';
+  }
+
+  @override
+  String adminUserLastLogin(String date) {
+    return 'Последний вход: $date';
+  }
+
+  @override
+  String get adminUserNeverSignedIn => 'Ни разу не входил';
+
+  @override
+  String get adminAccountStatusDeletionRequested => 'Запрошено удаление';
+
+  @override
+  String get adminUserTitle => 'Аккаунт';
+
+  @override
+  String get adminUserGoneTitle => 'Этого аккаунта больше нет';
+
+  @override
+  String get adminUserGoneBody =>
+      'Аккаунт не найден. Возможно, он был удалён уже после поиска, который его нашёл.';
+
+  @override
+  String get adminUserActions => 'Действия с аккаунтом';
+
+  @override
+  String get adminUserNoActionsTitle => 'Отсюда ничего сделать нельзя';
+
+  @override
+  String get adminUserNoActionsBody =>
+      'Этот аккаунт запросил удаление. Запрос обрабатывается своим процессом, а ограничение или блокировка отсюда перезапишут его.';
+
+  @override
+  String get adminUserRestrict => 'Ограничить';
+
+  @override
+  String get adminUserBlock => 'Заблокировать';
+
+  @override
+  String get adminUserUnblock => 'Разблокировать';
+
+  @override
+  String get adminUserLiftRestriction => 'Снять ограничение';
+
+  @override
+  String get adminUserRestrictTitle => 'Ограничить этот аккаунт?';
+
+  @override
+  String get adminUserRestrictBody =>
+      'Аккаунт остаётся у них, войти они смогут, но любое действие, что-либо изменяющее, будет отклонено до снятия ограничения. Вашу причину они увидят.';
+
+  @override
+  String get adminUserBlockTitle => 'Заблокировать этот аккаунт?';
+
+  @override
+  String get adminUserBlockBody =>
+      'Им остаётся только уведомление с объяснением причины. Отменить это может лишь администратор.';
+
+  @override
+  String get adminUserUnblockTitle => 'Разблокировать этот аккаунт?';
+
+  @override
+  String get adminUserLiftRestrictionTitle => 'Снять это ограничение?';
+
+  @override
+  String get adminUserLiftBody => 'С этого момента им снова доступно всё.';
+
+  @override
+  String get adminUserRestrictUntilLabel => 'Дата окончания';
+
+  @override
+  String get adminUserRestrictUntilCaption =>
+      'Ограничение снимается в начале этого дня по ташкентскому времени. Оставьте поле пустым — оно будет действовать, пока его не снимет администратор.';
+
+  @override
+  String get adminUserStatusReasonLabel => 'Причина (её прочитают дословно)';
+
+  @override
+  String get adminUserStatusReasonHint =>
+      'Повторная публикация вакансий, требующих денег от кандидатов';
+
+  @override
+  String adminUserRestrictedUntil(String date) {
+    return 'Ограничен до $date';
+  }
+
+  @override
+  String get adminUserRestrictedIndefinitely =>
+      'Ограничен до снятия администратором';
+
+  @override
+  String get adminUserHistory => 'История аккаунта';
+
+  @override
+  String get adminUserHistoryEmpty => 'Статус этого аккаунта не менялся.';
+
+  @override
+  String adminUserHistoryBy(String actor) {
+    return 'Кто: $actor';
+  }
+
+  @override
+  String get adminUserHistoryAutomatic => 'Платформой, по истечении срока';
+
+  @override
+  String get adminUserComplaints => 'Жалобы на этот аккаунт';
+
+  @override
+  String get adminUserComplaintsEmpty => 'На этот аккаунт никто не жаловался.';
+
+  @override
+  String get adminUserComplaintOpen => 'Открыта';
+
+  @override
+  String get adminUserComplaintClosed => 'Рассмотрена';
 }

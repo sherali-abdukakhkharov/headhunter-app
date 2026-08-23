@@ -192,9 +192,9 @@ class _Review extends ConsumerWidget {
       reasonLabel: l10n.adminResolutionLabel,
       reasonHint: l10n.adminResolutionHint,
       // `needsReason` is true, so the sheet cannot send null here.
-      send: (resolution) => ref
+      send: (input) => ref
           .read(adminRepositoryProvider)
-          .reviewComplaint(complaint.id, outcome, resolution ?? ''),
+          .reviewComplaint(complaint.id, outcome, input.reason ?? ''),
     );
 
     if (result == AdminDecisionOutcome.dismissed) return;
@@ -348,9 +348,9 @@ class _Remedy extends ConsumerWidget {
       // default reason label — which says the employer reads it verbatim — is
       // the right one here.
       needsReason: true,
-      send: (reason) => ref
+      send: (input) => ref
           .read(adminRepositoryProvider)
-          .administrateVacancy(vacancyId, action, reason ?? ''),
+          .administrateVacancy(vacancyId, action, input.reason ?? ''),
     );
 
     if (result != AdminDecisionOutcome.sent) return;
@@ -383,8 +383,9 @@ class _Remedy extends ConsumerWidget {
       // Addressed to the person, not the employer — M9 delivers it to them.
       reasonLabel: l10n.adminWarnReasonLabel,
       reasonHint: l10n.adminWarnReasonHint,
-      send: (reason) =>
-          ref.read(adminRepositoryProvider).warnUser(userId, reason ?? ''),
+      send: (input) => ref
+          .read(adminRepositoryProvider)
+          .warnUser(userId, input.reason ?? ''),
     );
 
     if (result != AdminDecisionOutcome.sent) return;

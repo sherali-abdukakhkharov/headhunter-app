@@ -4,11 +4,13 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
@@ -295,9 +297,9 @@ class AdminRepository {
   ///
   /// Changes no account status: the audit row **is** the record, which is the
   /// proportionate answer to an upheld complaint that does not warrant
-  /// restricting somebody. Restrict, block and unblock live on
-  /// `PUT /admin/users/:userId/status` and land with §10.4's user screen,
-  /// because a temporary restriction needs an until-date and this does not.
+  /// restricting somebody. Restrict, block and unblock are
+  /// [setUserStatus], because a temporary restriction needs an until-date and
+  /// this does not.
   Future<void> warnUser(String userId, String reason) async {
     try {
       await _dio.post<void>(
@@ -306,6 +308,105 @@ class AdminRepository {
       );
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /admin/users` — §10.4's search (UAT-14).
+  ///
+  /// **Newest registration first**, which is the fact the caller has to render
+  /// rather than hide: with `limit`/`offset` over that ordering, an old account
+  /// matching a broad filter sits past the page rather than outside the filter.
+  ///
+  /// The filters are the server's own and are sent only when they are
+  /// answerable — see [UserSearchFilters.isRunnable]. A phone fragment shorter
+  /// than three characters is a 400 from the DTO, not a wide search, so it is
+  /// refused before it leaves.
+  Future<List<AdminUser>> searchUsers(
+    UserSearchFilters filters, {
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/users',
+        queryParameters: {
+          'limit': adminPageSize,
+          'offset': offset,
+          ...filters.toQuery(),
+        },
+      );
+
+      final items = response.data?['items'];
+      if (items is! List) return const [];
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(AdminUser.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /admin/users/:userId` — one account and its moderation history.
+  ///
+  /// A 404 is `user.not_found` and the caller renders it as an outcome rather
+  /// than a fault, like the vacancy review's and the complaint's.
+  Future<AdminUserDetail> user(String userId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/users/$userId',
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return AdminUserDetail.fromJson(data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PUT /admin/users/:userId/status` — restrict, block or unblock (§10.4).
+  ///
+  /// [restrictedUntil] is what makes a restriction *temporary*: BR-10's guard
+  /// lifts it once that instant passes. It must be a full ISO timestamp
+  /// carrying the **platform's** offset, never a bare `yyyy-MM-dd` — the
+  /// server parses it with `new Date(...)`, which reads a bare date as UTC
+  /// midnight and would end the restriction at 05:00 Tashkent on a day the
+  /// administrator did not pick. The offset comes from a timestamp the server
+  /// sent; see `restrictionEndsAt`.
+  ///
+  /// Throws [AdminDecisionConflict] on 409 `admin.status_unchanged`. That code
+  /// covers two different things on the server — "already in that state" and
+  /// "awaiting deletion, which BR-14 owns" — and mapping it to the conflict is
+  /// only honest because the client never offers an action on a
+  /// `deletion_requested` account ([UserStatusChange.availableFor]). What is
+  /// left is the ordinary one: two administrators, one account, and the work
+  /// is done either way.
+  Future<void> setUserStatus(
+    String userId,
+    UserStatusChange status,
+    String reason, {
+    String? restrictedUntil,
+  }) async {
+    try {
+      await _dio.put<void>(
+        '/admin/users/$userId/status',
+        data: {
+          'status': status.wire,
+          'reason': reason,
+          // Only ever on a restriction: the server ignores it for the other
+          // two, and sending one anyway would put a date in the audit bag
+          // that describes nothing.
+          if (status == UserStatusChange.restricted && restrictedUntil != null)
+            'restrictedUntil': restrictedUntil,
+        },
+      );
+    } on DioException catch (e) {
+      throw _alreadyDecided(e, 'admin.status_unchanged') ??
+          ApiException.fromDioException(e);
     }
   }
 
@@ -577,3 +678,130 @@ Future<ComplaintDetail> complaintDetail(Ref ref, String complaintId) =>
 @riverpod
 Future<VacancyReview> vacancyForReview(Ref ref, String vacancyId) =>
     ref.watch(adminRepositoryProvider).vacancyForReview(vacancyId);
+
+/// §10.4's search results, or **null when nothing has been searched for**.
+///
+/// ## Nothing is fetched until an administrator asks
+///
+/// The other four §10 screens load on open. This one does not, and the reason
+/// is the same one that keeps the verification queue from prefetching
+/// evidence: §11.1 logs every read of protected data, and `GET /admin/users`
+/// hands back phone numbers, so opening the tab must not write a log line
+/// nobody asked for. A search is an act.
+///
+/// So `build` returns null rather than a page. Null and empty are different
+/// answers and the screen says two different things about them — "nothing has
+/// been searched for" and "nothing matches this" — which is the distinction
+/// §10.4's own paging makes so easy to lose.
+///
+/// Deliberately **not** `keepAlive`, for the reason
+/// `searchCandidate` gives: a list of other people's phone numbers should not
+/// outlive the screen that was entitled to ask for it.
+@riverpod
+class UserSearch extends _$UserSearch {
+  @override
+  Future<AdminQueuePage<AdminUser>?> build() async => null;
+
+  /// What produced the page on screen. Kept off the state because only
+  /// [loadMore] needs it — a second page has to repeat the *same* question,
+  /// and reading the form again would page a filter set the administrator has
+  /// since edited.
+  UserSearchFilters _applied = const UserSearchFilters();
+
+  /// Runs [filters] and replaces whatever was showing.
+  ///
+  /// Errors land in the provider's own state rather than being thrown at the
+  /// caller: a failed search has no partial result worth keeping, unlike
+  /// [loadMore], which fails over a list that is still perfectly valid.
+  Future<void> search(UserSearchFilters filters) async {
+    if (!filters.isRunnable) return;
+
+    _applied = filters;
+    // Not `copyWithPrevious`: the previous page answered a different question,
+    // and a list that stays put under a spinner reads as a result for the
+    // filters now on screen.
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      final users = await ref
+          .read(adminRepositoryProvider)
+          .searchUsers(filters);
+
+      return AdminQueuePage(
+        items: users,
+        hasMore: users.length == adminPageSize,
+      );
+    });
+  }
+
+  /// Appends the next page, and **rethrows** so the caller can say so over a
+  /// list that is still on screen.
+  Future<void> loadMore() async {
+    final page = state.value;
+    if (page == null || page.isLoadingMore || !page.hasMore) return;
+
+    state = AsyncData(page.copyWith(isLoadingMore: true));
+
+    try {
+      final next = await ref
+          .read(adminRepositoryProvider)
+          .searchUsers(_applied, offset: page.items.length);
+
+      state = AsyncData(
+        AdminQueuePage(
+          items: [...page.items, ...next],
+          hasMore: next.length == adminPageSize,
+        ),
+      );
+    } on ApiException {
+      state = AsyncData(page.copyWith(isLoadingMore: false));
+      rethrow;
+    }
+  }
+
+  /// Records a status this administrator has just set, without re-searching.
+  ///
+  /// Correct on a 409 as well as on success, which is what makes patching
+  /// honest rather than optimistic: `admin.status_unchanged` means the account
+  /// was *already* in the status that was asked for, so both answers leave it
+  /// there. The alternative — re-running the search — would cost a request, a
+  /// second §11.1 log line, and the administrator's place in a list they were
+  /// working down.
+  void applyStatus(String userId, UserAccountStatus status) {
+    final page = state.value;
+    if (page == null) return;
+
+    state = AsyncData(
+      page.withItems([
+        for (final user in page.items)
+          if (user.userId == userId)
+            AdminUser(
+              userId: user.userId,
+              roles: user.roles,
+              status: status,
+              createdAt: user.createdAt,
+              phone: user.phone,
+              name: user.name,
+              // Cleared unless the account is restricted, exactly as the
+              // server's own update does: a lifted restriction that kept its
+              // end date would read as still running.
+              restrictedUntil: status == UserAccountStatus.restricted
+                  ? user.restrictedUntil
+                  : null,
+              lastLoginAt: user.lastLoginAt,
+            )
+          else
+            user,
+      ]),
+    );
+  }
+}
+
+/// One account, loaded for §10.4's screen.
+///
+/// A family keyed by id, and **not** `keepAlive` — reading a user is a logged
+/// access to protected data (§11.1), and a cache that outlived the screen
+/// would keep answering with a status somebody may since have changed.
+@riverpod
+Future<AdminUserDetail> adminUser(Ref ref, String userId) =>
+    ref.watch(adminRepositoryProvider).user(userId);

@@ -99,6 +99,27 @@ abstract final class Routes {
   static String adminComplaintFor(String complaintId) =>
       '$adminComplaints/$complaintId';
 
+  /// Which account status §10.4's user tab is showing, when it was reached
+  /// from a dashboard counter.
+  ///
+  /// **Only status, and only from a counter.** §10.4 has six filters and five
+  /// of them are questions a person types on the screen; this one is the only
+  /// one a *destination* names — §10.1's "restricted users" and "blocked
+  /// users" are places, and a counter that leads nowhere is the thing the
+  /// dashboard's own rule forbids. It is in the location rather than in state
+  /// for the reason `?queue=` is: the shell keeps a branch across tab
+  /// switches, so two counters writing screen state would both land on
+  /// whichever was tapped first.
+  static const adminUserStatusParam = 'status';
+
+  /// §10.4's user list, filtered to one account status.
+  static String adminUsersWithStatus(String status) =>
+      '$adminUsers?$adminUserStatusParam=$status';
+
+  /// §10.4's user screen, a child of the users tab so back returns to the
+  /// results the administrator searched for.
+  static String adminUserFor(String userId) => '$adminUsers/$userId';
+
   // --- Development surfaces ------------------------------------------------
 
   /// Developer tools: the role switcher, the design catalogue, the health probe

@@ -3,6 +3,7 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
+import 'package:jobbridge_app/src/shared/widgets/iso_date_field.dart';
 
 /// Confirms one administrator decision and sends it (§10.2).
 ///
@@ -17,6 +18,10 @@ import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
 /// verification refusal and of pausing a live vacancy, and false of a complaint
 /// resolution — which nothing shows to the reporter. A label that promises the
 /// wrong audience is worse than a generic one.
+///
+/// [date] adds §10.4's optional restriction end date. It is the one decision in
+/// §10 that takes a second value, and it is optional there too — a restriction
+/// with no date runs until an administrator lifts it.
 Future<AdminDecisionOutcome> showAdminDecisionSheet(
   BuildContext context, {
   required String title,
@@ -24,9 +29,10 @@ Future<AdminDecisionOutcome> showAdminDecisionSheet(
   required String body,
   required String confirmLabel,
   required bool needsReason,
-  required Future<void> Function(String? reason) send,
+  required Future<void> Function(AdminDecisionInput input) send,
   String? reasonLabel,
   String? reasonHint,
+  AdminDecisionDate? date,
 }) async =>
     await showModalBottomSheet<AdminDecisionOutcome>(
       context: context,
@@ -41,6 +47,7 @@ Future<AdminDecisionOutcome> showAdminDecisionSheet(
         send: send,
         reasonLabel: reasonLabel,
         reasonHint: reasonHint,
+        date: date,
       ),
     ) ??
     AdminDecisionOutcome.dismissed;
@@ -79,6 +86,7 @@ class _DecisionSheet extends StatefulWidget {
     required this.send,
     this.reasonLabel,
     this.reasonHint,
+    this.date,
   });
 
   final String title;
@@ -91,12 +99,15 @@ class _DecisionSheet extends StatefulWidget {
   final String body;
   final String confirmLabel;
   final bool needsReason;
-  final Future<void> Function(String? reason) send;
+  final Future<void> Function(AdminDecisionInput input) send;
 
   /// Wording for the reason field, where "the employer reads it word for word"
   /// is not who reads it. Null keeps the verification and moderation default.
   final String? reasonLabel;
   final String? reasonHint;
+
+  /// §10.4's optional restriction end date, or null on a sheet with no date.
+  final AdminDecisionDate? date;
 
   @override
   State<_DecisionSheet> createState() => _DecisionSheetState();
@@ -105,6 +116,9 @@ class _DecisionSheet extends StatefulWidget {
 class _DecisionSheetState extends State<_DecisionSheet> {
   final _reason = TextEditingController();
   bool _busy = false;
+
+  /// The picked calendar day, `yyyy-MM-dd`, or null for "no end date".
+  String? _day;
 
   /// The server's refusal, held in the sheet rather than thrown at a snackbar:
   /// it belongs beside the button that failed, and a 409 here has a consequence
@@ -174,6 +188,31 @@ class _DecisionSheetState extends State<_DecisionSheet> {
                   style: HhTypography.body.copyWith(color: HhColors.inkMuted),
                 ),
 
+                // Above the reason, because it is part of *what* is being
+                // decided — how long — while the reason explains it. An
+                // administrator who reaches the button having skipped a field
+                // should have skipped the optional one.
+                if (widget.date case final date? when !_settled) ...[
+                  const SizedBox(height: HhSpace.lg),
+                  IsoDateField(
+                    label: date.label,
+                    value: _day,
+                    enabled: !_busy,
+                    // A restriction that ended before it began would be lifted
+                    // by the guard on its first request, which looks exactly
+                    // like the action not working.
+                    firstDate: DateTime.now(),
+                    onChanged: (day) => setState(() => _day = day),
+                  ),
+                  const SizedBox(height: HhSpace.xs),
+                  Text(
+                    date.caption,
+                    style: HhTypography.caption.copyWith(
+                      color: HhColors.inkMuted,
+                    ),
+                  ),
+                ],
+
                 if (widget.needsReason && !_settled) ...[
                   const SizedBox(height: HhSpace.lg),
                   HhTextField(
@@ -239,9 +278,15 @@ class _DecisionSheetState extends State<_DecisionSheet> {
     });
 
     final reason = _reason.text.trim();
+    final day = _day;
 
     try {
-      await widget.send(reason.isEmpty ? null : reason);
+      await widget.send(
+        AdminDecisionInput(
+          reason: reason.isEmpty ? null : reason,
+          until: day == null ? null : widget.date?.toWire(day),
+        ),
+      );
       if (mounted) Navigator.of(context).pop(AdminDecisionOutcome.sent);
     } on AdminDecisionConflict catch (e) {
       // Not a failure: two administrators on one FIFO queue produce this

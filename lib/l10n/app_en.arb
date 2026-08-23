@@ -3107,5 +3107,261 @@
   "adminVacancyEmployerContactPhone": "Contact number",
   "@adminVacancyEmployerContactPhone": {
     "description": "The number the employer published for their company (§6.1), and the one to call. Leads the card: it is what they chose to be reached on, and §6.1 makes it mandatory for a complete profile, so BR-03 guarantees a vacancy that reached review has one."
+  },
+  "adminUsersTitle": "Users",
+  "@adminUsersTitle": {
+    "description": "§10.4's tab title."
+  },
+  "adminUserSearchPhone": "Phone number",
+  "@adminUserSearchPhone": {
+    "description": "The phone filter. Never worded as \"starts with\": the server matches a substring, which is how a number is remembered."
+  },
+  "adminUserSearchPhoneHint": "The last digits are enough",
+  "@adminUserSearchPhoneHint": {
+    "description": "Says the match is a substring without using the word."
+  },
+  "adminUserSearchPhoneTooShort": "At least 3 digits.",
+  "@adminUserSearchPhoneTooShort": {
+    "description": "The server's own minimum (3), restated so the search stops before a 400 rather than after one."
+  },
+  "adminUserSearchName": "Name",
+  "@adminUserSearchName": {
+    "description": "The name filter. Matched against five columns, so the label must not name one kind of account."
+  },
+  "adminUserSearchNameHint": "A person, a company, or its legal name",
+  "@adminUserSearchNameHint": {
+    "description": "Names the five columns without listing them: a person, a company, a legal name."
+  },
+  "adminUserSearchNameTooShort": "At least 2 characters.",
+  "@adminUserSearchNameTooShort": {
+    "description": "The server's own minimum (2)."
+  },
+  "adminUserSearchMore": "More filters",
+  "@adminUserSearchMore": {
+    "description": "Opens the role, status and registration-date filters."
+  },
+  "adminUserSearchFewer": "Fewer filters",
+  "@adminUserSearchFewer": {
+    "description": "Closes them again."
+  },
+  "adminUserSearchRole": "Holds the role",
+  "@adminUserSearchRole": {
+    "description": "\"Holds\", never \"is\": §2.3 lets one account hold several roles, so a candidate who also employs matches either."
+  },
+  "adminUserSearchStatus": "Account status",
+  "@adminUserSearchStatus": {
+    "description": "The account-status filter. Exact match, unlike the two text ones."
+  },
+  "adminUserSearchRegisteredFrom": "Registered from",
+  "@adminUserSearchRegisteredFrom": {
+    "description": "Inclusive, a calendar date in the platform zone."
+  },
+  "adminUserSearchRegisteredTo": "Registered to",
+  "@adminUserSearchRegisteredTo": {
+    "description": "Inclusive too, so the same day in both means that one day."
+  },
+  "adminUserSearchDatesReversed": "These dates cannot match",
+  "@adminUserSearchDatesReversed": {
+    "description": "A range that can match nothing — the one filter mistake the server answers with an empty list rather than a refusal, which is the answer hardest to tell from \"this person does not exist\"."
+  },
+  "adminUserSearchDatesReversedBody": "The first date is after the second, so no account can fall between them.",
+  "@adminUserSearchDatesReversedBody": {
+    "description": "Says why, in the terms the administrator set them in."
+  },
+  "adminUserSearchRun": "Search",
+  "@adminUserSearchRun": {
+    "description": "Runs the search. Disabled while a filter holds something the server would refuse."
+  },
+  "adminUserSearchClear": "Clear the filters",
+  "@adminUserSearchClear": {
+    "description": "Empties every filter. Shown only when there is something to clear."
+  },
+  "adminUserSearchIdle": "Find an account",
+  "@adminUserSearchIdle": {
+    "description": "Before any search has been run. Not the same state as \"nothing matches\", and §11.1 is why it exists: nothing is fetched until an administrator asks."
+  },
+  "adminUserSearchIdleBody": "Search by the last digits of a phone number, or by any name the account is known under — a person's, a company's public name, or its legal name. Nothing is looked up until you ask.",
+  "@adminUserSearchIdleBody": {
+    "description": "Says what the two fields match, and that nothing is read until asked."
+  },
+  "adminUserSearchEmpty": "No account matches",
+  "@adminUserSearchEmpty": {
+    "description": "A search that matched nothing. Deliberately not \"no such user\": paging makes those two easy to confuse."
+  },
+  "adminUserSearchEmptyBody": "Nothing matches these filters. A phone number is matched anywhere inside it, so the last few digits find an account that a full number typed differently will not.",
+  "@adminUserSearchEmptyBody": {
+    "description": "Points at the substring match, which is what finds an account a fully typed number can miss."
+  },
+  "adminUserSearchOrder": "Newest registration first. An older account is further down the list rather than missing — narrow the search instead of paging to it.",
+  "@adminUserSearchOrder": {
+    "description": "Shown only when the page is full. Results are newest registration first, so an old account matching a broad filter sits past the page rather than outside the filter — and from the client those look identical."
+  },
+  "adminUserNoName": "No name on the account",
+  "@adminUserNoName": {
+    "description": "The server resolves a name from five columns, so null means the account has none anywhere yet — not that it is anonymous."
+  },
+  "adminUserNoPhone": "No phone number",
+  "@adminUserNoPhone": {
+    "description": "The DTO admits a null phone, so the row says so rather than drawing an empty line."
+  },
+  "adminUserRegistered": "Registered {date}",
+  "@adminUserRegistered": {
+    "description": "When the account was created, as a calendar day in the platform zone.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminUserLastLogin": "Last signed in {date}",
+  "@adminUserLastLogin": {
+    "description": "The last sign-in.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminUserNeverSignedIn": "Never signed in",
+  "@adminUserNeverSignedIn": {
+    "description": "An account that has never signed in — what tells a stalled registration from an abandoned account."
+  },
+  "adminAccountStatusDeletionRequested": "Deletion requested",
+  "@adminAccountStatusDeletionRequested": {
+    "description": "BR-14's own state. Neutral rather than warning-toned: it is not a sanction, and no administrator action applies to it."
+  },
+  "adminUserTitle": "Account",
+  "@adminUserTitle": {
+    "description": "§10.4's user screen."
+  },
+  "adminUserGoneTitle": "This account is gone",
+  "@adminUserGoneTitle": {
+    "description": "`user.not_found`. Retrying fails the same way, so there is no retry."
+  },
+  "adminUserGoneBody": "It was not found. It may have been deleted since the search that found it.",
+  "@adminUserGoneBody": {
+    "description": "Says the likeliest reason without asserting it."
+  },
+  "adminUserActions": "Act on this account",
+  "@adminUserActions": {
+    "description": "§10.4's four actions."
+  },
+  "adminUserNoActionsTitle": "Nothing can be done from here",
+  "@adminUserNoActionsTitle": {
+    "description": "A `deletion_requested` account. Rendered rather than hidden: an administrator who cannot find the buttons assumes they missed them."
+  },
+  "adminUserNoActionsBody": "This account has asked to be deleted. That request is answered by its own process, and restricting or blocking it here would overwrite the request.",
+  "@adminUserNoActionsBody": {
+    "description": "BR-14 owns the state, and the server refuses every transition out of it — a block that overwrote the request would lose it."
+  },
+  "adminUserRestrict": "Restrict",
+  "@adminUserRestrict": {
+    "description": "§10.4's restriction: some actions refused, the account kept."
+  },
+  "adminUserBlock": "Block",
+  "@adminUserBlock": {
+    "description": "BR-10's block. Destructive-toned, and the only action on this screen that is."
+  },
+  "adminUserUnblock": "Unblock",
+  "@adminUserUnblock": {
+    "description": "Lifting a block. Same transition as lifting a restriction, different sentence — \"unblock\" says nothing to somebody looking at a restricted account."
+  },
+  "adminUserLiftRestriction": "Lift the restriction",
+  "@adminUserLiftRestriction": {
+    "description": "Lifting a restriction."
+  },
+  "adminUserRestrictTitle": "Restrict this account?",
+  "@adminUserRestrictTitle": {
+    "description": "Confirmation."
+  },
+  "adminUserRestrictBody": "They keep the account and can still sign in, but every action that changes anything is refused until it is lifted. They are shown your reason.",
+  "@adminUserRestrictBody": {
+    "description": "States what a restriction actually does — §4.2 refuses actions at the point of use rather than locking the account out — and that the reason is shown to them."
+  },
+  "adminUserBlockTitle": "Block this account?",
+  "@adminUserBlockTitle": {
+    "description": "Confirmation."
+  },
+  "adminUserBlockBody": "They lose access to everything but the notice explaining why. Only an administrator can undo it.",
+  "@adminUserBlockBody": {
+    "description": "BR-10: a blocked account reaches nothing but the notice, and the notice is the reason typed here."
+  },
+  "adminUserUnblockTitle": "Unblock this account?",
+  "@adminUserUnblockTitle": {
+    "description": "Confirmation."
+  },
+  "adminUserLiftRestrictionTitle": "Lift this restriction?",
+  "@adminUserLiftRestrictionTitle": {
+    "description": "Confirmation."
+  },
+  "adminUserLiftBody": "Everything is available to them again from now.",
+  "@adminUserLiftBody": {
+    "description": "One sentence for both, because the outcome is the same: the account is active again."
+  },
+  "adminUserRestrictUntilLabel": "Ends on",
+  "@adminUserRestrictUntilLabel": {
+    "description": "§10.4's optional restriction end date."
+  },
+  "adminUserRestrictUntilCaption": "The restriction lifts at the start of this day, Tashkent time. Leave it empty and it stays until an administrator lifts it.",
+  "@adminUserRestrictUntilCaption": {
+    "description": "Says which end of the day it is — BR-10's guard lifts the restriction once the instant passes, and the client sends the start of the chosen day — and what leaving it empty means."
+  },
+  "adminUserStatusReasonLabel": "Reason (they read it word for word)",
+  "@adminUserStatusReasonLabel": {
+    "description": "BR-10 requires the app to explain a restriction rather than fail mysteriously, and §4.2 shows this text to the account verbatim — so the label promises the right audience."
+  },
+  "adminUserStatusReasonHint": "Repeatedly posting vacancies that ask candidates for money",
+  "@adminUserStatusReasonHint": {
+    "description": "An example that is a reason rather than a label."
+  },
+  "adminUserRestrictedUntil": "Restricted until {date}",
+  "@adminUserRestrictedUntil": {
+    "description": "When a restriction lifts. The day is inclusive of nothing: the guard clears it at the start of it.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminUserRestrictedIndefinitely": "Restricted until an administrator lifts it",
+  "@adminUserRestrictedIndefinitely": {
+    "description": "A restriction with no end date — a different fact from one that expires, and the one an administrator needs before deciding whether to act."
+  },
+  "adminUserHistory": "Account history",
+  "@adminUserHistory": {
+    "description": "BR-08's account status trail — half of §10.4's \"relevant moderation history\"."
+  },
+  "adminUserHistoryEmpty": "Nothing has changed this account's status.",
+  "@adminUserHistoryEmpty": {
+    "description": "An account whose status has never moved."
+  },
+  "adminUserHistoryBy": "By {actor}",
+  "@adminUserHistoryBy": {
+    "description": "Who made the change.",
+    "placeholders": {
+      "actor": {
+        "type": "String"
+      }
+    }
+  },
+  "adminUserHistoryAutomatic": "By the platform, when the date passed",
+  "@adminUserHistoryAutomatic": {
+    "description": "A row with no actor: BR-10's guard lifting an expired restriction. The difference between a decision and a deadline is worth keeping on screen."
+  },
+  "adminUserComplaints": "Complaints about this account",
+  "@adminUserComplaints": {
+    "description": "Complaints filed about this account — the other half of §10.4's moderation history."
+  },
+  "adminUserComplaintsEmpty": "Nobody has reported this account.",
+  "@adminUserComplaintsEmpty": {
+    "description": "Nobody has reported them."
+  },
+  "adminUserComplaintOpen": "Open",
+  "@adminUserComplaintOpen": {
+    "description": "A complaint still awaiting §10.2's decision. A meta chip rather than a badge: this list mixes open and decided ones, and the classification is not the account's status."
+  },
+  "adminUserComplaintClosed": "Reviewed",
+  "@adminUserComplaintClosed": {
+    "description": "A complaint somebody has already decided, upheld or dismissed alike — which one is the review's business, not this list's."
   }
 }

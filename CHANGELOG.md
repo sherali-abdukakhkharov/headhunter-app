@@ -17,6 +17,59 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.5.0+10 — 2026-08-23
+
+§10.4 lands: an administrator can now find any account and act on it. It is also
+the release where the dashboard stops having numbers that lead nowhere — every
+counter that describes a queue or a sanction is now a way into the screen that
+counts it.
+
+### Added
+
+- **User search (§10.4, UAT-14)** — the fourth tab in the administrator's app.
+  Search by a phone number or by a name, and narrow by role, account status or
+  when the account registered.
+  **The last few digits are enough**, and that is the point of the field: a
+  number is matched anywhere inside it, so a number you half-remember finds the
+  account that a fully typed one, typed differently, will not. A number pasted
+  out of a chat with its spaces in it works too — the spaces are taken out before
+  the search is sent, because they would otherwise be part of what is matched.
+  **The name is looked for everywhere a name can be**: a person's own name, a
+  company's public name, its legal name, and the name a colleague was seeded
+  with. You do not have to know what kind of account you are looking for.
+  **Nothing is looked up until you ask.** The tab opens on an empty search
+  rather than a list, because every search of somebody's contact details is
+  recorded, and passing through a tab is not asking for one.
+  **The list says how it is ordered when there is more of it.** Results are
+  newest registration first, so an older account is further down rather than
+  missing — which is the one thing about this screen that would otherwise have
+  people concluding somebody does not exist.
+- **The account screen, and the four things §10.4 allows.** Warn somebody,
+  restrict them, block them, or lift either. All four require a reason, and the
+  person reads it word for word.
+  **Only what applies is offered.** An active account can be restricted or
+  blocked; a blocked one can only be unblocked; a restricted one can be blocked
+  or lifted. An account that has asked to be deleted offers none of the three,
+  and says why — that request is answered by its own process and acting here
+  would overwrite it.
+  **A restriction can be given an end date**, and the screen says which end of
+  the day it means: the restriction lifts at the start of the day you pick,
+  Tashkent time. Leave it empty and it runs until somebody lifts it.
+  Below the actions: every status this account has been through, with who
+  changed it and why — the platform itself where a restriction simply expired —
+  and every complaint filed about them, open and already reviewed alike.
+- **The restricted and blocked counters on the dashboard now open the list they
+  count**, filtered to that status. They had shown a number and led nowhere
+  since the dashboard shipped.
+
+### Fixed
+
+- **Long metadata chips could paint over the edge of their card.** A chip's
+  label does not shrink, so "Registered 2026-03-14" fitted in English and would
+  have overflowed in Russian on a 360pt phone. Dated facts are captions now.
+  The component itself is unchanged and the fix is queued with the small-screen
+  pass.
+
 ## 1.4.1+9 — 2026-08-22
 
 The vacancy review now shows the employer. 1.4.0 was written for this and the

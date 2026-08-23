@@ -1,10 +1,12 @@
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
@@ -90,4 +92,21 @@ abstract class FakeAdminBase implements AdminRepository {
 
   @override
   Future<void> warnUser(String userId, String reason) => _unused('warnUser');
+
+  @override
+  Future<List<AdminUser>> searchUsers(
+    UserSearchFilters filters, {
+    int offset = 0,
+  }) => _unused('searchUsers');
+
+  @override
+  Future<AdminUserDetail> user(String userId) => _unused('user');
+
+  @override
+  Future<void> setUserStatus(
+    String userId,
+    UserStatusChange status,
+    String reason, {
+    String? restrictedUntil,
+  }) => _unused('setUserStatus');
 }

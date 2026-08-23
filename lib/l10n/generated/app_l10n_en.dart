@@ -2417,4 +2417,205 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get adminVacancyEmployerContactPhone => 'Contact number';
+
+  @override
+  String get adminUsersTitle => 'Users';
+
+  @override
+  String get adminUserSearchPhone => 'Phone number';
+
+  @override
+  String get adminUserSearchPhoneHint => 'The last digits are enough';
+
+  @override
+  String get adminUserSearchPhoneTooShort => 'At least 3 digits.';
+
+  @override
+  String get adminUserSearchName => 'Name';
+
+  @override
+  String get adminUserSearchNameHint =>
+      'A person, a company, or its legal name';
+
+  @override
+  String get adminUserSearchNameTooShort => 'At least 2 characters.';
+
+  @override
+  String get adminUserSearchMore => 'More filters';
+
+  @override
+  String get adminUserSearchFewer => 'Fewer filters';
+
+  @override
+  String get adminUserSearchRole => 'Holds the role';
+
+  @override
+  String get adminUserSearchStatus => 'Account status';
+
+  @override
+  String get adminUserSearchRegisteredFrom => 'Registered from';
+
+  @override
+  String get adminUserSearchRegisteredTo => 'Registered to';
+
+  @override
+  String get adminUserSearchDatesReversed => 'These dates cannot match';
+
+  @override
+  String get adminUserSearchDatesReversedBody =>
+      'The first date is after the second, so no account can fall between them.';
+
+  @override
+  String get adminUserSearchRun => 'Search';
+
+  @override
+  String get adminUserSearchClear => 'Clear the filters';
+
+  @override
+  String get adminUserSearchIdle => 'Find an account';
+
+  @override
+  String get adminUserSearchIdleBody =>
+      'Search by the last digits of a phone number, or by any name the account is known under — a person\'s, a company\'s public name, or its legal name. Nothing is looked up until you ask.';
+
+  @override
+  String get adminUserSearchEmpty => 'No account matches';
+
+  @override
+  String get adminUserSearchEmptyBody =>
+      'Nothing matches these filters. A phone number is matched anywhere inside it, so the last few digits find an account that a full number typed differently will not.';
+
+  @override
+  String get adminUserSearchOrder =>
+      'Newest registration first. An older account is further down the list rather than missing — narrow the search instead of paging to it.';
+
+  @override
+  String get adminUserNoName => 'No name on the account';
+
+  @override
+  String get adminUserNoPhone => 'No phone number';
+
+  @override
+  String adminUserRegistered(String date) {
+    return 'Registered $date';
+  }
+
+  @override
+  String adminUserLastLogin(String date) {
+    return 'Last signed in $date';
+  }
+
+  @override
+  String get adminUserNeverSignedIn => 'Never signed in';
+
+  @override
+  String get adminAccountStatusDeletionRequested => 'Deletion requested';
+
+  @override
+  String get adminUserTitle => 'Account';
+
+  @override
+  String get adminUserGoneTitle => 'This account is gone';
+
+  @override
+  String get adminUserGoneBody =>
+      'It was not found. It may have been deleted since the search that found it.';
+
+  @override
+  String get adminUserActions => 'Act on this account';
+
+  @override
+  String get adminUserNoActionsTitle => 'Nothing can be done from here';
+
+  @override
+  String get adminUserNoActionsBody =>
+      'This account has asked to be deleted. That request is answered by its own process, and restricting or blocking it here would overwrite the request.';
+
+  @override
+  String get adminUserRestrict => 'Restrict';
+
+  @override
+  String get adminUserBlock => 'Block';
+
+  @override
+  String get adminUserUnblock => 'Unblock';
+
+  @override
+  String get adminUserLiftRestriction => 'Lift the restriction';
+
+  @override
+  String get adminUserRestrictTitle => 'Restrict this account?';
+
+  @override
+  String get adminUserRestrictBody =>
+      'They keep the account and can still sign in, but every action that changes anything is refused until it is lifted. They are shown your reason.';
+
+  @override
+  String get adminUserBlockTitle => 'Block this account?';
+
+  @override
+  String get adminUserBlockBody =>
+      'They lose access to everything but the notice explaining why. Only an administrator can undo it.';
+
+  @override
+  String get adminUserUnblockTitle => 'Unblock this account?';
+
+  @override
+  String get adminUserLiftRestrictionTitle => 'Lift this restriction?';
+
+  @override
+  String get adminUserLiftBody =>
+      'Everything is available to them again from now.';
+
+  @override
+  String get adminUserRestrictUntilLabel => 'Ends on';
+
+  @override
+  String get adminUserRestrictUntilCaption =>
+      'The restriction lifts at the start of this day, Tashkent time. Leave it empty and it stays until an administrator lifts it.';
+
+  @override
+  String get adminUserStatusReasonLabel =>
+      'Reason (they read it word for word)';
+
+  @override
+  String get adminUserStatusReasonHint =>
+      'Repeatedly posting vacancies that ask candidates for money';
+
+  @override
+  String adminUserRestrictedUntil(String date) {
+    return 'Restricted until $date';
+  }
+
+  @override
+  String get adminUserRestrictedIndefinitely =>
+      'Restricted until an administrator lifts it';
+
+  @override
+  String get adminUserHistory => 'Account history';
+
+  @override
+  String get adminUserHistoryEmpty =>
+      'Nothing has changed this account\'s status.';
+
+  @override
+  String adminUserHistoryBy(String actor) {
+    return 'By $actor';
+  }
+
+  @override
+  String get adminUserHistoryAutomatic =>
+      'By the platform, when the date passed';
+
+  @override
+  String get adminUserComplaints => 'Complaints about this account';
+
+  @override
+  String get adminUserComplaintsEmpty => 'Nobody has reported this account.';
+
+  @override
+  String get adminUserComplaintOpen => 'Open';
+
+  @override
+  String get adminUserComplaintClosed => 'Reviewed';
 }

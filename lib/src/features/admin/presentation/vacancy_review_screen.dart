@@ -303,9 +303,9 @@ class _Review extends ConsumerWidget {
           ? l10n.adminPublish
           : l10n.adminSendBack,
       needsReason: decision.needsReason,
-      send: (reason) => ref
+      send: (input) => ref
           .read(adminRepositoryProvider)
-          .moderateVacancy(vacancyId, decision, reason: reason),
+          .moderateVacancy(vacancyId, decision, reason: input.reason),
     );
 
     if (outcome == AdminDecisionOutcome.dismissed) return;

@@ -4282,6 +4282,360 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Contact number'**
   String get adminVacancyEmployerContactPhone;
+
+  /// §10.4's tab title.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get adminUsersTitle;
+
+  /// The phone filter. Never worded as "starts with": the server matches a substring, which is how a number is remembered.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get adminUserSearchPhone;
+
+  /// Says the match is a substring without using the word.
+  ///
+  /// In en, this message translates to:
+  /// **'The last digits are enough'**
+  String get adminUserSearchPhoneHint;
+
+  /// The server's own minimum (3), restated so the search stops before a 400 rather than after one.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 3 digits.'**
+  String get adminUserSearchPhoneTooShort;
+
+  /// The name filter. Matched against five columns, so the label must not name one kind of account.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get adminUserSearchName;
+
+  /// Names the five columns without listing them: a person, a company, a legal name.
+  ///
+  /// In en, this message translates to:
+  /// **'A person, a company, or its legal name'**
+  String get adminUserSearchNameHint;
+
+  /// The server's own minimum (2).
+  ///
+  /// In en, this message translates to:
+  /// **'At least 2 characters.'**
+  String get adminUserSearchNameTooShort;
+
+  /// Opens the role, status and registration-date filters.
+  ///
+  /// In en, this message translates to:
+  /// **'More filters'**
+  String get adminUserSearchMore;
+
+  /// Closes them again.
+  ///
+  /// In en, this message translates to:
+  /// **'Fewer filters'**
+  String get adminUserSearchFewer;
+
+  /// "Holds", never "is": §2.3 lets one account hold several roles, so a candidate who also employs matches either.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds the role'**
+  String get adminUserSearchRole;
+
+  /// The account-status filter. Exact match, unlike the two text ones.
+  ///
+  /// In en, this message translates to:
+  /// **'Account status'**
+  String get adminUserSearchStatus;
+
+  /// Inclusive, a calendar date in the platform zone.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered from'**
+  String get adminUserSearchRegisteredFrom;
+
+  /// Inclusive too, so the same day in both means that one day.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered to'**
+  String get adminUserSearchRegisteredTo;
+
+  /// A range that can match nothing — the one filter mistake the server answers with an empty list rather than a refusal, which is the answer hardest to tell from "this person does not exist".
+  ///
+  /// In en, this message translates to:
+  /// **'These dates cannot match'**
+  String get adminUserSearchDatesReversed;
+
+  /// Says why, in the terms the administrator set them in.
+  ///
+  /// In en, this message translates to:
+  /// **'The first date is after the second, so no account can fall between them.'**
+  String get adminUserSearchDatesReversedBody;
+
+  /// Runs the search. Disabled while a filter holds something the server would refuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get adminUserSearchRun;
+
+  /// Empties every filter. Shown only when there is something to clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the filters'**
+  String get adminUserSearchClear;
+
+  /// Before any search has been run. Not the same state as "nothing matches", and §11.1 is why it exists: nothing is fetched until an administrator asks.
+  ///
+  /// In en, this message translates to:
+  /// **'Find an account'**
+  String get adminUserSearchIdle;
+
+  /// Says what the two fields match, and that nothing is read until asked.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by the last digits of a phone number, or by any name the account is known under — a person\'s, a company\'s public name, or its legal name. Nothing is looked up until you ask.'**
+  String get adminUserSearchIdleBody;
+
+  /// A search that matched nothing. Deliberately not "no such user": paging makes those two easy to confuse.
+  ///
+  /// In en, this message translates to:
+  /// **'No account matches'**
+  String get adminUserSearchEmpty;
+
+  /// Points at the substring match, which is what finds an account a fully typed number can miss.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches these filters. A phone number is matched anywhere inside it, so the last few digits find an account that a full number typed differently will not.'**
+  String get adminUserSearchEmptyBody;
+
+  /// Shown only when the page is full. Results are newest registration first, so an old account matching a broad filter sits past the page rather than outside the filter — and from the client those look identical.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest registration first. An older account is further down the list rather than missing — narrow the search instead of paging to it.'**
+  String get adminUserSearchOrder;
+
+  /// The server resolves a name from five columns, so null means the account has none anywhere yet — not that it is anonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'No name on the account'**
+  String get adminUserNoName;
+
+  /// The DTO admits a null phone, so the row says so rather than drawing an empty line.
+  ///
+  /// In en, this message translates to:
+  /// **'No phone number'**
+  String get adminUserNoPhone;
+
+  /// When the account was created, as a calendar day in the platform zone.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered {date}'**
+  String adminUserRegistered(String date);
+
+  /// The last sign-in.
+  ///
+  /// In en, this message translates to:
+  /// **'Last signed in {date}'**
+  String adminUserLastLogin(String date);
+
+  /// An account that has never signed in — what tells a stalled registration from an abandoned account.
+  ///
+  /// In en, this message translates to:
+  /// **'Never signed in'**
+  String get adminUserNeverSignedIn;
+
+  /// BR-14's own state. Neutral rather than warning-toned: it is not a sanction, and no administrator action applies to it.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion requested'**
+  String get adminAccountStatusDeletionRequested;
+
+  /// §10.4's user screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get adminUserTitle;
+
+  /// `user.not_found`. Retrying fails the same way, so there is no retry.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is gone'**
+  String get adminUserGoneTitle;
+
+  /// Says the likeliest reason without asserting it.
+  ///
+  /// In en, this message translates to:
+  /// **'It was not found. It may have been deleted since the search that found it.'**
+  String get adminUserGoneBody;
+
+  /// §10.4's four actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Act on this account'**
+  String get adminUserActions;
+
+  /// A `deletion_requested` account. Rendered rather than hidden: an administrator who cannot find the buttons assumes they missed them.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing can be done from here'**
+  String get adminUserNoActionsTitle;
+
+  /// BR-14 owns the state, and the server refuses every transition out of it — a block that overwrote the request would lose it.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has asked to be deleted. That request is answered by its own process, and restricting or blocking it here would overwrite the request.'**
+  String get adminUserNoActionsBody;
+
+  /// §10.4's restriction: some actions refused, the account kept.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict'**
+  String get adminUserRestrict;
+
+  /// BR-10's block. Destructive-toned, and the only action on this screen that is.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get adminUserBlock;
+
+  /// Lifting a block. Same transition as lifting a restriction, different sentence — "unblock" says nothing to somebody looking at a restricted account.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get adminUserUnblock;
+
+  /// Lifting a restriction.
+  ///
+  /// In en, this message translates to:
+  /// **'Lift the restriction'**
+  String get adminUserLiftRestriction;
+
+  /// Confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict this account?'**
+  String get adminUserRestrictTitle;
+
+  /// States what a restriction actually does — §4.2 refuses actions at the point of use rather than locking the account out — and that the reason is shown to them.
+  ///
+  /// In en, this message translates to:
+  /// **'They keep the account and can still sign in, but every action that changes anything is refused until it is lifted. They are shown your reason.'**
+  String get adminUserRestrictBody;
+
+  /// Confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Block this account?'**
+  String get adminUserBlockTitle;
+
+  /// BR-10: a blocked account reaches nothing but the notice, and the notice is the reason typed here.
+  ///
+  /// In en, this message translates to:
+  /// **'They lose access to everything but the notice explaining why. Only an administrator can undo it.'**
+  String get adminUserBlockBody;
+
+  /// Confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock this account?'**
+  String get adminUserUnblockTitle;
+
+  /// Confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Lift this restriction?'**
+  String get adminUserLiftRestrictionTitle;
+
+  /// One sentence for both, because the outcome is the same: the account is active again.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is available to them again from now.'**
+  String get adminUserLiftBody;
+
+  /// §10.4's optional restriction end date.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends on'**
+  String get adminUserRestrictUntilLabel;
+
+  /// Says which end of the day it is — BR-10's guard lifts the restriction once the instant passes, and the client sends the start of the chosen day — and what leaving it empty means.
+  ///
+  /// In en, this message translates to:
+  /// **'The restriction lifts at the start of this day, Tashkent time. Leave it empty and it stays until an administrator lifts it.'**
+  String get adminUserRestrictUntilCaption;
+
+  /// BR-10 requires the app to explain a restriction rather than fail mysteriously, and §4.2 shows this text to the account verbatim — so the label promises the right audience.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (they read it word for word)'**
+  String get adminUserStatusReasonLabel;
+
+  /// An example that is a reason rather than a label.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeatedly posting vacancies that ask candidates for money'**
+  String get adminUserStatusReasonHint;
+
+  /// When a restriction lifts. The day is inclusive of nothing: the guard clears it at the start of it.
+  ///
+  /// In en, this message translates to:
+  /// **'Restricted until {date}'**
+  String adminUserRestrictedUntil(String date);
+
+  /// A restriction with no end date — a different fact from one that expires, and the one an administrator needs before deciding whether to act.
+  ///
+  /// In en, this message translates to:
+  /// **'Restricted until an administrator lifts it'**
+  String get adminUserRestrictedIndefinitely;
+
+  /// BR-08's account status trail — half of §10.4's "relevant moderation history".
+  ///
+  /// In en, this message translates to:
+  /// **'Account history'**
+  String get adminUserHistory;
+
+  /// An account whose status has never moved.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has changed this account\'s status.'**
+  String get adminUserHistoryEmpty;
+
+  /// Who made the change.
+  ///
+  /// In en, this message translates to:
+  /// **'By {actor}'**
+  String adminUserHistoryBy(String actor);
+
+  /// A row with no actor: BR-10's guard lifting an expired restriction. The difference between a decision and a deadline is worth keeping on screen.
+  ///
+  /// In en, this message translates to:
+  /// **'By the platform, when the date passed'**
+  String get adminUserHistoryAutomatic;
+
+  /// Complaints filed about this account — the other half of §10.4's moderation history.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaints about this account'**
+  String get adminUserComplaints;
+
+  /// Nobody has reported them.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody has reported this account.'**
+  String get adminUserComplaintsEmpty;
+
+  /// A complaint still awaiting §10.2's decision. A meta chip rather than a badge: this list mixes open and decided ones, and the classification is not the account's status.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get adminUserComplaintOpen;
+
+  /// A complaint somebody has already decided, upheld or dismissed alike — which one is the review's business, not this list's.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewed'**
+  String get adminUserComplaintClosed;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

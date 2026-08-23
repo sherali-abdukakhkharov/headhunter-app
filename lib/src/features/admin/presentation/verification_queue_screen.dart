@@ -254,12 +254,12 @@ class _SubmissionCard extends ConsumerWidget {
         VerificationDecision.rejected => l10n.adminReject,
       },
       needsReason: decision.needsReason,
-      send: (reason) => ref
+      send: (input) => ref
           .read(adminRepositoryProvider)
           .decideVerification(
             item.employerUserId,
             decision,
-            reason: reason,
+            reason: input.reason,
           ),
     );
 

@@ -501,6 +501,33 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-23 - An `HhMetaChip` does not shrink its label, and only a widget test at 360pt says so
+§10.4's user row was drawn with four meta chips — two roles, "Registered
+2026-03-14" and "Last signed in 2026-08-20". It rendered perfectly on a wide
+window and overflowed its card by 43px in the widget test, which runs at 360pt.
+
+The component's `Row` is `MainAxisSize.min` around an unconstrained `Text`, so a
+label wider than the card paints a striped bar rather than truncating. That is
+the exact flaw `HhRemovableChip` documents and solves — "the label shrinks
+before the chip does" — and `HhMetaChip` never got the same treatment because
+everything that had used it until now was one word: a location, a shift, a
+number of openings.
+
+Two things to carry:
+
+- **A chip is for a word, not for a sentence with a date in it.** A fact that
+  reads "Registered 2026-03-14" is a caption. The fix was not to widen the chip;
+  it was to stop using one, and `roleChip` in `account_status_badge.dart` now
+  says so where the next person will look.
+- **Russian would have shipped it broken.** English fits at 360pt and
+  "Регистрация: 2026-03-14" does not, so a wider test window or an English-only
+  eye would both have passed it. The width in the widget tests is load-bearing;
+  do not raise it to make a layout test pass.
+
+The component itself is untouched, because changing the design system requires
+running the gallery on a device (three bugs a green analyze and a green suite
+both missed, below). It is recorded in TODO.md under M11 instead.
+
 ### 2026-08-22 - Sending calendar dates is not the same as knowing what day they mean
 The §10.1 dashboard was displaying wrong counts for a day and this client could
 not have caught it, which is the part to carry.
