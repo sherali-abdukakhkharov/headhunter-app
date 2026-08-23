@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/auth/app_role.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
-import 'package:jobbridge_app/src/features/admin/domain/queue_wait.dart';
+import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/account_status_badge.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_decision_sheet.dart';
+import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 
 /// The instant §10.4's restriction ends, from a calendar day picked on a phone.
 ///
@@ -168,7 +171,7 @@ class _Detail extends ConsumerWidget {
                 Text(
                   switch (user.restrictedUntil) {
                     final until? => l10n.adminUserRestrictedUntil(
-                      isoDay(until),
+                      wallClockDay(until.wallClock),
                     ),
                     _ => l10n.adminUserRestrictedIndefinitely,
                   },
@@ -190,14 +193,18 @@ class _Detail extends ConsumerWidget {
               // an `HhMetaChip`, which does not shrink its text.
               const SizedBox(height: HhSpace.sm),
               Text(
-                l10n.adminUserRegistered(isoDay(user.createdAt)),
+                l10n.adminUserRegistered(
+                  wallClockDay(user.createdAt.wallClock),
+                ),
                 style: HhTypography.caption,
               ),
               Text(
                 // "Never" is worth a line of its own: it is what tells an
                 // abandoned registration from an account somebody uses.
                 switch (user.lastLoginAt) {
-                  final at? => l10n.adminUserLastLogin(isoDay(at)),
+                  final at? => l10n.adminUserLastLogin(
+                    wallClockDay(at.wallClock),
+                  ),
                   _ => l10n.adminUserNeverSignedIn,
                 },
                 style: HhTypography.caption,
@@ -214,6 +221,35 @@ class _Detail extends ConsumerWidget {
         const SizedBox(height: HhSpace.sectionGap),
         Text(l10n.adminUserHistory, style: HhTypography.label),
         const SizedBox(height: HhSpace.sm),
+
+        // §10.4's audit log, asked its two questions about this account. They
+        // sit here rather than beside the actions because they are reading
+        // rather than doing, and because the status trail below is the same
+        // question answered by a different table: BR-08 records what the
+        // account's status became, the audit log records everything an
+        // administrator did — a warning changes no status and appears only
+        // there.
+        HhButton.text(
+          label: l10n.adminUserAuditAbout,
+          onPressed: () => GoRouter.of(context).go(
+            Routes.adminAuditForTarget(
+              AuditTargetType.user.wire,
+              user.userId,
+            ),
+          ),
+        ),
+        // Offered only where it can answer: an audit row is only ever written
+        // by an administrator, so "what has this candidate done" is a query
+        // guaranteed to come back empty and to read as a bug.
+        if (user.roles.contains(AppRole.admin))
+          HhButton.text(
+            label: l10n.adminUserAuditBy,
+            onPressed: () => GoRouter.of(
+              context,
+            ).go(Routes.adminAuditByActor(user.userId)),
+          ),
+        const SizedBox(height: HhSpace.sm),
+
         if (detail.statusHistory.isEmpty)
           Text(
             l10n.adminUserHistoryEmpty,
@@ -441,7 +477,10 @@ class _HistoryRow extends StatelessWidget {
             children: [
               accountStatusBadge(entry.toStatus.wire, l10n),
               const Spacer(),
-              Text(isoDay(entry.createdAt), style: HhTypography.caption),
+              Text(
+                wallClockDay(entry.createdAt.wallClock),
+                style: HhTypography.caption,
+              ),
             ],
           ),
 
@@ -504,7 +543,10 @@ class _ComplaintRow extends StatelessWidget {
                     : HhIconPath.checkCircle,
               ),
               const Spacer(),
-              Text(isoDay(complaint.createdAt), style: HhTypography.caption),
+              Text(
+                wallClockDay(complaint.createdAt.wallClock),
+                style: HhTypography.caption,
+              ),
             ],
           ),
           const SizedBox(height: HhSpace.sm),

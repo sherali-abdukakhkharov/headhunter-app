@@ -10,9 +10,9 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
-import 'package:jobbridge_app/src/features/admin/domain/queue_wait.dart';
 import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/account_status_badge.dart';
+import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 import 'package:jobbridge_app/src/shared/widgets/iso_date_field.dart';
 
 /// §10.4's user search: the tab an administrator finds a person from (UAT-14).
@@ -148,7 +148,25 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
         child: ListView(
           padding: const EdgeInsets.all(HhSpace.gutter),
           children: [
-            Text(l10n.adminUsersTitle, style: HhTypography.title),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.adminUsersTitle,
+                    style: HhTypography.title,
+                  ),
+                ),
+                // §10.4 is "user management **and** audit", and this is the
+                // only way to the log that is not about somebody in
+                // particular. It costs a header row rather than a tab: the
+                // shell is capped at five and all five are spoken for.
+                HhButton.text(
+                  label: l10n.adminAuditTitle,
+                  onPressed: () =>
+                      GoRouter.of(context).go(Routes.adminAudit),
+                ),
+              ],
+            ),
             const SizedBox(height: HhSpace.md),
 
             HhTextField(
@@ -489,7 +507,7 @@ class _UserRow extends StatelessWidget {
           // 2026-03-14" is long enough in Russian to overflow the card on a
           // 360pt phone. The chips left here are single words.
           Text(
-            l10n.adminUserRegistered(isoDay(user.createdAt)),
+            l10n.adminUserRegistered(wallClockDay(user.createdAt.wallClock)),
             style: HhTypography.caption,
           ),
         ],

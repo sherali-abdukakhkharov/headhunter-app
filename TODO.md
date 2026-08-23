@@ -1577,7 +1577,7 @@ this opens. Deep links moved to M8.
 - [ ] Preferences; security/account categories not offered as disableable
 
 ## M10 - Admin module *(§10.1 done 2026-08-21; §10.2 complete 2026-08-22;
-§10.4 done bar the audit log 2026-08-23)*
+§10.4 complete 2026-08-23)*
 
 **The whole admin API was already built** — `src/modules/admin` on the backend
 covers §10.1 through §10.5, audit log and retention included. So nothing in this
@@ -1865,12 +1865,50 @@ remaining item is a screen.
          `complaints`.
       3. `phone` is present because §11.1 releases contact data to this role and
          logs the read — BR-09's admin branch, and it is also the search key
-- [ ] **§10.4's audit log** — `GET /admin/audit` → `AuditLogDto`.
+- [x] **§10.4's audit log, 2026-08-23 — and §10.4 is closed.**
+      `GET /admin/audit` → `AuditLogDto`.
       `AuditEntryDto.details` is an **opaque key/value bag**: its keys differ per
       `action`, are enumerated nowhere, and a client that guesses at them is
       wrong for the next action added. **Render it as text; do not parse
       values.** Any timestamp inside carries §2's offset — formatted at the write
-      site, because a `jsonb` bag admits no read-side fix (see MEMORY.md)
+      site, because a `jsonb` bag admits no read-side fix (see MEMORY.md).
+      Four decisions worth keeping:
+      **A uuid is a way in, not a name.** The DTO carries `actorUserId` and
+      `targetId` and no names, and resolving one means `GET /admin/users/:id`
+      per distinct id — a request that returns a phone number, a status history
+      and a complaint list to obtain a string, and writes a §11.1 access log
+      line each time. Twenty rows would buy a page of names with a page of
+      logged reads of other people's contact details, on a screen nobody opened
+      to read contact details. So the id is shown as it is and the row *opens*
+      that account instead. Raised as an ask — one `actorName` field, resolved
+      by the expression `GET /admin/users` already uses; see
+      [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md). The navigation is worth
+      keeping either way: a name is not an account.
+      **Only a `user` target links.** A vacancy id has no screen that would
+      accept it — the moderation review holds only `under_moderation` ones —
+      and a complaint id would open the review with its decide buttons live,
+      which is how a complaint somebody already closed gets decided a second
+      time. Same reasoning as §10.4's complaint list.
+      **The action code is a string, and an unknown one renders as itself.**
+      The set grows server-side (§10.3's dictionary edits and §10.5's wallet
+      adjustment are already in it), so a build that has not heard of an action
+      must still draw its row: a dotted code is a stable identifier somebody
+      can search the backend for, and "unknown action" is not. Fourteen have
+      sentences today.
+      **It lives under the users tab, at `/admin/users/audit`, registered
+      *before* `:id`.** §10.4 is "user management **and** audit" and both of
+      the log's questions are asked about somebody an administrator is already
+      reading, so a tab of its own would make following a trail switch branches
+      and send the back gesture to the wrong place. The registration order is
+      load-bearing — `:id` matches the literal `audit` as readily as a uuid —
+      and is asserted against the **real** router rather than a hand-built one,
+      because a test router would be asserting its own order. Mutation-verified
+      by swapping the two.
+      Reached three ways: the whole log from the users tab header, "everything
+      done to this account" from any user screen, and "everything this
+      administrator has done" from one that holds the admin role — offered only
+      there, because only an administrator ever writes an audit row and an
+      empty answer would read as a bug
 - [ ] Dictionary management with four localized labels + skill merge, designed for
       a phone (there is no web panel)
 - [ ] **§10.5 wallet and payment administration** *(new, 2026-08-10)* — employer

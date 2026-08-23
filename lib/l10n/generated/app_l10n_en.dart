@@ -2618,4 +2618,103 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get adminUserComplaintClosed => 'Reviewed';
+
+  @override
+  String get adminAuditTitle => 'Audit log';
+
+  @override
+  String get adminAuditNote =>
+      'Newest first. Nothing here can be changed or removed.';
+
+  @override
+  String get adminAuditEmpty => 'Nothing recorded yet';
+
+  @override
+  String get adminAuditEmptyBody =>
+      'An entry appears here whenever an administrator decides, verifies, moderates or sanctions something.';
+
+  @override
+  String get adminAuditEmptyFilteredBody =>
+      'Nothing has been recorded for this one. The rest of the log is below.';
+
+  @override
+  String get adminAuditFilteredByActor => 'Only this administrator';
+
+  @override
+  String get adminAuditFilteredByTarget => 'Only this record';
+
+  @override
+  String get adminAuditShowAll => 'Show the whole log';
+
+  @override
+  String get adminAuditActor => 'Administrator';
+
+  @override
+  String get adminAuditDetails => 'What changed';
+
+  @override
+  String get adminAuditTargetUser => 'Account';
+
+  @override
+  String get adminAuditTargetEmployer => 'Employer';
+
+  @override
+  String get adminAuditTargetVacancy => 'Vacancy';
+
+  @override
+  String get adminAuditTargetComplaint => 'Complaint';
+
+  @override
+  String get adminAuditTargetDictionaryItem => 'Dictionary item';
+
+  @override
+  String get adminAuditTargetUnknown => 'Other';
+
+  @override
+  String get adminAuditVerificationDecided => 'Employer verification decided';
+
+  @override
+  String get adminAuditVacancyModerated => 'Vacancy moderated';
+
+  @override
+  String get adminAuditComplaintReviewed => 'Complaint reviewed';
+
+  @override
+  String get adminAuditUserWarned => 'User warned';
+
+  @override
+  String get adminAuditUserRestricted => 'User restricted';
+
+  @override
+  String get adminAuditUserBlocked => 'User blocked';
+
+  @override
+  String get adminAuditUserUnblocked => 'User unblocked';
+
+  @override
+  String get adminAuditRestrictionExpired => 'Restriction expired';
+
+  @override
+  String get adminAuditAccountPurged => 'Account deleted';
+
+  @override
+  String get adminAuditWalletAdjusted => 'Wallet adjusted';
+
+  @override
+  String get adminAuditDictionaryCreated => 'Dictionary item added';
+
+  @override
+  String get adminAuditDictionaryUpdated => 'Dictionary item changed';
+
+  @override
+  String get adminAuditDictionaryDeactivated => 'Dictionary item deactivated';
+
+  @override
+  String get adminAuditDictionaryMerged => 'Dictionary items merged';
+
+  @override
+  String get adminUserAuditAbout => 'Everything done to this account';
+
+  @override
+  String get adminUserAuditBy => 'Everything this administrator has done';
 }

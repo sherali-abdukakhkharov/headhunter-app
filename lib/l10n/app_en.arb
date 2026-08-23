@@ -3363,5 +3363,133 @@
   "adminUserComplaintClosed": "Reviewed",
   "@adminUserComplaintClosed": {
     "description": "A complaint somebody has already decided, upheld or dismissed alike — which one is the review's business, not this list's."
+  },
+  "adminAuditTitle": "Audit log",
+  "@adminAuditTitle": {
+    "description": "§10.4's immutable log."
+  },
+  "adminAuditNote": "Newest first. Nothing here can be changed or removed.",
+  "@adminAuditNote": {
+    "description": "Said once at the top. Not decoration: a log that could be edited would not be one, and the immutability is a property of the table rather than of this app having no write path."
+  },
+  "adminAuditEmpty": "Nothing recorded yet",
+  "@adminAuditEmpty": {
+    "description": "No rows at all."
+  },
+  "adminAuditEmptyBody": "An entry appears here whenever an administrator decides, verifies, moderates or sanctions something.",
+  "@adminAuditEmptyBody": {
+    "description": "The unfiltered log, empty. Says what would put a row here."
+  },
+  "adminAuditEmptyFilteredBody": "Nothing has been recorded for this one. The rest of the log is below.",
+  "@adminAuditEmptyFilteredBody": {
+    "description": "The filtered log, empty. A different sentence from the unfiltered one: here the log is not empty, this slice of it is."
+  },
+  "adminAuditFilteredByActor": "Only this administrator",
+  "@adminAuditFilteredByActor": {
+    "description": "§10.4's first question: what has this administrator done."
+  },
+  "adminAuditFilteredByTarget": "Only this record",
+  "@adminAuditFilteredByTarget": {
+    "description": "§10.4's other question: what was done to this thing."
+  },
+  "adminAuditShowAll": "Show the whole log",
+  "@adminAuditShowAll": {
+    "description": "Back to the unfiltered log. The only control on the screen, because every filter this endpoint takes is a uuid and there is nothing useful to type."
+  },
+  "adminAuditActor": "Administrator",
+  "@adminAuditActor": {
+    "description": "Who wrote the row. The id beside it is not resolved to a name — see the screen doc — and the row opens that account instead."
+  },
+  "adminAuditDetails": "What changed",
+  "@adminAuditDetails": {
+    "description": "Heading over the opaque key/value bag. Rendered as text, never parsed: the keys differ per action and are enumerated nowhere."
+  },
+  "adminAuditTargetUser": "Account",
+  "@adminAuditTargetUser": {
+    "description": "An audit row about an account. The one target kind this app has a screen for, so the only one that opens."
+  },
+  "adminAuditTargetEmployer": "Employer",
+  "@adminAuditTargetEmployer": {
+    "description": "An audit row about an employer — a verification decision."
+  },
+  "adminAuditTargetVacancy": "Vacancy",
+  "@adminAuditTargetVacancy": {
+    "description": "An audit row about a vacancy — a moderation decision, a pause or a removal."
+  },
+  "adminAuditTargetComplaint": "Complaint",
+  "@adminAuditTargetComplaint": {
+    "description": "An audit row about a complaint review."
+  },
+  "adminAuditTargetDictionaryItem": "Dictionary item",
+  "@adminAuditTargetDictionaryItem": {
+    "description": "An audit row about a dictionary item (§10.3)."
+  },
+  "adminAuditTargetUnknown": "Other",
+  "@adminAuditTargetUnknown": {
+    "description": "A target kind added after this build shipped. The row still renders — it is a record of something that happened, and it can simply not be named."
+  },
+  "adminAuditVerificationDecided": "Employer verification decided",
+  "@adminAuditVerificationDecided": {
+    "description": "`employer.verification_decided`."
+  },
+  "adminAuditVacancyModerated": "Vacancy moderated",
+  "@adminAuditVacancyModerated": {
+    "description": "`vacancy.moderated`."
+  },
+  "adminAuditComplaintReviewed": "Complaint reviewed",
+  "@adminAuditComplaintReviewed": {
+    "description": "`complaint.reviewed`."
+  },
+  "adminAuditUserWarned": "User warned",
+  "@adminAuditUserWarned": {
+    "description": "`user.warned`. The action that changes no status, which is why the audit log has to exist at all."
+  },
+  "adminAuditUserRestricted": "User restricted",
+  "@adminAuditUserRestricted": {
+    "description": "`user.restricted`."
+  },
+  "adminAuditUserBlocked": "User blocked",
+  "@adminAuditUserBlocked": {
+    "description": "`user.blocked`."
+  },
+  "adminAuditUserUnblocked": "User unblocked",
+  "@adminAuditUserUnblocked": {
+    "description": "`user.unblocked`."
+  },
+  "adminAuditRestrictionExpired": "Restriction expired",
+  "@adminAuditRestrictionExpired": {
+    "description": "`user.restriction_expired` — written by BR-10's guard rather than by a person, which is why the actor line on such a row is the platform."
+  },
+  "adminAuditAccountPurged": "Account deleted",
+  "@adminAuditAccountPurged": {
+    "description": "`user.purged` — BR-14's deletion. The one action whose target no longer exists when the row is read."
+  },
+  "adminAuditWalletAdjusted": "Wallet adjusted",
+  "@adminAuditWalletAdjusted": {
+    "description": "`wallet.adjusted` — §10.5's manual adjustment, the one route that can create Coins from nothing."
+  },
+  "adminAuditDictionaryCreated": "Dictionary item added",
+  "@adminAuditDictionaryCreated": {
+    "description": "`dictionary.item_created` (§10.3)."
+  },
+  "adminAuditDictionaryUpdated": "Dictionary item changed",
+  "@adminAuditDictionaryUpdated": {
+    "description": "`dictionary.item_updated` (§10.3)."
+  },
+  "adminAuditDictionaryDeactivated": "Dictionary item deactivated",
+  "@adminAuditDictionaryDeactivated": {
+    "description": "`dictionary.item_deactivated` (§10.3)."
+  },
+  "adminAuditDictionaryMerged": "Dictionary items merged",
+  "@adminAuditDictionaryMerged": {
+    "description": "`dictionary.items_merged` (§10.3)."
+  },
+  "adminUserAuditAbout": "Everything done to this account",
+  "@adminUserAuditAbout": {
+    "description": "The audit log filtered to this account — §10.4's \"what was done to this thing\". Distinct from the status trail below it: BR-08 records what the account's status became, and a warning changes no status."
+  },
+  "adminUserAuditBy": "Everything this administrator has done",
+  "@adminUserAuditBy": {
+    "description": "The audit log filtered to this administrator. Offered only on an account that holds the admin role, because only an administrator ever writes an audit row and an empty answer would read as a bug."
   }
 }

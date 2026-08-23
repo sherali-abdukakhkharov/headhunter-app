@@ -1,6 +1,7 @@
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
+import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
@@ -109,4 +110,8 @@ abstract class FakeAdminBase implements AdminRepository {
     String reason, {
     String? restrictedUntil,
   }) => _unused('setUserStatus');
+
+  @override
+  Future<List<AuditEntry>> auditLog(AuditQuery query, {int offset = 0}) =>
+      _unused('auditLog');
 }

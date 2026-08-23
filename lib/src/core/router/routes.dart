@@ -120,6 +120,38 @@ abstract final class Routes {
   /// results the administrator searched for.
   static String adminUserFor(String userId) => '$adminUsers/$userId';
 
+  /// §10.4's audit log.
+  ///
+  /// **A sibling of `adminUserFor`, and it must be registered before it** — the
+  /// user screen's path is `:id`, which would match the literal `audit` too.
+  /// go_router takes the first route that matches, so the order in
+  /// `app_router.dart` is load-bearing and is commented there. A user id is a
+  /// uuid, so nothing else can collide.
+  ///
+  /// A child of the users tab rather than a tab of its own, because §10.4 owns
+  /// both — "user management **and audit**" is one section — and because both
+  /// questions the log answers are asked *about* somebody an administrator is
+  /// already looking at. Putting it under another tab would make following a
+  /// trail switch branches, and the back gesture would return to that tab
+  /// instead of to the account.
+  static const adminAudit = '$adminUsers/audit';
+
+  /// The log's two questions, as query parameters. Named here with every other
+  /// route parameter, and read by the screen — `core/` does not import a
+  /// feature's domain to learn what its own paths carry.
+  static const adminAuditActorParam = 'actor';
+  static const adminAuditTargetTypeParam = 'targetType';
+  static const adminAuditTargetIdParam = 'targetId';
+
+  /// "What has this administrator done" (§10.4).
+  static String adminAuditByActor(String actorUserId) =>
+      '$adminAudit?$adminAuditActorParam=$actorUserId';
+
+  /// "What was done to this thing" (§10.4) — the other question.
+  static String adminAuditForTarget(String targetType, String targetId) =>
+      '$adminAudit?$adminAuditTargetTypeParam=$targetType'
+      '&$adminAuditTargetIdParam=$targetId';
+
   // --- Development surfaces ------------------------------------------------
 
   /// Developer tools: the role switcher, the design catalogue, the health probe

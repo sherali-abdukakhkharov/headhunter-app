@@ -176,6 +176,40 @@ exactly where nobody notices that question is unanswered.
 
 ---
 
+## Open
+
+### 1. The audit log has no name on it — raised 2026-08-23
+
+`AuditEntryDto` carries `actorUserId` and `targetId` and no names, and §10.4's
+first question of the log is *"what has this administrator done"*. A screen full
+of uuids cannot answer it: an administrator reading twenty rows sees twenty
+36-character strings and has to open each one to learn who acted.
+
+**Why the client is not resolving them itself.** The only route from an id to a
+name is `GET /admin/users/:id`, which returns a phone number, a BR-08 status
+history and a complaint list to obtain a string — and logs a §11.1 access every
+time. A page of twenty rows would buy a page of names with a page of logged
+reads of other people's contact details, on a screen nobody opened to read
+contact details.
+
+**The ask is one field**: `actorName`, resolved by the same `DISPLAY_NAME`
+expression `GET /admin/users` already uses, in the query that already reads the
+row. Not a target name — a target can be a vacancy, a complaint or a dictionary
+item, and four joins to label a trail is a different and much larger ask that
+nothing has needed yet.
+
+**What the client does meanwhile, and it is not a workaround to undo.** The
+actor id is shown as it is and made a *way in*: tapping the row opens that
+administrator's account, where one deliberate tap costs one deliberate read.
+That navigation is worth keeping whatever happens to the field — a name is not
+an account. If `actorName` arrives, the row shows it above the id and **nothing
+else changes**, the same way the employer name lit up on the vacancy review
+with no client release.
+
+**Not asked for: a target name.** See above; and for a `user` target the row
+already opens the account, which answers the question better than a label
+would.
+
 ## Facts §10.4 needs, from settling the above
 
 - **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto` +

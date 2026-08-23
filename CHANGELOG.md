@@ -17,6 +17,32 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.6.0+11 — 2026-08-23
+
+§10.4 is finished: the audit log is in the app. Everything an administrator
+decides is now readable by another administrator, from the account it was done
+to or from the person who did it.
+
+### Added
+
+- **The audit log (§10.4)** — reachable from the top of the Users tab, and from
+  any account by two questions: **everything done to this account**, and, on a
+  colleague's account, **everything this administrator has done**.
+  Each entry says what was done, the date **and the time**, what it was about,
+  the reason the administrator typed, and — where the action recorded one — what
+  changed, exactly as it was stored.
+  **Nothing here can be changed or removed**, and the screen says so. That is a
+  property of the database rather than of this app not offering a button.
+  **An id opens the account it names.** The log records who acted as an
+  identifier rather than a name, so instead of showing a string nobody can read,
+  the row leads to that person's account. The same goes for an entry about an
+  account. Entries about a vacancy or a complaint keep their identifier and lead
+  nowhere, because opening a decision somebody already made is how it gets made
+  a second time.
+  **An action this version has not heard of still appears**, under its own code.
+  The list of things worth recording grows on the server, and a log that hid the
+  rows it could not name would not be a log.
+
 ## 1.5.0+10 — 2026-08-23
 
 §10.4 lands: an administrator can now find any account and act on it. It is also

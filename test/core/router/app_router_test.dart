@@ -16,6 +16,8 @@ import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/audit_log_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/user_detail_screen.dart';
 import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
@@ -497,6 +499,45 @@ void main() {
           (t) => t.path == Routes.candidateMessages,
         ),
       );
+    });
+  });
+
+  group('§10.4 registers two children under one tab', () {
+    testWidgets('the audit log wins the path a user id would also match', (
+      tester,
+    ) async {
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.admin}),
+        initialLocation: Routes.adminAudit,
+      );
+
+      // `:id` matches the literal `audit` as readily as it matches a uuid, so
+      // the two child routes are registered in an order that decides this.
+      // Asserted through the real router rather than a hand-built one, because
+      // a test router would be asserting its own registration order.
+      expect(result.location, Routes.adminAudit);
+      expect(find.byType(AuditLogScreen), findsOneWidget);
+      expect(find.byType(UserDetailScreen), findsNothing);
+      await _unmountTree(tester);
+    });
+
+    testWidgets('and a uuid still reaches the account', (tester) async {
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.admin}),
+        initialLocation: Routes.adminUserFor(
+          '3f2a1b9c-0000-4000-8000-000000000001',
+        ),
+      );
+
+      expect(find.byType(UserDetailScreen), findsOneWidget);
+      expect(find.byType(AuditLogScreen), findsNothing);
+      expect(
+        result.location,
+        '/admin/users/3f2a1b9c-0000-4000-8000-000000000001',
+      );
+      await _unmountTree(tester);
     });
   });
 

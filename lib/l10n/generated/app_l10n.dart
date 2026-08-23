@@ -4636,6 +4636,198 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Reviewed'**
   String get adminUserComplaintClosed;
+
+  /// §10.4's immutable log.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit log'**
+  String get adminAuditTitle;
+
+  /// Said once at the top. Not decoration: a log that could be edited would not be one, and the immutability is a property of the table rather than of this app having no write path.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first. Nothing here can be changed or removed.'**
+  String get adminAuditNote;
+
+  /// No rows at all.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet'**
+  String get adminAuditEmpty;
+
+  /// The unfiltered log, empty. Says what would put a row here.
+  ///
+  /// In en, this message translates to:
+  /// **'An entry appears here whenever an administrator decides, verifies, moderates or sanctions something.'**
+  String get adminAuditEmptyBody;
+
+  /// The filtered log, empty. A different sentence from the unfiltered one: here the log is not empty, this slice of it is.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has been recorded for this one. The rest of the log is below.'**
+  String get adminAuditEmptyFilteredBody;
+
+  /// §10.4's first question: what has this administrator done.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this administrator'**
+  String get adminAuditFilteredByActor;
+
+  /// §10.4's other question: what was done to this thing.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this record'**
+  String get adminAuditFilteredByTarget;
+
+  /// Back to the unfiltered log. The only control on the screen, because every filter this endpoint takes is a uuid and there is nothing useful to type.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the whole log'**
+  String get adminAuditShowAll;
+
+  /// Who wrote the row. The id beside it is not resolved to a name — see the screen doc — and the row opens that account instead.
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator'**
+  String get adminAuditActor;
+
+  /// Heading over the opaque key/value bag. Rendered as text, never parsed: the keys differ per action and are enumerated nowhere.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed'**
+  String get adminAuditDetails;
+
+  /// An audit row about an account. The one target kind this app has a screen for, so the only one that opens.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get adminAuditTargetUser;
+
+  /// An audit row about an employer — a verification decision.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer'**
+  String get adminAuditTargetEmployer;
+
+  /// An audit row about a vacancy — a moderation decision, a pause or a removal.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancy'**
+  String get adminAuditTargetVacancy;
+
+  /// An audit row about a complaint review.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint'**
+  String get adminAuditTargetComplaint;
+
+  /// An audit row about a dictionary item (§10.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionary item'**
+  String get adminAuditTargetDictionaryItem;
+
+  /// A target kind added after this build shipped. The row still renders — it is a record of something that happened, and it can simply not be named.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get adminAuditTargetUnknown;
+
+  /// `employer.verification_decided`.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer verification decided'**
+  String get adminAuditVerificationDecided;
+
+  /// `vacancy.moderated`.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancy moderated'**
+  String get adminAuditVacancyModerated;
+
+  /// `complaint.reviewed`.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint reviewed'**
+  String get adminAuditComplaintReviewed;
+
+  /// `user.warned`. The action that changes no status, which is why the audit log has to exist at all.
+  ///
+  /// In en, this message translates to:
+  /// **'User warned'**
+  String get adminAuditUserWarned;
+
+  /// `user.restricted`.
+  ///
+  /// In en, this message translates to:
+  /// **'User restricted'**
+  String get adminAuditUserRestricted;
+
+  /// `user.blocked`.
+  ///
+  /// In en, this message translates to:
+  /// **'User blocked'**
+  String get adminAuditUserBlocked;
+
+  /// `user.unblocked`.
+  ///
+  /// In en, this message translates to:
+  /// **'User unblocked'**
+  String get adminAuditUserUnblocked;
+
+  /// `user.restriction_expired` — written by BR-10's guard rather than by a person, which is why the actor line on such a row is the platform.
+  ///
+  /// In en, this message translates to:
+  /// **'Restriction expired'**
+  String get adminAuditRestrictionExpired;
+
+  /// `user.purged` — BR-14's deletion. The one action whose target no longer exists when the row is read.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted'**
+  String get adminAuditAccountPurged;
+
+  /// `wallet.adjusted` — §10.5's manual adjustment, the one route that can create Coins from nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet adjusted'**
+  String get adminAuditWalletAdjusted;
+
+  /// `dictionary.item_created` (§10.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionary item added'**
+  String get adminAuditDictionaryCreated;
+
+  /// `dictionary.item_updated` (§10.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionary item changed'**
+  String get adminAuditDictionaryUpdated;
+
+  /// `dictionary.item_deactivated` (§10.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionary item deactivated'**
+  String get adminAuditDictionaryDeactivated;
+
+  /// `dictionary.items_merged` (§10.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionary items merged'**
+  String get adminAuditDictionaryMerged;
+
+  /// The audit log filtered to this account — §10.4's "what was done to this thing". Distinct from the status trail below it: BR-08 records what the account's status became, and a warning changes no status.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything done to this account'**
+  String get adminUserAuditAbout;
+
+  /// The audit log filtered to this administrator. Offered only on an account that holds the admin role, because only an administrator ever writes an audit row and an empty answer would read as a bug.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything this administrator has done'**
+  String get adminUserAuditBy;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -2623,6 +2623,107 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminUserComplaintClosed => 'Ko\'rib chiqilgan';
+
+  @override
+  String get adminAuditTitle => 'Audit jurnali';
+
+  @override
+  String get adminAuditNote =>
+      'Eng yangisi birinchi. Bu yerdagi hech narsani o\'zgartirib yoki o\'chirib bo\'lmaydi.';
+
+  @override
+  String get adminAuditEmpty => 'Hali hech narsa yozilmagan';
+
+  @override
+  String get adminAuditEmptyBody =>
+      'Administrator biror narsani hal qilsa, tasdiqlasa, moderatsiya qilsa yoki chora ko\'rsa, bu yerda yozuv paydo bo\'ladi.';
+
+  @override
+  String get adminAuditEmptyFilteredBody =>
+      'Buning uchun hech narsa yozilmagan. Jurnalning qolgani quyida.';
+
+  @override
+  String get adminAuditFilteredByActor => 'Faqat shu administrator';
+
+  @override
+  String get adminAuditFilteredByTarget => 'Faqat shu yozuv';
+
+  @override
+  String get adminAuditShowAll => 'Butun jurnalni ko\'rsatish';
+
+  @override
+  String get adminAuditActor => 'Administrator';
+
+  @override
+  String get adminAuditDetails => 'Nima o\'zgardi';
+
+  @override
+  String get adminAuditTargetUser => 'Hisob';
+
+  @override
+  String get adminAuditTargetEmployer => 'Ish beruvchi';
+
+  @override
+  String get adminAuditTargetVacancy => 'Vakansiya';
+
+  @override
+  String get adminAuditTargetComplaint => 'Shikoyat';
+
+  @override
+  String get adminAuditTargetDictionaryItem => 'Lug\'at bandi';
+
+  @override
+  String get adminAuditTargetUnknown => 'Boshqa';
+
+  @override
+  String get adminAuditVerificationDecided =>
+      'Ish beruvchi tasdiqlash bo‘yicha qaror';
+
+  @override
+  String get adminAuditVacancyModerated => 'Vakansiya moderatsiya qilindi';
+
+  @override
+  String get adminAuditComplaintReviewed => 'Shikoyat ko\'rib chiqildi';
+
+  @override
+  String get adminAuditUserWarned => 'Foydalanuvchi ogohlantirildi';
+
+  @override
+  String get adminAuditUserRestricted => 'Foydalanuvchi cheklandi';
+
+  @override
+  String get adminAuditUserBlocked => 'Foydalanuvchi bloklandi';
+
+  @override
+  String get adminAuditUserUnblocked => 'Foydalanuvchi blokdan chiqarildi';
+
+  @override
+  String get adminAuditRestrictionExpired => 'Cheklov muddati tugadi';
+
+  @override
+  String get adminAuditAccountPurged => 'Hisob o\'chirildi';
+
+  @override
+  String get adminAuditWalletAdjusted => 'Hamyon qo\'lda o\'zgartirildi';
+
+  @override
+  String get adminAuditDictionaryCreated => 'Lug\'atga band qo\'shildi';
+
+  @override
+  String get adminAuditDictionaryUpdated => 'Lug\'at bandi o\'zgartirildi';
+
+  @override
+  String get adminAuditDictionaryDeactivated =>
+      'Lug\'at bandi o\'chirib qo\'yildi';
+
+  @override
+  String get adminAuditDictionaryMerged => 'Lug\'at bandlari birlashtirildi';
+
+  @override
+  String get adminUserAuditAbout => 'Bu hisob ustida qilingan hamma narsa';
+
+  @override
+  String get adminUserAuditBy => 'Bu administrator qilgan hamma narsa';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -5231,6 +5332,106 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminUserComplaintClosed => 'Кўриб чиқилган';
+
+  @override
+  String get adminAuditTitle => 'Аудит журнали';
+
+  @override
+  String get adminAuditNote =>
+      'Энг янгиси биринчи. Бу ердаги ҳеч нарсани ўзгартириб ёки ўчириб бўлмайди.';
+
+  @override
+  String get adminAuditEmpty => 'Ҳали ҳеч нарса ёзилмаган';
+
+  @override
+  String get adminAuditEmptyBody =>
+      'Администратор бирор нарсани ҳал қилса, тасдиқласа, модерация қилса ёки чора кўрса, бу ерда ёзув пайдо бўлади.';
+
+  @override
+  String get adminAuditEmptyFilteredBody =>
+      'Бунинг учун ҳеч нарса ёзилмаган. Журналнинг қолгани қуйида.';
+
+  @override
+  String get adminAuditFilteredByActor => 'Фақат шу администратор';
+
+  @override
+  String get adminAuditFilteredByTarget => 'Фақат шу ёзув';
+
+  @override
+  String get adminAuditShowAll => 'Бутун журнални кўрсатиш';
+
+  @override
+  String get adminAuditActor => 'Администратор';
+
+  @override
+  String get adminAuditDetails => 'Нима ўзгарди';
+
+  @override
+  String get adminAuditTargetUser => 'Ҳисоб';
+
+  @override
+  String get adminAuditTargetEmployer => 'Иш берувчи';
+
+  @override
+  String get adminAuditTargetVacancy => 'Вакансия';
+
+  @override
+  String get adminAuditTargetComplaint => 'Шикоят';
+
+  @override
+  String get adminAuditTargetDictionaryItem => 'Луғат банди';
+
+  @override
+  String get adminAuditTargetUnknown => 'Бошқа';
+
+  @override
+  String get adminAuditVerificationDecided =>
+      'Иш берувчи тасдиқлаш бўйича қарор';
+
+  @override
+  String get adminAuditVacancyModerated => 'Вакансия модерация қилинди';
+
+  @override
+  String get adminAuditComplaintReviewed => 'Шикоят кўриб чиқилди';
+
+  @override
+  String get adminAuditUserWarned => 'Фойдаланувчи огоҳлантирилди';
+
+  @override
+  String get adminAuditUserRestricted => 'Фойдаланувчи чекланди';
+
+  @override
+  String get adminAuditUserBlocked => 'Фойдаланувчи блокланди';
+
+  @override
+  String get adminAuditUserUnblocked => 'Фойдаланувчи блокдан чиқарилди';
+
+  @override
+  String get adminAuditRestrictionExpired => 'Чеклов муддати тугади';
+
+  @override
+  String get adminAuditAccountPurged => 'Ҳисоб ўчирилди';
+
+  @override
+  String get adminAuditWalletAdjusted => 'Ҳамён қўлда ўзгартирилди';
+
+  @override
+  String get adminAuditDictionaryCreated => 'Луғатга банд қўшилди';
+
+  @override
+  String get adminAuditDictionaryUpdated => 'Луғат банди ўзгартирилди';
+
+  @override
+  String get adminAuditDictionaryDeactivated => 'Луғат банди ўчириб қўйилди';
+
+  @override
+  String get adminAuditDictionaryMerged => 'Луғат бандлари бирлаштирилди';
+
+  @override
+  String get adminUserAuditAbout => 'Бу ҳисоб устида қилинган ҳамма нарса';
+
+  @override
+  String get adminUserAuditBy => 'Бу администратор қилган ҳамма нарса';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -7852,4 +8053,105 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminUserComplaintClosed => 'Ko\'rib chiqilgan';
+
+  @override
+  String get adminAuditTitle => 'Audit jurnali';
+
+  @override
+  String get adminAuditNote =>
+      'Eng yangisi birinchi. Bu yerdagi hech narsani o\'zgartirib yoki o\'chirib bo\'lmaydi.';
+
+  @override
+  String get adminAuditEmpty => 'Hali hech narsa yozilmagan';
+
+  @override
+  String get adminAuditEmptyBody =>
+      'Administrator biror narsani hal qilsa, tasdiqlasa, moderatsiya qilsa yoki chora ko\'rsa, bu yerda yozuv paydo bo\'ladi.';
+
+  @override
+  String get adminAuditEmptyFilteredBody =>
+      'Buning uchun hech narsa yozilmagan. Jurnalning qolgani quyida.';
+
+  @override
+  String get adminAuditFilteredByActor => 'Faqat shu administrator';
+
+  @override
+  String get adminAuditFilteredByTarget => 'Faqat shu yozuv';
+
+  @override
+  String get adminAuditShowAll => 'Butun jurnalni ko\'rsatish';
+
+  @override
+  String get adminAuditActor => 'Administrator';
+
+  @override
+  String get adminAuditDetails => 'Nima o\'zgardi';
+
+  @override
+  String get adminAuditTargetUser => 'Hisob';
+
+  @override
+  String get adminAuditTargetEmployer => 'Ish beruvchi';
+
+  @override
+  String get adminAuditTargetVacancy => 'Vakansiya';
+
+  @override
+  String get adminAuditTargetComplaint => 'Shikoyat';
+
+  @override
+  String get adminAuditTargetDictionaryItem => 'Lug\'at bandi';
+
+  @override
+  String get adminAuditTargetUnknown => 'Boshqa';
+
+  @override
+  String get adminAuditVerificationDecided =>
+      'Ish beruvchi tasdiqlash bo‘yicha qaror';
+
+  @override
+  String get adminAuditVacancyModerated => 'Vakansiya moderatsiya qilindi';
+
+  @override
+  String get adminAuditComplaintReviewed => 'Shikoyat ko\'rib chiqildi';
+
+  @override
+  String get adminAuditUserWarned => 'Foydalanuvchi ogohlantirildi';
+
+  @override
+  String get adminAuditUserRestricted => 'Foydalanuvchi cheklandi';
+
+  @override
+  String get adminAuditUserBlocked => 'Foydalanuvchi bloklandi';
+
+  @override
+  String get adminAuditUserUnblocked => 'Foydalanuvchi blokdan chiqarildi';
+
+  @override
+  String get adminAuditRestrictionExpired => 'Cheklov muddati tugadi';
+
+  @override
+  String get adminAuditAccountPurged => 'Hisob o\'chirildi';
+
+  @override
+  String get adminAuditWalletAdjusted => 'Hamyon qo\'lda o\'zgartirildi';
+
+  @override
+  String get adminAuditDictionaryCreated => 'Lug\'atga band qo\'shildi';
+
+  @override
+  String get adminAuditDictionaryUpdated => 'Lug\'at bandi o\'zgartirildi';
+
+  @override
+  String get adminAuditDictionaryDeactivated =>
+      'Lug\'at bandi o\'chirib qo\'yildi';
+
+  @override
+  String get adminAuditDictionaryMerged => 'Lug\'at bandlari birlashtirildi';
+
+  @override
+  String get adminUserAuditAbout => 'Bu hisob ustida qilingan hamma narsa';
+
+  @override
+  String get adminUserAuditBy => 'Bu administrator qilgan hamma narsa';
 }

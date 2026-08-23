@@ -796,3 +796,176 @@ final class AdminUserFamily extends $Family
   @override
   String toString() => r'adminUserProvider';
 }
+
+/// One slice of §10.4's audit log, newest first.
+///
+/// A family keyed by the whole [AuditQuery] rather than a single notifier,
+/// because the section asks two different questions of this log and an
+/// administrator following a trail asks them in sequence: "what was done to
+/// this account", then "what else has that administrator done". Keying by the
+/// question is what lets the second answer arrive without discarding the
+/// first, and what makes going back cost no request.
+///
+/// Not `keepAlive`, like every other §10 read: the log carries who did what to
+/// whom, and a cache that outlived the screen would keep answering after the
+/// administrator had moved on.
+
+@ProviderFor(AuditLog)
+final auditLogProvider = AuditLogFamily._();
+
+/// One slice of §10.4's audit log, newest first.
+///
+/// A family keyed by the whole [AuditQuery] rather than a single notifier,
+/// because the section asks two different questions of this log and an
+/// administrator following a trail asks them in sequence: "what was done to
+/// this account", then "what else has that administrator done". Keying by the
+/// question is what lets the second answer arrive without discarding the
+/// first, and what makes going back cost no request.
+///
+/// Not `keepAlive`, like every other §10 read: the log carries who did what to
+/// whom, and a cache that outlived the screen would keep answering after the
+/// administrator had moved on.
+final class AuditLogProvider
+    extends $AsyncNotifierProvider<AuditLog, AdminQueuePage<AuditEntry>> {
+  /// One slice of §10.4's audit log, newest first.
+  ///
+  /// A family keyed by the whole [AuditQuery] rather than a single notifier,
+  /// because the section asks two different questions of this log and an
+  /// administrator following a trail asks them in sequence: "what was done to
+  /// this account", then "what else has that administrator done". Keying by the
+  /// question is what lets the second answer arrive without discarding the
+  /// first, and what makes going back cost no request.
+  ///
+  /// Not `keepAlive`, like every other §10 read: the log carries who did what to
+  /// whom, and a cache that outlived the screen would keep answering after the
+  /// administrator had moved on.
+  AuditLogProvider._({
+    required AuditLogFamily super.from,
+    required AuditQuery super.argument,
+  }) : super(
+         retry: null,
+         name: r'auditLogProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$auditLogHash();
+
+  @override
+  String toString() {
+    return r'auditLogProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  AuditLog create() => AuditLog();
+
+  @override
+  bool operator ==(Object other) {
+    return other is AuditLogProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$auditLogHash() => r'cb1991ae2bdabc308431f899cbe7d0b15b2c6a39';
+
+/// One slice of §10.4's audit log, newest first.
+///
+/// A family keyed by the whole [AuditQuery] rather than a single notifier,
+/// because the section asks two different questions of this log and an
+/// administrator following a trail asks them in sequence: "what was done to
+/// this account", then "what else has that administrator done". Keying by the
+/// question is what lets the second answer arrive without discarding the
+/// first, and what makes going back cost no request.
+///
+/// Not `keepAlive`, like every other §10 read: the log carries who did what to
+/// whom, and a cache that outlived the screen would keep answering after the
+/// administrator had moved on.
+
+final class AuditLogFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          AuditLog,
+          AsyncValue<AdminQueuePage<AuditEntry>>,
+          AdminQueuePage<AuditEntry>,
+          FutureOr<AdminQueuePage<AuditEntry>>,
+          AuditQuery
+        > {
+  AuditLogFamily._()
+    : super(
+        retry: null,
+        name: r'auditLogProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One slice of §10.4's audit log, newest first.
+  ///
+  /// A family keyed by the whole [AuditQuery] rather than a single notifier,
+  /// because the section asks two different questions of this log and an
+  /// administrator following a trail asks them in sequence: "what was done to
+  /// this account", then "what else has that administrator done". Keying by the
+  /// question is what lets the second answer arrive without discarding the
+  /// first, and what makes going back cost no request.
+  ///
+  /// Not `keepAlive`, like every other §10 read: the log carries who did what to
+  /// whom, and a cache that outlived the screen would keep answering after the
+  /// administrator had moved on.
+
+  AuditLogProvider call(AuditQuery query) =>
+      AuditLogProvider._(argument: query, from: this);
+
+  @override
+  String toString() => r'auditLogProvider';
+}
+
+/// One slice of §10.4's audit log, newest first.
+///
+/// A family keyed by the whole [AuditQuery] rather than a single notifier,
+/// because the section asks two different questions of this log and an
+/// administrator following a trail asks them in sequence: "what was done to
+/// this account", then "what else has that administrator done". Keying by the
+/// question is what lets the second answer arrive without discarding the
+/// first, and what makes going back cost no request.
+///
+/// Not `keepAlive`, like every other §10 read: the log carries who did what to
+/// whom, and a cache that outlived the screen would keep answering after the
+/// administrator had moved on.
+
+abstract class _$AuditLog extends $AsyncNotifier<AdminQueuePage<AuditEntry>> {
+  late final _$args = ref.$arg as AuditQuery;
+  AuditQuery get query => _$args;
+
+  FutureOr<AdminQueuePage<AuditEntry>> build(AuditQuery query);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<AdminQueuePage<AuditEntry>>,
+              AdminQueuePage<AuditEntry>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AdminQueuePage<AuditEntry>>,
+                AdminQueuePage<AuditEntry>
+              >,
+              AsyncValue<AdminQueuePage<AuditEntry>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}

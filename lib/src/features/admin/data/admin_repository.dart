@@ -5,6 +5,7 @@ import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
+import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
@@ -410,6 +411,40 @@ class AdminRepository {
     }
   }
 
+  /// `GET /admin/audit` — §10.4's immutable log, newest first.
+  ///
+  /// [query] carries the two questions the section asks of it: what one
+  /// administrator has done, and what was done to one thing. An empty query is
+  /// the whole log.
+  ///
+  /// There is no write path here and there is not going to be one — the table
+  /// refuses `UPDATE`, `DELETE` and `TRUNCATE` at the database.
+  Future<List<AuditEntry>> auditLog(
+    AuditQuery query, {
+    int offset = 0,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/audit',
+        queryParameters: {
+          'limit': adminPageSize,
+          'offset': offset,
+          ...query.toQuery(),
+        },
+      );
+
+      final items = response.data?['items'];
+      if (items is! List) return const [];
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(AuditEntry.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   /// The 409 that means the queue moved, or null for anything else.
   ///
   /// Matched on `code` and not on the status alone. 409 is also what a
@@ -805,3 +840,53 @@ class UserSearch extends _$UserSearch {
 @riverpod
 Future<AdminUserDetail> adminUser(Ref ref, String userId) =>
     ref.watch(adminRepositoryProvider).user(userId);
+
+/// One slice of §10.4's audit log, newest first.
+///
+/// A family keyed by the whole [AuditQuery] rather than a single notifier,
+/// because the section asks two different questions of this log and an
+/// administrator following a trail asks them in sequence: "what was done to
+/// this account", then "what else has that administrator done". Keying by the
+/// question is what lets the second answer arrive without discarding the
+/// first, and what makes going back cost no request.
+///
+/// Not `keepAlive`, like every other §10 read: the log carries who did what to
+/// whom, and a cache that outlived the screen would keep answering after the
+/// administrator had moved on.
+@riverpod
+class AuditLog extends _$AuditLog {
+  @override
+  Future<AdminQueuePage<AuditEntry>> build(AuditQuery query) async {
+    final entries = await ref.watch(adminRepositoryProvider).auditLog(query);
+
+    return AdminQueuePage(
+      items: entries,
+      hasMore: entries.length == adminPageSize,
+    );
+  }
+
+  /// Appends the next page, and **rethrows** so the caller can say so over a
+  /// list that is still on screen.
+  Future<void> loadMore() async {
+    final page = state.value;
+    if (page == null || page.isLoadingMore || !page.hasMore) return;
+
+    state = AsyncData(page.copyWith(isLoadingMore: true));
+
+    try {
+      final next = await ref
+          .read(adminRepositoryProvider)
+          .auditLog(query, offset: page.items.length);
+
+      state = AsyncData(
+        AdminQueuePage(
+          items: [...page.items, ...next],
+          hasMore: next.length == adminPageSize,
+        ),
+      );
+    } on ApiException {
+      state = AsyncData(page.copyWith(isLoadingMore: false));
+      rethrow;
+    }
+  }
+}

@@ -2635,4 +2635,104 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get adminUserComplaintClosed => 'Рассмотрена';
+
+  @override
+  String get adminAuditTitle => 'Журнал аудита';
+
+  @override
+  String get adminAuditNote =>
+      'Сначала новые. Ничего здесь нельзя изменить или удалить.';
+
+  @override
+  String get adminAuditEmpty => 'Пока ничего не записано';
+
+  @override
+  String get adminAuditEmptyBody =>
+      'Запись появляется здесь, когда администратор что-то решает, проверяет, модерирует или применяет санкцию.';
+
+  @override
+  String get adminAuditEmptyFilteredBody =>
+      'По этому ничего не записано. Остальной журнал — ниже.';
+
+  @override
+  String get adminAuditFilteredByActor => 'Только этот администратор';
+
+  @override
+  String get adminAuditFilteredByTarget => 'Только эта запись';
+
+  @override
+  String get adminAuditShowAll => 'Показать весь журнал';
+
+  @override
+  String get adminAuditActor => 'Администратор';
+
+  @override
+  String get adminAuditDetails => 'Что изменилось';
+
+  @override
+  String get adminAuditTargetUser => 'Аккаунт';
+
+  @override
+  String get adminAuditTargetEmployer => 'Работодатель';
+
+  @override
+  String get adminAuditTargetVacancy => 'Вакансия';
+
+  @override
+  String get adminAuditTargetComplaint => 'Жалоба';
+
+  @override
+  String get adminAuditTargetDictionaryItem => 'Элемент справочника';
+
+  @override
+  String get adminAuditTargetUnknown => 'Другое';
+
+  @override
+  String get adminAuditVerificationDecided =>
+      'Решение по проверке работодателя';
+
+  @override
+  String get adminAuditVacancyModerated => 'Вакансия проверена';
+
+  @override
+  String get adminAuditComplaintReviewed => 'Жалоба рассмотрена';
+
+  @override
+  String get adminAuditUserWarned => 'Пользователь предупреждён';
+
+  @override
+  String get adminAuditUserRestricted => 'Пользователь ограничен';
+
+  @override
+  String get adminAuditUserBlocked => 'Пользователь заблокирован';
+
+  @override
+  String get adminAuditUserUnblocked => 'Пользователь разблокирован';
+
+  @override
+  String get adminAuditRestrictionExpired => 'Срок ограничения истёк';
+
+  @override
+  String get adminAuditAccountPurged => 'Аккаунт удалён';
+
+  @override
+  String get adminAuditWalletAdjusted => 'Кошелёк скорректирован';
+
+  @override
+  String get adminAuditDictionaryCreated => 'Добавлен элемент справочника';
+
+  @override
+  String get adminAuditDictionaryUpdated => 'Изменён элемент справочника';
+
+  @override
+  String get adminAuditDictionaryDeactivated => 'Элемент справочника отключён';
+
+  @override
+  String get adminAuditDictionaryMerged => 'Элементы справочника объединены';
+
+  @override
+  String get adminUserAuditAbout => 'Всё, что делали с этим аккаунтом';
+
+  @override
+  String get adminUserAuditBy => 'Всё, что сделал этот администратор';
 }

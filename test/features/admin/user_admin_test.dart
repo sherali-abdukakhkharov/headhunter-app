@@ -802,7 +802,10 @@ void main() {
       );
 
       expect(find.text('This account is gone'), findsOneWidget);
-      expect(find.text('Retry'), findsNothing);
+      // 'Try again' is `commonRetry`. Asserting the wrong string here would
+      // pass for the wrong reason — a retry that exists but is worded
+      // differently.
+      expect(find.text('Try again'), findsNothing);
     });
   });
 
