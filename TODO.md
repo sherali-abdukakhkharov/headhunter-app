@@ -1624,6 +1624,8 @@ paywall that is not theirs.
       switching a category off actually does — a disabled category stores
       nothing at all, so what is missed is missed rather than hidden.
 - [?] **Push (FCM), and it is not blocked on code.**
+      **See [docs/NOTIFICATIONS_SETUP.md](docs/NOTIFICATIONS_SETUP.md)** for
+      what has to happen in the Firebase console and on the server.
       `POST /notifications/devices` takes a token and there is no token to
       give it: `android/app/google-services.json` still lists the **old**
       package names, deliberately, so Firebase refuses to initialise under

@@ -15,8 +15,9 @@ backend reference is correct; a `headhunter` in an application id or an import i
 a leftover.
 
 `android/app/google-services.json` still lists the **old** package names and is
-left that way on purpose — see the Notifications note in
-[TODO.md](TODO.md).
+left that way on purpose: a hand-edited one would carry ids that exist in no
+Firebase project. Replacing it is the whole of what blocks push — the steps are
+in [docs/NOTIFICATIONS_SETUP.md](docs/NOTIFICATIONS_SETUP.md).
 
 | Repo | Path | Stack |
 |---|---|---|
