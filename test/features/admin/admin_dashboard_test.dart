@@ -7,6 +7,7 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
+import 'package:jobbridge_app/src/features/notifications/data/notification_repository.dart';
 import 'admin_fake.dart';
 
 /// §10.1's dashboard.
@@ -87,7 +88,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         retry: (retryCount, error) => null,
-        overrides: [adminRepositoryProvider.overrideWithValue(fake)],
+        overrides: [
+          adminRepositoryProvider.overrideWithValue(fake),
+          // §9.2's row is on this screen now and reads its own count. Served
+          // rather than left to reach the network.
+          unreadNotificationCountProvider.overrideWith((ref) async => 0),
+        ],
         child: MaterialApp(
           theme: HhTheme.light,
           locale: const Locale('en'),

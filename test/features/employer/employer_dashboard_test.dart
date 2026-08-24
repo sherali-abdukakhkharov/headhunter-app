@@ -12,6 +12,7 @@ import 'package:jobbridge_app/src/features/employer/data/employer_controller.dar
 import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
 import 'package:jobbridge_app/src/features/employer/presentation/employer_dashboard_screen.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
+import 'package:jobbridge_app/src/features/notifications/data/notification_repository.dart';
 import 'package:jobbridge_app/src/features/vacancy/data/vacancy_repository.dart';
 import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
 import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
@@ -52,6 +53,10 @@ void main() {
       ProviderScope(
         retry: (retryCount, error) => null,
         overrides: [
+          // §9.2's row is on this screen now and reads its own count. Served
+          // rather than left to reach the network, the same reason the wallet
+          // tile is stubbed above.
+          unreadNotificationCountProvider.overrideWith((ref) async => 0),
           myVacanciesProvider.overrideWith(
             (ref) async =>
                 vacanciesError != null ? throw vacanciesError : vacancies,

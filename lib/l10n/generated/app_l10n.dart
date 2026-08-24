@@ -5206,6 +5206,120 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Restriction reasons'**
   String get dictTypeRestrictionJustification;
+
+  /// §9.2's centre, and the entry row that opens it.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// The unfiltered list.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get notificationsAll;
+
+  /// The server's own `unreadOnly` filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notificationsUnread;
+
+  /// One request, not one per row.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notificationsMarkAllRead;
+
+  /// How many were still unread. The route returns the figure precisely so this can be honest.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} marked as read} other{{count} marked as read}}'**
+  String notificationsMarkedRead(int count);
+
+  /// Marking an already-read list succeeds and marks zero. Confirming it as an action would be confirming something that did not happen.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything was already read'**
+  String get notificationsNothingUnread;
+
+  /// No notifications at all.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet'**
+  String get notificationsEmpty;
+
+  /// Names §9.2's categories without listing them as settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers to your applications, invitations, messages and interviews appear here.'**
+  String get notificationsEmptyBody;
+
+  /// The filtered list, empty — which is the good outcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing unread'**
+  String get notificationsNoUnread;
+
+  /// An empty filter is not an empty list, and the way back to the other one is worth naming.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything here has been read. Switch to All to look back.'**
+  String get notificationsNoUnreadBody;
+
+  /// §9.2's per-category switches.
+  ///
+  /// In en, this message translates to:
+  /// **'What you are told about'**
+  String get notificationsSettings;
+
+  /// A disabled category stores nothing at all, not a hidden row. Worth saying before a switch is thrown rather than after.
+  ///
+  /// In en, this message translates to:
+  /// **'Switching a category off stops it being recorded at all — you will not find the missed ones here later.'**
+  String get notificationsSettingsBody;
+
+  /// §9.2 keeps `account` on. The row is shown greyed out rather than omitted: a user who cannot find a switch assumes it is off.
+  ///
+  /// In en, this message translates to:
+  /// **'Security and account notices are always delivered'**
+  String get notificationsAlwaysOn;
+
+  /// §8.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications'**
+  String get notificationsApplications;
+
+  /// §8.2.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get notificationsInvitations;
+
+  /// §9.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get notificationsMessages;
+
+  /// §8.3.
+  ///
+  /// In en, this message translates to:
+  /// **'Interviews'**
+  String get notificationsInterviews;
+
+  /// Verification, restrictions, security. The one that cannot be switched off.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get notificationsAccount;
+
+  /// A category added after this build shipped. The sentence still reads, so the row is worth drawing without a name for its group.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get notificationsOther;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

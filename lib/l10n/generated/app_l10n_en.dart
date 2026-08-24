@@ -2954,4 +2954,73 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dictTypeRestrictionJustification => 'Restriction reasons';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsAll => 'All';
+
+  @override
+  String get notificationsUnread => 'Unread';
+
+  @override
+  String get notificationsMarkAllRead => 'Mark all read';
+
+  @override
+  String notificationsMarkedRead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count marked as read',
+      one: '$count marked as read',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsNothingUnread => 'Everything was already read';
+
+  @override
+  String get notificationsEmpty => 'Nothing yet';
+
+  @override
+  String get notificationsEmptyBody =>
+      'Answers to your applications, invitations, messages and interviews appear here.';
+
+  @override
+  String get notificationsNoUnread => 'Nothing unread';
+
+  @override
+  String get notificationsNoUnreadBody =>
+      'Everything here has been read. Switch to All to look back.';
+
+  @override
+  String get notificationsSettings => 'What you are told about';
+
+  @override
+  String get notificationsSettingsBody =>
+      'Switching a category off stops it being recorded at all — you will not find the missed ones here later.';
+
+  @override
+  String get notificationsAlwaysOn =>
+      'Security and account notices are always delivered';
+
+  @override
+  String get notificationsApplications => 'Applications';
+
+  @override
+  String get notificationsInvitations => 'Invitations';
+
+  @override
+  String get notificationsMessages => 'Messages';
+
+  @override
+  String get notificationsInterviews => 'Interviews';
+
+  @override
+  String get notificationsAccount => 'Account';
+
+  @override
+  String get notificationsOther => 'Other';
 }

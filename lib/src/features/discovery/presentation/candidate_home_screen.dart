@@ -9,6 +9,7 @@ import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.d
 import 'package:jobbridge_app/src/features/discovery/presentation/vacancy_feed_screen.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
+import 'package:jobbridge_app/src/features/notifications/presentation/notifications_screen.dart';
 import 'package:jobbridge_app/src/features/profile/data/profile_repository.dart';
 
 /// §5.5's candidate home: what to do now, and the work worth looking at.
@@ -69,6 +70,13 @@ class CandidateHomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(HhSpace.gutter),
             children: [
               Text(l10n.candidateHomeTitle, style: HhTypography.title),
+              const SizedBox(height: HhSpace.md),
+
+              // §9.2's way in, and the only place its badge can be seen: the
+              // shell is capped at five destinations and all five are spoken
+              // for. It sits above the counts because an unread notification
+              // is the newest thing waiting.
+              const NotificationsEntryRow(),
               const SizedBox(height: HhSpace.md),
 
               const _WaitingOnYou(),

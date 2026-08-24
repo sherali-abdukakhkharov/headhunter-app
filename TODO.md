@@ -26,7 +26,7 @@ against that: one Critical was already fixed before the audit was written up.
 | MT-002 | Critical | **Fixed 1.5.0**, before the audit was delivered — §10.4's user management, search and BR-10 actions |
 | MT-003 | Critical | **Backend/deployment**, and confirmed as such by the audit itself: `MODERATION_ENABLED=false` in the tested `.env`. The client already renders whatever status the API returns; the ask is the flag and a deployment smoke test |
 | MT-004 | High | **Fixed 1.9.0** — §10.3 ships, and the shell has no placeholders left. Label *editing* waits on a contract change; see the ask |
-| MT-005 | High | Open — M9. The **backend routes exist** (`/notifications`, `/notifications/unread-count`, preferences, devices); the client has no screen. M9 was deferred to last by owner direction on 2026-08-04, which this audit reopens |
+| MT-005 | High | **Half fixed 1.10.0** — §9.2's in-app centre ships: the list, the unread badge, mark-read, the per-category switches and the routing from a row to what it is about. **Push does not**, and it is not a code gap: `android/app/google-services.json` still names the pre-rename package, so Firebase cannot initialise under `com.jobbridge.app` |
 | MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code |
 | MT-007 | High | **Fixed 1.8.0** — no default type, and the first save is held to §6.1 |
 | MT-008 | High | **Fixed 1.7.0** — the account screen is on the administrator's dashboard |
@@ -1591,7 +1591,46 @@ paywall that is not theirs.
       the one thing the "one control size for everyone" rule forbids. Worth a
       drawn answer rather than a unilateral shrink
 
-## M9 - Notifications *(deferred to last - client direction 2026-08-04)*
+## M9 - Notifications *(in-app done 2026-08-24; push blocked)*
+
+- [x] **§9.2's in-app centre, 2026-08-24** — the audit reopened this (MT-005,
+      High) and the contract had been waiting: `/notifications`,
+      `/notifications/unread-count`, `/notifications/read` and the per-category
+      preferences were all built server-side.
+      **The sentence is the server's.** A row stores a message key and its
+      parameters, and the text is rendered in the language of *this* request —
+      so a user who switches language reads their whole history in the new one.
+      The client shows it verbatim and branches on `event` and `targetType`
+      instead. A client-side message table would be a second translation of one
+      event, and it would be the one that goes stale.
+      **Where a row leads depends on who is reading it.** A conversation opens
+      in whichever shell has a Messages tab; an application opens the
+      *candidate's* list, because an employer reaches applicants through a
+      vacancy this notification does not name and guessing that id is a request
+      the client has no business making. Where there is no honest destination
+      the row is still drawn — BR-10's restriction notice **is** the
+      explanation — and simply has no chevron.
+      **The badge is its own request.** `unread-count` is one indexed count
+      over a partial index because it is polled far more often than the list is
+      opened; counting the page instead would under-report the moment there are
+      more than twenty.
+      **The entry point is a row, not a tab.** All three shells are full at
+      five destinations — the same cap that keeps the wallet off the employer's
+      bar and the audit log off the administrator's — so the row sits at the
+      top of each role's first tab, carrying the count. A badge nobody can see
+      is not a badge.
+      **`account` is shown greyed out rather than omitted** (§9.2): a user who
+      cannot find a switch assumes it is off. And the settings sheet says what
+      switching a category off actually does — a disabled category stores
+      nothing at all, so what is missed is missed rather than hidden.
+- [?] **Push (FCM), and it is not blocked on code.**
+      `POST /notifications/devices` takes a token and there is no token to
+      give it: `android/app/google-services.json` still lists the **old**
+      package names, deliberately, so Firebase refuses to initialise under
+      `com.jobbridge.app`. Regenerating it in the Firebase console for the
+      three flavor ids is the whole of the blocker; the in-app half above needs
+      none of it, because the records exist server-side whether or not a push
+      was ever delivered.
 
 Runs after M10, not after M6. No Firebase package enters `pubspec.yaml` before
 this opens. Deep links moved to M8.

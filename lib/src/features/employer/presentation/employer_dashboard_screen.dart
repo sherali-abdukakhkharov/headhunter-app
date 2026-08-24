@@ -14,6 +14,7 @@ import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart
 import 'package:jobbridge_app/src/features/employer/presentation/verification_card.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation_status.dart';
+import 'package:jobbridge_app/src/features/notifications/presentation/notifications_screen.dart';
 import 'package:jobbridge_app/src/features/vacancy/data/vacancy_repository.dart';
 import 'package:jobbridge_app/src/features/vacancy/domain/vacancy.dart';
 import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_list_screen.dart';
@@ -128,6 +129,12 @@ class _Body extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // §9.2, and the same reasoning as the candidate's home: five
+              // tabs, all spoken for, and a badge nobody can see is not a
+              // badge.
+              const NotificationsEntryRow(),
+              const SizedBox(height: HhSpace.sectionGap),
+
               _Attention(vacancies: vacancies, active: active),
 
               if (active.isNotEmpty) ...[

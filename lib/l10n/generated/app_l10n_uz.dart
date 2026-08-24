@@ -2957,6 +2957,74 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get dictTypeRestrictionJustification => 'Cheklov sabablari';
+
+  @override
+  String get notificationsTitle => 'Bildirishnomalar';
+
+  @override
+  String get notificationsAll => 'Hammasi';
+
+  @override
+  String get notificationsUnread => 'O‘qilmagan';
+
+  @override
+  String get notificationsMarkAllRead => 'Hammasini o‘qilgan deb belgilash';
+
+  @override
+  String notificationsMarkedRead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o‘qilgan deb belgilandi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsNothingUnread => 'Hammasi allaqachon o‘qilgan edi';
+
+  @override
+  String get notificationsEmpty => 'Hozircha hech narsa yo‘q';
+
+  @override
+  String get notificationsEmptyBody =>
+      'Arizalaringiz, takliflar, xabarlar va suhbatlarga javoblar shu yerda paydo bo‘ladi.';
+
+  @override
+  String get notificationsNoUnread => 'O‘qilmagani yo‘q';
+
+  @override
+  String get notificationsNoUnreadBody =>
+      'Bu yerdagi hamma narsa o‘qilgan. Orqaga qarash uchun “Hammasi”ga o‘ting.';
+
+  @override
+  String get notificationsSettings => 'Sizga nima haqida xabar beriladi';
+
+  @override
+  String get notificationsSettingsBody =>
+      'Turkumni o‘chirish uni umuman yozib olinmasligiga olib keladi — o‘tkazib yuborilganlarini keyin bu yerdan topa olmaysiz.';
+
+  @override
+  String get notificationsAlwaysOn =>
+      'Xavfsizlik va hisob bo‘yicha xabarlar doim yetkaziladi';
+
+  @override
+  String get notificationsApplications => 'Arizalar';
+
+  @override
+  String get notificationsInvitations => 'Takliflar';
+
+  @override
+  String get notificationsMessages => 'Xabarlar';
+
+  @override
+  String get notificationsInterviews => 'Suhbatlar';
+
+  @override
+  String get notificationsAccount => 'Hisob';
+
+  @override
+  String get notificationsOther => 'Boshqa';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -5898,6 +5966,74 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get dictTypeRestrictionJustification => 'Чеклов сабаблари';
+
+  @override
+  String get notificationsTitle => 'Билдиришномалар';
+
+  @override
+  String get notificationsAll => 'Ҳаммаси';
+
+  @override
+  String get notificationsUnread => 'Ўқилмаган';
+
+  @override
+  String get notificationsMarkAllRead => 'Ҳаммасини ўқилган деб белгилаш';
+
+  @override
+  String notificationsMarkedRead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та ўқилган деб белгиланди',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsNothingUnread => 'Ҳаммаси аллақачон ўқилган эди';
+
+  @override
+  String get notificationsEmpty => 'Ҳозирча ҳеч нарса йўқ';
+
+  @override
+  String get notificationsEmptyBody =>
+      'Аризаларингиз, таклифлар, хабарлар ва суҳбатларга жавоблар шу ерда пайдо бўлади.';
+
+  @override
+  String get notificationsNoUnread => 'Ўқилмагани йўқ';
+
+  @override
+  String get notificationsNoUnreadBody =>
+      'Бу ердаги ҳамма нарса ўқилган. Орқага қараш учун “Ҳаммаси”га ўтинг.';
+
+  @override
+  String get notificationsSettings => 'Сизга нима ҳақида хабар берилади';
+
+  @override
+  String get notificationsSettingsBody =>
+      'Туркумни ўчириш уни умуман ёзиб олинмаслигига олиб келади — ўтказиб юборилганларини кейин бу ердан топа олмайсиз.';
+
+  @override
+  String get notificationsAlwaysOn =>
+      'Хавфсизлик ва ҳисоб бўйича хабарлар доим етказилади';
+
+  @override
+  String get notificationsApplications => 'Аризалар';
+
+  @override
+  String get notificationsInvitations => 'Таклифлар';
+
+  @override
+  String get notificationsMessages => 'Хабарлар';
+
+  @override
+  String get notificationsInterviews => 'Суҳбатлар';
+
+  @override
+  String get notificationsAccount => 'Ҳисоб';
+
+  @override
+  String get notificationsOther => 'Бошқа';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -8853,4 +8989,72 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get dictTypeRestrictionJustification => 'Cheklov sabablari';
+
+  @override
+  String get notificationsTitle => 'Bildirishnomalar';
+
+  @override
+  String get notificationsAll => 'Hammasi';
+
+  @override
+  String get notificationsUnread => 'O‘qilmagan';
+
+  @override
+  String get notificationsMarkAllRead => 'Hammasini o‘qilgan deb belgilash';
+
+  @override
+  String notificationsMarkedRead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta o‘qilgan deb belgilandi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsNothingUnread => 'Hammasi allaqachon o‘qilgan edi';
+
+  @override
+  String get notificationsEmpty => 'Hozircha hech narsa yo‘q';
+
+  @override
+  String get notificationsEmptyBody =>
+      'Arizalaringiz, takliflar, xabarlar va suhbatlarga javoblar shu yerda paydo bo‘ladi.';
+
+  @override
+  String get notificationsNoUnread => 'O‘qilmagani yo‘q';
+
+  @override
+  String get notificationsNoUnreadBody =>
+      'Bu yerdagi hamma narsa o‘qilgan. Orqaga qarash uchun “Hammasi”ga o‘ting.';
+
+  @override
+  String get notificationsSettings => 'Sizga nima haqida xabar beriladi';
+
+  @override
+  String get notificationsSettingsBody =>
+      'Turkumni o‘chirish uni umuman yozib olinmasligiga olib keladi — o‘tkazib yuborilganlarini keyin bu yerdan topa olmaysiz.';
+
+  @override
+  String get notificationsAlwaysOn =>
+      'Xavfsizlik va hisob bo‘yicha xabarlar doim yetkaziladi';
+
+  @override
+  String get notificationsApplications => 'Arizalar';
+
+  @override
+  String get notificationsInvitations => 'Takliflar';
+
+  @override
+  String get notificationsMessages => 'Xabarlar';
+
+  @override
+  String get notificationsInterviews => 'Suhbatlar';
+
+  @override
+  String get notificationsAccount => 'Hisob';
+
+  @override
+  String get notificationsOther => 'Boshqa';
 }

@@ -9,6 +9,7 @@ import 'package:jobbridge_app/src/features/account/presentation/account_entry_ro
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
+import 'package:jobbridge_app/src/features/notifications/presentation/notifications_screen.dart';
 
 /// §10.1's administrator dashboard, and the way into every other admin surface.
 ///
@@ -150,6 +151,10 @@ class _Body extends StatelessWidget {
         // shell provides no chrome and this is the same row both profiles
         // already carry.
         const SizedBox(height: HhSpace.sectionGap),
+        // §9.2. Beside the account row, because for an administrator both are
+        // about them rather than about the queues above.
+        const NotificationsEntryRow(),
+        const SizedBox(height: HhSpace.sm),
         const AccountEntryRow(),
       ],
     );

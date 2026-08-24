@@ -3773,5 +3773,86 @@
   "dictTypeRestrictionJustification": "Restriction reasons",
   "@dictTypeRestrictionJustification": {
     "description": "BR-12’s declared justifications."
+  },
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "§9.2's centre, and the entry row that opens it."
+  },
+  "notificationsAll": "All",
+  "@notificationsAll": {
+    "description": "The unfiltered list."
+  },
+  "notificationsUnread": "Unread",
+  "@notificationsUnread": {
+    "description": "The server's own `unreadOnly` filter."
+  },
+  "notificationsMarkAllRead": "Mark all read",
+  "@notificationsMarkAllRead": {
+    "description": "One request, not one per row."
+  },
+  "notificationsMarkedRead": "{count, plural, one{{count} marked as read} other{{count} marked as read}}",
+  "@notificationsMarkedRead": {
+    "description": "How many were still unread. The route returns the figure precisely so this can be honest.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsNothingUnread": "Everything was already read",
+  "@notificationsNothingUnread": {
+    "description": "Marking an already-read list succeeds and marks zero. Confirming it as an action would be confirming something that did not happen."
+  },
+  "notificationsEmpty": "Nothing yet",
+  "@notificationsEmpty": {
+    "description": "No notifications at all."
+  },
+  "notificationsEmptyBody": "Answers to your applications, invitations, messages and interviews appear here.",
+  "@notificationsEmptyBody": {
+    "description": "Names §9.2's categories without listing them as settings."
+  },
+  "notificationsNoUnread": "Nothing unread",
+  "@notificationsNoUnread": {
+    "description": "The filtered list, empty — which is the good outcome."
+  },
+  "notificationsNoUnreadBody": "Everything here has been read. Switch to All to look back.",
+  "@notificationsNoUnreadBody": {
+    "description": "An empty filter is not an empty list, and the way back to the other one is worth naming."
+  },
+  "notificationsSettings": "What you are told about",
+  "@notificationsSettings": {
+    "description": "§9.2's per-category switches."
+  },
+  "notificationsSettingsBody": "Switching a category off stops it being recorded at all — you will not find the missed ones here later.",
+  "@notificationsSettingsBody": {
+    "description": "A disabled category stores nothing at all, not a hidden row. Worth saying before a switch is thrown rather than after."
+  },
+  "notificationsAlwaysOn": "Security and account notices are always delivered",
+  "@notificationsAlwaysOn": {
+    "description": "§9.2 keeps `account` on. The row is shown greyed out rather than omitted: a user who cannot find a switch assumes it is off."
+  },
+  "notificationsApplications": "Applications",
+  "@notificationsApplications": {
+    "description": "§8.1."
+  },
+  "notificationsInvitations": "Invitations",
+  "@notificationsInvitations": {
+    "description": "§8.2."
+  },
+  "notificationsMessages": "Messages",
+  "@notificationsMessages": {
+    "description": "§9.1."
+  },
+  "notificationsInterviews": "Interviews",
+  "@notificationsInterviews": {
+    "description": "§8.3."
+  },
+  "notificationsAccount": "Account",
+  "@notificationsAccount": {
+    "description": "Verification, restrictions, security. The one that cannot be switched off."
+  },
+  "notificationsOther": "Other",
+  "@notificationsOther": {
+    "description": "A category added after this build shipped. The sentence still reads, so the row is worth drawing without a name for its group."
   }
 }

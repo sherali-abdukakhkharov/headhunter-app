@@ -13,6 +13,7 @@ import 'package:jobbridge_app/src/features/discovery/domain/vacancy_card.dart';
 import 'package:jobbridge_app/src/features/discovery/presentation/candidate_home_screen.dart';
 import 'package:jobbridge_app/src/features/invitations/data/invitation_repository.dart';
 import 'package:jobbridge_app/src/features/invitations/domain/invitation.dart';
+import 'package:jobbridge_app/src/features/notifications/data/notification_repository.dart';
 import 'package:jobbridge_app/src/features/profile/data/profile_repository.dart';
 import 'package:jobbridge_app/src/features/profile/domain/candidate_profile.dart';
 
@@ -102,6 +103,10 @@ void main() {
         // `AsyncLoading` while it does. The app disables it in `main.dart`.
         retry: (retryCount, error) => null,
         overrides: [
+          // The notifications row is on this screen now and reads its own
+          // count. Served rather than stubbed away: a row that cannot count is
+          // still drawn, and these tests are not about it.
+          unreadNotificationCountProvider.overrideWith((ref) async => 0),
           candidateProfileProvider.overrideWith(
             (ref) => switch (profile ?? AsyncData(_profile())) {
               AsyncError(:final error) => Future<CandidateProfile>.error(error),
@@ -345,6 +350,10 @@ void main() {
       final router = await pump(tester);
 
       expect(find.text('No recommendations yet'), findsOneWidget);
+
+      // Below the fold once the notifications row is above it.
+      await tester.ensureVisible(find.text('Browse new vacancies'));
+      await tester.pump();
       await tester.tap(find.text('Browse new vacancies'));
       await tester.pumpAndSettle();
 

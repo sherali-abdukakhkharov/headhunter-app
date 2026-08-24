@@ -17,6 +17,38 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.10.0+15 — 2026-08-24
+
+Notifications, in the app. Until now the only way to find out that an employer
+had replied, an interview had moved or a profile had been verified was to go
+looking for it.
+
+### Added
+
+- **A notification centre (§9.2)**, reached from the top of the first tab in
+  every role — with the number of unread ones on it.
+  It lists what has happened to you, newest first, and **tapping one opens what
+  it is about**: a message opens the conversation, an application or an
+  invitation opens the list it is in, a vacancy decision opens the vacancy.
+  Where there is nothing to open — a notice about your own account is the whole
+  of the news — the row simply does not pretend there is.
+  **Unread and read are told apart by a dot and a weight**, not by colour, and
+  "Mark all read" says how many actually were: marking an already-read list
+  changes nothing, and it says that instead.
+  **You choose what you are told about.** Applications, invitations, messages
+  and interviews can each be switched off. Security and account notices cannot,
+  and that switch is shown greyed out rather than hidden — a switch you cannot
+  find is one you assume is off. Switching a category off stops it being
+  recorded at all, and the screen says so before you do it, because the ones
+  you miss will not be waiting here later.
+
+### Not in this release
+
+Push notifications. The app can show you everything that has happened once it
+is open; making your phone tell you while it is closed needs a Firebase
+configuration file that still names the app's old identifier. Nothing else
+stands in the way, and nothing above depends on it.
+
 ## 1.9.0+14 — 2026-08-24
 
 Dictionary management, which was the last unfinished tab anywhere in the app.

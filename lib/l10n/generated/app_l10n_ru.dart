@@ -2980,4 +2980,75 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get dictTypeRestrictionJustification => 'Причины ограничений';
+
+  @override
+  String get notificationsTitle => 'Уведомления';
+
+  @override
+  String get notificationsAll => 'Все';
+
+  @override
+  String get notificationsUnread => 'Непрочитанные';
+
+  @override
+  String get notificationsMarkAllRead => 'Отметить все';
+
+  @override
+  String notificationsMarkedRead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count отмечено как прочитанные',
+      many: '$count отмечено как прочитанные',
+      few: '$count отмечены как прочитанные',
+      one: '$count отмечено как прочитанное',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationsNothingUnread => 'Всё уже было прочитано';
+
+  @override
+  String get notificationsEmpty => 'Пока ничего';
+
+  @override
+  String get notificationsEmptyBody =>
+      'Здесь появляются ответы на ваши отклики, приглашения, сообщения и собеседования.';
+
+  @override
+  String get notificationsNoUnread => 'Непрочитанных нет';
+
+  @override
+  String get notificationsNoUnreadBody =>
+      'Всё здесь прочитано. Чтобы посмотреть назад, переключитесь на «Все».';
+
+  @override
+  String get notificationsSettings => 'О чём вас уведомлять';
+
+  @override
+  String get notificationsSettingsBody =>
+      'Если выключить категорию, она вообще перестанет записываться — пропущенные здесь потом не найдутся.';
+
+  @override
+  String get notificationsAlwaysOn =>
+      'Уведомления о безопасности и аккаунте приходят всегда';
+
+  @override
+  String get notificationsApplications => 'Отклики';
+
+  @override
+  String get notificationsInvitations => 'Приглашения';
+
+  @override
+  String get notificationsMessages => 'Сообщения';
+
+  @override
+  String get notificationsInterviews => 'Собеседования';
+
+  @override
+  String get notificationsAccount => 'Аккаунт';
+
+  @override
+  String get notificationsOther => 'Другое';
 }
