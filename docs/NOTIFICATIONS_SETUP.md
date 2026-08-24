@@ -9,8 +9,10 @@ ever delivered. That is deliberate: a push is a *message about* something that
 happened, so it must never be able to prevent the thing from happening. An
 instance with no Firebase project is a degraded instance, not a broken one.
 
-**The push half is blocked on one thing**, and it is not code: the Firebase
-project registers the app under package names it no longer has.
+**The push half is blocked on one thing**, and it is not code and not the
+server: the Firebase project registers the app under package names it no longer
+has. The server credential is configured and has been ready to send for as long
+as it has been set — it has simply had no device to send to.
 
 ---
 
@@ -87,15 +89,35 @@ wholesale — **do not merge it by hand.**
 It is not a secret: it ships inside every APK and contains no credential that
 grants anything on its own. It is committed to the repository for that reason.
 
-### 2.3 Generate the server credential
+### 2.3 The server credential — **already done, do not regenerate**
 
-**Project settings → Service accounts → Firebase Admin SDK → Generate new
-private key → Generate key.** A `.json` file downloads.
+`FCM_SERVICE_ACCOUNT_BASE64` is already set in `headhunter-backend/.env`.
 
-**This one is a secret.** It authenticates as the project and can send a push
-to any device registered to it. It must not go in the repository, in a chat, or
-in a screenshot. If it is ever exposed, come back to this page and generate a
-new key — the old one can be revoked from the Google Cloud console.
+It stays valid through this whole exercise, because **a service account
+authenticates as the Firebase *project*, not as an app.** It has no package
+name in it. Adding three Android apps to the project changes nothing about it,
+and neither did the rename — which is why the server half was never the
+blocker.
+
+Only come back to this page if one of these is true:
+
+- **the key was exposed** — committed, pasted into a chat, in a screenshot. Then
+  generate a new one here and revoke the old from the Google Cloud console;
+- **it belongs to a different Firebase project than the Android apps do.** Then
+  nothing would ever be delivered, because the credential would be signing for
+  one project and the devices registered in another.
+
+To check the second: the credential is a JSON document with a `project_id`
+field, and it has to read `headhunter-app-b463f`. Decode it locally — never
+into a chat or a shared log:
+
+```powershell
+[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($env:FCM_SERVICE_ACCOUNT_BASE64)) |
+  ConvertFrom-Json | Select-Object project_id, client_email
+```
+
+**This one is a secret** wherever it lives. It can send a push to any device
+registered to the project.
 
 ### 2.4 Check that the API is on
 
@@ -106,40 +128,38 @@ deprecated and is not used; leave it disabled.
 
 ---
 
-## 3. What you do on the server
+## 3. The server, which is already configured
 
-The backend takes the service-account JSON base64-encoded, in one environment
-variable. Base64 because the document is multi-line and its private key
-contains newlines, which `.env` files handle badly enough that most failures
-would be quoting mistakes.
+`FCM_SERVICE_ACCOUNT_BASE64` is set. There is nothing to do here, and the boot
+log is how you confirm it:
+
+- **variable set** — nothing is logged, and pushes go over FCM HTTP v1;
+- **variable empty** — `FCM_SERVICE_ACCOUNT_BASE64 is not set: notifications
+  are stored and read in-app, but no push is delivered`.
+
+So the server has been ready to send for as long as it has been configured, and
+has been sending to nobody: there is no device token to address, because the app
+cannot obtain one. **§2 is the whole of the remaining configuration work.**
+
+### If it ever has to be set again
+
+The backend takes the service-account JSON base64-encoded, in one variable.
+Base64 because the document is multi-line and its private key contains
+newlines, which `.env` files handle badly enough that most failures would be
+quoting mistakes.
 
 **This is a Windows machine and `base64` is not a command here.** PowerShell:
 
 ```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\path\to\service-account.json"))
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("C:path	oservice-account.json"))
 ```
 
 Copy the whole line — it is long, and a truncated value fails at boot rather
-than at the first push, which is the good direction.
-
-In `headhunter-backend/.env`:
-
-```
-FCM_SERVICE_ACCOUNT_BASE64=<the base64 string, no quotes, no line breaks>
-FCM_TIMEOUT_MS=10000
-```
-
-Restart the API. The boot log tells you which state it is in:
-
-- with the variable set, nothing is logged and pushes are sent over FCM HTTP v1;
-- with it empty, `FCM_SERVICE_ACCOUNT_BASE64 is not set: notifications are
-  stored and read in-app, but no push is delivered` — which is the state today,
-  and a supported one.
-
-Then delete the downloaded `.json` from your Downloads folder. The value lives
-in `.env` now.
+than at the first push, which is the good direction. Then delete the downloaded
+`.json`: the value lives in `.env` now.
 
 ---
+
 
 ## 4. What the repository still needs (not yours)
 
@@ -174,9 +194,11 @@ in-app notification centre is the record, and it is complete for everyone.
 
 ## 6. How to tell it worked
 
-1. The API boots without the `FCM_SERVICE_ACCOUNT_BASE64 is not set` warning.
+1. The API boots without the `FCM_SERVICE_ACCOUNT_BASE64 is not set` warning —
+   which it already does.
 2. A development build signs in and `notification_devices` gains a row for that
-   phone.
+   phone. **This is the step that has never happened**, and everything else
+   follows from it.
 3. Somebody sends the signed-in candidate a message from an employer account,
    the phone is locked, and a banner appears.
 4. Tapping the banner opens that conversation rather than the app's home.
