@@ -739,3 +739,74 @@ final class WarmDictionariesFamily extends $Family
   @override
   String toString() => r'warmDictionariesProvider';
 }
+
+/// Every dictionary type the server has (§10.3).
+///
+/// Read from the manifest rather than from `DictionaryType.all`: that constant
+/// is the client's prefetch list and says so — "not for validation: the server
+/// remains the authority on what exists" — so an administrator's list built
+/// from it would omit any type added after this build shipped.
+///
+/// Not cached with the item lists. The manifest is locale-independent and one
+/// small request, and the screen that reads it is opened deliberately.
+
+@ProviderFor(dictionaryManifest)
+final dictionaryManifestProvider = DictionaryManifestProvider._();
+
+/// Every dictionary type the server has (§10.3).
+///
+/// Read from the manifest rather than from `DictionaryType.all`: that constant
+/// is the client's prefetch list and says so — "not for validation: the server
+/// remains the authority on what exists" — so an administrator's list built
+/// from it would omit any type added after this build shipped.
+///
+/// Not cached with the item lists. The manifest is locale-independent and one
+/// small request, and the screen that reads it is opened deliberately.
+
+final class DictionaryManifestProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DictionaryManifest>,
+          DictionaryManifest,
+          FutureOr<DictionaryManifest>
+        >
+    with
+        $FutureModifier<DictionaryManifest>,
+        $FutureProvider<DictionaryManifest> {
+  /// Every dictionary type the server has (§10.3).
+  ///
+  /// Read from the manifest rather than from `DictionaryType.all`: that constant
+  /// is the client's prefetch list and says so — "not for validation: the server
+  /// remains the authority on what exists" — so an administrator's list built
+  /// from it would omit any type added after this build shipped.
+  ///
+  /// Not cached with the item lists. The manifest is locale-independent and one
+  /// small request, and the screen that reads it is opened deliberately.
+  DictionaryManifestProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dictionaryManifestProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dictionaryManifestHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DictionaryManifest> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DictionaryManifest> create(Ref ref) {
+    return dictionaryManifest(ref);
+  }
+}
+
+String _$dictionaryManifestHash() =>
+    r'f2150ba77ce1d01bb36531584cd77f8cc87f20d9';

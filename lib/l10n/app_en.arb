@@ -3587,5 +3587,191 @@
         "type": "int"
       }
     }
+  },
+  "adminDictionariesTitle": "Dictionaries",
+  "@adminDictionariesTitle": {
+    "description": "§10.3's tab."
+  },
+  "adminDictionariesBody": "Everything the pickers offer. Nothing is ever deleted — an item leaves the pickers and stays readable in the records that used it.",
+  "@adminDictionariesBody": {
+    "description": "BR-13 in one sentence, at the top of the screen where it decides what every action means."
+  },
+  "adminDictionaryActiveCount": "{count, plural, one{{count} in use} other{{count} in use}}",
+  "@adminDictionaryActiveCount": {
+    "description": "Active items only — the server's own figure, and what a picker would show.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminDictionarySearch": "Find an item",
+  "@adminDictionarySearch": {
+    "description": "The list of a type can be hundreds long."
+  },
+  "adminDictionarySearchHint": "By name or code",
+  "@adminDictionarySearchHint": {
+    "description": "Code as well as name: an administrator hunting a duplicate often has the code, and the label may be in a language they cannot type."
+  },
+  "adminDictionaryAdd": "Add an item",
+  "@adminDictionaryAdd": {
+    "description": "Opens the create sheet."
+  },
+  "adminDictionaryCreate": "Add",
+  "@adminDictionaryCreate": {
+    "description": "Confirms the create sheet."
+  },
+  "adminDictionaryCode": "Code",
+  "@adminDictionaryCode": {
+    "description": "BR-13's stable machine code."
+  },
+  "adminDictionaryCodeHint": "welder",
+  "@adminDictionaryCodeHint": {
+    "description": "Deliberately the same in every variant: it is not a word, it is an identifier."
+  },
+  "adminDictionaryCodeNote": "Never shown to anyone. Labels can change in every language; this cannot.",
+  "@adminDictionaryCodeNote": {
+    "description": "BR-13: everything stores the code, so it has to outlive every label. Saying so is what stops somebody typing a name here."
+  },
+  "adminDictionaryLabels": "Names",
+  "@adminDictionaryLabels": {
+    "description": "§3.2's four labels."
+  },
+  "adminDictionaryLabelsNote": "All four are needed before the item can be used. Fewer makes a draft that stays out of the pickers.",
+  "@adminDictionaryLabelsNote": {
+    "description": "The database refuses to activate an item missing any of the four (§3.2), so a partial set is a draft rather than a mistake."
+  },
+  "adminDictionaryDraftNote": "{count, plural, one{{count} language still to write — it will be added as a draft} other{{count} languages still to write — it will be added as a draft}}",
+  "@adminDictionaryDraftNote": {
+    "description": "A partial set. Not an error — but somebody must not believe it is finished.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminDictionaryRetired": "Not in use",
+  "@adminDictionaryRetired": {
+    "description": "Deactivated: out of the pickers, still resolvable in old records."
+  },
+  "adminDictionaryMerged": "Merged",
+  "@adminDictionaryMerged": {
+    "description": "Merged into a survivor (§10.3)."
+  },
+  "adminDictionaryMergedBody": "It points at the item it was merged into, so everything that used it still reads. There is nothing left to do to it.",
+  "@adminDictionaryMergedBody": {
+    "description": "A merged item is finished: offering to activate one would put a duplicate back into the pickers it was merged out of."
+  },
+  "adminDictionaryActivate": "Put into use",
+  "@adminDictionaryActivate": {
+    "description": "Activation — refused while a label is missing (§3.2)."
+  },
+  "adminDictionaryRetire": "Take out of use",
+  "@adminDictionaryRetire": {
+    "description": "Deactivation. The nearest thing to a delete BR-13 allows."
+  },
+  "adminDictionaryLabelsMissing": "It cannot be used until it has a name in all four languages.",
+  "@adminDictionaryLabelsMissing": {
+    "description": "The 422 the database answers on activation, said as what it is — a translation still to be written, not a fault."
+  },
+  "adminDictionaryMerge": "Merge a duplicate",
+  "@adminDictionaryMerge": {
+    "description": "§10.3's merge."
+  },
+  "adminDictionaryMergeBody": "This item is the one that goes. It is taken out of use and points at the one you choose, so everything that used it still reads.",
+  "@adminDictionaryMergeBody": {
+    "description": "The direction is the one thing about a merge somebody can get backwards, and it cannot be undone from this app — so it is stated before the picker rather than in a confirmation after it."
+  },
+  "adminDictionaryMergeInto": "Keep this one instead",
+  "@adminDictionaryMergeInto": {
+    "description": "The survivor."
+  },
+  "adminDictionaryMergeConfirm": "Merge",
+  "@adminDictionaryMergeConfirm": {
+    "description": "Destructive-toned: it cannot be undone from this app."
+  },
+  "adminDictionaryEmpty": "Nothing here yet",
+  "@adminDictionaryEmpty": {
+    "description": "A type with no items at all."
+  },
+  "adminDictionaryEmptyBody": "Add the first item and it will appear in the pickers once it has all four names.",
+  "@adminDictionaryEmptyBody": {
+    "description": "Says what makes an item usable, which is the thing §3.2 makes non-obvious."
+  },
+  "adminDictionaryNoMatch": "Nothing matches",
+  "@adminDictionaryNoMatch": {
+    "description": "A search that found nothing."
+  },
+  "adminDictionaryNoMatchBody": "The search looks at names and codes. An item taken out of use is still in this list.",
+  "@adminDictionaryNoMatchBody": {
+    "description": "Rules out the two wrong conclusions: that the search only reads names, and that a retired item is gone."
+  },
+  "dictTypeOccupation": "Occupations",
+  "@dictTypeOccupation": {
+    "description": "§2.1."
+  },
+  "dictTypeSkill": "Skills",
+  "@dictTypeSkill": {
+    "description": "§5.1."
+  },
+  "dictTypeIndustry": "Industries",
+  "@dictTypeIndustry": {
+    "description": "§6.1."
+  },
+  "dictTypeRegion": "Regions and districts",
+  "@dictTypeRegion": {
+    "description": "The one hierarchy: districts are a region’s children."
+  },
+  "dictTypeLanguage": "Languages",
+  "@dictTypeLanguage": {
+    "description": "§5.1."
+  },
+  "dictTypeEmploymentType": "Employment types",
+  "@dictTypeEmploymentType": {
+    "description": "§5.1."
+  },
+  "dictTypeWorkFormat": "Work formats",
+  "@dictTypeWorkFormat": {
+    "description": "§5.1."
+  },
+  "dictTypeShift": "Shifts",
+  "@dictTypeShift": {
+    "description": "§5.1."
+  },
+  "dictTypeAttribute": "Requirement attributes",
+  "@dictTypeAttribute": {
+    "description": "§6.3’s additional structured requirements."
+  },
+  "dictTypeSkillLevel": "Skill levels",
+  "@dictTypeSkillLevel": {
+    "description": "An ordered scale — every item needs a rank (§7.4)."
+  },
+  "dictTypeLanguageLevel": "Language levels",
+  "@dictTypeLanguageLevel": {
+    "description": "A1–C2. An ordered scale."
+  },
+  "dictTypeEducationLevel": "Education levels",
+  "@dictTypeEducationLevel": {
+    "description": "§5.1."
+  },
+  "dictTypeSpecialization": "Specializations",
+  "@dictTypeSpecialization": {
+    "description": "§5.1."
+  },
+  "dictTypePaymentPeriod": "Payment periods",
+  "@dictTypePaymentPeriod": {
+    "description": "Per month, per day, per shift."
+  },
+  "dictTypeFilePurpose": "File purposes",
+  "@dictTypeFilePurpose": {
+    "description": "§4.5’s attachment kinds."
+  },
+  "dictTypeGender": "Gender",
+  "@dictTypeGender": {
+    "description": "BR-12 only: a filter on it is a restriction needing a justification."
+  },
+  "dictTypeRestrictionJustification": "Restriction reasons",
+  "@dictTypeRestrictionJustification": {
+    "description": "BR-12’s declared justifications."
   }
 }

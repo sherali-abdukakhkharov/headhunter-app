@@ -510,11 +510,13 @@ void main() {
       // shipped in 1.4.1 as `ShellPlaceholderScreen` — the candidate's default
       // Home among them — and nothing failed when they did.
       //
-      // Asserted as an **exact list** rather than "none": the last placeholder
-      // is §10.3's dictionary management, and a test that merely allowed
-      // placeholders would go on passing when a new one appeared. This one
-      // fails both ways — a tab that regresses into a placeholder, and the day
-      // dictionaries lands and this list stops being true.
+      // All three are real screens now, so this asserts the empty set.
+      //
+      // It was an exact list — `[/admin/dictionaries]` — for one release, and
+      // that shape is why this line reads `isEmpty` today rather than being
+      // quietly widened: the test failed the day §10.3 landed, which is what
+      // it was written to do. Every shell tab now resolves to a real screen,
+      // and the next placeholder to appear anywhere fails here.
       final placeholders = <String>[];
 
       for (final role in AppRole.values) {
@@ -532,7 +534,7 @@ void main() {
         }
       }
 
-      expect(placeholders, [Routes.adminDictionaries]);
+      expect(placeholders, isEmpty);
       await _unmountTree(tester);
     });
   });

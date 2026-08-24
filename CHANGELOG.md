@@ -17,6 +17,43 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.9.0+14 — 2026-08-24
+
+Dictionary management, which was the last unfinished tab anywhere in the app.
+Every screen a candidate, an employer or an administrator can reach is now a
+real one.
+
+### Added
+
+- **Dictionaries (§10.3)** — the administrator's fifth tab. It opens on the
+  list of everything the pickers draw from: occupations, skills, regions,
+  languages, levels and the rest, each with how many of its items are in use.
+  Opening one lists its items, searchable by name **or code** — a duplicate is
+  usually hunted by code, and the name on screen may be in a language you
+  cannot type.
+  **Retired items are in the list, and marked.** Nothing in this product is
+  ever deleted: an item taken out of use leaves the pickers and stays readable
+  in every profile and vacancy that chose it. An item merged into another says
+  that instead, and points at the one that replaced it.
+  **Adding an item asks for all four names.** An item needs a name in Uzbek
+  (both scripts), Russian and English before it can be used, so the form
+  collects them together and says how many are still to write. Fewer is a
+  draft: it is added, it stays out of the pickers, and it can be put into use
+  the moment the last name arrives.
+  **Putting an item into use can be refused, and the reason is said plainly** —
+  "it has no name in all four languages yet" rather than an error code.
+  **Merging a duplicate says which one goes.** The item you opened is the one
+  that is retired and pointed at the one you keep, so nothing that used it
+  breaks. That direction is stated before the choice, not after it.
+
+### Note
+
+Editing the names of an item that already exists is not offered yet. The app
+can only read one name at a time and cannot tell a missing translation from a
+real one, so a form here would risk saving the wrong language over the right
+one. Adding new items, which is where the four names actually get written, is
+unaffected.
+
 ## 1.8.0+13 — 2026-08-24
 
 The employer's first ten minutes, from the 1.4.1 audit. It was possible to

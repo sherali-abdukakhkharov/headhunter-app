@@ -89,6 +89,15 @@ abstract final class Routes {
   static const adminUsers = '/admin/users';
   static const adminDictionaries = '/admin/dictionaries';
 
+  /// §10.3's items for one dictionary type.
+  ///
+  /// The type travels in the **path** rather than the query, unlike the two
+  /// filters the admin shell carries: it is not a filter on a list, it is
+  /// which list. A type code is a stable identifier and there is nothing else
+  /// under this tab for it to collide with.
+  static String adminDictionaryFor(String type) =>
+      '$adminDictionaries/$type';
+
   /// Which of §10.2's two queues the moderation tab is showing.
   ///
   /// **A query parameter rather than screen state**, and that is the whole

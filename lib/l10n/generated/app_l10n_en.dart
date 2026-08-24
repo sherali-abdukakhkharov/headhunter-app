@@ -2798,4 +2798,160 @@ class AppL10nEn extends AppL10n {
   String dashboardProfileIncomplete(int percent) {
     return '$percent% filled in — vacancies and candidate search need all of it';
   }
+
+  @override
+  String get adminDictionariesTitle => 'Dictionaries';
+
+  @override
+  String get adminDictionariesBody =>
+      'Everything the pickers offer. Nothing is ever deleted — an item leaves the pickers and stays readable in the records that used it.';
+
+  @override
+  String adminDictionaryActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count in use',
+      one: '$count in use',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionarySearch => 'Find an item';
+
+  @override
+  String get adminDictionarySearchHint => 'By name or code';
+
+  @override
+  String get adminDictionaryAdd => 'Add an item';
+
+  @override
+  String get adminDictionaryCreate => 'Add';
+
+  @override
+  String get adminDictionaryCode => 'Code';
+
+  @override
+  String get adminDictionaryCodeHint => 'welder';
+
+  @override
+  String get adminDictionaryCodeNote =>
+      'Never shown to anyone. Labels can change in every language; this cannot.';
+
+  @override
+  String get adminDictionaryLabels => 'Names';
+
+  @override
+  String get adminDictionaryLabelsNote =>
+      'All four are needed before the item can be used. Fewer makes a draft that stays out of the pickers.';
+
+  @override
+  String adminDictionaryDraftNote(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count languages still to write — it will be added as a draft',
+      one: '$count language still to write — it will be added as a draft',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionaryRetired => 'Not in use';
+
+  @override
+  String get adminDictionaryMerged => 'Merged';
+
+  @override
+  String get adminDictionaryMergedBody =>
+      'It points at the item it was merged into, so everything that used it still reads. There is nothing left to do to it.';
+
+  @override
+  String get adminDictionaryActivate => 'Put into use';
+
+  @override
+  String get adminDictionaryRetire => 'Take out of use';
+
+  @override
+  String get adminDictionaryLabelsMissing =>
+      'It cannot be used until it has a name in all four languages.';
+
+  @override
+  String get adminDictionaryMerge => 'Merge a duplicate';
+
+  @override
+  String get adminDictionaryMergeBody =>
+      'This item is the one that goes. It is taken out of use and points at the one you choose, so everything that used it still reads.';
+
+  @override
+  String get adminDictionaryMergeInto => 'Keep this one instead';
+
+  @override
+  String get adminDictionaryMergeConfirm => 'Merge';
+
+  @override
+  String get adminDictionaryEmpty => 'Nothing here yet';
+
+  @override
+  String get adminDictionaryEmptyBody =>
+      'Add the first item and it will appear in the pickers once it has all four names.';
+
+  @override
+  String get adminDictionaryNoMatch => 'Nothing matches';
+
+  @override
+  String get adminDictionaryNoMatchBody =>
+      'The search looks at names and codes. An item taken out of use is still in this list.';
+
+  @override
+  String get dictTypeOccupation => 'Occupations';
+
+  @override
+  String get dictTypeSkill => 'Skills';
+
+  @override
+  String get dictTypeIndustry => 'Industries';
+
+  @override
+  String get dictTypeRegion => 'Regions and districts';
+
+  @override
+  String get dictTypeLanguage => 'Languages';
+
+  @override
+  String get dictTypeEmploymentType => 'Employment types';
+
+  @override
+  String get dictTypeWorkFormat => 'Work formats';
+
+  @override
+  String get dictTypeShift => 'Shifts';
+
+  @override
+  String get dictTypeAttribute => 'Requirement attributes';
+
+  @override
+  String get dictTypeSkillLevel => 'Skill levels';
+
+  @override
+  String get dictTypeLanguageLevel => 'Language levels';
+
+  @override
+  String get dictTypeEducationLevel => 'Education levels';
+
+  @override
+  String get dictTypeSpecialization => 'Specializations';
+
+  @override
+  String get dictTypePaymentPeriod => 'Payment periods';
+
+  @override
+  String get dictTypeFilePurpose => 'File purposes';
+
+  @override
+  String get dictTypeGender => 'Gender';
+
+  @override
+  String get dictTypeRestrictionJustification => 'Restriction reasons';
 }

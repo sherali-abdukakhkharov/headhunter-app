@@ -4942,6 +4942,270 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'{percent}% filled in — vacancies and candidate search need all of it'**
   String dashboardProfileIncomplete(int percent);
+
+  /// §10.3's tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionaries'**
+  String get adminDictionariesTitle;
+
+  /// BR-13 in one sentence, at the top of the screen where it decides what every action means.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything the pickers offer. Nothing is ever deleted — an item leaves the pickers and stays readable in the records that used it.'**
+  String get adminDictionariesBody;
+
+  /// Active items only — the server's own figure, and what a picker would show.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} in use} other{{count} in use}}'**
+  String adminDictionaryActiveCount(int count);
+
+  /// The list of a type can be hundreds long.
+  ///
+  /// In en, this message translates to:
+  /// **'Find an item'**
+  String get adminDictionarySearch;
+
+  /// Code as well as name: an administrator hunting a duplicate often has the code, and the label may be in a language they cannot type.
+  ///
+  /// In en, this message translates to:
+  /// **'By name or code'**
+  String get adminDictionarySearchHint;
+
+  /// Opens the create sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an item'**
+  String get adminDictionaryAdd;
+
+  /// Confirms the create sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get adminDictionaryCreate;
+
+  /// BR-13's stable machine code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get adminDictionaryCode;
+
+  /// Deliberately the same in every variant: it is not a word, it is an identifier.
+  ///
+  /// In en, this message translates to:
+  /// **'welder'**
+  String get adminDictionaryCodeHint;
+
+  /// BR-13: everything stores the code, so it has to outlive every label. Saying so is what stops somebody typing a name here.
+  ///
+  /// In en, this message translates to:
+  /// **'Never shown to anyone. Labels can change in every language; this cannot.'**
+  String get adminDictionaryCodeNote;
+
+  /// §3.2's four labels.
+  ///
+  /// In en, this message translates to:
+  /// **'Names'**
+  String get adminDictionaryLabels;
+
+  /// The database refuses to activate an item missing any of the four (§3.2), so a partial set is a draft rather than a mistake.
+  ///
+  /// In en, this message translates to:
+  /// **'All four are needed before the item can be used. Fewer makes a draft that stays out of the pickers.'**
+  String get adminDictionaryLabelsNote;
+
+  /// A partial set. Not an error — but somebody must not believe it is finished.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} language still to write — it will be added as a draft} other{{count} languages still to write — it will be added as a draft}}'**
+  String adminDictionaryDraftNote(int count);
+
+  /// Deactivated: out of the pickers, still resolvable in old records.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in use'**
+  String get adminDictionaryRetired;
+
+  /// Merged into a survivor (§10.3).
+  ///
+  /// In en, this message translates to:
+  /// **'Merged'**
+  String get adminDictionaryMerged;
+
+  /// A merged item is finished: offering to activate one would put a duplicate back into the pickers it was merged out of.
+  ///
+  /// In en, this message translates to:
+  /// **'It points at the item it was merged into, so everything that used it still reads. There is nothing left to do to it.'**
+  String get adminDictionaryMergedBody;
+
+  /// Activation — refused while a label is missing (§3.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Put into use'**
+  String get adminDictionaryActivate;
+
+  /// Deactivation. The nearest thing to a delete BR-13 allows.
+  ///
+  /// In en, this message translates to:
+  /// **'Take out of use'**
+  String get adminDictionaryRetire;
+
+  /// The 422 the database answers on activation, said as what it is — a translation still to be written, not a fault.
+  ///
+  /// In en, this message translates to:
+  /// **'It cannot be used until it has a name in all four languages.'**
+  String get adminDictionaryLabelsMissing;
+
+  /// §10.3's merge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge a duplicate'**
+  String get adminDictionaryMerge;
+
+  /// The direction is the one thing about a merge somebody can get backwards, and it cannot be undone from this app — so it is stated before the picker rather than in a confirmation after it.
+  ///
+  /// In en, this message translates to:
+  /// **'This item is the one that goes. It is taken out of use and points at the one you choose, so everything that used it still reads.'**
+  String get adminDictionaryMergeBody;
+
+  /// The survivor.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this one instead'**
+  String get adminDictionaryMergeInto;
+
+  /// Destructive-toned: it cannot be undone from this app.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get adminDictionaryMergeConfirm;
+
+  /// A type with no items at all.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet'**
+  String get adminDictionaryEmpty;
+
+  /// Says what makes an item usable, which is the thing §3.2 makes non-obvious.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first item and it will appear in the pickers once it has all four names.'**
+  String get adminDictionaryEmptyBody;
+
+  /// A search that found nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches'**
+  String get adminDictionaryNoMatch;
+
+  /// Rules out the two wrong conclusions: that the search only reads names, and that a retired item is gone.
+  ///
+  /// In en, this message translates to:
+  /// **'The search looks at names and codes. An item taken out of use is still in this list.'**
+  String get adminDictionaryNoMatchBody;
+
+  /// §2.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupations'**
+  String get dictTypeOccupation;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get dictTypeSkill;
+
+  /// §6.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Industries'**
+  String get dictTypeIndustry;
+
+  /// The one hierarchy: districts are a region’s children.
+  ///
+  /// In en, this message translates to:
+  /// **'Regions and districts'**
+  String get dictTypeRegion;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get dictTypeLanguage;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment types'**
+  String get dictTypeEmploymentType;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Work formats'**
+  String get dictTypeWorkFormat;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Shifts'**
+  String get dictTypeShift;
+
+  /// §6.3’s additional structured requirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirement attributes'**
+  String get dictTypeAttribute;
+
+  /// An ordered scale — every item needs a rank (§7.4).
+  ///
+  /// In en, this message translates to:
+  /// **'Skill levels'**
+  String get dictTypeSkillLevel;
+
+  /// A1–C2. An ordered scale.
+  ///
+  /// In en, this message translates to:
+  /// **'Language levels'**
+  String get dictTypeLanguageLevel;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Education levels'**
+  String get dictTypeEducationLevel;
+
+  /// §5.1.
+  ///
+  /// In en, this message translates to:
+  /// **'Specializations'**
+  String get dictTypeSpecialization;
+
+  /// Per month, per day, per shift.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment periods'**
+  String get dictTypePaymentPeriod;
+
+  /// §4.5’s attachment kinds.
+  ///
+  /// In en, this message translates to:
+  /// **'File purposes'**
+  String get dictTypeFilePurpose;
+
+  /// BR-12 only: a filter on it is a restriction needing a justification.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get dictTypeGender;
+
+  /// BR-12’s declared justifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Restriction reasons'**
+  String get dictTypeRestrictionJustification;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

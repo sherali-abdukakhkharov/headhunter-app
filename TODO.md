@@ -25,7 +25,7 @@ against that: one Critical was already fixed before the audit was written up.
 | MT-001 | Critical | **Fixed 1.7.0** — candidate Home is a real screen |
 | MT-002 | Critical | **Fixed 1.5.0**, before the audit was delivered — §10.4's user management, search and BR-10 actions |
 | MT-003 | Critical | **Backend/deployment**, and confirmed as such by the audit itself: `MODERATION_ENABLED=false` in the tested `.env`. The client already renders whatever status the API returns; the ask is the flag and a deployment smoke test |
-| MT-004 | High | Open — §10.3 dictionary management, the last placeholder in the shell |
+| MT-004 | High | **Fixed 1.9.0** — §10.3 ships, and the shell has no placeholders left. Label *editing* waits on a contract change; see the ask |
 | MT-005 | High | Open — M9. The **backend routes exist** (`/notifications`, `/notifications/unread-count`, preferences, devices); the client has no screen. M9 was deferred to last by owner direction on 2026-08-04, which this audit reopens |
 | MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code |
 | MT-007 | High | **Fixed 1.8.0** — no default type, and the first save is held to §6.1 |
@@ -1956,8 +1956,41 @@ remaining item is a screen.
       administrator has done" from one that holds the admin role — offered only
       there, because only an administrator ever writes an audit row and an
       empty answer would read as a bug
-- [ ] Dictionary management with four localized labels + skill merge, designed for
-      a phone (there is no web panel)
+- [x] **Dictionary management (§10.3), 2026-08-24 — and the release shell has
+      no placeholder left in it.** Three screens deep rather than a table: the
+      types, one type's items, one item's actions. A table with columns is the
+      web panel §2.4 rules out.
+      **The types come from the manifest, not from `DictionaryType.all`.** That
+      constant says of itself that it is the prefetch list and "not for
+      validation: the server remains the authority on what exists" — so an
+      administrator's list built from it would be missing any type added after
+      the build shipped, on the one screen whose job is to manage what the
+      server has. A type with no name in this build shows its code, the same
+      rule §10.4's audit actions follow.
+      **The list is the unfiltered set.** `dictionaryProvider`, not
+      `selectableDictionary`: BR-13 never deletes anything, so the questions
+      "what did we retire" and "what did we merge into what" are exactly the
+      ones a picker's list cannot answer. Retired and merged are two different
+      chips, because they are two different facts.
+      **A write is a delta.** Every dictionary write bumps the global revision
+      through a trigger, so invalidating the provider re-reads with `since=`
+      and merges what the client already knows how to merge. No admin read
+      route was needed and none was asked for.
+      **The 422 on activation is a translation, not a fault.** The database
+      refuses to activate an item missing any of §3.2's four labels; the sheet
+      says "it has no name in all four languages yet" rather than a status
+      line. The 409 `dictionary.state_unchanged` is the ordinary race and
+      closes the sheet as a success would.
+      **Creating collects all four labels and never activates.** The client
+      cannot know the set is complete until the database accepts or refuses an
+      activation, so it creates inactive and asks separately — and a partial
+      set is a legitimate draft, which the form says out loud rather than
+      refusing.
+      *Not built:* **editing an existing item's labels.** The only read is
+      fallback-resolved, so a missing `ru` label arrives as the Uzbek one and
+      writing it back would turn a fallback into a translation nobody made. The
+      ask is in [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md) and the screen says
+      so rather than offering a field that would quietly do the wrong thing
 - [ ] **§10.5 wallet and payment administration** *(new, 2026-08-10)* — employer
       balance and immutable history; Payment Order search on six axes (employer,
       provider, status, date, internal order ID, provider transaction ID,

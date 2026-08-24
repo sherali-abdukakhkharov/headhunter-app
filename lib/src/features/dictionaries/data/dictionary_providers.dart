@@ -3,6 +3,7 @@ import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_cache.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_repository.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_manifest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dictionary_providers.g.dart';
@@ -169,3 +170,16 @@ Future<void> warmDictionaries(Ref ref, List<String> types) async {
     }
   }
 }
+
+/// Every dictionary type the server has (§10.3).
+///
+/// Read from the manifest rather than from `DictionaryType.all`: that constant
+/// is the client's prefetch list and says so — "not for validation: the server
+/// remains the authority on what exists" — so an administrator's list built
+/// from it would omit any type added after this build shipped.
+///
+/// Not cached with the item lists. The manifest is locale-independent and one
+/// small request, and the screen that reads it is opened deliberately.
+@riverpod
+Future<DictionaryManifest> dictionaryManifest(Ref ref) =>
+    ref.watch(dictionaryRepositoryProvider).manifest();

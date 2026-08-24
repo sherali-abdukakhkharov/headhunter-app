@@ -2820,4 +2820,164 @@ class AppL10nRu extends AppL10n {
   String dashboardProfileIncomplete(int percent) {
     return 'Заполнено $percent% — для вакансий и поиска кандидатов нужно всё';
   }
+
+  @override
+  String get adminDictionariesTitle => 'Справочники';
+
+  @override
+  String get adminDictionariesBody =>
+      'Всё, что предлагают списки выбора. Ничего не удаляется — элемент уходит из списков и остаётся читаемым в записях, где он использовался.';
+
+  @override
+  String adminDictionaryActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count используются',
+      many: '$count используются',
+      few: '$count используются',
+      one: '$count используется',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionarySearch => 'Найти элемент';
+
+  @override
+  String get adminDictionarySearchHint => 'По названию или коду';
+
+  @override
+  String get adminDictionaryAdd => 'Добавить элемент';
+
+  @override
+  String get adminDictionaryCreate => 'Добавить';
+
+  @override
+  String get adminDictionaryCode => 'Код';
+
+  @override
+  String get adminDictionaryCodeHint => 'welder';
+
+  @override
+  String get adminDictionaryCodeNote =>
+      'Никому не показывается. Названия можно менять на любом языке, а это — нет.';
+
+  @override
+  String get adminDictionaryLabels => 'Названия';
+
+  @override
+  String get adminDictionaryLabelsNote =>
+      'Прежде чем элемент можно использовать, нужны все четыре. Меньше — это черновик, который в списки не попадёт.';
+
+  @override
+  String adminDictionaryDraftNote(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Осталось написать на $count языках — будет добавлен как черновик',
+      many: 'Осталось написать на $count языках — будет добавлен как черновик',
+      few: 'Осталось написать на $count языках — будет добавлен как черновик',
+      one: 'Осталось написать на $count языке — будет добавлен как черновик',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionaryRetired => 'Не используется';
+
+  @override
+  String get adminDictionaryMerged => 'Объединён';
+
+  @override
+  String get adminDictionaryMergedBody =>
+      'Он указывает на элемент, в который был объединён, поэтому всё, что его использовало, по-прежнему читается. Делать с ним больше нечего.';
+
+  @override
+  String get adminDictionaryActivate => 'Ввести в использование';
+
+  @override
+  String get adminDictionaryRetire => 'Вывести из использования';
+
+  @override
+  String get adminDictionaryLabelsMissing =>
+      'Пока у него нет названия на всех четырёх языках, использовать его нельзя.';
+
+  @override
+  String get adminDictionaryMerge => 'Объединить дубликат';
+
+  @override
+  String get adminDictionaryMergeBody =>
+      'Уходит именно этот элемент. Он выводится из использования и указывает на выбранный вами, поэтому всё, что его использовало, по-прежнему читается.';
+
+  @override
+  String get adminDictionaryMergeInto => 'Оставить вместо него';
+
+  @override
+  String get adminDictionaryMergeConfirm => 'Объединить';
+
+  @override
+  String get adminDictionaryEmpty => 'Пока пусто';
+
+  @override
+  String get adminDictionaryEmptyBody =>
+      'Добавьте первый элемент — он появится в списках выбора, как только у него будут все четыре названия.';
+
+  @override
+  String get adminDictionaryNoMatch => 'Совпадений нет';
+
+  @override
+  String get adminDictionaryNoMatchBody =>
+      'Поиск смотрит на названия и коды. Выведенный из использования элемент тоже есть в этом списке.';
+
+  @override
+  String get dictTypeOccupation => 'Профессии';
+
+  @override
+  String get dictTypeSkill => 'Навыки';
+
+  @override
+  String get dictTypeIndustry => 'Отрасли';
+
+  @override
+  String get dictTypeRegion => 'Регионы и районы';
+
+  @override
+  String get dictTypeLanguage => 'Языки';
+
+  @override
+  String get dictTypeEmploymentType => 'Типы занятости';
+
+  @override
+  String get dictTypeWorkFormat => 'Форматы работы';
+
+  @override
+  String get dictTypeShift => 'Смены';
+
+  @override
+  String get dictTypeAttribute => 'Атрибуты требований';
+
+  @override
+  String get dictTypeSkillLevel => 'Уровни навыков';
+
+  @override
+  String get dictTypeLanguageLevel => 'Уровни языка';
+
+  @override
+  String get dictTypeEducationLevel => 'Уровни образования';
+
+  @override
+  String get dictTypeSpecialization => 'Специальности';
+
+  @override
+  String get dictTypePaymentPeriod => 'Периоды оплаты';
+
+  @override
+  String get dictTypeFilePurpose => 'Назначения файлов';
+
+  @override
+  String get dictTypeGender => 'Пол';
+
+  @override
+  String get dictTypeRestrictionJustification => 'Причины ограничений';
 }

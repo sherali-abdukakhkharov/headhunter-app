@@ -210,6 +210,40 @@ with no client release.
 already opens the account, which answers the question better than a label
 would.
 
+### 2. §10.3 cannot edit a label it cannot read — raised 2026-08-24
+
+§10.3 is "dictionary management with four localized labels", and there is no
+route that returns them. The only read is `GET /dictionaries/:type`, which
+resolves **one** label through §3.2's fallback chain — so an item with no
+Russian label comes back carrying its Uzbek one, and the client has no way to
+tell that apart from a Russian label that happens to read the same.
+
+That makes the obvious client-side implementation actively wrong rather than
+merely inconvenient: read four times with a different `x-lang`, show the four
+strings, save what the administrator did not change, and a fallback becomes a
+translation nobody wrote — in the table that decides what every picker in the
+product says.
+
+**The ask is an admin read of the raw labels**, unresolved: for one item, or
+for a type, `{ 'uz-Latn': …, 'uz-Cyrl': …, ru: …, en: … }` with a key absent
+where no label exists. The service already knows this — `resolveRows` selects
+`label_locale` alongside the label precisely so `warnOnFallback` can log it —
+so the fact is in hand and is being dropped on the way out.
+
+A smaller version that would also work: add `labelLocale` to
+`DictionaryItemDto`. It costs the client four requests per item and some
+arithmetic, but it makes a fallback *visible*, which is the property that
+matters. The raw map is better; either unblocks the screen.
+
+**What the client does meanwhile.** Everything else in §10.3 shipped in 1.9.0:
+the list of types from the manifest, a type's items with retired and merged
+ones shown, activate and deactivate with §3.2's 422 rendered as "it has no name
+in all four languages yet", the duplicate merge with its three refusals, and
+**creating** an item with all four labels — which needs no read, because
+nothing is being read. Label editing is the one action the screen does not
+offer, and it says so rather than offering a field that would quietly write a
+fallback.
+
 ## Facts §10.4 needs, from settling the above
 
 - **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto` +

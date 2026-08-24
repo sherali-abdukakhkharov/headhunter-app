@@ -9,6 +9,7 @@ import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
+import 'package:jobbridge_app/src/features/admin/domain/dictionary_draft.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
@@ -440,6 +441,112 @@ class AdminRepository {
           .whereType<Map<String, dynamic>>()
           .map(AuditEntry.fromJson)
           .toList();
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /admin/dictionaries/:typeCode/items` — §10.3's new item.
+  ///
+  /// **Created inactive unless asked otherwise**, which is the server's rule
+  /// and a good one: an item with no labels must not reach a picker, and the
+  /// database refuses to *activate* one missing any of the four (§3.2). So the
+  /// safe order is create, then fill in, then activate — and this client never
+  /// creates an active item, because it cannot know the labels are complete
+  /// until the activation either succeeds or is refused.
+  ///
+  /// Throws [ApiException] on 409 `dictionary.code_taken` and 404
+  /// `dictionary.type_not_found`, both of which are the administrator's to
+  /// read: a taken code is a duplicate they should merge rather than re-add.
+  Future<String> createDictionaryItem(
+    String typeCode,
+    NewDictionaryItem item,
+  ) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/admin/dictionaries/$typeCode/items',
+        data: item.toJson(),
+      );
+
+      final id = response.data?['id'];
+      if (id is! String) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return id;
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PUT /admin/dictionaries/items/:itemId` — any subset of the metadata.
+  ///
+  /// Labels are **not** sent from this app yet, and that is a contract gap
+  /// rather than an omission: the only read is locale-resolved through §3.2's
+  /// fallback chain, so a missing `ru` label arrives as the Uzbek one and is
+  /// indistinguishable from a real one. Writing back what was read would turn
+  /// a fallback into a translation nobody made. See docs/BACKEND_ASKS.md.
+  Future<void> updateDictionaryItem(
+    String itemId,
+    Map<String, dynamic> changes,
+  ) async {
+    try {
+      await _dio.put<void>(
+        '/admin/dictionaries/items/$itemId',
+        data: changes,
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PUT /admin/dictionaries/items/:itemId/active` (§10.3, BR-13).
+  ///
+  /// **Deactivating is the delete this product has.** Nothing is ever
+  /// hard-deleted: a retired item leaves the pickers and stays resolvable, so
+  /// an application filed last year against it still reads as words rather
+  /// than a uuid.
+  ///
+  /// Activation can be refused by the database when any of the four labels is
+  /// missing (§3.2) — a 422, which the caller renders as what it is: a
+  /// translation still to be written, not a fault.
+  ///
+  /// Throws [AdminDecisionConflict] on 409 `dictionary.state_unchanged`, which
+  /// is the ordinary race: somebody else already did it and the work is done.
+  Future<void> setDictionaryItemActive(
+    String itemId, {
+    required bool isActive,
+  }) async {
+    try {
+      await _dio.put<void>(
+        '/admin/dictionaries/items/$itemId/active',
+        data: {'isActive': isActive},
+      );
+    } on DioException catch (e) {
+      throw _alreadyDecided(e, 'dictionary.state_unchanged') ??
+          ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /admin/dictionaries/items/:itemId/merge` — §10.3's duplicate merge.
+  ///
+  /// **The item in the path is the one that loses.** It is deactivated and
+  /// pointed at [survivorId]; nothing is rewritten, which is the whole design —
+  /// every profile and vacancy that referenced the duplicate still resolves
+  /// through it. Rewriting the references would be a migration disguised as an
+  /// edit, and it would lose what somebody actually chose.
+  ///
+  /// Three refusals, all the administrator's to read: 403
+  /// `dictionary.merge_into_itself`, 403 `dictionary.merge_type_mismatch` —
+  /// an occupation cannot survive a skill — and 409
+  /// `dictionary.survivor_already_merged`, which means the survivor was itself
+  /// merged away and the chain would end nowhere.
+  Future<void> mergeDictionaryItems(String itemId, String survivorId) async {
+    try {
+      await _dio.post<void>(
+        '/admin/dictionaries/items/$itemId/merge',
+        data: {'survivorId': survivorId},
+      );
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

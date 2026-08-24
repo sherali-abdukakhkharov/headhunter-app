@@ -3,6 +3,7 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_delta.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_manifest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dictionary_repository.g.dart';
@@ -81,6 +82,28 @@ class DictionaryRepository {
       }
 
       return DictionaryFetch(delta: DictionaryDelta.fromJson(data), etag: tag);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /dictionaries/manifest` — every type the server has.
+  ///
+  /// Locale-independent, so it is not keyed on one and not cached with the
+  /// per-locale item lists. Read by §10.3's administrator screen, which needs
+  /// the list of types themselves rather than any type’s contents.
+  Future<DictionaryManifest> manifest() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/dictionaries/manifest',
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const ApiException('The server returned an empty response.');
+      }
+
+      return DictionaryManifest.fromJson(data);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

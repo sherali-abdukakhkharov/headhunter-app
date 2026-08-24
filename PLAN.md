@@ -104,7 +104,7 @@ after M11 while being delivered before M8.
 | M13 | Coin top-up: Payme and CLICK | after M12; blocked on client-supplied merchant credentials |
 | M8 | Chat + interviews | **§9.1's chat and all of §8.3 done** 2026-08-20 — conversation list, thread, sent/read, block, report, read-only history, both roles' Messages tab from one screen; and interviews end to end: the employer schedules, moves and cancels from §6.5's applicant row, the candidate sees it on the application and confirms or asks for another time. §9.1's revised gate is the *same* question §8.2's "then" raised, answered the same lenient way: the client holds no copy of the rule and renders the server's refusal. Open: **deep links**, an attachment **send** (blocked on a `file_purpose` code, not on a screen), and an employer's aggregate interview list (blocks §6.2's fourth metric, not a screen) |
 | M9 | Notifications + push | **last feature milestone** - after M10 |
-| M10 | Admin module (now including §10.5 wallet/payment administration) | **§10.1, §10.2 and §10.4 done** — the dashboard 2026-08-21, all three moderation queues 2026-08-22, and user search with warn/restrict/block/unblock 2026-08-23. Every current-state counter on the dashboard now leads to the screen it counts. **§10.4 is complete** — the audit log landed the same day, under the users tab. Open: §10.3 dictionary management and §10.5 |
+| M10 | Admin module (now including §10.5 wallet/payment administration) | **§10.1–§10.4 complete** — the dashboard 2026-08-21, all three moderation queues 2026-08-22, user search with warn/restrict/block/unblock 2026-08-23, the audit log the same day, and dictionary management 2026-08-24. Every current-state counter on the dashboard leads to the screen it counts, and §10.3 was the last placeholder anywhere in the release shell. Open: §10.5, and label *editing* within §10.3, which waits on a contract change |
 | M11 | Hardening: performance, accessibility, offline, acceptance | last |
 
 ---
@@ -533,7 +533,10 @@ share-a-vacancy and chat entry points behind a deferred milestone.
   about the person, and no audit entries — the log is `GET /admin/audit`, and
   it shipped as its own screen under the users tab the same day.)*
 - Dictionary management with all four localized labels and skill merging (§10.3) -
-  mobile-optimized, since there is no web panel.
+  mobile-optimized, since there is no web panel. *(done 2026-08-24, bar label
+  editing: the only read resolves one label through §3.2's fallback chain, so
+  the client cannot tell a missing translation from a real one. See
+  docs/BACKEND_ASKS.md.)*
 
 Added by the 2026-08-10 revision — **§10.5 wallet and payment administration**,
 and it is a real screen rather than a read-only list:

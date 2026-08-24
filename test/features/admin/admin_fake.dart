@@ -5,6 +5,7 @@ import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
+import 'package:jobbridge_app/src/features/admin/domain/dictionary_draft.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
@@ -114,4 +115,26 @@ abstract class FakeAdminBase implements AdminRepository {
   @override
   Future<List<AuditEntry>> auditLog(AuditQuery query, {int offset = 0}) =>
       _unused('auditLog');
+
+  @override
+  Future<String> createDictionaryItem(
+    String typeCode,
+    NewDictionaryItem item,
+  ) => _unused('createDictionaryItem');
+
+  @override
+  Future<void> updateDictionaryItem(
+    String itemId,
+    Map<String, dynamic> changes,
+  ) => _unused('updateDictionaryItem');
+
+  @override
+  Future<void> setDictionaryItemActive(
+    String itemId, {
+    required bool isActive,
+  }) => _unused('setDictionaryItemActive');
+
+  @override
+  Future<void> mergeDictionaryItems(String itemId, String survivorId) =>
+      _unused('mergeDictionaryItems');
 }

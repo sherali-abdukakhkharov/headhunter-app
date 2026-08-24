@@ -2803,6 +2803,160 @@ class AppL10nUz extends AppL10n {
   String dashboardProfileIncomplete(int percent) {
     return '$percent% to‘ldirilgan — vakansiya va nomzod qidiruvi uchun hammasi kerak';
   }
+
+  @override
+  String get adminDictionariesTitle => 'Lug‘atlar';
+
+  @override
+  String get adminDictionariesBody =>
+      'Tanlash ro‘yxatlaridagi hamma narsa. Hech narsa o‘chirilmaydi — band ro‘yxatdan chiqadi, lekin uni ishlatgan yozuvlarda o‘qiladigan bo‘lib qoladi.';
+
+  @override
+  String adminDictionaryActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta ishlatilmoqda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionarySearch => 'Bandni toping';
+
+  @override
+  String get adminDictionarySearchHint => 'Nomi yoki kodi bo‘yicha';
+
+  @override
+  String get adminDictionaryAdd => 'Band qo‘shish';
+
+  @override
+  String get adminDictionaryCreate => 'Qo‘shish';
+
+  @override
+  String get adminDictionaryCode => 'Kod';
+
+  @override
+  String get adminDictionaryCodeHint => 'welder';
+
+  @override
+  String get adminDictionaryCodeNote =>
+      'Hech kimga ko‘rsatilmaydi. Nomlar har qanday tilda o‘zgarishi mumkin, bu esa yo‘q.';
+
+  @override
+  String get adminDictionaryLabels => 'Nomlari';
+
+  @override
+  String get adminDictionaryLabelsNote =>
+      'Band ishlatilishidan oldin to‘rttasi ham kerak. Kamrog‘i qoralama bo‘ladi va tanlash ro‘yxatlariga tushmaydi.';
+
+  @override
+  String adminDictionaryDraftNote(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count tilda yozilishi kerak — qoralama sifatida qo‘shiladi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionaryRetired => 'Ishlatilmaydi';
+
+  @override
+  String get adminDictionaryMerged => 'Birlashtirilgan';
+
+  @override
+  String get adminDictionaryMergedBody =>
+      'U birlashtirilgan bandga ishora qiladi, shuning uchun uni ishlatgan hamma narsa o‘qiladi. Unga qiladigan ish qolmadi.';
+
+  @override
+  String get adminDictionaryActivate => 'Ishga tushirish';
+
+  @override
+  String get adminDictionaryRetire => 'Ishdan chiqarish';
+
+  @override
+  String get adminDictionaryLabelsMissing =>
+      'To‘rtala tilda nomi bo‘lmaguncha uni ishlatib bo‘lmaydi.';
+
+  @override
+  String get adminDictionaryMerge => 'Takrorni birlashtirish';
+
+  @override
+  String get adminDictionaryMergeBody =>
+      'Ketadigani — shu band. U ishdan chiqariladi va siz tanlagan bandga ishora qiladi, shuning uchun uni ishlatgan hamma narsa o‘qiladi.';
+
+  @override
+  String get adminDictionaryMergeInto => 'Buning o‘rniga shu qolsin';
+
+  @override
+  String get adminDictionaryMergeConfirm => 'Birlashtirish';
+
+  @override
+  String get adminDictionaryEmpty => 'Hozircha bo‘sh';
+
+  @override
+  String get adminDictionaryEmptyBody =>
+      'Birinchi bandni qo‘shing — to‘rtala nomi bo‘lgach, u tanlash ro‘yxatlarida paydo bo‘ladi.';
+
+  @override
+  String get adminDictionaryNoMatch => 'Mos keladigani yo‘q';
+
+  @override
+  String get adminDictionaryNoMatchBody =>
+      'Qidiruv nom va kodlarga qaraydi. Ishdan chiqarilgan band ham shu ro‘yxatda turadi.';
+
+  @override
+  String get dictTypeOccupation => 'Kasblar';
+
+  @override
+  String get dictTypeSkill => 'Ko‘nikmalar';
+
+  @override
+  String get dictTypeIndustry => 'Tarmoqlar';
+
+  @override
+  String get dictTypeRegion => 'Viloyat va tumanlar';
+
+  @override
+  String get dictTypeLanguage => 'Tillar';
+
+  @override
+  String get dictTypeEmploymentType => 'Bandlik turlari';
+
+  @override
+  String get dictTypeWorkFormat => 'Ish formatlari';
+
+  @override
+  String get dictTypeShift => 'Smenalar';
+
+  @override
+  String get dictTypeAttribute => 'Talab atributlari';
+
+  @override
+  String get dictTypeSkillLevel => 'Ko‘nikma darajalari';
+
+  @override
+  String get dictTypeLanguageLevel => 'Til darajalari';
+
+  @override
+  String get dictTypeEducationLevel => 'Ta’lim darajalari';
+
+  @override
+  String get dictTypeSpecialization => 'Mutaxassisliklar';
+
+  @override
+  String get dictTypePaymentPeriod => 'To‘lov davrlari';
+
+  @override
+  String get dictTypeFilePurpose => 'Fayl maqsadlari';
+
+  @override
+  String get dictTypeGender => 'Jins';
+
+  @override
+  String get dictTypeRestrictionJustification => 'Cheklov sabablari';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -5590,6 +5744,160 @@ class AppL10nUzCyrl extends AppL10nUz {
   String dashboardProfileIncomplete(int percent) {
     return '$percent% тўлдирилган — вакансия ва номзод қидируви учун ҳаммаси керак';
   }
+
+  @override
+  String get adminDictionariesTitle => 'Луғатлар';
+
+  @override
+  String get adminDictionariesBody =>
+      'Танлаш рўйхатларидаги ҳамма нарса. Ҳеч нарса ўчирилмайди — банд рўйхатдан чиқади, лекин уни ишлатган ёзувларда ўқиладиган бўлиб қолади.';
+
+  @override
+  String adminDictionaryActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та ишлатилмоқда',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionarySearch => 'Бандни топинг';
+
+  @override
+  String get adminDictionarySearchHint => 'Номи ёки коди бўйича';
+
+  @override
+  String get adminDictionaryAdd => 'Банд қўшиш';
+
+  @override
+  String get adminDictionaryCreate => 'Қўшиш';
+
+  @override
+  String get adminDictionaryCode => 'Код';
+
+  @override
+  String get adminDictionaryCodeHint => 'welder';
+
+  @override
+  String get adminDictionaryCodeNote =>
+      'Ҳеч кимга кўрсатилмайди. Номлар ҳар қандай тилда ўзгариши мумкин, бу эса йўқ.';
+
+  @override
+  String get adminDictionaryLabels => 'Номлари';
+
+  @override
+  String get adminDictionaryLabelsNote =>
+      'Банд ишлатилишидан олдин тўрттаси ҳам керак. Камроғи қоралама бўлади ва танлаш рўйхатларига тушмайди.';
+
+  @override
+  String adminDictionaryDraftNote(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Яна $count тилда ёзилиши керак — қоралама сифатида қўшилади',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionaryRetired => 'Ишлатилмайди';
+
+  @override
+  String get adminDictionaryMerged => 'Бирлаштирилган';
+
+  @override
+  String get adminDictionaryMergedBody =>
+      'У бирлаштирилган бандга ишора қилади, шунинг учун уни ишлатган ҳамма нарса ўқилади. Унга қиладиган иш қолмади.';
+
+  @override
+  String get adminDictionaryActivate => 'Ишга тушириш';
+
+  @override
+  String get adminDictionaryRetire => 'Ишдан чиқариш';
+
+  @override
+  String get adminDictionaryLabelsMissing =>
+      'Тўртала тилда номи бўлмагунча уни ишлатиб бўлмайди.';
+
+  @override
+  String get adminDictionaryMerge => 'Такрорни бирлаштириш';
+
+  @override
+  String get adminDictionaryMergeBody =>
+      'Кетадигани — шу банд. У ишдан чиқарилади ва сиз танлаган бандга ишора қилади, шунинг учун уни ишлатган ҳамма нарса ўқилади.';
+
+  @override
+  String get adminDictionaryMergeInto => 'Бунинг ўрнига шу қолсин';
+
+  @override
+  String get adminDictionaryMergeConfirm => 'Бирлаштириш';
+
+  @override
+  String get adminDictionaryEmpty => 'Ҳозирча бўш';
+
+  @override
+  String get adminDictionaryEmptyBody =>
+      'Биринчи бандни қўшинг — тўртала номи бўлгач, у танлаш рўйхатларида пайдо бўлади.';
+
+  @override
+  String get adminDictionaryNoMatch => 'Мос келадигани йўқ';
+
+  @override
+  String get adminDictionaryNoMatchBody =>
+      'Қидирув ном ва кодларга қарайди. Ишдан чиқарилган банд ҳам шу рўйхатда туради.';
+
+  @override
+  String get dictTypeOccupation => 'Касблар';
+
+  @override
+  String get dictTypeSkill => 'Кўникмалар';
+
+  @override
+  String get dictTypeIndustry => 'Тармоқлар';
+
+  @override
+  String get dictTypeRegion => 'Вилоят ва туманлар';
+
+  @override
+  String get dictTypeLanguage => 'Тиллар';
+
+  @override
+  String get dictTypeEmploymentType => 'Бандлик турлари';
+
+  @override
+  String get dictTypeWorkFormat => 'Иш форматлари';
+
+  @override
+  String get dictTypeShift => 'Сменалар';
+
+  @override
+  String get dictTypeAttribute => 'Талаб атрибутлари';
+
+  @override
+  String get dictTypeSkillLevel => 'Кўникма даражалари';
+
+  @override
+  String get dictTypeLanguageLevel => 'Тил даражалари';
+
+  @override
+  String get dictTypeEducationLevel => 'Таълим даражалари';
+
+  @override
+  String get dictTypeSpecialization => 'Мутахассисликлар';
+
+  @override
+  String get dictTypePaymentPeriod => 'Тўлов даврлари';
+
+  @override
+  String get dictTypeFilePurpose => 'Файл мақсадлари';
+
+  @override
+  String get dictTypeGender => 'Жинс';
+
+  @override
+  String get dictTypeRestrictionJustification => 'Чеклов сабаблари';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -8391,4 +8699,158 @@ class AppL10nUzLatn extends AppL10nUz {
   String dashboardProfileIncomplete(int percent) {
     return '$percent% to‘ldirilgan — vakansiya va nomzod qidiruvi uchun hammasi kerak';
   }
+
+  @override
+  String get adminDictionariesTitle => 'Lug‘atlar';
+
+  @override
+  String get adminDictionariesBody =>
+      'Tanlash ro‘yxatlaridagi hamma narsa. Hech narsa o‘chirilmaydi — band ro‘yxatdan chiqadi, lekin uni ishlatgan yozuvlarda o‘qiladigan bo‘lib qoladi.';
+
+  @override
+  String adminDictionaryActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta ishlatilmoqda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionarySearch => 'Bandni toping';
+
+  @override
+  String get adminDictionarySearchHint => 'Nomi yoki kodi bo‘yicha';
+
+  @override
+  String get adminDictionaryAdd => 'Band qo‘shish';
+
+  @override
+  String get adminDictionaryCreate => 'Qo‘shish';
+
+  @override
+  String get adminDictionaryCode => 'Kod';
+
+  @override
+  String get adminDictionaryCodeHint => 'welder';
+
+  @override
+  String get adminDictionaryCodeNote =>
+      'Hech kimga ko‘rsatilmaydi. Nomlar har qanday tilda o‘zgarishi mumkin, bu esa yo‘q.';
+
+  @override
+  String get adminDictionaryLabels => 'Nomlari';
+
+  @override
+  String get adminDictionaryLabelsNote =>
+      'Band ishlatilishidan oldin to‘rttasi ham kerak. Kamrog‘i qoralama bo‘ladi va tanlash ro‘yxatlariga tushmaydi.';
+
+  @override
+  String adminDictionaryDraftNote(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Yana $count tilda yozilishi kerak — qoralama sifatida qo‘shiladi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDictionaryRetired => 'Ishlatilmaydi';
+
+  @override
+  String get adminDictionaryMerged => 'Birlashtirilgan';
+
+  @override
+  String get adminDictionaryMergedBody =>
+      'U birlashtirilgan bandga ishora qiladi, shuning uchun uni ishlatgan hamma narsa o‘qiladi. Unga qiladigan ish qolmadi.';
+
+  @override
+  String get adminDictionaryActivate => 'Ishga tushirish';
+
+  @override
+  String get adminDictionaryRetire => 'Ishdan chiqarish';
+
+  @override
+  String get adminDictionaryLabelsMissing =>
+      'To‘rtala tilda nomi bo‘lmaguncha uni ishlatib bo‘lmaydi.';
+
+  @override
+  String get adminDictionaryMerge => 'Takrorni birlashtirish';
+
+  @override
+  String get adminDictionaryMergeBody =>
+      'Ketadigani — shu band. U ishdan chiqariladi va siz tanlagan bandga ishora qiladi, shuning uchun uni ishlatgan hamma narsa o‘qiladi.';
+
+  @override
+  String get adminDictionaryMergeInto => 'Buning o‘rniga shu qolsin';
+
+  @override
+  String get adminDictionaryMergeConfirm => 'Birlashtirish';
+
+  @override
+  String get adminDictionaryEmpty => 'Hozircha bo‘sh';
+
+  @override
+  String get adminDictionaryEmptyBody =>
+      'Birinchi bandni qo‘shing — to‘rtala nomi bo‘lgach, u tanlash ro‘yxatlarida paydo bo‘ladi.';
+
+  @override
+  String get adminDictionaryNoMatch => 'Mos keladigani yo‘q';
+
+  @override
+  String get adminDictionaryNoMatchBody =>
+      'Qidiruv nom va kodlarga qaraydi. Ishdan chiqarilgan band ham shu ro‘yxatda turadi.';
+
+  @override
+  String get dictTypeOccupation => 'Kasblar';
+
+  @override
+  String get dictTypeSkill => 'Ko‘nikmalar';
+
+  @override
+  String get dictTypeIndustry => 'Tarmoqlar';
+
+  @override
+  String get dictTypeRegion => 'Viloyat va tumanlar';
+
+  @override
+  String get dictTypeLanguage => 'Tillar';
+
+  @override
+  String get dictTypeEmploymentType => 'Bandlik turlari';
+
+  @override
+  String get dictTypeWorkFormat => 'Ish formatlari';
+
+  @override
+  String get dictTypeShift => 'Smenalar';
+
+  @override
+  String get dictTypeAttribute => 'Talab atributlari';
+
+  @override
+  String get dictTypeSkillLevel => 'Ko‘nikma darajalari';
+
+  @override
+  String get dictTypeLanguageLevel => 'Til darajalari';
+
+  @override
+  String get dictTypeEducationLevel => 'Ta’lim darajalari';
+
+  @override
+  String get dictTypeSpecialization => 'Mutaxassisliklar';
+
+  @override
+  String get dictTypePaymentPeriod => 'To‘lov davrlari';
+
+  @override
+  String get dictTypeFilePurpose => 'Fayl maqsadlari';
+
+  @override
+  String get dictTypeGender => 'Jins';
+
+  @override
+  String get dictTypeRestrictionJustification => 'Cheklov sabablari';
 }

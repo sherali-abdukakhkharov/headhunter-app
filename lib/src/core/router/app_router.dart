@@ -15,6 +15,8 @@ import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen
 import 'package:jobbridge_app/src/features/admin/presentation/audit_log_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/complaint_queue_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/complaint_review_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/dictionary_admin_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/dictionary_type_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/user_detail_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/user_search_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/vacancy_review_screen.dart';
@@ -188,6 +190,7 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               Routes.adminQueue => const AdminQueueScreen(),
               Routes.adminComplaints => const ComplaintQueueScreen(),
               Routes.adminUsers => const UserSearchScreen(),
+              Routes.adminDictionaries => const DictionaryAdminScreen(),
               _ => ShellPlaceholderScreen(tab: tab),
             },
             routes: [
@@ -263,6 +266,17 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                   name: 'adminComplaintReview',
                   builder: (context, state) => ComplaintReviewScreen(
                     complaintId: state.pathParameters['id']!,
+                  ),
+                ),
+
+              // §10.3. A child of the dictionaries tab, so back returns to
+              // the list of types.
+              if (tab.path == Routes.adminDictionaries)
+                GoRoute(
+                  path: ':type',
+                  name: 'adminDictionaryType',
+                  builder: (context, state) => DictionaryTypeScreen(
+                    type: state.pathParameters['type']!,
                   ),
                 ),
 
