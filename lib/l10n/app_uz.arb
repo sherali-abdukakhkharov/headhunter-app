@@ -212,7 +212,7 @@
   "searchSaved": "Saqlangan nomzodlar",
   "searchMatch": "Moslik {percent}%",
   "searchExperienceYears": "{years, plural, other{{years} yil tajriba}}",
-  "searchShortlist": "Short-listga",
+  "searchShortlist": "Short-listga qo'shish",
   "searchShortlisted": "Short-listda",
   "filtersTitle": "Filtrlar",
   "filtersApply": "Filtrlarni qo’llash",
@@ -496,8 +496,6 @@
   "applicantsNoneAtStage": "Bu bosqichda hech kim yo'q. Hamma arizachini ko'rish uchun filtrni tozalang.",
   "shortlistTitle": "Short-list",
   "shortlistEmpty": "Short-listda hozircha hech kim yo'q",
-  "searchShortlist": "Short-listga qo'shish",
-  "searchShortlisted": "Short-listda",
   "roleSelectionTitle": "JobBridge'dan qanday foydalanasiz?",
   "roleSelectionSubtitle": "Bittasini yoki ikkalasini tanlang — ikkinchisini keyin ham, ikkinchi akkaunt ochmasdan qo'shishingiz mumkin.",
   "roleCandidateDescription": "Ish beruvchilar topadigan profil yarating, vakansiyalarga ariza yuboring va taklifnomalarga javob bering.",
@@ -871,5 +869,7 @@
   "notificationsMessages": "Xabarlar",
   "notificationsInterviews": "Suhbatlar",
   "notificationsAccount": "Hisob",
-  "notificationsOther": "Boshqa"
+  "notificationsOther": "Boshqa",
+  "pushChannelName": "Bildirishnomalar",
+  "pushChannelDescription": "Arizalaringizga javoblar, takliflar, xabarlar va suhbatlar."
 }

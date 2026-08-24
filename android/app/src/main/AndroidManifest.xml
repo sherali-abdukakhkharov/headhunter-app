@@ -3,6 +3,15 @@
          debug/ and profile/ manifests, so release builds would fail every request. -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- Push (§9.2). Android 13 turned notifications into a runtime permission,
+         so this declaration only makes the *request* possible - PushMessaging
+         asks for it, and everything §9.2 shows keeps working when the answer is
+         no, because the in-app list is the record and push is a copy of it.
+
+         On Android 12 and below the permission does not exist and the platform
+         ignores the declaration; notifications are granted by installing. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <!-- android:label comes from the per-flavor `appName` manifestPlaceholder in
          build.gradle.kts. A hardcoded label would make all three flavors
          identical on the home screen, defeating side-by-side installation. -->
@@ -59,6 +68,47 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Which channel FCM posts an incoming notification to (§9.2).
+
+             Android 8 requires every notification to name a channel, and a
+             payload that names none lands in FCM's own fallback channel - shown
+             to the user as "Miscellaneous", and at DEFAULT importance, which
+             means **no heads-up banner**. The backend deliberately sends
+             `priority: HIGH` for things a person is waiting on, so accepting the
+             fallback would quietly discard half of what it asked for.
+
+             The channel itself is created by MainActivity, not here: a channel
+             needs a *name a person reads*, this app has four interface variants
+             (§2.4) and the one in use is a choice made inside the app rather
+             than the phone's locale, so the name comes from Dart. Creating a
+             channel is idempotent and updates the name, so switching language
+             renames it on the next launch.
+
+             If the channel is somehow missing when a push lands, FCM falls back
+             as above - degraded, not broken. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="jobbridge_notifications" />
+
+        <!-- The status-bar icon, and the accent behind it.
+
+             Without the icon FCM falls back to the application icon, and since
+             API 21 a small icon is an **alpha mask**: every opaque pixel is
+             painted in the system tint. `ic_launcher` is a full-bleed navy
+             plate, so the fallback is a solid white square on every
+             notification. res/drawable/ic_notification.xml carries the mark as
+             a silhouette instead.
+
+             The colour tints the icon in the shade. Reusing brand_turquoise
+             rather than adding a colour: it is the mark's own accent and
+             already mirrored from HhColors. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/brand_turquoise" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

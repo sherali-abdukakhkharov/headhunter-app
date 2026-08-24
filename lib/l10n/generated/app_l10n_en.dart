@@ -3023,4 +3023,11 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get notificationsOther => 'Other';
+
+  @override
+  String get pushChannelName => 'Notifications';
+
+  @override
+  String get pushChannelDescription =>
+      'Answers to your applications, invitations, messages and interviews.';
 }

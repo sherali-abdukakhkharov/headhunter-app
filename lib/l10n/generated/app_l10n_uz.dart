@@ -3025,6 +3025,13 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get notificationsOther => 'Boshqa';
+
+  @override
+  String get pushChannelName => 'Bildirishnomalar';
+
+  @override
+  String get pushChannelDescription =>
+      'Arizalaringizga javoblar, takliflar, xabarlar va suhbatlar.';
 }
 
 /// The translations for Uzbek, using the Cyrillic script (`uz_Cyrl`).
@@ -6034,6 +6041,13 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get notificationsOther => 'Бошқа';
+
+  @override
+  String get pushChannelName => 'Билдиришномалар';
+
+  @override
+  String get pushChannelDescription =>
+      'Аризаларингизга жавоблар, таклифлар, хабарлар ва суҳбатлар.';
 }
 
 /// The translations for Uzbek, using the Latin script (`uz_Latn`).
@@ -9057,4 +9071,11 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get notificationsOther => 'Boshqa';
+
+  @override
+  String get pushChannelName => 'Bildirishnomalar';
+
+  @override
+  String get pushChannelDescription =>
+      'Arizalaringizga javoblar, takliflar, xabarlar va suhbatlar.';
 }

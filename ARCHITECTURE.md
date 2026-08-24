@@ -367,6 +367,63 @@ on shared storage is readable by other apps and survives an uninstall.
 - Preferences may disable non-critical categories, but **security and account
   notices stay on** - the UI must not offer to turn those off.
 
+### The two halves are independent, and that is what let one ship first
+
+Every notification is written server-side and listed in the app whether or not a
+push was ever delivered. So the in-app centre shipped on 2026-08-24 while push
+was still blocked on Firebase configuration, and a phone with no Google Play
+services - every Huawei sold after 2019 - is a *degraded* install rather than a
+broken one. `DisabledPushMessaging` is the shape of that: "no push" is a
+supported configuration, not an outage.
+
+### One routing table, reached two ways
+
+`notificationTargetDestination(targetType:, targetId:, role:)` in
+`notifications_screen.dart` is the only place that decides where a notification
+leads. The in-app row asks it through `notificationDestination`, and a tapped
+push asks it directly - because FCM delivers `targetType`/`targetId` as string
+data and no sentence, so a push cannot build an `AppNotification` to ask with.
+A second copy is the bug where a push and the row announcing it open different
+screens, and it would only show up on a device after a real send.
+
+**The role decides**, not just the target: a conversation opens under whichever
+shell has a Messages tab, and an employer's `application` notification leads
+nowhere because their applicants live under a vacancy the notification does not
+name. Null is a real answer - BR-10's restriction notice *is* the explanation.
+
+### Registration is driven by the session, not observed from it
+
+`SessionController` calls `PushRegistration.register()` after adopting a session
+and `unregister()` before clearing the tokens. A listener on the session state
+would be wrong twice: `DELETE /notifications/devices/:token` needs the
+credentials sign-out is about to discard, and the provider graph would form a
+cycle. Both calls are best-effort - a notification token is never a reason for a
+sign-in or a sign-out to fail.
+
+A token identifies an **app installation, not a person**, so registering one
+that belonged to another account moves it. That is what a resold or shared phone
+needs, and it is also the recovery path when a session ends without reaching the
+delete - expiry, a refused refresh - which leaves the row for the next sign-in
+to claim.
+
+### What the platform channel carries, and why it is not a plugin
+
+The `/push` channel in `MainActivity.kt` does two things `firebase_messaging`
+does not: it creates the notification channel FCM posts to, and it reads
+`versionName` for the registration. `flutter_local_notifications` and
+`package_info_plus` are the usual answers and both apply the Kotlin Gradle
+Plugin - the rule §9 states for the attachment hand-off, unchanged.
+
+The channel's **name comes from Dart**, because §2.4's four interface variants
+are chosen inside the app and Android string resources would follow the phone's
+locale instead. Creating a channel that already exists renames it and leaves
+importance, sound and vibration the user has changed alone, so it runs at every
+launch.
+
+`res/drawable/ic_notification.xml` exists because a small icon is an alpha mask
+on API 21+: without it FCM falls back to the launcher icon, which is a
+full-bleed navy plate and renders as a solid white square.
+
 ---
 
 ## 11. Build configuration

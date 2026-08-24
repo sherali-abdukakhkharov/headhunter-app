@@ -113,6 +113,24 @@ jobs:
             exit 1
           fi
 
+      # Required since 2026-08-24: push added the
+      # `com.google.gms.google-services` Gradle plugin, which reads this file
+      # at build time and refuses the build without it. Gitignored and supplied
+      # per machine, the same way the keystore above is - see
+      # docs/NOTIFICATIONS_SETUP.md.
+      #
+      # A release built without it would have no push at all, so this is
+      # checked beside the signing secrets rather than treated as optional.
+      - name: Restore google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::error::Missing repository secret GOOGLE_SERVICES_JSON_BASE64 - see docs/NOTIFICATIONS_SETUP.md"
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > android/app/google-services.json
+
       - name: Restore the keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}

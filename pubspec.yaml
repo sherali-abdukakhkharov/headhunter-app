@@ -15,7 +15,7 @@ publish_to: 'none'
 # sharing a number cannot upgrade each other on a device: the install fails, or
 # the tester keeps looking at the old app. One build number per release, counted
 # from the first — see CHANGELOG.md.
-version: 1.10.0+15
+version: 1.11.0+16
 
 environment:
   sdk: ^3.12.2
@@ -46,6 +46,22 @@ dependencies:
   dio: ^5.11.0
 
   file_picker: 10.3.3
+
+  # Push (§9.2). Two packages because the split is real: firebase_core reads
+  # android/app/google-services.json and decides *which app this is*, and
+  # firebase_messaging is the FCM client on top of it.
+  #
+  # Neither is caret-free by accident - they resolve without moving anything in
+  # the analyzer-12 chain below, which was the open question. `meta` stays at
+  # 1.18.0 and riverpod_annotation at 4.0.3, so nothing here has to be revisited
+  # when that block is.
+  #
+  # **Push is best effort and the in-app list is the record.** Everything §9.2
+  # shows works with these absent, uninitialised, or refused permission - which
+  # is what let the in-app half ship first, and what keeps a Huawei phone with
+  # no Play services a degraded install rather than a broken one.
+  firebase_core: ^4.13.0
+  firebase_messaging: ^16.5.0
   flutter:
     sdk: flutter
 

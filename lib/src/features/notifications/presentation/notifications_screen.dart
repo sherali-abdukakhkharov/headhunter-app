@@ -42,11 +42,12 @@ Future<void> showNotifications(BuildContext context) =>
 /// honest destination the row is still shown — it is a record — and simply
 /// does not offer one. See [notificationDestination].
 ///
-/// ## Push is not here
+/// ## Push is a copy of this, not the other way round
 ///
 /// The records exist server-side whether or not a push was delivered, which is
-/// what lets the in-app half ship on its own. The device-token half waits on
-/// `google-services.json`, which still names the pre-rename package.
+/// what let this half ship on its own on 2026-08-24. `PushHost` resolves a
+/// tapped push through [notificationTargetDestination] — the same table the
+/// rows here use — so the two cannot lead to different screens.
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -342,7 +343,7 @@ class _Row extends ConsumerWidget {
     // user has finished with.
     navigator.pop();
 
-    if (destination == _pushVacancy) {
+    if (destination == pushVacancyDestination) {
       if (context.mounted) {
         // No feed: this did not come from one, so there is no list to
         // invalidate on the way back.
@@ -359,7 +360,10 @@ class _Row extends ConsumerWidget {
 
 /// Sentinel for the one destination that is pushed rather than routed: a
 /// candidate's vacancy detail has no path of its own.
-const _pushVacancy = 'push:vacancy';
+///
+/// Public because a tapped *push* has to reach the same screen as the row it
+/// is a copy of, and `PushHost` is the other caller.
+const pushVacancyDestination = 'push:vacancy';
 
 /// Where a notification leads, for the role reading it — or null.
 ///
@@ -378,38 +382,56 @@ const _pushVacancy = 'push:vacancy';
 /// are the record of something that happened, and BR-10's restriction notice
 /// in particular has nowhere to go — the explanation is the notification.
 String? notificationDestination(AppNotification item, AppRole? role) =>
-    switch ((item.targetType, role)) {
-      // §9.1's thread, in the shell that has one. The administrator has no
-      // Messages tab, so an admin reading their own notification gets no link.
-      ('conversation', AppRole.candidate) when item.targetId != null =>
-        '${Routes.candidateMessages}/${item.targetId}',
-      ('conversation', AppRole.employer) when item.targetId != null =>
-        '${Routes.employerMessages}/${item.targetId}',
+    notificationTargetDestination(
+      targetType: item.targetType,
+      targetId: item.targetId,
+      role: role,
+    );
 
-      // The candidate's own applications, invitations and interviews all live
-      // behind one tab (§8.1, §8.2) — which is also why none of the three
-      // needs an id here.
-      ('application' || 'invitation' || 'interview', AppRole.candidate) =>
-        Routes.candidateApplications,
+/// The routing table itself, over the two fields that decide it.
+///
+/// Split out from [notificationDestination] so a **tapped push** resolves
+/// through the same `switch`. FCM delivers `targetType` and `targetId` as
+/// string data and nothing else — no sentence, no category, no timestamp — so
+/// a push cannot build an [AppNotification] to ask with. Two copies of this
+/// table is the bug where a notification and the push announcing it lead to
+/// different screens, and it is the kind that only shows up on a real device.
+String? notificationTargetDestination({
+  required String? targetType,
+  required String? targetId,
+  required AppRole? role,
+}) => switch ((targetType, role)) {
+  // §9.1's thread, in the shell that has one. The administrator has no
+  // Messages tab, so an admin reading their own notification gets no link.
+  ('conversation', AppRole.candidate) when targetId != null =>
+    '${Routes.candidateMessages}/$targetId',
+  ('conversation', AppRole.employer) when targetId != null =>
+    '${Routes.employerMessages}/$targetId',
 
-      // An employer's vacancy is addressable; their applicants are not, from
-      // an application id alone.
-      ('vacancy', AppRole.employer) when item.targetId != null =>
-        '${Routes.employerVacancies}/${item.targetId}',
-      ('vacancy', AppRole.candidate) when item.targetId != null =>
-        _pushVacancy,
+  // The candidate's own applications, invitations and interviews all live
+  // behind one tab (§8.1, §8.2) — which is also why none of the three
+  // needs an id here.
+  ('application' || 'invitation' || 'interview', AppRole.candidate) =>
+    Routes.candidateApplications,
 
-      // §6.1's verification decision, which is about the company profile.
-      ('employer', AppRole.employer) => Routes.employerCompany,
+  // An employer's vacancy is addressable; their applicants are not, from
+  // an application id alone.
+  ('vacancy', AppRole.employer) when targetId != null =>
+    '${Routes.employerVacancies}/$targetId',
+  ('vacancy', AppRole.candidate) when targetId != null =>
+    pushVacancyDestination,
 
-      // §10.4's account screen, for an administrator reading about somebody.
-      // For a candidate or an employer a `user` target is *themselves*, and
-      // the notice is the whole of it — see the doc above.
-      ('user', AppRole.admin) when item.targetId != null =>
-        Routes.adminUserFor(item.targetId!),
+  // §6.1's verification decision, which is about the company profile.
+  ('employer', AppRole.employer) => Routes.employerCompany,
 
-      _ => null,
-    };
+  // §10.4's account screen, for an administrator reading about somebody.
+  // For a candidate or an employer a `user` target is *themselves*, and
+  // the notice is the whole of it — see the doc above.
+  ('user', AppRole.admin) when targetId != null =>
+    Routes.adminUserFor(targetId),
+
+  _ => null,
+};
 
 /// §9.2's category, as a word.
 String categoryLabel(NotificationCategory category, AppL10n l10n) =>

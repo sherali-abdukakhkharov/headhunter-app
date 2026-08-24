@@ -2,6 +2,14 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
+    // Push (§9.2). Version declared in settings.gradle.kts.
+    //
+    // One google-services.json at app/ covers all three flavors: the file holds
+    // a `client` entry per Android app in the Firebase project, and the plugin
+    // picks the one whose package name matches the variant being built. So
+    // there is deliberately no per-flavor copy under src/development/ - a
+    // second copy is a second thing to forget when a fourth app is registered.
+    id("com.google.gms.google-services")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }

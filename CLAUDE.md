@@ -14,10 +14,24 @@ old name), and the `hh.qitmir.uz` API host. So a `headhunter` in a path or a
 backend reference is correct; a `headhunter` in an application id or an import is
 a leftover.
 
-`android/app/google-services.json` still lists the **old** package names and is
-left that way on purpose: a hand-edited one would carry ids that exist in no
-Firebase project. Replacing it is the whole of what blocks push — the steps are
-in [docs/NOTIFICATIONS_SETUP.md](docs/NOTIFICATIONS_SETUP.md).
+`android/app/google-services.json` now lists **six** apps: the three pre-rename
+ids and the three `com.jobbridge.app*` ones, registered in the Firebase console
+on 2026-08-24. That unblocked push. The old three are kept because one download
+returns every app in the project and deleting them buys nothing — see
+[docs/NOTIFICATIONS_SETUP.md](docs/NOTIFICATIONS_SETUP.md).
+
+**The file is gitignored and supplied per machine**, alongside the keystore
+(`android/.gitignore`). Google does not treat the key inside it as a secret, but
+GitHub's scanner flagged it on 2026-08-07 and this repository keeps
+credential-shaped files out. So a fresh clone **cannot build Android** until you
+fetch it from the Firebase console, and CI restores it from the
+`GOOGLE_SERVICES_JSON_BASE64` repository secret.
+
+**A flavor with no entry now fails the build**, not the device — the
+`com.google.gms.google-services` plugin refuses with "No matching client found
+for package name". `test/features/notifications/push_test.dart` derives the
+three ids from `build.gradle.kts` and fails sooner still, where the file is
+present.
 
 | Repo | Path | Stack |
 |---|---|---|
@@ -245,19 +259,31 @@ lib/
 Feature-first: a feature owns its data, domain and presentation. Only put
 things in `core/` or `shared/` when a second feature actually needs them.
 
-## There is one piece of native code, and it is not a plugin
+## The native code is two MethodChannels, and neither is a plugin
 
-`android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries a
-`MethodChannel` that hands a downloaded file to the OS through a `FileProvider`.
-Every pub package that does this applies the Kotlin Gradle Plugin — the warning
-this project emptied by removing `telegram_login`, and one future Flutter versions
-refuse — and the app module's *own* Kotlin does not appear on that list.
+`android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries both:
+
+- **`/attachments`** hands a downloaded file to the OS through a `FileProvider`;
+- **`/push`** creates the notification channel FCM posts to, and reads
+  `versionName` for the device registration.
+
+Every pub package that does either applies the Kotlin Gradle Plugin — the
+warning this project emptied by removing `telegram_login`, and one future Flutter
+versions refuse — and the app module's *own* Kotlin does not appear on that list.
+`flutter_local_notifications` and `package_info_plus` are the usual answers and
+both are on it.
 
 So **before adding a dependency that exists to reach the platform, check whether
 the channel can carry it**, and check what is already resolved: `path_provider` was
 already transitive and `androidx.core` was already on the compile classpath, so
-`build.gradle.kts` was never touched. ARCHITECTURE.md §9 has the details, including
-what the provider may share and why every download re-requests.
+`build.gradle.kts` was never touched for the attachment channel. ARCHITECTURE.md
+§9 has the details, including what the provider may share and why every download
+re-requests.
+
+`firebase_core` and `firebase_messaging` **were** checked against that rule
+before being added on 2026-08-24, and are clean: both are `com.android.library`
+with Java sources. The only Gradle change they needed was the
+`com.google.gms.google-services` plugin, which reads `google-services.json`.
 
 ## Gotcha: Riverpod 3 retries failing providers by default
 

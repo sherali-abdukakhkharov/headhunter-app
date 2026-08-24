@@ -7,6 +7,7 @@ import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
+import 'package:jobbridge_app/src/features/notifications/presentation/push_host.dart';
 
 /// Root widget: wires the router and theme together.
 class JobBridgeApp extends ConsumerWidget {
@@ -49,9 +50,15 @@ class JobBridgeApp extends ConsumerWidget {
         final scaler = MediaQuery.textScalerOf(
           context,
         ).clamp(maxScaleFactor: 2);
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: scaler),
-          child: child ?? const SizedBox.shrink(),
+        // Push (§9.2) sits here rather than around MaterialApp because it needs
+        // the active interface variant to name the Android notification
+        // channel, and `Localizations` is only above this point. It renders its
+        // child unchanged and never rebuilds on a session change.
+        return PushHost(
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: scaler),
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
     );

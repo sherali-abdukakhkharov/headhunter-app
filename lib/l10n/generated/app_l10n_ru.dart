@@ -3051,4 +3051,11 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get notificationsOther => 'Другое';
+
+  @override
+  String get pushChannelName => 'Уведомления';
+
+  @override
+  String get pushChannelDescription =>
+      'Ответы на ваши отклики, приглашения, сообщения и собеседования.';
 }

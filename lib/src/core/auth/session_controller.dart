@@ -10,6 +10,7 @@ import 'package:jobbridge_app/src/core/network/auth_events.dart';
 import 'package:jobbridge_app/src/core/storage/preferences_provider.dart';
 import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
 import 'package:jobbridge_app/src/features/auth/domain/auth_session.dart';
+import 'package:jobbridge_app/src/features/notifications/data/push_registration.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'session_controller.g.dart';
@@ -36,6 +37,17 @@ part 'session_controller.g.dart';
 /// valid tokens currently lands on onboarding rather than the shell.
 /// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
 /// redirect chain is exercised without a network or a real bot.
+///
+/// ## Why this drives push registration rather than being observed by it
+///
+/// `PushRegistration` is told when a session starts and ends; it does not watch
+/// for it. The obvious shape - a listener on this state - is wrong twice.
+/// **Ordering**: unregistering a device needs the credentials [signOut] is
+/// about to discard, and a listener would only ever see the sign-out
+/// afterwards. **Cycles**: this would then be read by a provider it watched,
+/// which Riverpod refuses. So the call sites are [_adopt] and [signOut], and
+/// both are best-effort - a notification token is never a reason for a sign-in
+/// or a sign-out to fail.
 @Riverpod(keepAlive: true)
 class SessionController extends _$SessionController {
   /// Active role, as a wire tag. A tag rather than an enum index: reordering
@@ -181,6 +193,16 @@ class SessionController extends _$SessionController {
     }
 
     _set(SessionActive(roles: roles, activeRole: active));
+
+    // Push (§9.2). After the tokens are stored, because registering the device
+    // is an authenticated call; and deliberately not awaited, because a
+    // notification token is not something a sign-in may fail on — the in-app
+    // centre is the record whether or not a push is ever delivered.
+    //
+    // This runs at every cold start that restores a session too, which is
+    // intentional: FCM may have rotated the token while the app was closed and
+    // nothing announces that, and the route is idempotent.
+    unawaited(ref.read(pushRegistrationProvider.notifier).register());
   }
 
   /// Switches the active role (§2.3).
@@ -319,6 +341,18 @@ class SessionController extends _$SessionController {
   Future<void> signOut() async {
     final tokens = ref.read(tokenStoreProvider);
     final refreshToken = await tokens.readRefreshToken();
+
+    // Push, first (§9.2). `DELETE /notifications/devices/:token` needs the
+    // credentials this method is about to throw away, and revoking the session
+    // below may invalidate them too — so this is the one window in which the
+    // device can say "not here any more". It is awaited, unlike the
+    // registration, because there is no later chance; it swallows its own
+    // failures, so awaiting cannot hold up a sign-out.
+    //
+    // A session that ends any other way — expiry, a refused refresh — cannot
+    // reach the endpoint at all, and leaves the row for the next sign-in on
+    // this device to move.
+    await ref.read(pushRegistrationProvider.notifier).unregister();
 
     if (refreshToken != null) {
       try {

@@ -8,9 +8,24 @@ part of 'notification_repository.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Kept alive, unlike most repositories here.
+///
+/// `PushRegistration` is itself kept alive — it holds the token the server was
+/// told about for the whole session — and a kept-alive provider reading an
+/// auto-disposing one keeps it alive anyway, just without saying so. This is
+/// a stateless wrapper over the equally kept-alive [dioProvider], so there is
+/// nothing to dispose and the declaration now matches the lifetime.
 
 @ProviderFor(notificationRepository)
 final notificationRepositoryProvider = NotificationRepositoryProvider._();
+
+/// Kept alive, unlike most repositories here.
+///
+/// `PushRegistration` is itself kept alive — it holds the token the server was
+/// told about for the whole session — and a kept-alive provider reading an
+/// auto-disposing one keeps it alive anyway, just without saying so. This is
+/// a stateless wrapper over the equally kept-alive [dioProvider], so there is
+/// nothing to dispose and the declaration now matches the lifetime.
 
 final class NotificationRepositoryProvider
     extends
@@ -20,13 +35,20 @@ final class NotificationRepositoryProvider
           NotificationRepository
         >
     with $Provider<NotificationRepository> {
+  /// Kept alive, unlike most repositories here.
+  ///
+  /// `PushRegistration` is itself kept alive — it holds the token the server was
+  /// told about for the whole session — and a kept-alive provider reading an
+  /// auto-disposing one keeps it alive anyway, just without saying so. This is
+  /// a stateless wrapper over the equally kept-alive [dioProvider], so there is
+  /// nothing to dispose and the declaration now matches the lifetime.
   NotificationRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'notificationRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -55,7 +77,7 @@ final class NotificationRepositoryProvider
 }
 
 String _$notificationRepositoryHash() =>
-    r'91a87c2d6d8991d74ac3a3e52628138398130ecc';
+    r'22c28a14c145eab87ace3fb6c72c9623b75b6f1a';
 
 /// §9.2's list, newest first.
 ///

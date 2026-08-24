@@ -10,16 +10,16 @@ part 'notification_repository.g.dart';
 /// How many notifications one page holds. The server caps a page at 100.
 const notificationPageSize = 20;
 
-/// §9.2's in-app notifications.
+/// §9.2's in-app notifications, and the device registration push needs.
 ///
-/// ## What this does not do
+/// ## The two halves are independent on purpose
 ///
-/// **Push is not here.** `POST /notifications/devices` takes an FCM token and
-/// there is no token to give it: `android/app/google-services.json` still
-/// names the pre-rename package (TODO.md), so Firebase would refuse to
-/// initialise under `com.jobbridge.app`. The in-app half needs none of that —
-/// the records exist server-side whether or not a push was ever delivered,
-/// which is the design that makes this split possible at all.
+/// Everything above [registerDevice] works with no Firebase project, no
+/// notification permission and no Play services: the records exist server-side
+/// whether or not a push was ever delivered. That is what let the in-app half
+/// ship on 2026-08-24 while `google-services.json` still named the pre-rename
+/// package, and it is why a phone that cannot receive push is a degraded
+/// install rather than a broken one.
 class NotificationRepository {
   const NotificationRepository(this._dio);
 
@@ -141,9 +141,65 @@ class NotificationRepository {
       throw ApiException.fromDioException(e);
     }
   }
+
+  /// `POST /notifications/devices` — this installation can receive push.
+  ///
+  /// Idempotent, and re-registering a token that belonged to another account
+  /// **moves** it. That is not a quirk to work around: an FCM token identifies
+  /// an app installation rather than a person, and phones in this market are
+  /// handed on, resold and shared. If two accounts could hold one token the
+  /// second person would receive the first's interview times.
+  ///
+  /// Called after every sign-in and after every token rotation, because the
+  /// server has no other way to learn either.
+  Future<void> registerDevice({
+    required String token,
+    String? appVersion,
+  }) async {
+    try {
+      await _dio.post<void>(
+        '/notifications/devices',
+        data: {
+          'token': token,
+          // The only platform this build runs on. iOS is out of scope by
+          // owner direction and there is no second value to derive.
+          'platform': 'android',
+          // Omitted rather than sent as null when the platform cannot say:
+          // the field is optional and the server stores what it is given.
+          'appVersion': ?appVersion,
+        },
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `DELETE /notifications/devices/:token` — stop pushing to this phone.
+  ///
+  /// **Must run before the tokens are cleared**, which is why sign-out calls
+  /// it rather than a listener on the session: afterwards there is no
+  /// credential to authorise it with. A session that ends without this —
+  /// expiry, a refused refresh — leaves the row, and the next person to sign
+  /// in on the device moves it. The gap is a phone nobody signs into again
+  /// still receiving the previous user's notifications, which is exactly what
+  /// the deliberate call at sign-out prevents.
+  Future<void> unregisterDevice(String token) async {
+    try {
+      await _dio.delete<void>('/notifications/devices/$token');
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
 }
 
-@riverpod
+/// Kept alive, unlike most repositories here.
+///
+/// `PushRegistration` is itself kept alive — it holds the token the server was
+/// told about for the whole session — and a kept-alive provider reading an
+/// auto-disposing one keeps it alive anyway, just without saying so. This is
+/// a stateless wrapper over the equally kept-alive [dioProvider], so there is
+/// nothing to dispose and the declaration now matches the lifetime.
+@Riverpod(keepAlive: true)
 NotificationRepository notificationRepository(Ref ref) =>
     NotificationRepository(ref.watch(dioProvider));
 

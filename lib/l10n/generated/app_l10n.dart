@@ -5320,6 +5320,18 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Other'**
   String get notificationsOther;
+
+  /// Android notification channel name (§9.2). Shown in the phone system settings, so it names the group rather than one notification. The interface variant is chosen inside the app, not by the phone locale, which is why this is a translated string passed to the platform rather than an Android string resource.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get pushChannelName;
+
+  /// Android notification channel description (§9.2). Sits under the name in system settings and says what lands in this channel.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers to your applications, invitations, messages and interviews.'**
+  String get pushChannelDescription;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

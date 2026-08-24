@@ -74,6 +74,22 @@ class _FakeNotifications implements NotificationRepository {
     category: category.wire,
     enabled: enabled,
   ));
+
+  /// Push's half of the contract. Recorded rather than stubbed away, so a
+  /// screen that started registering devices of its own accord shows up here
+  /// — the in-app centre has no business touching either of these.
+  final registered = <({String token, String? appVersion})>[];
+  final unregistered = <String>[];
+
+  @override
+  Future<void> registerDevice({
+    required String token,
+    String? appVersion,
+  }) async => registered.add((token: token, appVersion: appVersion));
+
+  @override
+  Future<void> unregisterDevice(String token) async =>
+      unregistered.add(token);
 }
 
 AppNotification _notification({

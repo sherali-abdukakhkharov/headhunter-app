@@ -212,7 +212,7 @@
   "searchSaved": "Сақланган номзодлар",
   "searchMatch": "Мослик {percent}%",
   "searchExperienceYears": "{years, plural, other{{years} йил тажриба}}",
-  "searchShortlist": "Шорт-листга",
+  "searchShortlist": "Шорт-листга қўшиш",
   "searchShortlisted": "Шорт-листда",
   "filtersTitle": "Филтрлар",
   "filtersApply": "Филтрларни қўллаш",
@@ -496,8 +496,6 @@
   "applicantsNoneAtStage": "Бу босқичда ҳеч ким йўқ. Ҳамма аризачини кўриш учун филтрни тозаланг.",
   "shortlistTitle": "Шорт-лист",
   "shortlistEmpty": "Шорт-листда ҳозирча ҳеч ким йўқ",
-  "searchShortlist": "Шорт-листга қўшиш",
-  "searchShortlisted": "Шорт-листда",
   "roleSelectionTitle": "JobBridge'дан қандай фойдаланасиз?",
   "roleSelectionSubtitle": "Биттасини ёки иккаласини танланг — иккинчисини кейин ҳам, иккинчи аккаунт очмасдан қўшишингиз мумкин.",
   "roleCandidateDescription": "Иш берувчилар топадиган профил яратинг, вакансияларга ариза юборинг ва таклифномаларга жавоб беринг.",
@@ -871,5 +869,7 @@
   "notificationsMessages": "Хабарлар",
   "notificationsInterviews": "Суҳбатлар",
   "notificationsAccount": "Ҳисоб",
-  "notificationsOther": "Бошқа"
+  "notificationsOther": "Бошқа",
+  "pushChannelName": "Билдиришномалар",
+  "pushChannelDescription": "Аризаларингизга жавоблар, таклифлар, хабарлар ва суҳбатлар."
 }

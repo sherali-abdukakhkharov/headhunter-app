@@ -30,6 +30,17 @@ part of 'session_controller.dart';
 /// valid tokens currently lands on onboarding rather than the shell.
 /// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
 /// redirect chain is exercised without a network or a real bot.
+///
+/// ## Why this drives push registration rather than being observed by it
+///
+/// `PushRegistration` is told when a session starts and ends; it does not watch
+/// for it. The obvious shape - a listener on this state - is wrong twice.
+/// **Ordering**: unregistering a device needs the credentials [signOut] is
+/// about to discard, and a listener would only ever see the sign-out
+/// afterwards. **Cycles**: this would then be read by a provider it watched,
+/// which Riverpod refuses. So the call sites are [_adopt] and [signOut], and
+/// both are best-effort - a notification token is never a reason for a sign-in
+/// or a sign-out to fail.
 
 @ProviderFor(SessionController)
 final sessionControllerProvider = SessionControllerProvider._();
@@ -56,6 +67,17 @@ final sessionControllerProvider = SessionControllerProvider._();
 /// valid tokens currently lands on onboarding rather than the shell.
 /// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
 /// redirect chain is exercised without a network or a real bot.
+///
+/// ## Why this drives push registration rather than being observed by it
+///
+/// `PushRegistration` is told when a session starts and ends; it does not watch
+/// for it. The obvious shape - a listener on this state - is wrong twice.
+/// **Ordering**: unregistering a device needs the credentials [signOut] is
+/// about to discard, and a listener would only ever see the sign-out
+/// afterwards. **Cycles**: this would then be read by a provider it watched,
+/// which Riverpod refuses. So the call sites are [_adopt] and [signOut], and
+/// both are best-effort - a notification token is never a reason for a sign-in
+/// or a sign-out to fail.
 final class SessionControllerProvider
     extends $NotifierProvider<SessionController, SessionState> {
   /// App-wide session and active-role state.
@@ -80,6 +102,17 @@ final class SessionControllerProvider
   /// valid tokens currently lands on onboarding rather than the shell.
   /// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
   /// redirect chain is exercised without a network or a real bot.
+  ///
+  /// ## Why this drives push registration rather than being observed by it
+  ///
+  /// `PushRegistration` is told when a session starts and ends; it does not watch
+  /// for it. The obvious shape - a listener on this state - is wrong twice.
+  /// **Ordering**: unregistering a device needs the credentials [signOut] is
+  /// about to discard, and a listener would only ever see the sign-out
+  /// afterwards. **Cycles**: this would then be read by a provider it watched,
+  /// which Riverpod refuses. So the call sites are [_adopt] and [signOut], and
+  /// both are best-effort - a notification token is never a reason for a sign-in
+  /// or a sign-out to fail.
   SessionControllerProvider._()
     : super(
         from: null,
@@ -107,7 +140,7 @@ final class SessionControllerProvider
   }
 }
 
-String _$sessionControllerHash() => r'a14d762cf3fc3ab62e442f68efcbef0be1423886';
+String _$sessionControllerHash() => r'883330dec434aa424a63387e526cbc90a18b9a8e';
 
 /// App-wide session and active-role state.
 ///
@@ -131,6 +164,17 @@ String _$sessionControllerHash() => r'a14d762cf3fc3ab62e442f68efcbef0be1423886';
 /// valid tokens currently lands on onboarding rather than the shell.
 /// [signInAsDevelopmentRole] also stays, gated on the flavor - it is how the
 /// redirect chain is exercised without a network or a real bot.
+///
+/// ## Why this drives push registration rather than being observed by it
+///
+/// `PushRegistration` is told when a session starts and ends; it does not watch
+/// for it. The obvious shape - a listener on this state - is wrong twice.
+/// **Ordering**: unregistering a device needs the credentials [signOut] is
+/// about to discard, and a listener would only ever see the sign-out
+/// afterwards. **Cycles**: this would then be read by a provider it watched,
+/// which Riverpod refuses. So the call sites are [_adopt] and [signOut], and
+/// both are best-effort - a notification token is never a reason for a sign-in
+/// or a sign-out to fail.
 
 abstract class _$SessionController extends $Notifier<SessionState> {
   SessionState build();

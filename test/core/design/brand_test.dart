@@ -52,6 +52,7 @@ void main() {
   const foreground =
       'android/app/src/main/res/drawable/ic_launcher_foreground.xml';
   const legacy = 'android/app/src/main/res/mipmap-anydpi/ic_launcher.xml';
+  const notification = 'android/app/src/main/res/drawable/ic_notification.xml';
 
   /// Every rendered mark in the tree, as its SVG source.
   List<String> markSources(WidgetTester tester) => tester
@@ -339,8 +340,43 @@ void main() {
       expect(box.width / 108, closeTo(0.56, 0.0005));
     });
 
-    test('both keep the locked 23 : 19.8 aspect', () {
-      for (final path in [foreground, legacy]) {
+    test('the notification icon is centred and nearly fills its 24dp box', () {
+      final box = _markBox(notification);
+
+      expect(box.left + box.width / 2, closeTo(12, 0.01));
+      expect(box.top + box.height / 2, closeTo(12, 0.01));
+      // Nothing masks a status-bar icon either, and it is drawn at 24dp with
+      // ~2dp of clearance - so it takes more of its box than any launcher
+      // form does. Too small here reads as a stray dot in the status bar.
+      expect(box.width / 24, closeTo(0.85, 0.0005));
+    });
+
+    test('the notification icon is a silhouette, and says why', () {
+      // API 21+ reads only the alpha of a small icon, so the two-tone mark is
+      // unrepresentable there and turquoise in this file would be a colour
+      // nothing draws. Comments stripped first: this file explains the absence
+      // in its own header, and naming it there must not read as using it.
+      final xml = File(
+        notification,
+      ).readAsStringSync().replaceAll(RegExp(r'<!--[\s\S]*?-->'), '');
+
+      expect(xml.contains('#FF12B0BE'), isFalse);
+      expect(xml.contains('#FF0B2545'), isFalse);
+      // And it is wired up, or it is decoration.
+      final manifest = File(
+        'android/app/src/main/res/../AndroidManifest.xml',
+      ).readAsStringSync();
+      expect(
+        manifest.contains('@drawable/ic_notification'),
+        isTrue,
+        reason:
+            'without default_notification_icon FCM falls back to the '
+            'launcher icon, which is opaque and renders as a white square',
+      );
+    });
+
+    test('all three keep the locked 23 : 19.8 aspect', () {
+      for (final path in [foreground, legacy, notification]) {
         final box = _markBox(path);
         expect(
           box.height / box.width,
@@ -354,7 +390,7 @@ void main() {
       // The point of carrying the crop as a transform rather than
       // pre-multiplying the coordinates: these strings can be diffed against
       // the design.
-      for (final path in [foreground, legacy]) {
+      for (final path in [foreground, legacy, notification]) {
         final xml = File(path).readAsStringSync();
         expect(
           xml.contains(

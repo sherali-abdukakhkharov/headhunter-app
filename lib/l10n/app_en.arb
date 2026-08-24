@@ -939,13 +939,13 @@
       }
     }
   },
-  "searchShortlist": "Shortlist",
+  "searchShortlist": "Add to shortlist",
   "@searchShortlist": {
-    "description": "Adds the candidate to a vacancy’s shortlist (§7.3)."
+    "description": "§7.3: puts this candidate on the shortlist of the vacancy the card was produced for. Offered only where there is such a vacancy — a shortlist is per-vacancy, so elsewhere there is nothing to add to."
   },
   "searchShortlisted": "Shortlisted",
   "@searchShortlisted": {
-    "description": "Already on the shortlist; tapping removes."
+    "description": "The candidate is on this vacancy's shortlist; tapping removes them. Same wording as the application stage of the same name (stageShortlisted), which is the same idea reached a different way."
   },
   "filtersTitle": "Filters",
   "@filtersTitle": {
@@ -2274,14 +2274,6 @@
   "shortlistEmpty": "Nobody is shortlisted yet",
   "@shortlistEmpty": {
     "description": "Empty state. Deliberately not “you have shortlisted nobody”: BR-02 takes a candidate who hides their profile out of this list without anyone having removed them, exactly as it does the saved list."
-  },
-  "searchShortlist": "Add to shortlist",
-  "@searchShortlist": {
-    "description": "§7.3: puts this candidate on the shortlist of the vacancy the card was produced for. Offered only where there is such a vacancy — a shortlist is per-vacancy, so elsewhere there is nothing to add to."
-  },
-  "searchShortlisted": "Shortlisted",
-  "@searchShortlisted": {
-    "description": "The candidate is on this vacancy's shortlist; tapping removes them. Same wording as the application stage of the same name (stageShortlisted), which is the same idea reached a different way."
   },
   "roleSelectionTitle": "How will you use JobBridge?",
   "@roleSelectionTitle": {
@@ -3854,5 +3846,13 @@
   "notificationsOther": "Other",
   "@notificationsOther": {
     "description": "A category added after this build shipped. The sentence still reads, so the row is worth drawing without a name for its group."
+  },
+  "pushChannelName": "Notifications",
+  "@pushChannelName": {
+    "description": "Android notification channel name (§9.2). Shown in the phone system settings, so it names the group rather than one notification. The interface variant is chosen inside the app, not by the phone locale, which is why this is a translated string passed to the platform rather than an Android string resource."
+  },
+  "pushChannelDescription": "Answers to your applications, invitations, messages and interviews.",
+  "@pushChannelDescription": {
+    "description": "Android notification channel description (§9.2). Sits under the name in system settings and says what lands in this channel."
   }
 }

@@ -17,6 +17,42 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.11.0+16 — 2026-08-24
+
+Your phone tells you now. Until this release the app could show you everything
+that had happened, but only once you opened it and went looking.
+
+### Added
+
+- **Push notifications (§9.2).** A message, an invitation, an interview time or
+  a decision on your application reaches your phone while the app is closed,
+  and **tapping it opens the thing itself** rather than the app's home screen —
+  the conversation, the application, the vacancy. Where a notice is about your
+  own account and there is nothing to open, it says so by not pretending
+  otherwise.
+  You are asked for permission when you sign in, which is the point at which
+  there is something to be notified about. **Saying no costs you nothing else:**
+  every notification is still recorded and still listed in the app, and turning
+  notifications on later in your phone's settings starts push working without
+  signing out and back in.
+  Signing out stops notifications to that phone, immediately and on purpose —
+  phones get handed on, and the next person to sign in takes the device over.
+
+### Fixed
+
+- A notification arriving while the app is open now updates the unread count
+  straight away. Android shows no banner in that case, so the number was the
+  only sign, and it was the one thing not refreshing.
+- `searchShortlist` and `searchShortlisted` were each defined twice in all five
+  translation files, with different English wording. The later definition won
+  silently; there is now one of each.
+
+### Not in this release
+
+Nothing on a phone with no Google Play services — every Huawei sold after 2019.
+Those phones lose the banner and nothing else: the in-app notification list is
+the record, and it is complete for everyone.
+
 ## 1.10.0+15 — 2026-08-24
 
 Notifications, in the app. Until now the only way to find out that an employer

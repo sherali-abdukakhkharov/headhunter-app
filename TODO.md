@@ -26,7 +26,7 @@ against that: one Critical was already fixed before the audit was written up.
 | MT-002 | Critical | **Fixed 1.5.0**, before the audit was delivered — §10.4's user management, search and BR-10 actions |
 | MT-003 | Critical | **Backend/deployment**, and confirmed as such by the audit itself: `MODERATION_ENABLED=false` in the tested `.env`. The client already renders whatever status the API returns; the ask is the flag and a deployment smoke test |
 | MT-004 | High | **Fixed 1.9.0** — §10.3 ships, and the shell has no placeholders left. Label *editing* waits on a contract change; see the ask |
-| MT-005 | High | **Half fixed 1.10.0** — §9.2's in-app centre ships: the list, the unread badge, mark-read, the per-category switches and the routing from a row to what it is about. **Push does not**, and it is not a code gap: `android/app/google-services.json` still names the pre-rename package, so Firebase cannot initialise under `com.jobbridge.app` |
+| MT-005 | High | **Fixed — in-app 1.10.0, push 1.11.0.** The centre, the badge, mark-read and the per-category switches shipped first; push followed once the owner registered the three `com.jobbridge.app*` apps in Firebase on 2026-08-24. Token registration, tap-to-route from a closed app, and a foreground badge refresh are in. **The Android build itself is unverified locally** — Gradle cannot start in a Claude session, so `app-ci.yml` is what proves it |
 | MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code |
 | MT-007 | High | **Fixed 1.8.0** — no default type, and the first save is held to §6.1 |
 | MT-008 | High | **Fixed 1.7.0** — the account screen is on the administrator's dashboard |
@@ -57,6 +57,18 @@ fixes:
 
 ## Blocked on someone else
 
+- [?] **`GOOGLE_SERVICES_JSON_BASE64` repository secret** — one owner action,
+      **and CI is red until it exists.** Push (1.11.0) applies the
+      `com.google.gms.google-services` Gradle plugin, which reads
+      `android/app/google-services.json` and refuses the build without it — and
+      that file is gitignored and supplied per machine (`android/.gitignore`,
+      a decision from 2026-08-07 after GitHub's scanner flagged it).
+      `app-ci.yml` and `release-apk.yml` now restore it from this secret and
+      fail with an error naming it when it is absent.
+      **The value is not sensitive** — it is recoverable from any APK with
+      `unzip`; it is a secret here only to keep the scanner quiet. The exact
+      PowerShell line and where to paste it are in
+      [docs/NOTIFICATIONS_SETUP.md](docs/NOTIFICATIONS_SETUP.md) §2.
 - [x] ~~**Design files**~~ - **shipped 2026-08-04** as a Claude Design project
       (`Universal HeadHunter.dc.html`). Tokens, the component library and the 11
       required UI states are now implemented under `lib/src/core/design/`; see
@@ -1623,16 +1635,26 @@ paywall that is not theirs.
       cannot find a switch assumes it is off. And the settings sheet says what
       switching a category off actually does — a disabled category stores
       nothing at all, so what is missed is missed rather than hidden.
-- [?] **Push (FCM), and it is not blocked on code.**
-      **See [docs/NOTIFICATIONS_SETUP.md](docs/NOTIFICATIONS_SETUP.md)** for
-      what has to happen in the Firebase console and on the server.
-      `POST /notifications/devices` takes a token and there is no token to
-      give it: `android/app/google-services.json` still lists the **old**
-      package names, deliberately, so Firebase refuses to initialise under
-      `com.jobbridge.app`. Regenerating it in the Firebase console for the
-      three flavor ids is the whole of the blocker; the in-app half above needs
-      none of it, because the records exist server-side whether or not a push
-      was ever delivered.
+- [x] **Push (FCM), 2026-08-24.** The owner registered `com.jobbridge.app`,
+      `.dev` and `.staging` in the Firebase project and sent the regenerated
+      `google-services.json` — six client entries, the old three kept because
+      one download returns every app and deleting them buys nothing.
+      **The server was never the blocker.** A service account authenticates the
+      Firebase *project*, not an app, so `FCM_SERVICE_ACCOUNT_BASE64` stayed
+      valid through the rename; it had been ready to send since 2026-08-07 with
+      no device to send to.
+      `firebase_core` and `firebase_messaging` were checked against the Kotlin
+      Gradle Plugin rule before being added and are clean. The notification
+      channel and `versionName` went on the app's own `/push` MethodChannel
+      instead of `flutter_local_notifications` and `package_info_plus`, which
+      are both on that list.
+      **Registration is driven by the session, not observed from it** — the
+      DELETE needs the credentials sign-out is about to discard, and a listener
+      would also close a provider cycle.
+      **Unverified:** the Gradle build. Gradle cannot start in a Claude session
+      (`Unable to establish loopback connection`), so the google-services
+      plugin under AGP 9, the new Kotlin, and the manifest merge are all
+      proven by CI rather than here.
 
 Runs after M10, not after M6. No Firebase package enters `pubspec.yaml` before
 this opens. Deep links moved to M8.
@@ -1645,8 +1667,9 @@ this opens. Deep links moved to M8.
       package is in `pubspec.yaml` and no Gradle plugin is applied** — the file is
       inert until this milestone opens, which is the owner's explicit ordering
       (wire it last). The backend side is ready as of 2026-08-07
-- [?] **`google-services.json` now lists the OLD package names, and is left that
-      way deliberately** (JobBridge rename, 2026-08-19). It cannot be fixed by
+- [x] **`google-services.json` was left stale deliberately, and it paid out**
+      (JobBridge rename 2026-08-19; resolved 2026-08-24 by registering the
+      three new apps in the console, which is what the note below prescribed). It cannot be fixed by
       editing the text: Firebase issues a `mobilesdk_app_id`, an `api_key` and a
       `client_id` per package name, so a hand-edited `package_name` yields a file
       the Gradle plugin accepts and that then fails at *runtime*, when a device

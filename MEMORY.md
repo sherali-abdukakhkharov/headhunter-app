@@ -501,6 +501,50 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-24 - The loud failure was worth waiting five days for
+On 2026-08-19 the rename left `google-services.json` naming the pre-rename
+packages, and the decision recorded that day was to leave it stale rather than
+hand-edit it. That decision paid out exactly as written: the moment the
+`com.google.gms.google-services` plugin was applied, the build would have
+stopped with `No matching client found for package name`. Nobody had to
+diagnose "notifications do not arrive".
+
+Three things about the fix are worth keeping.
+
+**A service account authenticates the *project*, not an app.** The server key
+was configured on 2026-08-07 and stayed valid through the rename and through
+registering three new apps, because there is no package name anywhere in it.
+The setup guide asked the owner to regenerate it and they pushed back - "it is
+already in .env" - and they were right. Only `google-services.json` is
+per-app, so it was always the whole of the blocker. **When something looks
+broken after a rename, ask what the credential actually identifies.**
+
+**`firebase_core` and `firebase_messaging` do not apply the Kotlin Gradle
+Plugin.** Both are `com.android.library` with Java sources - `apply plugin:`
+in each package's `android/build.gradle` names only that one. The rule that
+removed `telegram_login` does not block Firebase.
+`flutter_local_notifications` and `package_info_plus` **are** on that list,
+which is why the notification channel and the version string went on the app's
+own MethodChannel instead.
+
+**Neither disturbed the analyzer-12 pinning.** `flutter pub add --dry-run`
+first: `meta` stayed 1.18.0 and `riverpod_annotation` 4.0.3. That check costs
+one command and would have been the whole story if it had failed.
+
+### 2026-08-24 - A notification icon is an alpha mask, so the launcher icon becomes a white square
+Since API 21 Android reads only the **alpha** of a notification's small icon and
+paints every opaque pixel in the system tint. Without
+`default_notification_icon`, FCM falls back to `getApplicationInfo().icon` -
+here a full-bleed navy plate, entirely opaque - so every push would have shown a
+solid white square in the status bar. It looks like a broken build and is purely
+a missing manifest entry.
+
+The design's two-tone rule has nothing to act on here: the platform discards
+colour, so "both figures the same" is not a choice anybody made. The 20pt
+single-figure floor does not apply either - it exists so two *coloured* figures
+stay distinguishable, and a silhouette has no such problem.
+
+
 ### 2026-08-24 - A shell tab can ship as a placeholder and nothing goes red
 An external QA audit of 1.4.1 opened with three Critical findings, and two of
 them were the same defect: the candidate's **default** tab and two administrator

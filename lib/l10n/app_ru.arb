@@ -496,8 +496,6 @@
   "applicantsNoneAtStage": "На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.",
   "shortlistTitle": "Шорт-лист",
   "shortlistEmpty": "В шорт-листе пока никого нет",
-  "searchShortlist": "В шорт-лист",
-  "searchShortlisted": "В шорт-листе",
   "roleSelectionTitle": "Как вы будете пользоваться JobBridge?",
   "roleSelectionSubtitle": "Выберите одно или оба — второе можно добавить позже, без второго аккаунта.",
   "roleCandidateDescription": "Создайте профиль, который найдут работодатели, откликайтесь на вакансии и отвечайте на приглашения.",
@@ -871,5 +869,7 @@
   "notificationsMessages": "Сообщения",
   "notificationsInterviews": "Собеседования",
   "notificationsAccount": "Аккаунт",
-  "notificationsOther": "Другое"
+  "notificationsOther": "Другое",
+  "pushChannelName": "Уведомления",
+  "pushChannelDescription": "Ответы на ваши отклики, приглашения, сообщения и собеседования."
 }

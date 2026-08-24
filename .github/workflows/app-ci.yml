@@ -38,6 +38,20 @@ jobs:
             exit 1
           fi
 
+      # Two of the push tests read android/app/google-services.json, which is
+      # gitignored and supplied per machine. They skip when it is absent, so a
+      # missing secret costs coverage rather than a red run here - the build
+      # job below is where its absence is fatal.
+      - name: Restore google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > android/app/google-services.json
+          else
+            echo "::warning::GOOGLE_SERVICES_JSON_BASE64 is not set - the Firebase configuration checks in push_test.dart will skip. See docs/NOTIFICATIONS_SETUP.md."
+          fi
+
       - run: flutter analyze
       - run: flutter test
 
@@ -59,6 +73,25 @@ jobs:
           cache: true
 
       - run: flutter pub get
+
+      # Required since 2026-08-24, when push landed and with it the
+      # `com.google.gms.google-services` Gradle plugin. The plugin reads this
+      # file at build time and **fails the build without it** - which is the
+      # behaviour we want everywhere else, so it is not softened here.
+      #
+      # The file is gitignored (android/.gitignore): Google does not treat the
+      # key inside as a secret, but GitHub's scanner flagged it on 2026-08-07
+      # and this repository keeps credential-shaped files out. Same shape as the
+      # keystore in release-apk.yml.
+      - name: Restore google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::error::Missing repository secret GOOGLE_SERVICES_JSON_BASE64. Android cannot be built without android/app/google-services.json - see docs/NOTIFICATIONS_SETUP.md."
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > android/app/google-services.json
 
       # --flavor is mandatory now that product flavors exist: Gradle no longer
       # has a plain `assembleDebug`, so a bare `flutter build apk` cannot
