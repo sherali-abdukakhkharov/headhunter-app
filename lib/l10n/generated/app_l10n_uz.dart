@@ -270,6 +270,51 @@ class AppL10nUz extends AppL10n {
   String get vacancyNegotiablePay => 'To\'lov kelishiladi';
 
   @override
+  String get vacancyReasonRestrictionChanged =>
+      'Yosh yoki jins cheklovi o\'zgartirildi, shuning uchun vakansiya qayta ko\'rib chiqilmoqda.';
+
+  @override
+  String get vacancyReasonAutoApproved =>
+      'Tekshiruvsiz e\'lon qilindi: moderator mavjud emas edi.';
+
+  @override
+  String vacancyPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString so\'m';
+  }
+
+  @override
+  String vacancyPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mdan';
+  }
+
+  @override
+  String vacancyPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mgacha';
+  }
+
+  @override
+  String vacancyPayPeriod(String pay, String period) {
+    return '$pay / $period';
+  }
+
+  @override
   String vacancyDeadline(String date) {
     return '$date gacha ariza';
   }
@@ -3340,6 +3385,51 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get vacancyNegotiablePay => 'Тўлов келишилади';
 
   @override
+  String get vacancyReasonRestrictionChanged =>
+      'Ёш ёки жинс чеклови ўзгартирилди, шунинг учун вакансия қайта кўриб чиқилмоқда.';
+
+  @override
+  String get vacancyReasonAutoApproved =>
+      'Текширувсиз эълон қилинди: модератор мавжуд эмас эди.';
+
+  @override
+  String vacancyPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString сўм';
+  }
+
+  @override
+  String vacancyPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўмдан';
+  }
+
+  @override
+  String vacancyPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString сўмгача';
+  }
+
+  @override
+  String vacancyPayPeriod(String pay, String period) {
+    return '$pay / $period';
+  }
+
+  @override
   String vacancyDeadline(String date) {
     return '$date гача ариза';
   }
@@ -6399,6 +6489,51 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get vacancyNegotiablePay => 'To\'lov kelishiladi';
+
+  @override
+  String get vacancyReasonRestrictionChanged =>
+      'Yosh yoki jins cheklovi o\'zgartirildi, shuning uchun vakansiya qayta ko\'rib chiqilmoqda.';
+
+  @override
+  String get vacancyReasonAutoApproved =>
+      'Tekshiruvsiz e\'lon qilindi: moderator mavjud emas edi.';
+
+  @override
+  String vacancyPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString so\'m';
+  }
+
+  @override
+  String vacancyPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mdan';
+  }
+
+  @override
+  String vacancyPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return '$amountString so\'mgacha';
+  }
+
+  @override
+  String vacancyPayPeriod(String pay, String period) {
+    return '$pay / $period';
+  }
 
   @override
   String vacancyDeadline(String date) {

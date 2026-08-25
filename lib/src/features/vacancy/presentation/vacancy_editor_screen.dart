@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/format/moderation_reason.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/candidate_search/presentation/find_candidates_action.dart';
@@ -166,8 +167,10 @@ class _Standing extends StatelessWidget {
               when reason.isNotEmpty) ...[
             const SizedBox(height: HhSpace.md),
             // The moderator's own words. §6.4 requires a rejection to carry a
-            // reason, and §2.4 forbids translating it.
-            Text(reason, style: HhTypography.body),
+            // reason, and §2.4 forbids translating it — with the two
+            // exceptions the *server* writes, which are codes rather than
+            // words and are worded here instead (MT-012).
+            Text(moderationReasonText(reason, l10n), style: HhTypography.body),
           ],
 
           if (vacancy.missingForSubmit.isNotEmpty) ...[

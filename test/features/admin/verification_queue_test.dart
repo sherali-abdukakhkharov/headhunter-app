@@ -138,6 +138,20 @@ void main() {
           dictionaryProvider(
             'region',
           ).overrideWith((ref) => const <DictionaryItem>[]),
+          // The `file_purpose` dictionary, because this screen now renders the
+          // *label* for an attachment's purpose rather than its code (MT-012).
+          // `evidence` is here and `mystery` deliberately is not.
+          dictionaryProvider('file_purpose').overrideWith(
+            (ref) => const [
+              DictionaryItem(
+                id: 'purpose-1',
+                code: 'evidence',
+                label: 'Supporting evidence',
+                sortOrder: 1,
+                isActive: true,
+              ),
+            ],
+          ),
         ],
         child: MaterialApp(
           theme: HhTheme.light,
@@ -307,7 +321,7 @@ void main() {
       expect(opener.calls.single.fileId, 'file-9');
     });
 
-    testWidgets("the purpose is the server's own code, not a Dart label", (
+    testWidgets('the purpose reads as a word, resolved at runtime', (
       tester,
     ) async {
       await pump(
@@ -329,10 +343,41 @@ void main() {
         ],
       );
 
-      // A `file_purpose` is a dictionary row an administrator edits at runtime
-      // (§10.3), so a switch in Dart would go stale the day one is added — and
-      // the reader of this screen is the person who maintains that dictionary.
-      expect(find.text('evidence'), findsOneWidget);
+      // Resolved from the dictionary rather than mapped in Dart, so §10.3's
+      // rule still holds: a purpose added by an administrator needs no
+      // release. What changed is that the *code* no longer reaches the screen
+      // — this used to assert `evidence`, which is a column value (MT-012).
+      expect(find.text('Supporting evidence'), findsOneWidget);
+      expect(find.text('evidence'), findsNothing);
+    });
+
+    testWidgets('a purpose the dictionary does not know is still readable', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        pages: [
+          [
+            _item(
+              id: 'emp-1',
+              files: [
+                {
+                  'id': 'file-9',
+                  'purposeCode': 'tax_clearance_certificate',
+                  'fileName': 'guvohnoma.pdf',
+                  'path': '/admin/employers/emp-1/evidence/file-9',
+                },
+              ],
+            ),
+          ],
+        ],
+      );
+
+      // Humanised, not "Unavailable value". A code was written to be legible,
+      // so the last resort keeps its meaning instead of discarding it — and it
+      // is still never `snake_case` on screen.
+      expect(find.text('Tax clearance certificate'), findsOneWidget);
+      expect(find.text('tax_clearance_certificate'), findsNothing);
     });
   });
 

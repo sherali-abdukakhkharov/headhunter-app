@@ -31,8 +31,8 @@ invitation response and employer profile.
 | MT-003 | Critical | Open — **backend/deployment**, and confirmed as such by the audit: `MODERATION_ENABLED=false` in the tested runtime. The client already renders whatever status the API returns; the ask is the flag and a fail-closed deployment check |
 | MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. The audit adds a product ask: make top-up availability a **server capability** rather than a promise the app makes and then withdraws after the tap |
 | MT-020 | High | **Fixed 1.11.1** — the two read routes were `POST` against a server that declares `@Put`, so nothing in §9.2's centre could be marked read in 1.10.0 or 1.11.0. See MEMORY.md for why a 404 hid it |
-| MT-009 | Medium | Open — CV purpose code sent to a uuid dictionary endpoint, so the label resolves as "Unavailable value" |
-| MT-012 | Medium | Open — raw wire codes and unformatted salary reach the UI |
+| MT-009 | Medium | **Fixed 1.11.3** — the DTO carries `purposeCode`, and it was being handed to the id resolver. `DictionaryCodeLabel` resolves by code; both are `String`, which is why nothing complained |
+| MT-012 | Medium | **Fixed 1.11.3** — purpose codes now resolve to labels on all three screens, pay is one shared formatter with separators, currency and period, and the two **server-written** moderation reasons are worded rather than shown verbatim |
 | MT-013 | Medium | **Fixed 1.11.2** — both sign-in buttons now derive their enabled state from the same value the submit path checks, and local validation renders on the field instead of in the page's error state |
 | MT-014 | Medium | **Fixed 1.11.2** — and it was larger than the copy: every transport-failure message was **hardcoded English** in a four-variant product. Now twelve ARB keys reached through `ApiException.localizations`, plus an `ApiFailureKind` so a screen can branch on the condition rather than on the words |
 | MT-015 | Medium | Open — duplicate semantics and unlabelled icon-only pickers. **Design-system change, so it needs a device run** |

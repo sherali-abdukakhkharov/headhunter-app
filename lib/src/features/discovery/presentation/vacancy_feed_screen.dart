@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/format/vacancy_pay.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
@@ -292,18 +293,22 @@ class _VacancyFeedCardState extends ConsumerState<VacancyFeedCard> {
 
   /// A pay line, or the negotiable note.
   ///
-  /// Digits are not localized: §8.3's display policy is still open, and a
-  /// thousands separator invented here would have to be undone.
-  String _pay(VacancyCard card, AppL10n l10n) {
-    if (card.salaryIsNegotiable) return l10n.vacancyNegotiablePay;
-
-    final from = card.salaryFrom;
-    final to = card.salaryTo;
-    if (from == null && to == null) return l10n.vacancyNegotiablePay;
-    if (from != null && to != null) return '$from – $to';
-
-    return '${from ?? to}';
-  }
+  /// One shared formatter, because this was three copies that all rendered a
+  /// bare `150000 – 250000` — no separators, no currency, no period (MT-012).
+  /// The comment here used to say digits were deliberately unlocalized while
+  /// §8.3's display policy was open; §8.3 is about *timestamps*, and money was
+  /// never covered by it.
+  String _pay(VacancyCard card, AppL10n l10n) => formatPay(
+    l10n,
+    negotiable: card.salaryIsNegotiable,
+    from: card.salaryFrom,
+    to: card.salaryTo,
+    period: optionalLabel(
+      ref,
+      type: DictionaryType.paymentPeriod,
+      id: card.salaryPeriodId,
+    ),
+  );
 
   Future<void> _apply() async {
     final messenger = ScaffoldMessenger.of(context);

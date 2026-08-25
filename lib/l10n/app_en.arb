@@ -322,6 +322,60 @@
   "@vacancyNegotiablePay": {
     "description": "Salary is open to discussion. A negotiable vacancy also passes a minimum-pay filter, because it has not said no to the figure."
   },
+  "vacancyReasonRestrictionChanged": "An age or gender restriction was changed, so this vacancy is being reviewed again.",
+  "@vacancyReasonRestrictionChanged": {
+    "description": "The server's `restriction_changed_requires_review`, written out. BR-12 sends a live vacancy back for review when its age or gender restriction is edited, and the reason it records is a machine code rather than a moderator's prose — so this is one of the two reasons §2.4's verbatim rule must not apply to (MT-012)."
+  },
+  "vacancyReasonAutoApproved": "Published without review, because no moderator was available.",
+  "@vacancyReasonAutoApproved": {
+    "description": "The server's `auto_approved_no_moderator`, written out. BR-04 lets a vacancy publish without review when no moderator exists, and records that as the reason."
+  },
+  "vacancyPayRange": "{from} – {to} UZS",
+  "@vacancyPayRange": {
+    "description": "A pay range on a vacancy. Separators come from decimalPattern, so the grouping follows the interface variant rather than being written into the string. The currency word is localized (MT-012).",
+    "placeholders": {
+      "from": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "to": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "vacancyPayFrom": "From {amount} UZS",
+  "@vacancyPayFrom": {
+    "description": "A pay floor with no ceiling stated.",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "vacancyPayUpTo": "Up to {amount} UZS",
+  "@vacancyPayUpTo": {
+    "description": "A pay ceiling with no floor stated.",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "vacancyPayPeriod": "{pay} / {period}",
+  "@vacancyPayPeriod": {
+    "description": "Attaches the payment period to a pay figure. `period` is a resolved `payment_period` dictionary label (BR-13), never a code; the whole clause is omitted when the vacancy states no period.",
+    "placeholders": {
+      "pay": {
+        "type": "String"
+      },
+      "period": {
+        "type": "String"
+      }
+    }
+  },
   "vacancyDeadline": "Apply by {date}",
   "@vacancyDeadline": {
     "description": "The application deadline. ISO, because §8.3's display policy is still open.",

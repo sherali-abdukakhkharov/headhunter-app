@@ -268,6 +268,51 @@ class AppL10nEn extends AppL10n {
   String get vacancyNegotiablePay => 'Pay negotiable';
 
   @override
+  String get vacancyReasonRestrictionChanged =>
+      'An age or gender restriction was changed, so this vacancy is being reviewed again.';
+
+  @override
+  String get vacancyReasonAutoApproved =>
+      'Published without review, because no moderator was available.';
+
+  @override
+  String vacancyPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString UZS';
+  }
+
+  @override
+  String vacancyPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'From $amountString UZS';
+  }
+
+  @override
+  String vacancyPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'Up to $amountString UZS';
+  }
+
+  @override
+  String vacancyPayPeriod(String pay, String period) {
+    return '$pay / $period';
+  }
+
+  @override
   String vacancyDeadline(String date) {
     return 'Apply by $date';
   }

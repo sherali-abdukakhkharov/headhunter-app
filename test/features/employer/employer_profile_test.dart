@@ -127,6 +127,20 @@ void main() {
           dictionaryProvider('region').overrideWith(
             (ref) => const <DictionaryItem>[],
           ),
+          // The required-evidence list now shows the dictionary's word for
+          // each purpose rather than its code (MT-012). `evidence` is
+          // deliberately absent, so one row exercises the fallback.
+          dictionaryProvider('file_purpose').overrideWith(
+            (ref) => const [
+              DictionaryItem(
+                id: 'purpose-1',
+                code: 'company_registration',
+                label: 'Company registration document',
+                sortOrder: 1,
+                isActive: true,
+              ),
+            ],
+          ),
         ],
         child: MaterialApp(
           theme: HhTheme.light,
@@ -311,8 +325,16 @@ void main() {
         ),
       );
 
-      // Served rather than hardcoded: §6.1 leaves the policy open.
-      expect(find.text('company_registration'), findsOneWidget);
+      // Served rather than hardcoded: §6.1 leaves the policy open. And named
+      // in words — an employer being told which document to upload is the last
+      // person who should have to read `company_registration` (MT-012).
+      expect(find.text('Company registration document'), findsOneWidget);
+      expect(find.text('company_registration'), findsNothing);
+
+      // The dictionary has no row for this one, so it falls back to the
+      // humanised code rather than to "Unavailable value".
+      expect(find.text('Evidence'), findsOneWidget);
+
       expect(find.text('Required'), findsOneWidget);
       expect(find.text('Optional'), findsOneWidget);
     });

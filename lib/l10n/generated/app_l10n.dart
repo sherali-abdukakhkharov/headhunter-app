@@ -569,6 +569,42 @@ abstract class AppL10n {
   /// **'Pay negotiable'**
   String get vacancyNegotiablePay;
 
+  /// The server's `restriction_changed_requires_review`, written out. BR-12 sends a live vacancy back for review when its age or gender restriction is edited, and the reason it records is a machine code rather than a moderator's prose — so this is one of the two reasons §2.4's verbatim rule must not apply to (MT-012).
+  ///
+  /// In en, this message translates to:
+  /// **'An age or gender restriction was changed, so this vacancy is being reviewed again.'**
+  String get vacancyReasonRestrictionChanged;
+
+  /// The server's `auto_approved_no_moderator`, written out. BR-04 lets a vacancy publish without review when no moderator exists, and records that as the reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Published without review, because no moderator was available.'**
+  String get vacancyReasonAutoApproved;
+
+  /// A pay range on a vacancy. Separators come from decimalPattern, so the grouping follows the interface variant rather than being written into the string. The currency word is localized (MT-012).
+  ///
+  /// In en, this message translates to:
+  /// **'{from} – {to} UZS'**
+  String vacancyPayRange(int from, int to);
+
+  /// A pay floor with no ceiling stated.
+  ///
+  /// In en, this message translates to:
+  /// **'From {amount} UZS'**
+  String vacancyPayFrom(int amount);
+
+  /// A pay ceiling with no floor stated.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {amount} UZS'**
+  String vacancyPayUpTo(int amount);
+
+  /// Attaches the payment period to a pay figure. `period` is a resolved `payment_period` dictionary label (BR-13), never a code; the whole clause is omitted when the vacancy states no period.
+  ///
+  /// In en, this message translates to:
+  /// **'{pay} / {period}'**
+  String vacancyPayPeriod(String pay, String period);
+
   /// The application deadline. ISO, because §8.3's display policy is still open.
   ///
   /// In en, this message translates to:

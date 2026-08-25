@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
+import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
 import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
 
@@ -140,8 +142,13 @@ class _BodyState extends ConsumerState<_Body> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        evidence.purposeCode,
+                      // The dictionary's word for it, not the raw
+                      // `company_registration` (MT-012). An employer being told
+                      // which document to upload is the last person who should
+                      // have to read a column name.
+                      child: DictionaryCodeLabel(
+                        type: DictionaryType.filePurpose,
+                        code: evidence.purposeCode,
                         style: HhTypography.body,
                       ),
                     ),

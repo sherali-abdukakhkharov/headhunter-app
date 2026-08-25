@@ -10,6 +10,7 @@ import 'package:jobbridge_app/src/features/admin/domain/queue_wait.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_decision_sheet.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 
 /// §10.2's employer verification queue — the administrator's half of BR-03.
@@ -330,13 +331,19 @@ class _EvidenceRowState extends ConsumerState<_EvidenceRow> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    // The server's own `file_purpose` code. Not mapped to a
-                    // Dart label: purposes are dictionary rows an
-                    // administrator edits at runtime (§10.3), so a switch here
-                    // would go stale the day one is added — and the reader of
-                    // this screen is the person who maintains that dictionary.
-                    Text(
-                      widget.file.purposeCode,
+                    // The dictionary's own label for the `file_purpose` code.
+                    //
+                    // This used to print the raw code, on the reasoning that
+                    // the reader of this screen maintains that dictionary. The
+                    // 1.11.0 audit overturned it (MT-012) and is right: a
+                    // moderator deciding whether a document supports a claim
+                    // is doing the same reading an employer does, and the
+                    // dictionary already holds the word in their language.
+                    // Resolved at runtime, so §10.3's rule still holds — there
+                    // is no switch here to go stale when a purpose is added.
+                    DictionaryCodeLabel(
+                      type: DictionaryType.filePurpose,
+                      code: widget.file.purposeCode,
                       style: HhTypography.caption,
                     ),
                   ],

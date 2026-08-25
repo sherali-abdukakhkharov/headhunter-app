@@ -267,6 +267,51 @@ class AppL10nRu extends AppL10n {
   String get vacancyNegotiablePay => 'Оплата договорная';
 
   @override
+  String get vacancyReasonRestrictionChanged =>
+      'Изменено ограничение по возрасту или полу, поэтому вакансия снова проходит проверку.';
+
+  @override
+  String get vacancyReasonAutoApproved =>
+      'Опубликовано без проверки: модератор был недоступен.';
+
+  @override
+  String vacancyPayRange(int from, int to) {
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String fromString = fromNumberFormat.format(from);
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String toString = toNumberFormat.format(to);
+
+    return '$fromString – $toString сум';
+  }
+
+  @override
+  String vacancyPayFrom(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'От $amountString сум';
+  }
+
+  @override
+  String vacancyPayUpTo(int amount) {
+    final intl.NumberFormat amountNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String amountString = amountNumberFormat.format(amount);
+
+    return 'До $amountString сум';
+  }
+
+  @override
+  String vacancyPayPeriod(String pay, String period) {
+    return '$pay / $period';
+  }
+
+  @override
   String vacancyDeadline(String date) {
     return 'Отклик до $date';
   }

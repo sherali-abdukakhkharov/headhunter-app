@@ -602,12 +602,14 @@ class _FileRowState extends ConsumerState<_FileRow> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(file.fileName, style: HhTypography.body),
-                // The purpose is a dictionary id like any other, so it reads as
-                // a word in all four interface variants rather than as `cv`
-                // (BR-13).
-                DictionaryLabel(
+                // **Code, not id.** The DTO carries `purposeCode: cv`, and
+                // handing that to `DictionaryLabel` — which resolves ids —
+                // rendered "Unavailable value" under every filename, in every
+                // language, for as long as this screen has existed (MT-009).
+                // Both are `String`, so nothing complained.
+                DictionaryCodeLabel(
                   type: DictionaryType.filePurpose,
-                  id: file.purposeCode,
+                  code: file.purposeCode,
                   style: HhTypography.caption.copyWith(
                     color: HhColors.inkMuted,
                   ),

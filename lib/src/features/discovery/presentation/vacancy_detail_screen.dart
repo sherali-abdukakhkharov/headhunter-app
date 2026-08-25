@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/format/vacancy_pay.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
@@ -188,7 +189,10 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
           spacing: HhSpace.sm,
           runSpacing: HhSpace.sm,
           children: [
-            HhMetaChip(label: _pay(detail, l10n), iconPath: HhIconPath.wallet),
+            HhMetaChip(
+              label: _pay(detail, ref, l10n),
+              iconPath: HhIconPath.wallet,
+            ),
             if (card.workerCount case final count? when count > 0)
               HhMetaChip(
                 label: l10n.vacancyOpenings(count),
@@ -283,16 +287,20 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
     );
   }
 
-  String _pay(VacancyDetail detail, AppL10n l10n) {
+  String _pay(VacancyDetail detail, WidgetRef ref, AppL10n l10n) {
     final card = detail.item;
-    if (card.salaryIsNegotiable) return l10n.vacancyNegotiablePay;
 
-    final from = card.salaryFrom;
-    final to = card.salaryTo;
-    if (from == null && to == null) return l10n.vacancyNegotiablePay;
-    if (from != null && to != null) return '$from – $to';
-
-    return '${from ?? to}';
+    return formatPay(
+      l10n,
+      negotiable: card.salaryIsNegotiable,
+      from: card.salaryFrom,
+      to: card.salaryTo,
+      period: optionalLabel(
+        ref,
+        type: DictionaryType.paymentPeriod,
+        id: card.salaryPeriodId,
+      ),
+    );
   }
 
   /// Refreshes the list this screen was opened from, when there was one.

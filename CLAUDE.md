@@ -92,6 +92,20 @@ and a green test suite both missed.
   Cyrillic. Never key on `locale.languageCode` alone - it collapses the two.
 - **Pickers display labels but bind dictionary IDs** (BR-13, §3.3). Binding a
   label breaks cross-language search, and it fails silently.
+  **A few DTOs deliberately carry the `code` instead** — `purposeCode` on a
+  file, on required evidence, on a moderation queue's attachment — because the
+  upload endpoint takes a purpose code. Both are `String`, so handing a code to
+  `DictionaryLabel(id:)` compiles, runs, and renders *"Unavailable value"*
+  forever: that shipped, in every language, for as long as the employer's
+  candidate view had existed (MT-009). Use **`DictionaryCodeLabel(code:)`** for
+  a code and `DictionaryLabel(id:)` for an id, and let the parameter name be
+  the check.
+- **A machine value must never reach a screen.** Not a `snake_case` code, and
+  not a bare integer where money belongs — `150000` gives a reader nothing to
+  count against. Money goes through `formatPay` (`core/format/`), a purpose
+  code through `DictionaryCodeLabel`, and the two **server-written** moderation
+  reasons through `moderationReasonText`. §2.4's "show the reason verbatim" is
+  a rule about *human* text; a code the server generated was never that.
 - **Structured profile fields are what search uses**; the CV is an attachment.
   There is no CV parsing in this product (§1, §5.4).
 - **Three roles in one app, switchable at runtime** (§2.3), and **admin is one of

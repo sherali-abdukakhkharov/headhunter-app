@@ -17,6 +17,44 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.11.3+19 — 2026-08-25
+
+Column names and raw numbers stop showing up where words and money belong.
+
+### Fixed
+
+- **A candidate's CV now says "CV".** For an employer who had paid to see it,
+  the line under the filename read *"Unavailable value"* — in every language,
+  on every attachment, for as long as that screen has existed.
+- **Employers are told which document to upload in words.** The verification
+  card listed `company_registration` and `evidence`; the moderator's queue did
+  the same. Both now show the dictionary's own label, in the reader's language.
+- **Pay is legible.** A vacancy showed `150000 – 250000` — no separators, no
+  currency, nothing saying what it was per. It now reads as grouped figures
+  with the currency and, where the vacancy states one, the payment period.
+  Everywhere: the feed, the vacancy itself, and the moderator's review.
+- **"restriction_changed_requires_review" is now a sentence.** When an employer
+  edits an age or gender restriction the vacancy goes back for review, and the
+  reason the app showed them was the internal name of that rule.
+
+### Internal
+
+- MT-009 and MT-012 from the 1.11.0 audit, which are one defect wearing three
+  hats: a machine value rendered where a person was reading.
+- `DictionaryCodeLabel` resolves by **code**; `DictionaryLabel` still resolves
+  by id. The bug was that both are `String`, so passing one to the other
+  compiles and then renders "Unavailable value" forever. An unresolved code now
+  falls back to a humanised form (`company_registration` → *Company
+  registration*) rather than to a phrase carrying no information.
+- `formatPay` in `core/format/` replaces three private copies that had all
+  drifted to the same bare interpolation. Four ARB keys, `decimalPattern` for
+  grouping, and the period arrives as a **resolved** label — null while the
+  dictionary is still answering, and omitted rather than shown as an ellipsis
+  mid-figure.
+- `moderationReasonText` words the two reasons the *server* writes and passes
+  everything else through, so §2.4's verbatim rule keeps applying to the human
+  text it was written for.
+
 ## 1.11.2+18 — 2026-08-25
 
 The app stops blaming itself for things you are still typing, and starts

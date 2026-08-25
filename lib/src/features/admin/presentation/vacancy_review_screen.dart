@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/format/moderation_reason.dart';
+import 'package:jobbridge_app/src/core/format/vacancy_pay.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
@@ -134,7 +136,11 @@ class _Review extends ConsumerWidget {
           // and that is the moderator's problem to fix rather than repeat.
           HhNotice.restricted(
             title: l10n.adminPreviousReason,
-            message: reason,
+            // Verbatim when a moderator wrote it, worded when the server did
+            // — this queue is where `restriction_changed_requires_review`
+            // appears most often, since BR-12 is what puts a vacancy back in
+            // it (MT-012).
+            message: moderationReasonText(reason, l10n),
           ),
           const SizedBox(height: HhSpace.sectionGap),
         ],
@@ -159,7 +165,7 @@ class _Review extends ConsumerWidget {
             spacing: HhSpace.sm,
             runSpacing: HhSpace.xs,
             children: [
-              HhMetaChip(label: _pay(l10n), iconPath: HhIconPath.wallet),
+              HhMetaChip(label: _pay(ref, l10n), iconPath: HhIconPath.wallet),
               if (review.workerCount case final count?)
                 HhMetaChip(
                   label: l10n.vacancyOpenings(count),
@@ -257,16 +263,17 @@ class _Review extends ConsumerWidget {
   /// converted. `salaryIsNegotiable` wins over a range, because that is the
   /// server's own precedence — the vacancy form discards a typed range when
   /// negotiable is set.
-  String _pay(AppL10n l10n) {
-    if (review.salaryIsNegotiable) return l10n.vacancyNegotiablePay;
-
-    final from = review.salaryFrom;
-    final to = review.salaryTo;
-    if (from == null && to == null) return l10n.vacancyNegotiablePay;
-    if (from != null && to != null) return '$from – $to';
-
-    return '${from ?? to}';
-  }
+  String _pay(WidgetRef ref, AppL10n l10n) => formatPay(
+    l10n,
+    negotiable: review.salaryIsNegotiable,
+    from: review.salaryFrom,
+    to: review.salaryTo,
+    period: optionalLabel(
+      ref,
+      type: DictionaryType.paymentPeriod,
+      id: review.salaryPeriodId,
+    ),
+  );
 
   /// The work window (§6.3, UAT-10), or null when neither date is set.
   ///
