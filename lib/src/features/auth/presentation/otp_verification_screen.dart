@@ -63,22 +63,52 @@ class _OtpVerificationScreenState
   Timer? _ticker;
 
   bool _busy = false;
+
+  /// **The server's** refusal — a wrong code, an expired one, a rate limit —
+  /// already localized.
+  ///
+  /// Never a local validation result. An incomplete code is a fact about the
+  /// field, and raising it as the page's error state put "Something went
+  /// wrong" above a code the user had not finished entering (MT-013).
   String? _error;
 
   UzPhone get _phone => widget.args.phone;
+
+  /// The digits entered so far, which is what both the button and the field's
+  /// own guidance are derived from.
+  String get _code => _controller.text.trim();
+
+  bool get _isComplete => _code.length == OtpVerificationScreen.codeLength;
+
+  /// Confirm is offered only for a code that could succeed.
+  bool get _canVerify => _isComplete && !_busy;
 
   @override
   void initState() {
     super.initState();
     _startCountdown();
+    // Drives the Confirm button's enabled state, and clears the server's last
+    // refusal the moment the user starts correcting the code — rather than
+    // leaving a red box contradicting what they are typing.
+    _controller.addListener(_onCodeChanged);
   }
 
   @override
   void dispose() {
     _ticker?.cancel();
-    _controller.dispose();
+    _controller
+      ..removeListener(_onCodeChanged)
+      ..dispose();
     super.dispose();
   }
+
+  void _onCodeChanged() => setState(() => _error = null);
+
+  /// Guidance on the field while the code is short. Held back on an empty
+  /// field: the user has just arrived and has been told nothing yet.
+  String? _codeError(AppL10n l10n) => _code.isEmpty || _isComplete
+      ? null
+      : l10n.authCodeInvalid(OtpVerificationScreen.codeLength);
 
   /// Ticks the countdown down locally rather than recomputing it from the wall
   /// clock each second.
@@ -103,15 +133,11 @@ class _OtpVerificationScreenState
   }
 
   Future<void> _verify() async {
-    final code = _controller.text.trim();
-    final l10n = AppL10n.of(context);
+    final code = _code;
 
-    if (code.length != OtpVerificationScreen.codeLength) {
-      setState(
-        () => _error = l10n.authCodeInvalid(OtpVerificationScreen.codeLength),
-      );
-      return;
-    }
+    // Defence only. [_canVerify] gates the button, the keyboard's done action
+    // and the retry, so arriving here short would mean they had drifted apart.
+    if (!_isComplete) return;
 
     setState(() {
       _busy = true;
@@ -198,7 +224,7 @@ class _OtpVerificationScreenState
                   title: l10n.stateErrorTitle,
                   message: message,
                   retryLabel: l10n.commonRetry,
-                  onRetry: _busy ? null : _verify,
+                  onRetry: _canVerify ? _verify : null,
                 ),
                 const SizedBox(height: HhSpace.lg),
               ],
@@ -207,24 +233,27 @@ class _OtpVerificationScreenState
                 label: l10n.authCodeLabel,
                 controller: _controller,
                 keyboardType: TextInputType.number,
+                // Inline, where the problem is — not the page-level error
+                // state, whose heading says "Something went wrong" (MT-013).
+                errorText: _codeError(l10n),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 maxLength: OtpVerificationScreen.codeLength,
                 textInputAction: TextInputAction.done,
                 enabled: !_busy,
-                onSubmitted: (_) => _verify(),
-                // Clears a stale "wrong code" the moment the user starts fixing
-                // it, rather than leaving a red box contradicting what they are
-                // typing.
-                onChanged: (_) {
-                  if (_error != null) setState(() => _error = null);
+                onSubmitted: (_) {
+                  if (_canVerify) unawaited(_verify());
                 },
+                // No onChanged: the controller listener from initState clears
+                // the server's message and rebuilds for the button.
               ),
               const SizedBox(height: HhSpace.lg),
 
               HhButton(
                 label: l10n.authVerifyCode,
                 loading: _busy,
-                onPressed: _busy ? null : _verify,
+                // An empty field cannot verify, so offering the action would
+                // be a promise the next tap breaks.
+                onPressed: _canVerify ? _verify : null,
               ),
               const SizedBox(height: HhSpace.md),
 

@@ -74,6 +74,46 @@ class AppL10nRu extends AppL10n {
   String get sessionExpired => 'Сеанс истёк. Войдите снова.';
 
   @override
+  String get apiErrorOffline =>
+      'Нет подключения к интернету. Проверьте соединение и попробуйте снова.';
+
+  @override
+  String get apiErrorTimeout =>
+      'Сервер слишком долго не отвечает. Проверьте соединение и попробуйте снова.';
+
+  @override
+  String get apiErrorCancelled => 'Запрос отменён.';
+
+  @override
+  String get apiErrorCertificate =>
+      'Это соединение небезопасно. Попробуйте другую сеть.';
+
+  @override
+  String get apiErrorUnexpected => 'Что-то пошло не так. Попробуйте снова.';
+
+  @override
+  String get apiErrorBadRequest => 'Некорректный запрос.';
+
+  @override
+  String get apiErrorForbidden => 'У вас нет прав на это действие.';
+
+  @override
+  String get apiErrorNotFound => 'Не найдено.';
+
+  @override
+  String get apiErrorConflict => 'Это противоречит уже сохранённым данным.';
+
+  @override
+  String get apiErrorUnprocessable => 'Некоторые данные заполнены неверно.';
+
+  @override
+  String get apiErrorTooManyRequests =>
+      'Слишком много попыток. Подождите немного и попробуйте снова.';
+
+  @override
+  String get apiErrorServer => 'На сервере произошла ошибка. Попробуйте позже.';
+
+  @override
   String get settingsLanguage => 'Язык';
 
   @override

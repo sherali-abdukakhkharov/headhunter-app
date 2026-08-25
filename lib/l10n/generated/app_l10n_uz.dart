@@ -76,6 +76,49 @@ class AppL10nUz extends AppL10n {
       'Sessiya muddati tugadi. Iltimos, qaytadan kiring.';
 
   @override
+  String get apiErrorOffline =>
+      'Internet aloqasi yo\'q. Ulanishni tekshirib, qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorTimeout =>
+      'Server juda uzoq javob bermayapti. Ulanishni tekshirib, qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorCancelled => 'So\'rov bekor qilindi.';
+
+  @override
+  String get apiErrorCertificate =>
+      'Bu ulanish xavfsiz emas. Boshqa tarmoqda urinib ko\'ring.';
+
+  @override
+  String get apiErrorUnexpected => 'Nimadir xato ketdi. Qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorBadRequest => 'So\'rov noto\'g\'ri.';
+
+  @override
+  String get apiErrorForbidden => 'Bunga ruxsatingiz yo\'q.';
+
+  @override
+  String get apiErrorNotFound => 'Topilmadi.';
+
+  @override
+  String get apiErrorConflict =>
+      'Bu allaqachon saqlangan ma\'lumotga zid keladi.';
+
+  @override
+  String get apiErrorUnprocessable =>
+      'Ba\'zi ma\'lumotlar noto\'g\'ri kiritilgan.';
+
+  @override
+  String get apiErrorTooManyRequests =>
+      'Juda ko\'p urinish. Biroz kutib, qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorServer =>
+      'Serverda muammo yuz berdi. Keyinroq urinib ko\'ring.';
+
+  @override
   String get settingsLanguage => 'Til';
 
   @override
@@ -3105,6 +3148,48 @@ class AppL10nUzCyrl extends AppL10nUz {
       'Сессия муддати тугади. Илтимос, қайтадан киринг.';
 
   @override
+  String get apiErrorOffline =>
+      'Интернет алоқаси йўқ. Уланишни текшириб, қайта уриниб кўринг.';
+
+  @override
+  String get apiErrorTimeout =>
+      'Сервер жуда узоқ жавоб бермаяпти. Уланишни текшириб, қайта уриниб кўринг.';
+
+  @override
+  String get apiErrorCancelled => 'Сўров бекор қилинди.';
+
+  @override
+  String get apiErrorCertificate =>
+      'Бу уланиш хавфсиз эмас. Бошқа тармоқда уриниб кўринг.';
+
+  @override
+  String get apiErrorUnexpected => 'Нимадир хато кетди. Қайта уриниб кўринг.';
+
+  @override
+  String get apiErrorBadRequest => 'Сўров нотўғри.';
+
+  @override
+  String get apiErrorForbidden => 'Бунга рухсатингиз йўқ.';
+
+  @override
+  String get apiErrorNotFound => 'Топилмади.';
+
+  @override
+  String get apiErrorConflict =>
+      'Бу аллақачон сақланган маълумотга зид келади.';
+
+  @override
+  String get apiErrorUnprocessable => 'Баъзи маълумотлар нотўғри киритилган.';
+
+  @override
+  String get apiErrorTooManyRequests =>
+      'Жуда кўп уриниш. Бироз кутиб, қайта уриниб кўринг.';
+
+  @override
+  String get apiErrorServer =>
+      'Серверда муаммо юз берди. Кейинроқ уриниб кўринг.';
+
+  @override
   String get settingsLanguage => 'Тил';
 
   @override
@@ -6120,6 +6205,49 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get sessionExpired =>
       'Sessiya muddati tugadi. Iltimos, qaytadan kiring.';
+
+  @override
+  String get apiErrorOffline =>
+      'Internet aloqasi yo\'q. Ulanishni tekshirib, qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorTimeout =>
+      'Server juda uzoq javob bermayapti. Ulanishni tekshirib, qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorCancelled => 'So\'rov bekor qilindi.';
+
+  @override
+  String get apiErrorCertificate =>
+      'Bu ulanish xavfsiz emas. Boshqa tarmoqda urinib ko\'ring.';
+
+  @override
+  String get apiErrorUnexpected => 'Nimadir xato ketdi. Qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorBadRequest => 'So\'rov noto\'g\'ri.';
+
+  @override
+  String get apiErrorForbidden => 'Bunga ruxsatingiz yo\'q.';
+
+  @override
+  String get apiErrorNotFound => 'Topilmadi.';
+
+  @override
+  String get apiErrorConflict =>
+      'Bu allaqachon saqlangan ma\'lumotga zid keladi.';
+
+  @override
+  String get apiErrorUnprocessable =>
+      'Ba\'zi ma\'lumotlar noto\'g\'ri kiritilgan.';
+
+  @override
+  String get apiErrorTooManyRequests =>
+      'Juda ko\'p urinish. Biroz kutib, qayta urinib ko\'ring.';
+
+  @override
+  String get apiErrorServer =>
+      'Serverda muammo yuz berdi. Keyinroq urinib ko\'ring.';
 
   @override
   String get settingsLanguage => 'Til';

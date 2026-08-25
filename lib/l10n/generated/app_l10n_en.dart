@@ -75,6 +75,48 @@ class AppL10nEn extends AppL10n {
       'Your session has expired. Please sign in again.';
 
   @override
+  String get apiErrorOffline =>
+      'You\'re offline. Check your connection and try again.';
+
+  @override
+  String get apiErrorTimeout =>
+      'The server is taking too long to answer. Check your connection and try again.';
+
+  @override
+  String get apiErrorCancelled => 'The request was cancelled.';
+
+  @override
+  String get apiErrorCertificate =>
+      'This connection is not secure. Try again on a different network.';
+
+  @override
+  String get apiErrorUnexpected => 'Something went wrong. Please try again.';
+
+  @override
+  String get apiErrorBadRequest => 'The request was invalid.';
+
+  @override
+  String get apiErrorForbidden => 'You do not have permission to do that.';
+
+  @override
+  String get apiErrorNotFound => 'That was not found.';
+
+  @override
+  String get apiErrorConflict =>
+      'That conflicts with information already saved.';
+
+  @override
+  String get apiErrorUnprocessable => 'Some of the information was not valid.';
+
+  @override
+  String get apiErrorTooManyRequests =>
+      'Too many attempts. Please wait a moment and try again.';
+
+  @override
+  String get apiErrorServer =>
+      'The server ran into a problem. Please try again later.';
+
+  @override
   String get settingsLanguage => 'Language';
 
   @override

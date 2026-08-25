@@ -52,23 +52,59 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   bool _sending = false;
 
-  /// Localized, already resolved. Null when there is nothing to report.
+  /// **The server's** failure, already localized. Null when there is nothing to
+  /// report.
+  ///
+  /// Deliberately never holds a local validation result. A number that is too
+  /// short is a fact about the field, and answering it with the error state's
+  /// "Something went wrong" heading blames the system for what the person is
+  /// still in the middle of typing (MT-013). Incompleteness is [_phoneError],
+  /// which renders on the field itself.
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    // The send button's enabled state is derived from the field, so the field
+    // has to ask for a rebuild. Without this, "Get a code" enabled on consent
+    // alone and two digits were enough to make an impossible action look
+    // available — which is the first half of MT-013.
+    _phoneController.addListener(_onPhoneChanged);
+  }
+
+  @override
   void dispose() {
-    _phoneController.dispose();
+    _phoneController
+      ..removeListener(_onPhoneChanged)
+      ..dispose();
     super.dispose();
   }
 
-  Future<void> _sendCode() async {
-    final l10n = AppL10n.of(context);
-    final phone = UzPhone.parse(_phoneController.text);
+  void _onPhoneChanged() {
+    // A keystroke also clears whatever the server last said: it was about the
+    // previous number.
+    setState(() => _error = null);
+  }
 
-    if (!phone.isValid) {
-      setState(() => _error = l10n.authPhoneInvalid);
-      return;
-    }
+  UzPhone get _phone => UzPhone.parse(_phoneController.text);
+
+  /// Guidance shown on the field while the number cannot be sent.
+  ///
+  /// Held back on an empty field: an untouched form that is already scolding
+  /// the user has told them nothing, and the hint underneath already shows the
+  /// shape being asked for.
+  String? _phoneError(AppL10n l10n) =>
+      _phoneController.text.isEmpty || _phone.isValid
+      ? null
+      : l10n.authPhoneInvalid;
+
+  Future<void> _sendCode() async {
+    final phone = _phone;
+
+    // Defence only. [_canSend] gates both the button and the keyboard's done
+    // action on exactly this, so reaching here with an invalid number would
+    // mean the two had drifted apart.
+    if (!phone.isValid) return;
 
     setState(() {
       _sending = true;
@@ -100,7 +136,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final activeLocale = ref.watch(activeLocaleProvider);
-    final canSend = _termsAccepted && !_sending;
+    // §4.1 step 2's consent, **and** a number the API could actually accept.
+    // Both, because an enabled control is a promise that pressing it will do
+    // something (MT-013).
+    final canSend = _phone.isValid && _termsAccepted && !_sending;
 
     return Scaffold(
       body: SafeArea(
@@ -160,6 +199,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 // picker would be friction for a choice nobody has.
                 prefix: '+${UzPhone.countryCode}',
                 hintText: l10n.authPhoneHint,
+                // Inline, where the problem is. This used to be raised as the
+                // page-level error state, whose heading reads "Something went
+                // wrong" — a system failure, for a number the user had not
+                // finished typing (MT-013).
+                errorText: _phoneError(l10n),
                 keyboardType: TextInputType.phone,
                 // A phone keyboard is a hint, not a restriction - every
                 // platform still allows a paste.
@@ -170,9 +214,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 onSubmitted: (_) {
                   if (canSend) unawaited(_sendCode());
                 },
-                onChanged: (_) {
-                  if (_error != null) setState(() => _error = null);
-                },
+                // No onChanged: the controller listener installed in initState
+                // covers both clearing the server's message and rebuilding for
+                // the button's enabled state.
               ),
               const SizedBox(height: HhSpace.lg),
 

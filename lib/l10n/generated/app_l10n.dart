@@ -227,6 +227,78 @@ abstract class AppL10n {
   /// **'Your session has expired. Please sign in again.'**
   String get sessionExpired;
 
+  /// Shown when the request never reached the server. Names the connection, never the backend or a base URL - a user cannot act on either (MT-014).
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Check your connection and try again.'**
+  String get apiErrorOffline;
+
+  /// Shown when the server accepted the request but did not answer in time.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is taking too long to answer. Check your connection and try again.'**
+  String get apiErrorTimeout;
+
+  /// Shown when a request was cancelled, usually by leaving the screen.
+  ///
+  /// In en, this message translates to:
+  /// **'The request was cancelled.'**
+  String get apiErrorCancelled;
+
+  /// Shown when TLS validation fails. Common on captive-portal wifi.
+  ///
+  /// In en, this message translates to:
+  /// **'This connection is not secure. Try again on a different network.'**
+  String get apiErrorCertificate;
+
+  /// Transport failure with no better description available.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get apiErrorUnexpected;
+
+  /// HTTP 400 fallback, used only when the server sent no message of its own.
+  ///
+  /// In en, this message translates to:
+  /// **'The request was invalid.'**
+  String get apiErrorBadRequest;
+
+  /// HTTP 403 fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to do that.'**
+  String get apiErrorForbidden;
+
+  /// HTTP 404 fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'That was not found.'**
+  String get apiErrorNotFound;
+
+  /// HTTP 409 fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'That conflicts with information already saved.'**
+  String get apiErrorConflict;
+
+  /// HTTP 422 fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Some of the information was not valid.'**
+  String get apiErrorUnprocessable;
+
+  /// HTTP 429 fallback. The server rate-limits sign-in.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait a moment and try again.'**
+  String get apiErrorTooManyRequests;
+
+  /// HTTP 5xx fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The server ran into a problem. Please try again later.'**
+  String get apiErrorServer;
+
   /// Label for the interface-language setting.
   ///
   /// In en, this message translates to:

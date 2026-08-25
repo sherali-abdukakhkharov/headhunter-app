@@ -319,6 +319,20 @@ from a per-provider `retry` rather than re-enabling it globally.
 - **Errors never reach widgets raw.** Repositories catch `DioException` and
   throw `ApiException` (via `ApiException.fromDioException`). Screens render
   `AsyncValue` states and show `ApiException.message` directly.
+  Most of those messages are **the server's**, already translated by `x-lang`.
+  The ones the server could not send — offline, timeout, a proxy's HTML error
+  page — come from the ARB through `ApiException.localizations`, a static
+  installed by `JobBridgeApp` because a repository has no `BuildContext` and
+  there are 117 construction sites. They were hardcoded English until
+  2026-08-25, in a product with four interface variants (MT-014).
+  `ApiException.kind` is what a screen should branch on when it must *behave*
+  differently rather than only say something different; matching on the message
+  breaks the first time the copy is edited.
+- **A control is enabled only when pressing it would do something**, and local
+  validation belongs on the field, never in the page's error state — whose
+  heading says "Something went wrong" and is a claim about the system, not
+  about what the user is still typing (MT-013). Derive the enabled state from
+  the same value the submit path checks; if they can disagree, they will.
 - **Log with `debugPrint`, not `developer.log`.** `developer.log` writes only to
   the VM service, so it is invisible in `flutter run`, `flutter logs` and
   logcat — precisely where you look when a request misbehaves. The dio

@@ -17,6 +17,42 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.11.2+18 — 2026-08-25
+
+The app stops blaming itself for things you are still typing, and starts
+speaking your language when the connection drops.
+
+### Fixed
+
+- **Losing signal no longer produces English developer instructions.** The app
+  used to ask whether "the backend" was running and whether the "base URL" was
+  correct for your device — in English, whichever of the four languages you had
+  chosen. It now says you are offline, in your own language, and so does every
+  other failure the server was not reachable to word itself.
+- **"Get a code" is no longer offered for a number that cannot work.** It used
+  to light up as soon as the terms box was ticked, so two digits looked like
+  enough; tapping it then reported *"Something went wrong"* — a system failure,
+  for a number you had not finished typing. The button now waits for nine
+  digits, and the guidance sits under the field where the problem is.
+- **"Confirm" is no longer offered for an empty code**, for the same reason and
+  with the same fix.
+
+### Internal
+
+- MT-013 and MT-014 from the 1.11.0 audit.
+- `ApiException` gains `kind` (`offline` / `timeout` / `cancelled` /
+  `certificate` / `server` / `unknown`) and `isRetryable`, so a screen can
+  *behave* differently rather than only say something different — and so tests
+  assert the condition instead of an English fragment. Two tests that had been
+  matching copy now match the kind.
+- Twelve ARB keys across all five files, and `ApiException.localizations`, a
+  static installed from `JobBridgeApp` on every build. A static because a
+  repository has no `BuildContext` and there are **117** places that build one
+  of these; the `x-lang` interceptor solves the same problem the same way.
+- The two sign-in screens now derive the button's enabled state from the same
+  value the submit path checks. Mutation-verified: restoring either old gate
+  reddens three of the eleven new cases.
+
 ## 1.11.1+17 — 2026-08-25
 
 Notifications can be marked read again — which, it turns out, they never could.

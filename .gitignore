@@ -53,3 +53,14 @@ app.*.map.json
 # gen-l10n diagnostic output. Regenerated on every build; the ARB key-set parity
 # test is what actually enforces completeness, not this file.
 /l10n_untranslated.json
+
+# QA audit evidence: the screenshots, UI dumps and API logs behind each MT-nnn
+# finding in mobile-test-audit.md. 205 files and ~25MB per pass, and a pass
+# lands with every audited release, so this grows without bound in a place git
+# never forgets. The audit's own prose carries the finding; the image is
+# corroboration for whoever is reading it that week.
+#
+# Consequence, accepted deliberately: the `evidence/...` links in
+# mobile-test-audit.md resolve only on the machine the audit ran on. Anyone who
+# needs a screenshot asks the owner for the directory.
+/evidence/

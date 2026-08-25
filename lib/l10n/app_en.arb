@@ -84,6 +84,54 @@
   "@sessionExpired": {
     "description": "Shown when refresh fails and the user is returned to onboarding."
   },
+  "apiErrorOffline": "You're offline. Check your connection and try again.",
+  "@apiErrorOffline": {
+    "description": "Shown when the request never reached the server. Names the connection, never the backend or a base URL - a user cannot act on either (MT-014)."
+  },
+  "apiErrorTimeout": "The server is taking too long to answer. Check your connection and try again.",
+  "@apiErrorTimeout": {
+    "description": "Shown when the server accepted the request but did not answer in time."
+  },
+  "apiErrorCancelled": "The request was cancelled.",
+  "@apiErrorCancelled": {
+    "description": "Shown when a request was cancelled, usually by leaving the screen."
+  },
+  "apiErrorCertificate": "This connection is not secure. Try again on a different network.",
+  "@apiErrorCertificate": {
+    "description": "Shown when TLS validation fails. Common on captive-portal wifi."
+  },
+  "apiErrorUnexpected": "Something went wrong. Please try again.",
+  "@apiErrorUnexpected": {
+    "description": "Transport failure with no better description available."
+  },
+  "apiErrorBadRequest": "The request was invalid.",
+  "@apiErrorBadRequest": {
+    "description": "HTTP 400 fallback, used only when the server sent no message of its own."
+  },
+  "apiErrorForbidden": "You do not have permission to do that.",
+  "@apiErrorForbidden": {
+    "description": "HTTP 403 fallback."
+  },
+  "apiErrorNotFound": "That was not found.",
+  "@apiErrorNotFound": {
+    "description": "HTTP 404 fallback."
+  },
+  "apiErrorConflict": "That conflicts with information already saved.",
+  "@apiErrorConflict": {
+    "description": "HTTP 409 fallback."
+  },
+  "apiErrorUnprocessable": "Some of the information was not valid.",
+  "@apiErrorUnprocessable": {
+    "description": "HTTP 422 fallback."
+  },
+  "apiErrorTooManyRequests": "Too many attempts. Please wait a moment and try again.",
+  "@apiErrorTooManyRequests": {
+    "description": "HTTP 429 fallback. The server rate-limits sign-in."
+  },
+  "apiErrorServer": "The server ran into a problem. Please try again later.",
+  "@apiErrorServer": {
+    "description": "HTTP 5xx fallback."
+  },
   "settingsLanguage": "Language",
   "@settingsLanguage": {
     "description": "Label for the interface-language setting."

@@ -126,11 +126,13 @@ void main() {
       await expectLater(
         repo.fetchHealth(),
         throwsA(
-          isA<ApiException>().having(
-            (e) => e.message,
-            'message',
-            contains('server ran into a problem'),
-          ),
+          isA<ApiException>()
+              .having((e) => e.statusCode, 'statusCode', 502)
+              .having((e) => e.kind, 'kind', ApiFailureKind.server)
+              // The point of the case: the proxy's page does not reach a user.
+              // Asserted as an absence rather than against the replacement
+              // copy, which is localized and lives in the ARB.
+              .having((e) => e.message, 'message', isNot(contains('html'))),
         ),
       );
     });
@@ -150,11 +152,13 @@ void main() {
         await expectLater(
           repo.fetchHealth(),
           throwsA(
-            isA<ApiException>().having(
-              (e) => e.message,
-              'message',
-              contains('Cannot reach the server'),
-            ),
+            // The kind, not the words. What this test is about is that a
+            // DioException never escapes the repository; the wording is the
+            // ARB's and is pinned in api_exception_test.dart across all four
+            // interface variants.
+            isA<ApiException>()
+                .having((e) => e.kind, 'kind', ApiFailureKind.offline)
+                .having((e) => e.statusCode, 'statusCode', isNull),
           ),
         );
       },

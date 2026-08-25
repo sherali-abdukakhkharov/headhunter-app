@@ -6,6 +6,7 @@ import 'package:jobbridge_app/src/core/config/app_config.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
 import 'package:jobbridge_app/src/features/notifications/presentation/push_host.dart';
 
@@ -17,6 +18,14 @@ class JobBridgeApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     final locale = ref.watch(activeLocaleProvider);
+
+    // Repositories build an ApiException with no BuildContext in reach, so the
+    // wording for a failure the *server* could not word — offline, timeout, a
+    // proxy's HTML error page — is installed here instead of threaded through
+    // 117 call sites. Done on build rather than in an effect because it is an
+    // assignment, and a language change has to reach it before the first
+    // request made afterwards. See ApiException.installLocalizations.
+    ApiException.installLocalizations(locale);
 
     return MaterialApp.router(
       // From the flavor, so the Android task switcher names the build the same
