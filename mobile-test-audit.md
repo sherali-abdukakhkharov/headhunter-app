@@ -2,2121 +2,1278 @@
 
 ## 1. Executive Summary
 
-This audit assessed the user-supplied JobBridge Android APK, version 1.4.1
-(version code 9), and a development build produced from the matching `v1.4.1`
-tag. Testing was performed as a first-time and returning candidate, employer,
-and administrator against the DEV PostgreSQL database and API. Product source
-code was not changed.
+This is a full regression audit of the user-supplied JobBridge Android APK
+1.11.0 (version code 16). The APK was freshly installed and exercised on the
+Android emulator against the deployed DEV API and PostgreSQL database. Candidate,
+employer, newly registered employer, and administrator journeys were tested. The
+mobile and backend product source was not changed.
 
-The audit identified:
+Version 1.11.0 is a substantial improvement over 1.4.1. Ten previously reported
+findings are resolved: Candidate Home, Admin Users, Admin Dictionaries, in-app
+notifications/push delivery, first-employer validation, admin/employer sign-out,
+dashboard/profile state refresh, incoming invitation wording, and unfiltered
+candidate-search match scoring. File download now also works, though its purpose
+label remains broken.
 
-- 3 Critical issues
-- 5 High issues
-- 10 Medium issues
-- 1 Low issue
-- 19 total findings
+Regression status:
 
-**Release verdict: NO-GO.** Version 1.4.1 is not ready for ordinary users. The
-candidate's default Home tab and two core administrator tabs visibly ship as
-milestone placeholders. The currently deployed DEV configuration also publishes
-a newly submitted vacancy without administrator moderation. Push and in-app
-notifications, Coin top-up, administrator sign-out, and administrator dictionary
-management are unavailable.
+- 21 stable findings tracked across both audits.
+- 10 previous findings verified fixed.
+- 11 findings remain open: 1 Critical, 2 High, and 8 Medium.
+- 2 new findings were added: MT-020 and MT-021.
+- No source-code change was made by the auditor.
 
-Major risks:
+**Production release verdict: NO-GO.** Mandatory vacancy moderation is disabled
+in the deployed environment, Coin top-up remains unavailable, and the new
+notification center cannot mark one or all notifications read because the APK
+uses `POST` while the backend exposes `PUT`. These are release blockers against
+§6.4, §6.7, §9.2, BR-04, and UAT-20/21.
 
-1. Candidates land on an unfinished placeholder after login and every restart.
-2. Administrators cannot manage/block users from the 1.4.1 UI, so UAT-14 cannot
-   be completed.
-3. With the tested backend configuration, employer content reaches candidate
-   discovery without the human moderation required by §6.4, BR-04, and UAT-05.
-4. Important hiring changes have no in-app notification center or push delivery.
-5. Employers can spend Coins but cannot replenish them.
-6. A blank employer profile can be saved and permanently commits the employer
-   type while leaving the account unusable.
-
-The strongest areas were server-side duplicate protection and hiring-state
-integrity. Double taps did not duplicate vacancy drafts, applications, unlock
-charges, invitation sends, application transitions, or interviews. Candidate
-Unlock atomically changed the wallet from 10 to 8 Coins and exposed protected
-contact data once. Candidate visibility, invitation response, application
-history, interview confirmation, two-way chat, session restoration, and all four
-interface variants also worked in the tested paths.
+**DEV continuation verdict: GO WITH KNOWN ISSUES.** Core hiring flows are useful
+for continued internal development. Rapid repeated taps created exactly one chat
+message, saved vacancy, application, invitation, invitation response, and
+employer profile. Background FCM delivery and deep-link opening worked.
 
 ## 2. Application / Build Information
 
 | Item | Tested value |
 |---|---|
 | Product | JobBridge |
-| User APK | `C:\Users\Developer-7\Downloads\jobbridge.apk` |
+| APK | `C:\Users\Developer-7\Downloads\jobbridge (1).apk` |
 | Package | `com.jobbridge.app` |
-| Version | 1.4.1 (version code 9) |
-| APK size | 62,750,935 bytes |
-| APK SHA-256 | `D1B31FB1D665B11F2ECD378BF3A9F9F9FFEF8060FAA68C2CC0A8AD5B47A1CE1C` |
+| Version | 1.11.0 (version code 16) |
+| Size | 64,202,135 bytes |
+| APK SHA-256 | `EE7E3B55FDC6C5E778CBA0BEAD92870C7770E6058364D1AA9624F219D6CC8FB0` |
 | Signer | `CN=Universal HeadHunter, OU=Mobile, O=Uniconsoft, L=Tashkent, C=UZ` |
 | Signer SHA-256 | `7c1cc81cfc5564f6563ebab3fe714e0e2ac32f18173f3609f786a09dffc5421f` |
-| Matching source tag | `v1.4.1`, commit `c3be70a…` |
-| Development test package | `com.jobbridge.app.dev`, built from a clean tag archive |
-| Platform | Android emulator |
+| Mobile repository inspected | `86b8f6f` (`v1.11.0-1-g86b8f6f`) |
 | Device / AVD | Pixel 8 / `headhunter_pixel` |
 | OS | Android 16, API 36 |
 | Normal viewport | 1080 × 2400, density 420 |
-| Additional viewports | 720 × 1280; 2400 × 1080 landscape |
+| Additional layouts | 2400 × 1080 landscape; 360 × 640 dp compact |
 | Text scale | 100% and 200% |
 | Backend | NestJS API + PostgreSQL 18 |
-| Public API | `https://hh.qitmir.uz` |
-| Local QA API | `http://127.0.0.1:3002` through `adb reverse` during exploratory testing |
-| Test date / zone | 2026-08-23, Asia/Tashkent |
-| Locales | Uzbek Latin, Uzbek Cyrillic, Russian, English |
-| Roles | Candidate, employer, administrator |
+| API | `https://hh.qitmir.uz`; `/health` returned 200 and DB up |
+| Runtime | `NODE_ENV=development`, static OTP `666666`, OTP echo off |
+| Moderation runtime | `MODERATION_ENABLED=false` |
+| Test date | 2026-08-25, Asia/Tashkent |
+| Locales exercised | Uzbek Latin, Uzbek Cyrillic, Russian, English |
+| Roles exercised | Candidate, employer, new employer, administrator |
 
-The release APK was launched directly and authenticated against the public DEV
-endpoint using `+998941779737` and the user-authorized static code `666666`.
-Evidence: [release launch](evidence/MT-ENV-002-release-launch.png) and
-[release authentication](evidence/MT-ENV-003-release-authenticated.png).
+Full build/runtime fingerprint: [build-and-environment.txt](evidence/v1.11.0/build-and-environment.txt).
 
-To enable that exact test, the backend `.env` was changed from
-`NODE_ENV=production` to `NODE_ENV=development`,
-`OTP_STATIC_CODE=666666` was added, and `pnpm api:up` rebuilt/redeployed the API.
-`OTP_ECHO_IN_RESPONSE=false` remains set. The public health endpoint returned
-200 after deployment. This is acceptable only for the owner's stated empty DEV
-environment: the static code is a master key to every phone-number account and
-must be removed before any real data or external users are admitted.
-
-The development build used the same 1.4.1 tag with
-`API_BASE_URL=http://127.0.0.1:3002`. A separate QA API process used the existing
-DEV database with runtime-only overrides; it was stopped after testing. Its logs
-are [stdout](evidence/qa-api-3002.stdout.log) and
-[stderr](evidence/qa-api-3002.stderr.log).
+The public DEV endpoint and user-authorized static OTP were used. This code is a
+master key to phone-number accounts and is acceptable only in the owner's
+explicitly non-production, synthetic-data environment. It must not exist in a
+production runtime.
 
 ## 3. Overall Quality Assessment
 
-| Dimension | Score | Short justification |
+| Dimension | Score | Assessment |
 |---|---:|---|
-| Functional Reliability | 5/10 | Several complex E2E flows work, but core release tabs are unfinished and monetization/notifications are absent. |
-| UX / Usability | 5/10 | Main actions are generally readable, but blocked states, validation, internal codes, and placeholders create major friction. |
-| UI Consistency | 6/10 | The design system is visually coherent in portrait, but error presentation and landscape behavior are inconsistent. |
-| Business Logic Reliability | 5/10 | Unlock, duplicates, and hiring histories are strong; moderation configuration and incomplete-profile handling are release risks. |
-| Frontend Quality | 5/10 | State guards and localization are good, but routing placeholders, stale providers, missing modules, and accessibility defects remain. |
-| Backend/API Quality | 7/10 | Transactions, uniqueness, authorization gates, and histories behaved well; configuration and one dictionary contract mismatch caused visible defects. |
-| Performance | 7/10 | Release cold start was about 1.03 seconds and normal lists were responsive; sustained load and low-end hardware were not assessed. |
-| Accessibility | 4/10 | 200% text remained scrollable, but duplicate semantics and unlabeled interactive controls materially affect screen-reader use. |
-| Localization | 7/10 | Four variants switch and render well, but several raw internal codes bypass localization. |
-| Overall Mobile Product Quality | 5/10 | A promising DEV build with good foundations, but not a shippable 1.4.1 product. |
+| Functional reliability | 7/10 | Three-role E2E flows work; notification read and top-up do not. |
+| UX / usability | 6/10 | Better dashboards and labels, but technical errors and hidden CTAs remain. |
+| UI consistency | 7/10 | Coherent portrait design; raw codes and compact-layout clipping remain. |
+| Business logic | 7/10 | Duplicate/idempotency guards are strong; moderation runtime is unsafe for release. |
+| Frontend quality | 6/10 | Major modules shipped, but two API/dictionary contract mistakes are visible. |
+| Backend/API quality | 7/10 | Authorization and transaction behavior are sound; deployment flag is a blocker. |
+| Performance | 8/10 | Cold median 1.013 s; warm median 31 ms on emulator. |
+| Accessibility | 4/10 | Duplicate semantics, unlabeled controls, and 200% text overflow remain. |
+| Localization | 7/10 | Four variants switch; raw codes and one unresolved dictionary label remain. |
+| Overall product quality | 6/10 | Strong DEV build, not a production release candidate yet. |
 
-### Top 10 Problems to Fix First
+Highest-priority work:
 
-1. MT-001 — replace the candidate Home placeholder.
-2. MT-002 — ship administrator user management and BR-10 actions.
-3. MT-003 — enable and verify mandatory vacancy moderation for the release environment.
-4. MT-005 — implement in-app and push notifications.
-5. MT-006 — complete a compliant Coin top-up path.
-6. MT-007 — prevent saving an empty employer profile or irreversibly choosing its type.
-7. MT-008 — give production administrators account/security and sign-out controls.
-8. MT-004 — implement administrator dictionary management.
-9. MT-009 — fix the CV file-purpose dictionary contract.
-10. MT-016 — make vacancy cards/actions usable in landscape.
-
-### User Experience Verdict
-
-**Would an average first-time user understand the application?** Partly. Login,
-vacancy discovery, application, unlock, invitation, and interview screens are
-mostly understandable. A candidate who lands on “This screen arrives in M6” and
-an administrator who lands on M10 placeholders will immediately perceive the
-app as unfinished.
-
-**Can the main task be completed without assistance?** Candidate vacancy search
-and apply, employer search/unlock/invite, and employer/candidate interview flows
-can. New-employer onboarding, admin user/dictionary tasks, top-up, and reliable
-notification-driven return journeys cannot.
-
-**Most friction:** candidate Home; blank employer onboarding; administrator
-Users/Dictionaries; employer verification; offline failures; landscape vacancy
-cards.
-
-**Most confusing actions:** saving an empty company profile, seeing “100% match”
-with no criteria, seeing raw codes such as `company_registration`, and tapping a
-Top up action that only announces a future feature.
-
-**Trust decreases most** when unfinished milestone text is visible, moderation is
-skipped, and a paid unlock leads to “Unavailable value” metadata.
-
-The three highest-impact changes are: complete the release shell routes, enforce
-the production moderation/notification lifecycle, and make onboarding plus Coin
-funding complete and recoverable.
+1. MT-003 — enforce release moderation and verify a full approval path.
+2. MT-020 — change notification read calls to the backend's `PUT` contract.
+3. MT-006 — implement or intentionally remove/feature-gate Coin top-up UI.
+4. MT-013 — stop premature authentication submits and global error noise.
+5. MT-015/016 — repair semantics and compact/large-text layouts.
 
 ## 4. Critical Findings
 
-| ID | Finding | Release impact |
+| ID | Finding | Status |
 |---|---|---|
-| MT-001 | Candidate Home is an M6 placeholder | Default candidate destination is visibly unfinished. |
-| MT-002 | Administrator Users is an M10 placeholder | User lookup, restriction, block/unblock, and UAT-14 are impossible in 1.4.1. |
-| MT-003 | Tested deployment publishes vacancy without moderation | Unreviewed employer content becomes candidate-visible immediately. |
+| MT-003 | Mandatory vacancy moderation is disabled in the deployed runtime | Open |
+
+Previously Critical MT-001 and MT-002 are verified fixed in 1.11.0.
 
 ## 5. High-Priority Findings
 
-| ID | Finding | Impact |
+| ID | Finding | Status |
 |---|---|---|
-| MT-004 | Administrator Dictionaries is a placeholder | BR-13 dictionary operations cannot be managed from the mobile admin product. |
-| MT-005 | In-app and push notifications are absent | Users must manually revisit/refresh to discover important hiring events. |
-| MT-006 | Coin Top up is unavailable | An employer below the unlock price has no recovery or purchase path. |
-| MT-007 | Empty employer profile can be saved and locks type | A normal premature tap creates a persistent unusable state. |
-| MT-008 | Production administrator has no sign-out/account route | Admin accounts cannot safely end/switch sessions from the release UI. |
+| MT-006 | Coin top-up is still a non-functional promise | Open |
+| MT-020 | Notification read actions call the wrong HTTP method | New / Open |
+
+The broad notification-module finding MT-005 is resolved: in-app lists,
+preferences, foreground persistence, background FCM, tap deep-linking, and device
+token deletion on sign-out were observed. MT-020 is the specific remaining
+contract defect.
 
 ## 6. UX / Usability Assessment
 
-The app's strongest UX pattern is confirmation before consequential operations:
-Candidate Unlock clearly shows cost, current balance, and remaining balance;
-invitation acceptance explains contact exposure; session termination and
-administrator moderation actions use confirmation. Error recovery through “Try
-again” also worked after restoring connectivity.
+The new Candidate Home is useful and immediately exposes notifications,
+applications in progress, and recommendations. Employer Home correctly calls
+out incomplete profile/verification state. Admin user search accepts a partial
+phone number and exposes warning/restriction actions.
 
-The weakest pattern is prerequisite handling. The employer dashboard can say
-“Nothing is waiting on you” while verification/profile work blocks the primary
-actions. New vacancy and candidate search then fail with a snackbar or global
-error rather than a direct “Complete company profile” action. Blank employer
-onboarding permits commitment before the user understands its consequence.
+User friction remains in four places:
 
-Empty states are generally visually calm, but some copy is misleading or
-developer-oriented. The offline message discusses the backend and base URL. The
-wallet describes a product roadmap. The candidate invitation says “Sent” from the
-recipient's perspective. Administrator complaint cards omit the identity of the
-reported target, increasing review effort and error risk.
+- Authentication enables actions before input is valid, then displays both a
+  generic global error and field validation.
+- Offline copy tells a normal user to check whether “the backend” and “base URL”
+  are correct.
+- Admin complaint cards do not identify what or whom the complaint targets.
+- On compact and 200% text layouts, the main employer CTA is partially hidden
+  behind bottom navigation.
 
 ## 7. UI Consistency Assessment
 
-Portrait screens use a consistent navy/turquoise visual language, 52 px controls,
-badges, cards, spacing, and persistent field labels. Selected bottom-navigation
-states and confirmation sheets are clear. Status is usually communicated with
-text and icon, not color alone.
+Portrait visual hierarchy, card styling, badges, navigation, and confirmation
+states are consistent across roles. Status terms such as “Awaiting your answer”
+and employer completion guidance are notably clearer than 1.4.1.
 
-Inconsistencies remain:
-
-- OTP and prerequisite failures use a large global error block while vacancy
-  forms use useful inline field errors.
-- Internal wire codes appear beside otherwise localized labels.
-- Candidate landscape cards keep portrait-height content under a fixed bottom
-  navigation area, reducing Apply/Save controls to a clipped strip.
-- At 200% font scale, bottom-navigation labels have uneven wrapping/truncation.
-- Repeated semantic labels cause a screen reader to announce visible labels
-  twice.
+Consistency defects remain: monetary values are sometimes bare numbers, admin
+verification views expose internal codes (`company_registration`, `evidence`,
+`restriction_changed_requires_review`), and an employer-facing CV card shows
+“Unavailable value” instead of “CV.” Bottom-navigation text also wraps heavily
+at 200% text scale.
 
 ## 8. Functional Testing Results
 
-| Journey | Result | Notes / evidence |
+| Area | Result | Notes / evidence |
 |---|---|---|
-| Release launch and login | Passed | Exact APK authenticated with the static DEV code; [evidence](evidence/MT-ENV-003-release-authenticated.png). |
-| Invalid/empty OTP | Failed UX | Confirm remains actionable and produces a global generic error; [empty](evidence/MT-AUTH-002-empty-code.png), [wrong](evidence/MT-AUTH-003b-wrong-code-result.png). |
-| Employer profile prerequisite | Failed | Blank save creates a 0% company profile; [evidence](evidence/MT-EMP-003-empty-profile-submit.png). |
-| Employer candidate search | Passed with UX defect | Search returned one candidate; no-filter result displayed 100% match. |
-| Candidate Unlock | Passed | One 2-Coin debit, contact revealed, double tap did not double-charge; [evidence](evidence/MT-EMPV-005-contact-unlocked.png). |
-| Invitation send/duplicate | Passed | First send succeeded; duplicate returned a clear 409-derived inline state; [evidence](evidence/MT-EMPV-007-duplicate-invitation.png). |
-| Vacancy create/save/submit | Passed technically | One draft and one submit despite double taps, but deployment auto-published without moderation. |
-| Candidate save/apply | Passed | Exactly one saved record/application; [evidence](evidence/MT-CANDV-006-applications.png). |
-| Candidate visibility | Passed | Hidden removed global visibility; searchable was restored and confirmed in DB. |
-| Application status/history | Passed | Employer moved Submitted → Viewed; one history transition was created. |
-| Interview scheduling/response | Passed | One phone interview created and candidate confirmed it; [evidence](evidence/MT-CANDV-018-interview-confirmed.png). |
-| Two-way chat | Passed | Employer opened chat after unlock; candidate received unread and replied; [employer](evidence/MT-CHAT-001-employer-message.png), [candidate](evidence/MT-CHAT-003-candidate-reply.png). |
-| Admin dashboard/moderation/complaints | Passed in covered paths | Queues, details, confirmation, stats, and complaint detail loaded. Decisions that alter shared fixture data were cancelled. |
-| Admin Users/Dictionaries | Failed | Both are release placeholders. |
-| Wallet top-up | Failed / unavailable | UI explicitly states it is not available yet. |
-| Session restart | Passed | Auth persisted after force-stop/relaunch; [evidence](evidence/MT-RES-001-session-restart.png). |
-| Offline/recovery | Partially passed | Cached saved content remained; explicit retry recovered, but error copy is unsuitable. |
-| Four interface variants | Passed representative coverage | Authenticated admin dashboard rendered in all variants. |
+| Fresh install / launch | Pass | Exact 1.11.0+16 installed and launched. |
+| Candidate Home | Pass | [MT-001 fixed](evidence/v1.11.0/MT-001-fixed-candidate-home.png) |
+| Vacancy discovery/detail | Pass | Recommended/recent/saved, filter entry, detail. |
+| Save/apply double tap | Pass | One row each; [integrity log](evidence/v1.11.0/transaction-integrity.txt) |
+| Candidate applications | Pass | Submitted, interview, hired, withdraw/response controls visible. |
+| Invitation send/respond | Pass | Duplicate send rejected; pending label fixed; accept transitioned one row. |
+| Chat | Pass | Two-way history and exactly one row after rapid Send taps. |
+| Employer profile onboarding | Pass with UX note | Blank save blocked; full save created one profile and refreshed status. |
+| Employer candidate search | Pass | Unfiltered result no longer claims 100% match. |
+| CV download | Pass with label defect | HTTP 200 PDF; card label unresolved. |
+| Employer verification gate | Pass | Unverified employer cannot create a vacancy. |
+| Admin dashboard/users | Pass | Search, detail, warn, histories available. |
+| Admin dictionaries | Pass | Types, items, localized add form available. |
+| Admin moderation lists | Pass with config blocker | UI exists; runtime bypasses vacancy moderation. |
+| Admin complaints | Partial | Queue exists; cards omit target identity. |
+| In-app notifications | Partial | List/preferences work; read mutations fail. |
+| Background push | Pass | [push received](evidence/v1.11.0/push-notification-background.png), [tap opened center](evidence/v1.11.0/push-tap-result.png) |
+| Sign-out / token cleanup | Pass | Admin/employer/candidate exit; FCM token removed. |
+| Offline retry | Pass with bad copy | Recovery works once connectivity returns. |
+| Four locale selectors | Pass | [Uzbek Latin](evidence/v1.11.0/locale-uz-latn.png), [Cyrillic](evidence/v1.11.0/locale-uz-cyrl.png), [Russian](evidence/v1.11.0/locale-ru.png), [English](evidence/v1.11.0/locale-en.png) |
 
 ## 9. Business Logic Findings
 
-Confirmed strengths:
+Positive controls were strong:
 
-- BR-07 duplicate application protection held.
-- BR-16/BR-18 Candidate Unlock charged exactly once and atomically exposed
-  contact; wallet changed 10 → 8 Coins.
-- Duplicate invitation returned conflict without consuming another quota unit.
-- Vacancy draft, vacancy submit, application status, interview create, interview
-  response, and message send were not duplicated by rapid repeated taps.
-- Candidate visibility changed server-side and survived refresh.
-- Application and interview histories were consistent with the visible state.
-- Contact/CV data was masked before unlock and contact appeared only afterward in
-  the tested UI/API flow, supporting BR-17.
+- BR-07 behavior held: repeated application taps created one active application.
+- Invitation duplication was rejected with “Already invited.”
+- Candidate acceptance updated one invitation from `sent` to `accepted`.
+- Chat double tapping created exactly one message.
+- A blank new-employer save created no employer row; a valid rapid repeated save
+  created one employer and one company row.
+- An unverified employer was correctly blocked from vacancy creation (BR-03).
+- Candidate file access was rechecked server-side and returned the entitled PDF
+  through the application-scoped route (BR-09/BR-17).
 
-Primary risks are MT-003's disabled moderation, MT-007's invalid incomplete
-employer state, the missing top-up recovery required by UAT-19 through UAT-23,
-and the notification gap affecting UAT-07/UAT-11.
-
-Test-created DEV records are intentionally retained for developer inspection:
-
-- `QA Audit Test Vacancy`, one worker, active, owned by `+998924823823`.
-- One candidate application by `+998901130022`, currently `interview`.
-- One confirmed phone interview scheduled for 2026-08-24 10:00 Asia/Tashkent.
-- One unlock entitlement; employer wallet balance 8 Coins.
-- One accepted invitation and its question/response history.
-- One conversation with two QA messages.
-- `+998941779737` now has an incomplete 0% company profile and a 10-Coin wallet.
+The material logic exception is environmental: BR-04 cannot hold while
+`MODERATION_ENABLED=false`. Wallet debit/unlock integrity was already proven in
+the prior cycle and was not destructively repeated against the same entitlement;
+the current UI showed the expected 8-Coin balance.
 
 ## 10. Frontend Findings
 
-Static review followed device testing and used the clean 1.4.1 tag, not the
-developers' later working tree.
+Confirmed frontend defects:
 
-- `shell_tabs.dart` labels Candidate Home as M6 and Admin Users/Dictionaries as
-  M10. `app_router.dart` sends unimplemented tab routes to
-  `ShellPlaceholderScreen` (MT-001, MT-002, MT-004).
-- `candidate_detail_screen.dart` passes a file `purposeCode` such as `cv` into a
-  `DictionaryLabel` that expects an item UUID, causing the observed 422 and
-  fallback text (MT-009).
-- No Firebase Messaging dependency, notification screen/provider, or notification
-  route exists in the 1.4.1 mobile source. The release manifest declares no
-  Android notification permission or FCM service/receiver (MT-005).
-- Employer profile, verification, and account provider invalidation paths do not
-  consistently refresh after mutations (MT-007, MT-011).
-- Semantic composition creates repeated labels and unlabeled picker chevrons
-  (MT-015).
+- Notification `markRead` and `markAllRead` use `Dio.post` while the API contract
+  is `PUT`.
+- `DictionaryLabel`, which explicitly expects a dictionary item UUID, receives
+  `CandidateFile.purposeCode` (`cv`).
+- Authentication button state is not coupled to complete input validity.
+- Reused semantic wrappers cause labels such as `Home\nHome`, `Save\nSave`, and
+  `Verified employer\nVerified employer`; picker chevrons remain unnamed.
+- Content does not reserve enough safe bottom space on compact/large-text
+  employer Home.
+- The role-selection flow can navigate before active-role state is ready.
 
-The checked-out app working tree changed while this audit was running because
-other developers were active. It was not modified or treated as the release
-baseline. Build claims in this report apply to the clean tag archive and the
-user-supplied APK only.
+Repository check: all 961 Flutter tests passed, but `flutter analyze` reported
+28 findings in test code, so the documented “analyze clean” gate is not met.
 
 ## 11. Backend / API Findings
 
-The backend generally returned domain-specific HTTP statuses and maintained
-strong data integrity. Observed examples include 409 for a duplicate invitation,
-422 for the incorrect dictionary ID, and atomic wallet/unlock behavior. Server
-histories and final database state matched UI results.
+The backend correctly enforced candidate file entitlement, pending-invitation
+uniqueness, role-scoped data, and notification/device-token persistence. The
+notification controller consistently declares `PUT /notifications/:id/read`
+and `PUT /notifications/read`; the 404s are caused by the APK's method mismatch,
+not by missing backend routes.
 
-Key API/configuration issues:
+Backend/deployment work remains:
 
-- `MODERATION_ENABLED=false` makes vacancy submission publish directly in the
-  tested deployment. Backend UAT source explicitly tests UAT-05 with the flag on,
-  showing this is a deployment gate rather than an unknown code path (MT-003).
-- `GET /dictionaries/items?ids=cv` receives a code where it requires UUIDs and
-  returns 422. The mobile caller is wrong; the API contract could be made harder
-  to misuse (MT-009).
-- Complaint list data does not provide enough target identity for efficient admin
-  cards, although detail data does (MT-017).
-- No configured payment provider is available, so the app cannot create a usable
-  checkout (MT-006).
-
-Backend notification storage/routes exist, but the 1.4.1 client does not consume
-the in-app list or register a device push token. This is primarily a frontend
-delivery gap, with FCM configuration also required.
+- Make the production deployment fail closed unless moderation is enabled.
+- Complete Payme/CLICK Payment Order flows before exposing top-up as available.
+- Consider returning a display-ready complaint target summary if current list
+  DTOs cannot identify the reported object.
+- Keep the current notification contract documented/generated so mobile code
+  cannot drift from it again.
 
 ## 12. Authentication & Authorization
 
-Phone + OTP authentication passed for candidate, employer, and administrator.
-Correct code consumption, session persistence after restart, current-device sign
-out, all-session termination confirmation, and server-side prerequisite gates
-were observed. Protected candidate contact remained hidden before unlock.
+Static OTP `666666` authenticated existing candidate, employer, and admin
+accounts and created a new user in DEV. Android notification permission could be
+denied without blocking app access. Session restoration survived force-stop and
+cold restart. Sign-out returned to authentication and removed the registered
+device token.
 
-Validation UX is weaker than the authentication security model: five entered
-digits can enable “Get a code,” and empty/wrong OTPs present the same global error
-(MT-013). Production administrators have no release UI to sign out (MT-008).
+Authorization spot checks passed: an employer could download a CV only through
+an existing allowed application, and a new unverified employer was blocked from
+vacancy creation. Admin warning action created an audited notification.
 
-The public DEV deployment now accepts the owner-authorized static code `666666`
-for any phone number. `OTP_ECHO_IN_RESPONSE=false`, but knowledge of the code and
-a phone number is sufficient to authenticate. This is an intentional test-only
-state, not acceptable protection for real accounts.
-
-No exhaustive IDOR/penetration campaign was performed. Covered role-bound routes
-and mutations rejected missing prerequisites and exposed only expected data.
+Open authentication issues are MT-013 (premature submit/global error) and
+MT-021 (active-role race). The static OTP and `NODE_ENV=development` must be
+removed/changed before any real environment is exposed.
 
 ## 13. Validation & Forms
 
-The vacancy form provides the best pattern: an empty Submit shows specific inline
-errors, preserves entries, and prevents creation. The invitation and interview
-forms also provide clear required fields and confirmations.
+Employer onboarding is materially safer. Employer type is not preselected, the
+blank form reports named missing fields, and no empty DB row is created. A full
+save created one complete employer profile and immediately displayed “Not
+submitted,” resolving the stale verification state regression.
 
-The employer profile and OTP forms do not follow that pattern. Save is enabled on
-an entirely blank employer profile and commits a persistent type. OTP actions can
-be initiated with invalid length and errors appear in a global block rather than
-at the field. Verification Submit is enabled with 0% completeness and no evidence,
-then fails by snackbar. See MT-007 and MT-013.
-
-Numeric worker count, date/time picker, phone input, chat keyboard, empty values,
-duplicate taps, and several server conflicts were tested. Exhaustive maximum
-length, emoji, whitespace, negative-number, paste, every dynamic schema field,
-and file-size/type matrix testing was not completed and is listed in Section 26.
+Authentication remains inconsistent: two phone digits are enough to enable
+“Get a code,” and empty OTP still enables “Confirm.” Submitting produces a
+generic global failure in addition to the precise field error. Long employer
+forms also scroll when the keyboard is open, but their shifting field positions
+make automation and likely one-handed completion more demanding.
 
 ## 14. Navigation
 
-Bottom navigation, detail back navigation, pushed screens, role-specific shells,
-and force-stop/resume were stable in covered paths. Candidate restart returned to
-the expected default route—but that route is the M6 placeholder (MT-001).
+Bottom navigation, nested back navigation, push deep links, candidate vacancy
+detail, application/invitation tabs, and account/security routes worked. Candidate
+and employer role shells retained session state after restart. Admin now exposes
+account/security and sign-out.
 
-Administrator navigation is incomplete: Users and Dictionaries resolve to
-placeholders and there is no Account/Settings/Sign-out destination. Development
-builds expose a floating Developer Tools button, but production flavor correctly
-removes it, leaving no admin session exit (MT-008).
-
-The release manifest contains only the launcher intent filter; no app/deep-link
-intent filters were found. Notification taps and shared vacancy links therefore
-cannot currently enter a destination. This is included in MT-005's delivery gap
-and should be verified when notifications land.
+One transient navigation/state defect remains: selecting Employer and immediately
+tapping Next can enter the employer shell before an active role is locally
+selected. A restart recovers, but the first screen is an error state (MT-021).
+Admin Notifications is also placed at the bottom of a long dashboard rather than
+at the top as the release note implies.
 
 ## 15. Loading / Empty / Error States
 
-Loading states were brief on normal Wi-Fi/local transport and mutations generally
-guarded repeat taps. Useful empty states exist for vacancies, applicants,
-applications, messages, and complaints.
+Useful empty states were present for no vacancies, no attention items, no
+complaints, and no uploads. Loading completed without duplicate list mutations.
+“Already invited” is specific and actionable.
 
-Problems:
-
-- OTP and incomplete-employer errors replace substantial page content and use
-  generic “Something went wrong” framing (MT-010, MT-013).
-- Offline copy discusses server/base-URL configuration (MT-014).
-- Wallet Top up uses roadmap copy instead of a disabled/configuration state
-  (MT-006).
-- Candidate Messages correctly remained empty until the employer explicitly
-  opened a permitted conversation. Once opened, unread count and two-way messages
-  worked; this was not a defect.
-- Verification initially rendered a stale not-found state after employer profile
-  creation until manual retry (MT-011).
+Weak states are the technical offline message, the authentication-wide
+“Something went wrong,” notification read 404 rendered as “The requested data
+was not found,” and “Unavailable value” for a known CV purpose. Error states
+generally preserve the current page and Retry recovered after network return.
 
 ## 16. Offline & Network Reliability
 
-With the API route removed, already cached Saved vacancies remained visible.
-Refreshing Recommended showed an explicit failure and Retry. Restoring the route
-and tapping Retry recovered without restart or duplicated data. Evidence:
-[cached offline content](evidence/MT-RES-002-offline-vacancies.png),
-[failure](evidence/MT-RES-003-offline-error.png), and
-[recovery](evidence/MT-RES-004-offline-recovered.png).
+With airplane mode/wifi/data disabled, a fresh Recent-vacancy load failed without
+a crash or data corruption. The screen preserved navigation and offered Retry.
+After connectivity returned, Retry repopulated results.
 
-The recovery mechanism works, but MT-014's text is developer-facing. Slow 2G,
-packet loss, timeout during a financial mutation, network loss during upload, and
-backgrounding during a write were not instrumented; these remain mandatory
-pre-release tests.
+The copy is not user-ready: “Cannot reach the server. Is the backend running,
+and is the base URL correct for this device?” exposes development concepts.
+Evidence: [offline state](evidence/v1.11.0/MT-014-offline-copy.png) and
+[recovery dump](evidence/v1.11.0/offline-recovery.xml).
+
+No packet-loss shaping, high latency, mid-upload interruption, or prolonged
+background network soak was performed.
 
 ## 17. Performance
 
-The user release APK cold launch reported approximately 1,020 ms total/1,026 ms
-wait time on the warmed emulator environment. Evidence:
-[release cold launch](evidence/MT-PERF-001-release-cold-launch.png). The debug
-development build took about 3.1 seconds cold and is not used as a release score.
+Five measured cold starts were 955, 1013, 1062, 1031, and 978 ms: median
+1.013 s and approximate p95 1.056 s. Five warm task resumes were 31, 60, 19,
+27, and 48 ms: median 31 ms and maximum 60 ms. Normal list scrolling and route
+transitions were responsive on the emulator.
 
-Primary lists and details responded within the specification's three-second target
-under this single-user normal-network test. No visible jank, crash, ANR, or endless
-spinner occurred. Sustained soak, memory/battery profiling, API load percentiles,
-cold database caches, low-end physical hardware, and large datasets were not
-measured.
+The first launch after installation took 3.759 s and is reported separately as
+installation/warm-up overhead. Measurements are in
+[performance-and-quality-gates.txt](evidence/v1.11.0/performance-and-quality-gates.txt).
+No low-end physical hardware, profiler frame trace, memory leak soak, API load,
+or battery test was run.
 
 ## 18. Accessibility
 
-At 200% system text scale, the portrait vacancy feed remained scrollable and core
-content was reachable, but bottom-navigation labels wrapped/truncated unevenly.
-Evidence: [200% text](evidence/MT-A11Y-001-font-scale-200.png).
+At 200% text, core content remains scrollable but important dashboard text clips,
+bottom-navigation labels wrap into awkward fragments, and the “New vacancy” CTA
+is mostly hidden. The UI hierarchy also repeats accessible names (`Home\nHome`,
+`Applications\nApplications`, `Send\nSend`) and exposes unnamed interactive
+picker chevrons with `NAF=true`.
 
-UI Automator semantics dumps confirmed repeated announcements such as
-“Home\nHome,” “Vacancies\nVacancies,” and “Get a code\nGet a code.” On the
-candidate profile, four clickable picker-chevron buttons had no text or content
-description and were marked `NAF=true`. Evidence:
-[shell hierarchy](evidence/MT-A11Y-002-ui-hierarchy.xml) and
-[profile hierarchy](evidence/MT-A11Y-003-profile-hierarchy.xml). See MT-015.
-
-Touch targets were generally large. Color-only status was not a systemic issue.
-TalkBack gesture navigation, external keyboard, switch access, contrast
-instrumentation, and a blind end-to-end task were not completed.
+Touch targets are generally generous and contrast appears acceptable in the
+observed light theme. No TalkBack audio session, switch access, keyboard-only
+navigation, formal contrast measurement, or reduced-motion test was performed.
+Evidence: [200% text](evidence/v1.11.0/accessibility-font-scale-2.png) and
+[semantics sample](evidence/v1.11.0/current-window.xml).
 
 ## 19. Localization
 
-Representative authenticated screens were exercised in all four interface
-variants. Major system labels and dictionary values changed, user-entered content
-remained unchanged, and locale selection persisted. Evidence:
-[Uzbek Latin](evidence/MT-I18N-002-uz-latn-admin.png),
-[Uzbek Cyrillic](evidence/MT-I18N-003-uz-cyrl-admin.png), and
-[Russian](evidence/MT-I18N-004-ru-admin.png); English is represented throughout
-the evidence set.
+Uzbek Latin, Uzbek Cyrillic, Russian, and English selectors immediately changed
+authentication UI, satisfying the interface-switching portion of §3.1 and
+UAT-13/24. User-entered content remained as entered during role flows.
 
-Raw backend/internal values bypass localization on several screens:
-`company_registration`, `evidence`, and
-`restriction_changed_requires_review`. Salary also appeared as `150000` in an
-admin review without currency/period context. These are grouped under MT-012.
-
-No catastrophic overflow was found in the representative Cyrillic/Russian
-screens. Linguistic accuracy was not independently reviewed by a professional
-translator.
+Localization is incomplete where internal values bypass the dictionary layer:
+admin views show raw verification/audit codes, salary has no localized currency
+format, and candidate file purpose resolution supplies `cv` to a component that
+expects a UUID. These are covered by MT-009 and MT-012.
 
 ## 20. Device Compatibility
 
-Normal portrait and a simulated 720 × 1280 small phone were usable. Evidence:
-[small phone](evidence/MT-RESP-001-small-phone.png). System font scaling was
-covered separately.
+Tested layouts:
 
-Landscape is materially broken on the candidate vacancy feed. The fixed bottom
-navigation consumes the lower area while vacancy card actions are laid out below
-it; UI hierarchy reduced Apply and Save to an approximately 8-pixel-high strip,
-and scrolling did not expose a usable button. Evidence:
-[landscape](evidence/MT-RESP-002-landscape.png) and
-[landscape after scroll](evidence/MT-RESP-003-landscape-scrolled.png). See MT-016.
+- Pixel 8 portrait: 1080 × 2400 at density 420.
+- Landscape: 2400 × 1080; candidate vacancy details scroll to Apply/Save.
+- Compact portrait: 720 × 1280 at density 320 (360 × 640 dp).
+- Font scale: 1.0 and 2.0.
 
-No tablet, foldable, physical low-end device, Android 7/API 24 minimum device, or
-OEM-specific keyboard/navigation environment was available.
+The original landscape Apply/Save defect is fixed, but compact portrait and
+200% font reveal a related bottom-safe-area defect on employer Home. Evidence:
+[landscape detail](evidence/v1.11.0/MT-016-landscape-vacancy-detail.png) and
+[compact layout](evidence/v1.11.0/responsive-small-360x640dp.png).
+
+Not tested: tablets, foldables, physical devices, OEM skins/keyboards, Android
+7/API 24 minimum, iOS, screen cutouts other than the emulator profile, and RTL.
 
 ## 21. Detailed Findings
 
-### MT-001 — Candidate Home ships as an M6 milestone placeholder
+### MT-003 — Mandatory vacancy moderation is disabled
 
-**Severity:** CRITICAL  
-**Priority:** P0  
-**Category:** Functional, UX, Frontend, Navigation  
-**Owner:** Frontend + Product  
-**Affected screen:** Candidate → Home  
-**Affected API:** N/A  
+**Severity:** CRITICAL
+**Priority:** P0
+**Category:** Business Logic, Backend, Configuration, Safety
+**Owner:** Backend + DevOps + Product
+**Affected screen:** Employer vacancy submit; Admin moderation
+**Affected API:** Vacancy submission/public discovery
+**Reproducibility:** Always in the tested runtime
+
+#### Problem
+
+The deployed API runs with `MODERATION_ENABLED=false`, so the release environment
+cannot enforce §6.4 and BR-04.
+
+#### Why this matters to the user
+
+Unreviewed, misleading, illegal, or discriminatory vacancies can become visible
+without the mobile administrator approval required by the product.
+
+#### Preconditions
+
+- Use the deployed DEV API.
+- Have a complete/verified employer and a valid vacancy.
+
+#### Steps to reproduce
+
+1. Inspect the deployed API runtime configuration.
+2. Observe `MODERATION_ENABLED=false`.
+3. Submit a publishable vacancy and inspect status/discovery.
+
+#### Expected result
+
+A submission requiring moderation becomes `under_moderation` and is invisible
+until an administrator approves it.
+
+#### Actual result
+
+Moderation is bypassed by configuration.
+
+#### Evidence
+
+- [Runtime evidence](evidence/v1.11.0/MT-003-moderation-runtime.txt)
+- [Admin moderation list](evidence/v1.11.0/admin-vacancy-moderation.png)
+
+#### Technical analysis
+
+This is a runtime configuration decision, not a missing admin UI. The admin
+moderation screens now exist, but a false feature flag prevents the required
+state transition from being exercised.
+
+#### Likely root cause
+
+Confirmed: the DEV deployment intentionally disables moderation and has no
+release-mode fail-closed guard.
+
+#### Frontend recommendation
+
+Show the actual server-returned state and keep submit copy neutral; do not assume
+that a submitted vacancy is active.
+
+#### Backend recommendation
+
+Require moderation in release configuration. Refuse production startup when the
+flag is false, and add an environment smoke test covering submit → queue → approve
+→ discovery.
+
+#### Suggested UX solution
+
+After submit, show “Sent for review” with a clear pending badge and notification
+on approval/rejection.
+
+#### Acceptance criteria
+
+- [ ] Production cannot start with moderation disabled.
+- [ ] Submitted vacancies remain absent from discovery before approval.
+- [ ] Admin approval is audited and makes the vacancy discoverable.
+- [ ] Rejection keeps it hidden and notifies the employer.
+
+### MT-006 — Coin top-up is still unavailable
+
+**Severity:** HIGH
+**Priority:** P1
+**Category:** Functional, Monetization, UX, Frontend, Backend
+**Owner:** Product + Frontend + Backend
+**Affected screen:** Employer Wallet
+**Affected API:** Payment Orders / Payme / CLICK
 **Reproducibility:** Always
 
 #### Problem
 
-The default candidate destination displays: “This screen arrives in M6. The
-shell, navigation and redirects around it are done.” This is visible product UI,
-not a debug-only diagnostic.
+Wallet exposes an active “Top up” action, but tapping it only states that top-up
+is not available yet and will arrive with Payme/CLICK.
 
 #### Why this matters to the user
 
-Every candidate sees an unfinished implementation statement immediately after
-login and after restart. It provides none of §5.5's recommended/recent/saved
-vacancy home content and immediately damages trust.
+An employer who spends the free Coins cannot replenish them and therefore loses
+access to paid candidate discovery, despite the UI advertising the action.
 
 #### Preconditions
 
-- Sign in to an account with the candidate role.
+- Sign in as an employer.
+- Open Wallet.
 
 #### Steps to reproduce
 
-1. Open the app or tap Candidate → Home.
-2. Observe the only page content.
+1. Tap “Top up.”
+2. Observe the informational message.
 
 #### Expected result
 
-Candidate Home presents recommended vacancies, recent activity, useful profile
-completion guidance, and clear discovery actions as defined in §5.5.
+The user can create a Payment Order, complete Payme or CLICK payment, and receive
+Coins exactly once under §6.7 and BR-19/20.
 
 #### Actual result
 
-An internal milestone placeholder is shown.
+No purchase can start.
 
 #### Evidence
 
-- [Candidate Home](evidence/MT-CANDV-001-home.png)
-- [Restart returns to placeholder](evidence/MT-RES-001-session-restart.png)
+- [Wallet](evidence/v1.11.0/MT-006-wallet.png)
+- [Top-up result](evidence/v1.11.0/wallet-topup-result.png)
 
 #### Technical analysis
 
-Confirmed in the 1.4.1 tag: `shell_tabs.dart` marks Candidate Home `milestone:
-'M6'`; `app_router.dart` falls back to `ShellPlaceholderScreen` for this route.
+The UI explicitly describes the feature as future work. This is a known product
+gap rather than a transient API failure.
 
 #### Likely root cause
 
-Confirmed: the shell route was released before its real screen was mapped.
+Confirmed: provider/payment-order integration is not released in this build.
 
 #### Frontend recommendation
 
-Map `/candidate/home` to a production screen using the existing discovery/profile
-providers. Add a release assertion/test that no production shell route resolves
-to `ShellPlaceholderScreen`.
+Implement the provider flow only after storefront-policy review. Until then,
+feature-gate or label the control “Coming soon” before the tap.
 
 #### Backend recommendation
 
-No backend change required; existing discovery/profile endpoints can support the
-screen.
+Implement signed provider callbacks, idempotent Payment Orders, audit history,
+and no-credit behavior for failed/cancelled payments.
 
 #### Suggested UX solution
 
-Lead with recommended work, profile completeness when actionable, and recent
-application/invitation changes. If Home is not ready, route candidates to the
-working Vacancies tab rather than exposing milestone copy.
+Show amount, Coin quantity, provider, final status, retry/cancel behavior, and a
+receipt/ledger entry. Never imply Coins were credited before verification.
 
 #### Acceptance criteria
 
-- [ ] Candidate Home contains no milestone/developer copy in production.
-- [ ] Fresh login and cold restart land on useful candidate content.
-- [ ] Recommended, recent, and saved entry points required by §5.5 are reachable.
-- [ ] A production-route test fails if any candidate tab is a placeholder.
+- [ ] UAT-20 and UAT-21 pass end to end.
+- [ ] Duplicate callbacks credit exactly once (UAT-22).
+- [ ] Failed/cancelled payments credit zero Coins (UAT-23).
+- [ ] Storefront billing compliance is signed off before release.
 
-### MT-002 — Administrator Users ships as an M10 placeholder
+### MT-009 — CV purpose label resolves as “Unavailable value”
 
-**Severity:** CRITICAL  
-**Priority:** P0  
-**Category:** Functional, Authorization, Frontend, Product  
-**Owner:** Frontend  
-**Affected screen:** Administrator → Users  
-**Affected API:** `GET /admin/users`, `GET /admin/users/:id`, `PUT /admin/users/:id/status`  
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** Frontend, Localization, API Contract
+**Owner:** Frontend
+**Affected screen:** Employer → Candidate detail → Attachments
+**Affected API:** Candidate detail/file DTO
+**Reproducibility:** Always for the tested CV
+
+#### Problem
+
+The PDF now downloads successfully, but its subtitle is “Unavailable value”
+instead of the localized “CV.”
+
+#### Why this matters to the user
+
+Employers cannot confidently identify attachment type, especially when several
+supporting documents exist.
+
+#### Preconditions
+
+- Employer has file access through an allowed application/invitation/unlock.
+- Candidate has a CV attachment.
+
+#### Steps to reproduce
+
+1. Open candidate search and the entitled candidate.
+2. Inspect Attachments.
+3. Tap `mycv.pdf`.
+
+#### Expected result
+
+The card shows localized “CV” and opens the entitled file.
+
+#### Actual result
+
+The card shows “Unavailable value”; tapping still downloads a PDF with HTTP 200.
+
+#### Evidence
+
+- [Attachment card](evidence/v1.11.0/MT-009-employer-candidate-attachments.png)
+- [UI hierarchy](evidence/v1.11.0/MT-009-attachment-open.xml)
+
+#### Technical analysis
+
+`CandidateFile.purposeCode` contains `cv`. `DictionaryLabel` explicitly accepts a
+stored item UUID, but candidate detail passes the code into its `id` argument.
+
+#### Likely root cause
+
+Confirmed frontend code/id contract mismatch.
+
+#### Frontend recommendation
+
+Resolve by `(type_code, code)`, add a code-aware label component, or change the
+DTO/domain model to carry the dictionary item UUID and code separately.
+
+#### Backend recommendation
+
+No backend change required; the API accurately returns `purposeCode: cv` and a
+server-built download path.
+
+#### Suggested UX solution
+
+Show “CV · PDF · 46 B” (or a sensible localized size) under the filename.
+
+#### Acceptance criteria
+
+- [ ] `cv` renders as the localized CV label in all four variants.
+- [ ] Retired/unknown purposes have a safe human-readable fallback.
+- [ ] Download entitlement remains server-enforced.
+
+### MT-012 — Internal codes and unformatted values leak into UI
+
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** UX, Localization, Frontend
+**Owner:** Frontend + Product
+**Affected screen:** Employer verification; Admin moderation/audit; vacancy salary
+**Affected API:** Dictionary/audit DTOs
+**Reproducibility:** Always on affected rows
+
+#### Problem
+
+Screens expose `company_registration`, `evidence`,
+`restriction_changed_requires_review`, bare `150000`, and the unresolved
+attachment subtitle.
+
+#### Why this matters to the user
+
+Internal identifiers and ambiguous money values are hard to understand and make
+the product feel unfinished.
+
+#### Preconditions
+
+- Open an employer verification profile or admin moderation detail.
+
+#### Steps to reproduce
+
+1. Scroll to required verification documents.
+2. Open admin vacancy/audit detail.
+3. Inspect document and salary labels.
+
+#### Expected result
+
+Every system code and amount has a localized, formatted display value.
+
+#### Actual result
+
+Raw codes and bare values are rendered.
+
+#### Evidence
+
+- [Employer raw codes](evidence/v1.11.0/MT-012-raw-codes.png)
+- [Admin vacancy detail](evidence/v1.11.0/MT-012-admin-vacancy-detail.png)
+
+#### Technical analysis
+
+Some DTO fields bypass the dictionary/display formatter and are printed directly.
+
+#### Likely root cause
+
+Confirmed on the file-purpose path; inferred to be the same direct-code rendering
+pattern on verification and audit views.
+
+#### Frontend recommendation
+
+Centralize code-to-label and localized currency/number formatting. Unknown codes
+should display a neutral fallback plus diagnostic logging, never snake_case.
+
+#### Backend recommendation
+
+Where a code is intentionally admin-editable, return stable code/ID separately;
+optionally include a localized display label to reduce client drift.
+
+#### Suggested UX solution
+
+Use “Company registration document,” “Supporting evidence,” “Requires review
+after restriction change,” and salary with currency/period.
+
+#### Acceptance criteria
+
+- [ ] No raw snake_case code is visible in ordinary/admin UI.
+- [ ] Salary includes locale-aware separators, currency, and period.
+- [ ] Unknown values use a meaningful fallback.
+
+### MT-013 — Authentication submits incomplete input
+
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** Validation, UX, Frontend
+**Owner:** Frontend
+**Affected screen:** Sign in; OTP confirmation
+**Affected API:** OTP request/verify
 **Reproducibility:** Always
 
 #### Problem
 
-The Users tab displays the M10 placeholder instead of user search, history, warn,
-restrict, block, or unblock controls.
+“Get a code” enables after only two phone digits, and “Confirm” enables with an
+empty OTP. Submission adds a global “Something went wrong” above precise field
+validation.
 
 #### Why this matters to the user
 
-Administrators cannot perform §10.4 or UAT-14 from the only allowed mobile admin
-product. Unsafe or abusive accounts cannot be acted on through version 1.4.1.
+The interface invites an impossible action and then blames an unspecified system
+failure, obscuring what must be corrected.
 
 #### Preconditions
 
-- Sign in with the administrator role.
+- Be signed out.
 
 #### Steps to reproduce
 
-1. Tap Administrator → Users.
-2. Observe the placeholder.
+1. Enter `94`, accept terms, and tap “Get a code.”
+2. On OTP, leave code empty and tap “Confirm.”
 
 #### Expected result
 
-Search users by phone/name/role/status/date, view moderation history, and perform
-audited status actions with a reason.
+Buttons remain disabled until locally valid; inline guidance is the only error.
 
 #### Actual result
 
-The tab says the screen arrives in M10 and offers no task.
+Both actions submit and show generic plus field errors.
 
 #### Evidence
 
-- [Admin Users placeholder](evidence/MT-ADMIN-009-users.png)
+- [Partial phone](evidence/v1.11.0/MT-013-partial-phone.png)
+- [Empty OTP](evidence/v1.11.0/MT-013-empty-otp.png)
 
 #### Technical analysis
 
-The backend routes exist and were present in redeploy logs. In the 1.4.1 app tag,
-`ShellTabs.admin` marks Users M10 and the router sends it to the generic
-placeholder.
+Button enablement appears tied to non-empty/terms state instead of the same
+validators used after submit.
 
 #### Likely root cause
 
-Confirmed frontend release sequencing gap; backend capability is already present.
+Inferred frontend validation-state divergence.
 
 #### Frontend recommendation
 
-Wire the completed user list/detail/status screens to `/admin/users`; cover role
-guarding, filters, mandatory reasons, stale-state conflict, and self-action
-refusal.
+Use one validation model for button state and submit. Do not populate a global
+API error for local validation failures.
 
 #### Backend recommendation
 
-Keep permission enforcement, immutable status history, and the self-targeting
-guard. Add/retain API integration coverage matching UAT-14.
+No backend change required; continue rejecting invalid input with stable errors.
 
 #### Suggested UX solution
 
-Make the list searchable first, show status and role on each card, and place
-consequential actions in a confirmation sheet with duration/reason.
+Format `+998 XX XXX XX XX` progressively and explain the remaining digit count.
 
 #### Acceptance criteria
 
-- [ ] Admin can find the four test users by phone and role.
-- [ ] Restrict/block/unblock requires and records a reason.
-- [ ] A restricted operation fails with a localized actionable reason.
-- [ ] Non-admin and self-targeting attempts are rejected server-side.
-- [ ] UAT-14 passes end to end from the production mobile UI.
+- [ ] Phone submit requires exactly nine national digits and accepted terms.
+- [ ] OTP confirm requires the complete code.
+- [ ] Local validation never produces “Something went wrong.”
 
-### MT-003 — Current deployment publishes a submitted vacancy without moderation
+### MT-014 — Offline error copy exposes developer concepts
 
-**Severity:** CRITICAL  
-**Priority:** P0  
-**Category:** Business Logic, Backend, Configuration, Safety  
-**Owner:** Backend + DevOps + Product  
-**Affected screen:** Employer vacancy submit; Candidate discovery; Admin moderation  
-**Affected API:** `POST /vacancies/:id/submit`  
-**Reproducibility:** Always in the tested configuration
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** UX, Offline, Frontend, Localization
+**Owner:** Frontend + UX
+**Affected screen:** Network-backed error states
+**Affected API:** Any unavailable endpoint
+**Reproducibility:** Always when offline
 
 #### Problem
 
-A verified employer submitted `QA Audit Test Vacancy`; it became `active`
-immediately and was visible/applicable to candidates without an administrator
-decision.
+The app asks whether “the backend” is running and whether the “base URL” is
+correct for the device.
 
 #### Why this matters to the user
 
-Fraudulent, discriminatory, misleading, or unsafe vacancy content can reach job
-seekers before review. This contradicts the visible admin moderation product and
-UAT-05's explicit sequence.
+Normal users cannot act on backend/base-URL advice and may think they misconfigured
+the app.
 
 #### Preconditions
 
-- Verified employer with a complete vacancy.
-- Tested backend has `MODERATION_ENABLED=false`.
+- Disable emulator network connectivity.
 
 #### Steps to reproduce
 
-1. Create and save a valid vacancy.
-2. Tap Submit (rapid double tap was also tested).
-3. Observe employer status and candidate discovery.
+1. Open Candidate → Vacancies → Recent.
+2. Observe the error.
+3. Restore network and tap Retry.
 
 #### Expected result
 
-Status becomes Under moderation; the vacancy enters the admin queue; only an
-admin approval changes it to Active (§6.4, BR-04, UAT-05).
+Clear offline copy and a working Retry.
 
 #### Actual result
 
-One vacancy was created, but it became Active with `published_at` immediately.
+Retry works after recovery, but the message is developer-facing.
 
 #### Evidence
 
-- [Employer sees submitted/active vacancy](evidence/MT-EMPV-011-vacancy-submitted.png)
-- [Candidate vacancy detail/application](evidence/MT-CANDV-004-vacancy-detail.png)
-- Database record: `d69fb5f2-c2da-4ea3-92fa-5d681a541ca3`, status `active`,
-  published 2026-08-23 19:31 Tashkent.
+- [Offline copy](evidence/v1.11.0/MT-014-offline-copy.png)
+- [Recovered state](evidence/v1.11.0/offline-recovery.xml)
 
 #### Technical analysis
 
-Confirmed configuration cause: backend `.env` has `MODERATION_ENABLED=false`.
-Backend `uat.int.spec.ts` runs UAT-05 with moderation enabled and expects
-`under_moderation`, so the guarded path exists but is disabled in this deployment.
+A shared development connection exception string is exposed in release UI.
 
 #### Likely root cause
 
-Confirmed deployment configuration, not an inferred frontend defect.
+Confirmed generic error mapping/copy reuse.
 
 #### Frontend recommendation
 
-Render the status returned by the API and make the success copy explicit:
-“Submitted for moderation.” Never optimistically label a submit as published.
+Map offline, timeout, DNS, 5xx, and authorization failures to separate localized
+messages. Keep diagnostic details in logs only.
 
 #### Backend recommendation
 
-Set `MODERATION_ENABLED=true` in every release/staging environment, seed at least
-one administrator, redeploy, and add a deployment smoke test that submits a
-vacancy and asserts it is not discoverable before moderation.
+No backend change required.
 
 #### Suggested UX solution
 
-Show the expected review state/time and a route to the vacancy status. After admin
-approval, notify the employer.
+“You’re offline. Check your connection and try again.” Preserve cached content
+where safe.
 
 #### Acceptance criteria
 
-- [ ] Submission returns `under_moderation` in the release environment.
-- [ ] Candidate discovery cannot return the vacancy before approval.
-- [ ] The admin moderation queue contains the submitted vacancy.
-- [ ] Approval creates an audited history row and activates it once.
-- [ ] Rejection/change reason is visible to the employer.
+- [ ] Release UI never mentions backend/base URL.
+- [ ] Retry succeeds after connectivity returns.
+- [ ] Existing content is not discarded by a transient failure.
 
-### MT-004 — Administrator Dictionaries ships as an M10 placeholder
+### MT-015 — Screen-reader semantics are duplicated or missing
 
-**Severity:** HIGH  
-**Priority:** P1  
-**Category:** Functional, Frontend, Localization, Administration  
-**Owner:** Frontend  
-**Affected screen:** Administrator → Dictionaries  
-**Affected API:** `/admin/dictionaries/*`  
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** Accessibility, Frontend, Design System
+**Owner:** Frontend
+**Affected screen:** Bottom navigation, buttons, pickers, cards
+**Affected API:** N/A
 **Reproducibility:** Always
 
 #### Problem
 
-Dictionary management is a milestone placeholder although the backend exposes
-create, update, activate, and merge routes.
+UI hierarchy exposes duplicate names such as `Home\nHome`, `Save\nSave`, and
+`Verified employer\nVerified employer`; picker chevrons are interactive but have
+no label (`NAF=true`).
 
 #### Why this matters to the user
 
-Admins cannot maintain occupations, skills, regions, employment attributes, or
-four localized labels from the only admin product. Controlled form/search data
-will become stale and BR-13 operations cannot be completed.
+TalkBack users hear redundant announcements and cannot identify some controls.
 
 #### Preconditions
 
-- Administrator session.
+- Inspect the Android accessibility hierarchy or enable TalkBack.
 
 #### Steps to reproduce
 
-1. Tap Dictionaries in the admin bottom navigation.
-2. Observe the M10 placeholder.
+1. Navigate candidate/employer tabs and a dictionary picker.
+2. Inspect accessible names/focus targets.
 
 #### Expected result
 
-A mobile-optimized type/item list supports create/edit/activate/merge and all
-localized labels defined by §10.3.
+Each logical action is one focus target with one concise name, role, state, and
+hint where needed.
 
 #### Actual result
 
-No dictionary operation is available.
+Names are duplicated and some actionable chevrons are unnamed.
 
 #### Evidence
 
-- [Admin Dictionaries placeholder](evidence/MT-ADMIN-010-dictionaries.png)
+- [Candidate hierarchy](evidence/v1.11.0/current-window.xml)
+- [Vacancy hierarchy](evidence/v1.11.0/candidate-vacancies.xml)
 
 #### Technical analysis
 
-Confirmed frontend routing gap in 1.4.1; backend routes are mapped.
+Parent semantic labels appear to wrap children that retain their own semantics;
+icon-only picker buttons lack explicit semantic labels.
 
 #### Likely root cause
 
-The M10 shell tab shipped before the associated screen was connected.
+Inferred design-system semantics composition error.
 
 #### Frontend recommendation
 
-Wire type list, item list, edit/create, activation, hierarchy, and merge flows.
-Require all four labels and show stable code/ID only in an explicit technical
-detail area, not as the user label.
+Use `excludeSemantics`/merged semantics deliberately, name icon buttons, and add
+widget semantics tests for shared components.
 
 #### Backend recommendation
 
-Retain immutable IDs, hierarchy validation, merge audit, localized label
-requirements, and conflict protection.
+No backend change required.
 
 #### Suggested UX solution
 
-Use type → searchable item list → edit detail; surface missing translations and
-inactive status prominently.
+Announce “Home, tab, 1 of 5, selected” once and “Choose industry, button.”
 
 #### Acceptance criteria
 
-- [ ] Every §10.3 dictionary is reachable from the production admin UI.
-- [ ] Create/edit supports Uzbek Latin/Cyrillic, Russian, and English.
-- [ ] Activate/deactivate and merge require confirmation and audit.
-- [ ] Candidate/employer pickers refresh without binding translated text as IDs.
+- [ ] Shared controls produce one accessible name.
+- [ ] Every interactive element is named and focusable.
+- [ ] TalkBack traversal follows visual/logical order.
 
-### MT-005 — In-app notification center and push delivery are absent
+### MT-016 — Primary CTA is clipped on compact and large-text layouts
 
-**Severity:** HIGH  
-**Priority:** P1  
-**Category:** Functional, Frontend, Backend Integration, Reliability  
-**Owner:** Frontend + Backend/DevOps  
-**Affected screen:** All roles; hiring events  
-**Affected API:** `/notifications`, device-token registration, FCM delivery  
-**Reproducibility:** Always
-
-#### Problem
-
-Version 1.4.1 has no notification list, unread badge, push registration, or
-notification/deep-link handler. Hiring events are visible only after manually
-opening and refreshing their owning screen.
-
-#### Why this matters to the user
-
-Candidates can miss invitations, interview changes, offers, and application
-updates; employers can miss applications and invitation responses. This breaks
-the return loop of a recruitment product and the requirement in §9.2.
-
-#### Preconditions
-
-- Create an application, invitation response, interview, moderation result, or
-  chat message between two test users.
-
-#### Steps to reproduce
-
-1. Complete an event on account A.
-2. Return to account B.
-3. Inspect navigation and Android notification shade.
-
-#### Expected result
-
-An in-app notification appears with unread state; configured push alerts the
-recipient and opens the correct role/screen (§9.2, UAT-07, UAT-11).
-
-#### Actual result
-
-No notification destination or push appears. Data is found only in the relevant
-feature after navigation/refresh.
-
-#### Evidence
-
-- [Candidate invitation exists without notification surface](evidence/MT-CANDV-007-invitations.png)
-- [Candidate interview exists in Applications](evidence/MT-CANDV-017-interview-visible.png)
-- Release manifest inspection: only `INTERNET` plus a self-signature permission;
-  no `POST_NOTIFICATIONS`, FCM service, or FCM receiver.
-
-#### Technical analysis
-
-Confirmed in the 1.4.1 tag: there is no `firebase_messaging` dependency or mobile
-notifications feature. Project TODO marks M9 Notifications open. Backend stores
-notifications, but the client does not consume/register them.
-
-#### Likely root cause
-
-Confirmed deferred feature milestone plus incomplete Firebase app configuration
-after package rename.
-
-#### Frontend recommendation
-
-Implement notification repository/list/unread count/preferences, Android 13+
-permission education/request, FCM token lifecycle, foreground/background tap
-handling, role-aware deep links, and invalid-token recovery.
-
-#### Backend recommendation
-
-Configure FCM credentials for the DEV/staging environment, expose/register token
-lifecycle, preserve in-app records when push is unavailable, and monitor delivery
-failures.
-
-#### Suggested UX solution
-
-Add a role-aware notification bell with unread badge. A tap should switch role if
-needed and open the exact application/invitation/interview/thread.
-
-#### Acceptance criteria
-
-- [ ] Every §9.2 event creates an in-app notification for the correct recipient.
-- [ ] Android 13+ permission is requested contextually and denial remains recoverable.
-- [ ] Foreground, background, killed-app, and token-refresh push paths work.
-- [ ] A tap opens the correct role and record without exposing another user's data.
-- [ ] Push failure never removes the in-app notification.
-
-### MT-006 — Coin Top up is unavailable despite being a core recovery path
-
-**Severity:** HIGH  
-**Priority:** P1  
-**Category:** Functional, Payments, Product, Backend Integration  
-**Owner:** Frontend + Backend + Product/Payments  
-**Affected screen:** Employer → Wallet  
-**Affected API:** `GET /payments/providers`, `POST /payments/orders`, provider callbacks  
-**Reproducibility:** Always in the tested environment
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** Responsive UI, Accessibility, Frontend
+**Owner:** Frontend + Design System
+**Affected screen:** Employer Home; previously Candidate vacancy detail
+**Affected API:** N/A
+**Reproducibility:** Always at tested compact/200% layouts
 
 #### Problem
 
-The Wallet presents an active Top up action; tapping it only says the feature is
-not available yet and “arrives with Payme and CLICK support.”
+The original landscape vacancy-detail issue is fixed by scrolling, but employer
+Home's “New vacancy” button is reduced to a thin blue strip behind bottom
+navigation at 360 × 640 dp and 200% text.
 
 #### Why this matters to the user
 
-Once the 10-Coin bonus is exhausted or balance drops below two, the employer
-cannot unlock another candidate. The product has a paywall without a funding
-path, and UAT-19's recovery cannot lead to UAT-20/UAT-21.
+Small-screen and low-vision users cannot reliably discover or tap the primary
+employer action.
 
 #### Preconditions
 
-- Employer with a wallet.
-
-#### Steps to reproduce
-
-1. Open Wallet.
-2. Tap Top up.
-
-#### Expected result
-
-Show configured provider/coin choices or a clearly disabled wallet state that
-does not promise an actionable checkout (§6.7, UAT-19–UAT-23).
-
-#### Actual result
-
-A roadmap snackbar is shown; no purchase can be initiated.
-
-#### Evidence
-
-- [Wallet](evidence/MT-WALLET-001-overview.png)
-- [Unavailable Top up](evidence/MT-WALLET-002-topup-unavailable.png)
-
-#### Technical analysis
-
-The backend contract treats an empty provider list as valid when no merchant
-account is configured. The 1.4.1 client exposes an action but has no complete
-checkout flow for this state.
-
-#### Likely root cause
-
-Confirmed external/provider configuration and unfinished frontend milestone;
-not a failed transaction.
-
-#### Frontend recommendation
-
-Build the provider-driven top-up/order/status/history UI. When providers are
-empty, disable purchase with user-facing availability/help copy, not roadmap
-language.
-
-#### Backend recommendation
-
-Configure approved sandbox merchant/store billing provider(s), verify callbacks,
-and run UAT-20 through UAT-23 including duplicate callbacks and failed/cancelled
-orders.
-
-#### Suggested UX solution
-
-Route insufficient-balance unlocks directly to Wallet, retain the chosen
-candidate, and resume unlock after a verified credit.
-
-#### Acceptance criteria
-
-- [ ] An employer below 2 Coins receives a usable Top up route.
-- [ ] Amount is calculated server-side from requested Coins.
-- [ ] Duplicate verified callbacks credit exactly once.
-- [ ] Failed/cancelled orders credit zero and show retry/final state.
-- [ ] Returning from successful funding can resume the candidate unlock.
-
-### MT-007 — Blank employer profile can be saved and irreversibly commits company type
-
-**Severity:** HIGH  
-**Priority:** P1  
-**Category:** Validation, UX, Frontend, Business Logic  
-**Owner:** Frontend + Backend  
-**Affected screen:** Employer → Company profile  
-**Affected API:** Employer profile create/update endpoint  
-**Reproducibility:** Always
-
-#### Problem
-
-The company/individual choice defaults to Company. Save is enabled with every
-field empty. One tap creates a 0% incomplete company profile and removes the type
-chooser; the user cannot return to choose Individual.
-
-#### Why this matters to the user
-
-A first-time employer can make a lasting account decision before entering or
-understanding any information. The resulting profile blocks vacancy creation,
-candidate search, and verification without offering a reset.
-
-#### Preconditions
-
-- Employer role with no employer profile.
-
-#### Steps to reproduce
-
-1. Open Company.
-2. Leave the default Company selection and all fields empty.
-3. Tap Save.
-4. Reopen the screen and try to choose Individual.
-
-#### Expected result
-
-No profile is committed until required fields are valid, or an incomplete draft
-retains an explicit, reversible employer-type choice.
-
-#### Actual result
-
-A company row is created with 0% completeness; the type selector disappears and
-core actions remain blocked.
-
-#### Evidence
-
-- [No profile/type choice](evidence/MT-EMP-002-missing-profile.png)
-- [Empty profile saved](evidence/MT-EMP-003-empty-profile-submit.png)
-- DB: `+998941779737`, type `company`, completeness 0, `is_complete=false`.
-
-#### Technical analysis
-
-The frontend treats Save as draft persistence but the information architecture
-treats the first persisted type as final. Required-field validation is deferred
-to downstream gates rather than the profile action itself.
-
-#### Likely root cause
-
-Likely combined cause: no client form-validity gate and no supported server
-transition/reset for an unused incomplete employer profile.
-
-#### Frontend recommendation
-
-Require an explicit type selection and validate required fields inline before
-creating the profile. If drafts are required, keep “Change employer type” until
-verification or vacancy/invitation data makes the type consequential.
-
-#### Backend recommendation
-
-Define a safe type-change/reset rule for incomplete profiles with no dependent
-business records; reject empty create payloads if draft persistence is not a
-specified feature.
-
-#### Suggested UX solution
-
-Use a short first step: “Who is hiring?” with no preselection, then the correct
-schema. Explain when the choice becomes locked.
-
-#### Acceptance criteria
-
-- [ ] Save cannot create an all-empty employer profile.
-- [ ] Required errors are inline and focus/scroll to the first invalid field.
-- [ ] A mistaken unused incomplete type can be changed or reset safely.
-- [ ] A valid profile refreshes dashboard, verification, and gates immediately.
-
-### MT-008 — Production administrator has no account/security or sign-out action
-
-**Severity:** HIGH  
-**Priority:** P1  
-**Category:** Authentication, Navigation, Security UX, Frontend  
-**Owner:** Frontend  
-**Affected screen:** Administrator shell  
-**Affected API:** Auth sign-out/session endpoints  
-**Reproducibility:** Always in production flavor
-
-#### Problem
-
-The admin shell exposes Dashboard, Moderation, Complaints, Users, and
-Dictionaries, but no Account/Settings destination or sign-out action. The only
-convenient switch in the development build is Developer Tools, which production
-correctly removes.
-
-#### Why this matters to the user
-
-An administrator on a shared or lost device cannot deliberately end the session
-or switch account. Closing the app does not sign out because the session persists.
-
-#### Preconditions
-
-- Authenticate as administrator in `com.jobbridge.app` production flavor.
-
-#### Steps to reproduce
-
-1. Inspect every admin tab and dashboard bottom.
-2. Look for Account, Security, or Sign out.
-3. Force-stop/reopen; the authenticated session persists.
-
-#### Expected result
-
-Admin can sign out current device, terminate all sessions, and access account
-security as required by §4.2.
-
-#### Actual result
-
-No production admin route/action exists.
-
-#### Evidence
-
-- [Admin dashboard bottom](evidence/MT-ADMIN-011-dashboard-bottom.png)
-- [Admin shell](evidence/MT-ADMIN-001-home.png)
-
-#### Technical analysis
-
-The common account screen is reachable from candidate/employer profile areas but
-is not exposed by the five-tab admin shell. Development tools mask the omission
-during debug use.
-
-#### Likely root cause
-
-Confirmed navigation/information-architecture omission.
-
-#### Frontend recommendation
-
-Add an admin avatar/overflow or protected Account route reusing the existing
-session/security screen. Do not add a sixth bottom tab merely for sign-out.
-
-#### Backend recommendation
-
-No backend change required; reuse existing sign-out and session-termination APIs.
-
-#### Suggested UX solution
-
-Place Account in the dashboard app bar with administrator identity, language,
-session management, and sign-out.
-
-#### Acceptance criteria
-
-- [ ] Production admin can sign out the current device in at most three taps.
-- [ ] “Terminate all sessions” remains confirmed and invalidates other sessions.
-- [ ] Back navigation after sign-out cannot reveal admin content.
-- [ ] Candidate/employer/admin account-security behavior is consistent.
-
-### MT-009 — CV purpose code is sent to a UUID dictionary endpoint
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Frontend, API Contract, Localization  
-**Owner:** Frontend  
-**Affected screen:** Employer → Candidate detail → Attachments  
-**Affected API:** `GET /dictionaries/items?ids=…`  
-**Reproducibility:** Always for the tested `cv` attachment
-
-#### Problem
-
-After a paid Candidate Unlock, the attachment `mycv.pdf` shows “Unavailable
-value.” The client requests dictionary item ID `cv`; the API expects UUIDs and
-returns 422.
-
-#### Why this matters to the user
-
-A paid access screen looks partially broken and does not explain the attachment's
-purpose, reducing confidence that the CV itself is usable.
-
-#### Preconditions
-
-- Verified employer has unlocked a candidate with a CV attachment.
-
-#### Steps to reproduce
-
-1. Open the unlocked candidate profile.
-2. Scroll to Attachments.
-3. Observe the purpose label/API log.
-
-#### Expected result
-
-The localized purpose label (for example, “CV”) is displayed without an invalid
-request.
-
-#### Actual result
-
-“Unavailable value” is shown and the API logs a 422 for `ids=cv`.
-
-#### Evidence
-
-- [Unlocked candidate detail](evidence/MT-EMPV-005-contact-unlocked.png)
-- [QA API log](evidence/qa-api-3002.stdout.log)
-
-#### Technical analysis
-
-Confirmed source cause in `candidate_detail_screen.dart`: `file.purposeCode` is
-passed as `DictionaryLabel.id`. Purpose codes and dictionary UUIDs are distinct
-contracts under BR-13.
-
-#### Likely root cause
-
-Confirmed frontend type/model confusion, made possible because both values are
-represented as strings.
-
-#### Frontend recommendation
-
-Resolve purpose codes through a code-keyed label map/schema or have the file model
-carry the correct dictionary item ID. Use value types to distinguish UUID IDs
-from stable codes.
-
-#### Backend recommendation
-
-No backend behavior change is required. Consider documenting/generating distinct
-types for code and UUID fields to prevent client misuse.
-
-#### Suggested UX solution
-
-Show “CV · PDF” and an explicit View/Download action. If metadata resolution
-fails, retain the filename and action without alarming fallback text.
-
-#### Acceptance criteria
-
-- [ ] No `ids=cv` request is made.
-- [ ] File-purpose label is localized in all four variants.
-- [ ] Paid CV view/download remains authorized and usable.
-
-### MT-010 — Employer dashboard and prerequisite failures contradict each other
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** UX, Navigation, Error State, Frontend  
-**Owner:** Frontend + Product  
-**Affected screen:** Employer Home, New vacancy, Candidates  
-**Affected API:** Employer profile/count/search endpoints  
-**Reproducibility:** Always for an incomplete employer
-
-#### Problem
-
-Home says “Nothing is waiting on you” while the account has no complete profile
-or verification. New vacancy returns to Home with a snackbar; Candidates shows a
-global “Something went wrong.” Neither provides a direct corrective action.
-
-#### Why this matters to the user
-
-The app first says everything is fine, then rejects the user's main goals without
-showing where or how to resolve the prerequisite.
-
-#### Preconditions
-
-- Employer profile missing/incomplete.
+- Sign in as an employer.
+- Use 360 × 640 dp or 200% font scale.
 
 #### Steps to reproduce
 
 1. Open Employer Home.
-2. Tap New vacancy.
-3. Tap Candidates.
+2. Scroll to the bottom.
+3. Observe the CTA above bottom navigation.
 
 #### Expected result
 
-Home lists profile/verification as the highest-priority task and every gate offers
-“Complete company profile” or “Submit verification.”
+All content and CTAs remain fully visible, scrollable, and tappable above system
+and app navigation.
 
 #### Actual result
 
-Contradictory empty state plus snackbar/global errors without destination.
+The CTA is visually and interactively clipped.
 
 #### Evidence
 
-- [Home/gate](evidence/MT-EMP-001-new-vacancy-gate.png)
-- [Candidate-search gate](evidence/MT-EMP-005-candidate-search-gate.png)
+- [Compact layout](evidence/v1.11.0/responsive-small-360x640dp.png)
+- [200% text](evidence/v1.11.0/accessibility-font-scale-2.png)
+- [Landscape fix](evidence/v1.11.0/MT-016-landscape-after-scroll.xml)
 
 #### Technical analysis
 
-Backend correctly enforces BR-03. Frontend maps the refusal to generic error
-surfaces instead of a domain prerequisite state and does not include it in
-dashboard attention items.
+Scrollable content does not reserve sufficient bottom inset for the persistent
+navigation bar; large text also increases upstream card heights.
 
 #### Likely root cause
 
-Likely missing domain-specific routing/error mapping across dashboard and shell
-tabs.
+Inferred missing safe-area/navigation-height padding in the role shell.
 
 #### Frontend recommendation
 
-Model profile/verification prerequisites explicitly; render a dashboard task and
-CTA, and route blocked actions directly to the relevant form.
+Apply calculated bottom padding to all shell scrollables and test shared layouts
+at minimum viewport and 200% text.
 
 #### Backend recommendation
 
-No business-rule change required. Preserve stable reason codes so clients can map
-to corrective destinations.
+No backend change required.
 
 #### Suggested UX solution
 
-Replace “Nothing is waiting” with a setup checklist and progress: Company details
-→ Evidence → Review.
+Keep the primary CTA fully visible with at least one spacing token above the nav.
 
 #### Acceptance criteria
 
-- [ ] Incomplete employer never sees “Nothing is waiting on you.”
-- [ ] Every BR-03 gate includes a one-tap corrective CTA.
-- [ ] Generic “Something went wrong” is not used for a known prerequisite.
+- [ ] CTA is fully visible/tappable at 360 × 640 dp.
+- [ ] CTA remains reachable at 200% text and landscape.
+- [ ] No bottom-nav label/content overlaps at supported scales.
 
-### MT-011 — Verification state remains stale after employer profile creation
+### MT-017 — Complaint cards omit target identity
 
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Frontend State, Data Consistency, Error Recovery  
-**Owner:** Frontend  
-**Affected screen:** Employer → Company / Verification  
-**Affected API:** Employer profile and verification-state endpoints  
-**Reproducibility:** Always in the reproduced sequence
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** Admin UX, Functional, Frontend, Backend
+**Owner:** Frontend + Backend
+**Affected screen:** Admin → Complaints
+**Affected API:** Admin complaint list
+**Reproducibility:** Always for tested records
 
 #### Problem
 
-After the first profile Save, the verification area retained its prior not-found
-error until the user manually tapped Try again.
+Cards show only target type (“Vacancy” or “Person”), age, and reason; no target
+name/title or usable identifier appears.
 
 #### Why this matters to the user
 
-A successful profile action appears not to have unlocked its next step, creating
-doubt and unnecessary recovery work.
+Moderators cannot triage similar reports or know what they are opening.
 
 #### Preconditions
 
-- Employer starts without a profile.
+- Sign in as admin with complaint records present.
 
 #### Steps to reproduce
 
-1. Open Company and save the initial profile.
-2. Scroll to verification.
-3. Observe stale error; tap Try again.
+1. Open Admin → Complaints.
+2. Compare multiple cards.
 
 #### Expected result
 
-Profile and verification providers refresh together and immediately show Not
-submitted/required evidence.
+Each card identifies the reported person/vacancy and provides priority/status.
 
 #### Actual result
 
-Old 404-derived state remains until manual retry.
+Cards are anonymous except for type and reason.
 
 #### Evidence
 
-- [Stale state](evidence/MT-EMP-007-profile-bottom.png)
-- [After retry](evidence/MT-EMP-008-verification-retry.png)
+- [Complaint list](evidence/v1.11.0/MT-017-admin-complaints.png)
 
 #### Technical analysis
 
-The mutation invalidates/updates the profile state but not all dependent
-verification providers.
+The list presentation lacks a target summary; it is unclear whether the DTO
+omits it or the client ignores it.
 
 #### Likely root cause
 
-Likely incomplete Riverpod cache invalidation after profile creation.
+Assumption: complaint list contract was designed around identifiers without a
+denormalized moderator-facing summary.
 
 #### Frontend recommendation
 
-Invalidate profile, dashboard, verification, wallet, and prerequisite-derived
-providers after first create; add an integration test for the no-profile → saved
+Render target title/name plus a shortened stable ID and status.
+
+#### Backend recommendation
+
+If absent, add role-safe `targetSummary` and `targetStatus` fields to list DTOs to
+avoid an N+1 detail fetch.
+
+#### Suggested UX solution
+
+“Vacancy · Call-centre operator · …0d13” with waiting age and severity badge.
+
+#### Acceptance criteria
+
+- [ ] Every complaint card uniquely identifies its target.
+- [ ] Deleted/unavailable targets have an explicit fallback.
+- [ ] Opening a card reaches the matching target context.
+
+### MT-020 — Notification read actions use POST instead of PUT
+
+**Severity:** HIGH
+**Priority:** P1
+**Category:** Functional, Frontend, API Contract, Notifications
+**Owner:** Frontend
+**Affected screen:** Notifications center; unread badges; push tap
+**Affected API:** `PUT /notifications/:id/read`, `PUT /notifications/read`
+**Reproducibility:** Always
+
+#### Problem
+
+Opening one notification and “Mark all read” both call nonexistent `POST` routes,
+receive 404, and leave `read_at` null.
+
+#### Why this matters to the user
+
+Unread badges never clear and the new notification center repeatedly presents
+handled events as new.
+
+#### Preconditions
+
+- Sign in with at least one unread notification.
+
+#### Steps to reproduce
+
+1. Open Notifications and tap an unread item.
+2. Observe “The requested data was not found.”
+3. Tap “Mark all read.”
+4. Inspect requests and DB unread state.
+
+#### Expected result
+
+One/all rows become read and badges update without an error.
+
+#### Actual result
+
+APK sends `POST`; API requires `PUT`; both requests return 404 and rows remain
+unread.
+
+#### Evidence
+
+- [Notification center](evidence/v1.11.0/notifications-center-admin.png)
+- [Mark-all error](evidence/v1.11.0/notifications-mark-all-read.png)
+- [Contract trace](evidence/v1.11.0/MT-020-notification-method-mismatch.txt)
+
+#### Technical analysis
+
+`notification_repository.dart` uses `_dio.post` for both calls. Backend
+`notifications.controller.ts` declares `@Put(':id/read')` and `@Put('read')`.
+
+#### Likely root cause
+
+Confirmed stale/incorrect handwritten client contract.
+
+#### Frontend recommendation
+
+Use `PUT` for both methods, update comments/tests, optimistically update only with
+safe rollback, and invalidate list/unread-count providers after success.
+
+#### Backend recommendation
+
+No behavior change required. Publish/generate the API contract and add contract
+tests so client methods cannot drift.
+
+#### Suggested UX solution
+
+Tapping a notification should mark it read silently and navigate. Mark-all should
+show a brief success only when rows changed.
+
+#### Acceptance criteria
+
+- [ ] One-item read sends PUT and receives 204.
+- [ ] Mark-all sends PUT and consumes `{marked}`.
+- [ ] DB `read_at`, list styling, and all role badges update immediately.
+- [ ] Push deep-link marking does not surface an error.
+
+### MT-021 — Fast role selection enters shell before active role is ready
+
+**Severity:** MEDIUM
+**Priority:** P2
+**Category:** State Management, Navigation, Onboarding, Frontend
+**Owner:** Frontend
+**Affected screen:** New user role selection → Employer shell
+**Affected API:** Role grant/session response
+**Reproducibility:** Reproduced once with immediate consecutive taps
+
+#### Problem
+
+Selecting Employer and immediately tapping Next opened the employer shell with
+“No active role is selected. Choose a role first.” The DB already contained the
+employer role; cold restart recovered to Employer Home.
+
+#### Why this matters to the user
+
+A new user can believe registration failed at the most important onboarding
 transition.
 
-#### Backend recommendation
-
-No backend change required.
-
-#### Suggested UX solution
-
-After valid Save, show success and smoothly reveal the verification checklist
-without requiring Retry.
-
-#### Acceptance criteria
-
-- [ ] Verification updates immediately after profile creation/edit.
-- [ ] No stale 404/error remains after a successful mutation.
-- [ ] Dashboard attention state updates in the same session.
-
-### MT-012 — Raw internal codes and incomplete numeric context leak into UI
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Localization, UX Writing, Frontend, API Contract  
-**Owner:** Frontend + Backend  
-**Affected screen:** Employer Verification; Admin vacancy review  
-**Affected API:** Verification requirements; admin moderation detail  
-**Reproducibility:** Always for affected records
-
-#### Problem
-
-The UI displays `company_registration`, `evidence`, and
-`restriction_changed_requires_review` as user-facing text. Admin salary appears
-as `150000` without currency or period context.
-
-#### Why this matters to the user
-
-Non-technical users cannot reliably interpret wire codes. Admins can misread a
-salary or moderation history, and all four localization promises are broken for
-these values (§3.2, BR-13).
-
 #### Preconditions
 
-- Open employer verification or a previously returned vacancy review.
+- Fresh phone account with no roles.
 
 #### Steps to reproduce
 
-1. Scroll the verification requirements.
-2. Open an admin vacancy review with a returned/restriction history.
+1. Complete OTP.
+2. Tap Employer.
+3. Immediately tap Next before selection state settles.
 
 #### Expected result
 
-Localized labels and fully formatted money/status context.
+Next waits for role grant/active-role persistence and enters a valid employer
+onboarding screen once.
 
 #### Actual result
 
-Raw stable codes and bare number are shown.
+The shell briefly has no active role and displays a global error; restart heals
+the state.
 
 #### Evidence
 
-- [Verification codes](evidence/MT-EMP-009-empty-verification-submit.png)
-- [Admin review](evidence/MT-ADMIN-006-vacancy-review-bottom.png)
+- [Broken shell](evidence/v1.11.0/MT-021-role-selection-race.png)
+- [Recovered after restart](evidence/v1.11.0/MT-021-after-restart.xml)
 
 #### Technical analysis
 
-Some code paths render API values directly rather than resolving code → localized
-label. Salary composition omits associated period/currency metadata.
+Server role creation completed, but navigation/local active-role state was not
+atomic with the selection action.
 
 #### Likely root cause
 
-Likely incomplete presentation mapping; verify whether list/detail DTOs always
-include the context needed to format historical values.
+Inferred asynchronous state race: Next remains actionable while role mutation or
+secure local persistence is still in flight.
 
 #### Frontend recommendation
 
-Centralize enum/code localization and money formatting. Unknown codes should use
-a safe localized fallback and structured diagnostic logging, not raw UI.
+Await role mutation and active-role persistence, disable selection/Next while
+busy, then navigate from the authoritative refreshed session state.
 
 #### Backend recommendation
 
-Ensure admin detail/history responses carry salary currency/period and stable
-reason codes; do not send English display strings as contract values.
+Keep role grant idempotent and return the authoritative active/available role set
+in the mutation response. No schema change appears necessary.
 
 #### Suggested UX solution
 
-Use “Company registration document,” “Supporting evidence,” and “Returned because
-restricted requirements changed,” with `150,000 UZS / month` style formatting.
+Show a short progress state on Next and never expose the role shell until it has
+a valid active role.
 
 #### Acceptance criteria
 
-- [ ] No raw wire code is visible in any supported locale.
-- [ ] Salary always includes localized number, currency, and period/negotiable state.
-- [ ] Unknown new codes degrade to a localized neutral label and are logged.
-
-### MT-013 — Phone and OTP validation allows premature submission and uses generic global errors
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Validation, UX, Authentication, Frontend  
-**Owner:** Frontend + Backend  
-**Affected screen:** Sign in; OTP verification  
-**Affected API:** `POST /auth/otp/send`, `POST /auth/otp/verify`  
-**Reproducibility:** Always
-
-#### Problem
-
-Five phone digits plus accepted terms can enable Get a code. OTP Confirm is
-actionable when empty. Empty and incorrect code both create a large global
-“Something went wrong” block rather than a stable inline correction.
-
-#### Why this matters to the user
-
-The app allows predictable mistakes, then shifts the page and gives weak guidance
-instead of preventing/correcting them at the field.
-
-#### Preconditions
-
-- Signed out.
-
-#### Steps to reproduce
-
-1. Enter five phone digits, accept terms, tap Get a code.
-2. On OTP, tap Confirm empty.
-3. Enter a wrong six-digit code and confirm.
-
-#### Expected result
-
-Actions remain disabled until locally valid; field-level text explains length or
-incorrect/expired code while keeping input and layout stable.
-
-#### Actual result
-
-Requests/global errors occur for obviously invalid input; empty and wrong OTP
-look nearly identical.
-
-#### Evidence
-
-- [Short phone enabled](evidence/MT-VAL-001-short-phone.png)
-- [Phone error](evidence/MT-VAL-002-phone-error.png)
-- [Empty OTP](evidence/MT-AUTH-002-empty-code.png)
-- [Wrong OTP](evidence/MT-AUTH-003b-wrong-code-result.png)
-
-#### Technical analysis
-
-Server validation correctly rejects invalid input. Client button enablement and
-error mapping are not aligned with the known fixed-length Uzbek phone/OTP format.
-
-#### Likely root cause
-
-Likely form-validity state checks presence rather than full local validity; API
-errors are routed through a generic page-error component.
-
-#### Frontend recommendation
-
-Validate nine national digits and six OTP digits locally, attach errors to the
-field, preserve entered values, and distinguish invalid/expired/too-many-attempts
-states.
-
-#### Backend recommendation
-
-Retain rate limits, TTL, attempt limits, single-use behavior, and stable localized
-reason codes. No relaxation is required.
-
-#### Suggested UX solution
-
-Use concise inline copy and focus the first invalid field; reserve the global
-error state for transport/service failure.
-
-#### Acceptance criteria
-
-- [ ] Get a code requires exactly nine national digits and accepted terms.
-- [ ] Confirm requires exactly six digits.
-- [ ] Empty, incorrect, expired, resend-too-soon, and rate-limited states are distinct.
-- [ ] No page-level layout jump occurs for a field validation error.
-
-### MT-014 — Offline error exposes backend/base-URL developer terminology
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Offline, UX Writing, Error Handling, Frontend  
-**Owner:** Frontend  
-**Affected screen:** Network-backed lists, reproduced on Candidate Vacancies  
-**Affected API:** Any unreachable API request  
-**Reproducibility:** Always when endpoint is unreachable
-
-#### Problem
-
-The user sees: “Cannot reach the server. Is the backend running, and is the base
-URL correct for this device?”
-
-#### Why this matters to the user
-
-Ordinary users cannot run a backend or configure a base URL. The message implies
-they are responsible for developer configuration and does not tell them whether
-cached content is safe.
-
-#### Preconditions
-
-- Authenticated session; disconnect API route.
-
-#### Steps to reproduce
-
-1. Open a network-backed vacancy tab offline.
-2. Trigger refresh.
-
-#### Expected result
-
-Localized offline/service-unavailable copy, cached content where safe, and Retry.
-
-#### Actual result
-
-Developer diagnostic copy is shown. Retry itself works after reconnection.
-
-#### Evidence
-
-- [Offline error](evidence/MT-RES-003-offline-error.png)
-- [Recovered](evidence/MT-RES-004-offline-recovered.png)
-
-#### Technical analysis
-
-The common network exception mapper exposes a development troubleshooting string
-to production UI.
-
-#### Likely root cause
-
-Confirmed copy/configuration boundary issue.
-
-#### Frontend recommendation
-
-Map connection, timeout, maintenance, and server failure to user-facing localized
-messages; log base URL diagnostics only in development logs.
-
-#### Backend recommendation
-
-No backend change required.
-
-#### Suggested UX solution
-
-“You're offline. Check your connection and try again.” Keep safe cached content
-visible with a subtle stale indicator.
-
-#### Acceptance criteria
-
-- [ ] Production errors never mention backend, host, base URL, stack, or configuration.
-- [ ] Retry recovers without restart or duplicate mutation.
-- [ ] Offline empty state is distinguishable from true no-results state.
-
-### MT-015 — Duplicate semantics and unlabeled picker controls impair screen-reader use
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Accessibility, Frontend, Design System  
-**Owner:** Frontend  
-**Affected screen:** App shell, authentication, candidate profile, forms  
-**Affected API:** N/A  
-**Reproducibility:** Always
-
-#### Problem
-
-Interactive labels are announced twice (for example, “Home, Home”), while profile
-picker chevrons are separate clickable buttons with no name. Four visible profile
-controls were `NAF=true` in one viewport.
-
-#### Why this matters to the user
-
-TalkBack users hear noisy navigation and encounter unnamed “Button” controls,
-making form completion slow or ambiguous.
-
-#### Preconditions
-
-- Candidate profile or any shell screen; accessibility tree inspection/TalkBack.
-
-#### Steps to reproduce
-
-1. Inspect shell/field semantics.
-2. Navigate bottom tabs and date/gender/region/district pickers.
-
-#### Expected result
-
-Each logical control has one concise accessible name, state/value, role, and a
-minimum target.
-
-#### Actual result
-
-Labels are duplicated; chevron buttons have no description.
-
-#### Evidence
-
-- [Shell semantics XML](evidence/MT-A11Y-002-ui-hierarchy.xml)
-- [Profile semantics XML](evidence/MT-A11Y-003-profile-hierarchy.xml)
-- [Profile screen](evidence/MT-CANDV-012-profile.png)
-
-#### Technical analysis
-
-Parent controls and child text/icon semantics are not consistently merged or
-excluded. The picker action is exposed separately from its labeled field.
-
-#### Likely root cause
-
-Likely shared design-component semantics composition, so one fix can cover many
-screens.
-
-#### Frontend recommendation
-
-Audit `HhButton`, bottom navigation, select/date fields, checkboxes, and badges.
-Use merged semantics or exclude decorative child semantics; label picker actions
-with field name/current value.
-
-#### Backend recommendation
-
-No backend change required.
-
-#### Suggested UX solution
-
-TalkBack should announce, for example, “Region, Tashkent City, button” once.
-
-#### Acceptance criteria
-
-- [ ] No primary control repeats the same label in TalkBack.
-- [ ] Every actionable node has an accessible name and role.
-- [ ] Full login, candidate profile, apply, and unlock journeys pass manual TalkBack QA.
-- [ ] 200% text retains reachable actions without overlap.
-
-### MT-016 — Vacancy Apply/Save controls are clipped and unusable in landscape
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Responsive UI, Mobile Compatibility, Frontend  
-**Owner:** Frontend  
-**Affected screen:** Candidate → Vacancies  
-**Affected API:** N/A  
-**Reproducibility:** Always on tested Pixel 8 landscape
-
-#### Problem
-
-In 2400 × 1080 landscape, the vacancy card extends under the fixed bottom
-navigation. Apply and Save are reduced to an approximately 8-pixel visible/hit
-strip. Scrolling moves between cards but does not expose a usable action row.
-
-#### Why this matters to the user
-
-The primary candidate action is effectively impossible after rotation, despite
-the app allowing orientation changes.
-
-#### Preconditions
-
-- Candidate vacancy feed with results; rotate device to landscape.
-
-#### Steps to reproduce
-
-1. Open Candidate → Vacancies.
-2. Rotate 90 degrees.
-3. Try to tap Apply or Save; scroll the list.
-
-#### Expected result
-
-Card content/actions remain visible and tappable, or the app deliberately locks a
-supported orientation.
-
-#### Actual result
-
-Actions are clipped by the viewport/navigation layout.
-
-#### Evidence
-
-- [Landscape initial](evidence/MT-RESP-002-landscape.png)
-- [Landscape after scroll](evidence/MT-RESP-003-landscape-scrolled.png)
-
-#### Technical analysis
-
-Portrait-oriented card height/action placement is combined with a fixed shell
-bottom area and insufficient landscape constraints/insets.
-
-#### Likely root cause
-
-Likely missing responsive breakpoint and incorrect available-height calculation.
-
-#### Frontend recommendation
-
-Use compact horizontal/card detail layout in landscape, ensure list bottom
-padding equals navigation inset, and test action visibility via widget golden and
-device integration tests.
-
-#### Backend recommendation
-
-No backend change required.
-
-#### Suggested UX solution
-
-Keep title/metadata and Apply/Save in a compact row, with details accessible by
-tapping the card.
-
-#### Acceptance criteria
-
-- [ ] Apply and Save retain at least 48 × 48 logical-pixel targets in landscape.
-- [ ] No content/action is obscured by system or bottom navigation insets.
-- [ ] Rotating back preserves selected tab and scroll position.
-
-### MT-017 — Admin complaint cards omit the reported target identity
-
-**Severity:** MEDIUM  
-**Priority:** P2  
-**Category:** Admin UX, Backend Contract, Efficiency  
-**Owner:** Frontend + Backend  
-**Affected screen:** Administrator → Complaints  
-**Affected API:** Admin complaints list endpoint  
-**Reproducibility:** Always for tested list
-
-#### Problem
-
-Complaint cards show target type (“Vacancy”/“Person”), waiting status, and reason,
-but not the vacancy title or person's/company's name/phone.
-
-#### Why this matters to the user
-
-Multiple cards look identical. Moderators must open each detail to understand the
-case, increasing time and the risk of acting on the wrong item.
-
-#### Preconditions
-
-- Administrator with multiple open complaints.
-
-#### Steps to reproduce
-
-1. Open Complaints.
-2. Compare list cards without opening detail.
-
-#### Expected result
-
-Each card identifies the reported target and enough context to prioritize safely.
-
-#### Actual result
-
-Target identity is absent until detail.
-
-#### Evidence
-
-- [Complaint list](evidence/MT-ADMIN-007-complaints.png)
-- [Complaint detail](evidence/MT-ADMIN-008-complaint-detail.png)
-
-#### Technical analysis
-
-Detail resolution has target data, but list presentation/DTO does not surface a
-display identity.
-
-#### Likely root cause
-
-Requires contract verification: either list DTO omits target summary or frontend
-does not render the available field.
-
-#### Frontend recommendation
-
-Render target title/name plus masked phone/ID secondary context where authorized.
-
-#### Backend recommendation
-
-Add a safe `targetDisplayName`/summary to list items if absent, respecting deleted
-targets and admin authorization.
-
-#### Suggested UX solution
-
-Show “Vacancy · QA Engineer — Uzum” or “User · Dilnoza Yusupova,” then reason and
-age/status.
-
-#### Acceptance criteria
-
-- [ ] Every complaint card is distinguishable without opening detail.
-- [ ] Deleted/anonymized targets use an explicit safe fallback.
-- [ ] List and detail identify the same target.
-
-### MT-018 — Incoming candidate invitation is labelled “Sent”
-
-**Severity:** MEDIUM  
-**Priority:** P3  
-**Category:** UX Writing, Status Model, Frontend  
-**Owner:** Frontend + Product  
-**Affected screen:** Candidate → Applications → Invitations  
-**Affected API:** Invitation list/status  
-**Reproducibility:** Always for a new incoming invitation
-
-#### Problem
-
-The candidate's incoming invitation card displays status “Sent,” an employer-side
-event verb, before the candidate responds.
-
-#### Why this matters to the user
-
-It can sound as if the candidate sent something. The required action/urgency is
-less clear than “New,” “Awaiting your response,” or “Received.”
-
-#### Preconditions
-
-- Candidate has an unanswered employer invitation.
-
-#### Steps to reproduce
-
-1. Open Applications → Invitations as the recipient.
-2. Inspect the status badge.
-
-#### Expected result
-
-Recipient-perspective localized status that makes the pending action clear.
-
-#### Actual result
-
-“Sent” is displayed.
-
-#### Evidence
-
-- [Incoming invitation](evidence/MT-CANDV-007-invitations.png)
-
-#### Technical analysis
-
-The same wire status is likely mapped to one label for both employer and candidate
-surfaces.
-
-#### Likely root cause
-
-Likely role-agnostic presentation mapping, not incorrect server state.
-
-#### Frontend recommendation
-
-Keep the wire status unchanged but map display text by viewer perspective.
-
-#### Backend recommendation
-
-No backend change required.
-
-#### Suggested UX solution
-
-Use “Awaiting your response” and keep Accept/Ask a question visually primary.
-
-#### Acceptance criteria
-
-- [ ] Candidate and employer labels reflect their respective perspective.
-- [ ] All invitation states are localized in four variants.
-
-### MT-019 — Unfiltered candidate search displays a misleading “100% match”
-
-**Severity:** LOW  
-**Priority:** P3  
-**Category:** UX, Search, Backend Contract  
-**Owner:** Frontend + Product  
-**Affected screen:** Employer → Candidates  
-**Affected API:** Candidate search  
-**Reproducibility:** Always with no filters
-
-#### Problem
-
-With “No filters — every searchable candidate,” the sole result displays “100%
-match,” despite no employer requirements being supplied.
-
-#### Why this matters to the user
-
-The score appears to recommend a perfect candidate and can distort hiring
-judgment. Mathematically matching an empty criterion set is not useful product
-information.
-
-#### Preconditions
-
-- Verified employer; searchable candidates; no filters.
-
-#### Steps to reproduce
-
-1. Open Candidates.
-2. Leave all filters empty and tap Search.
-
-#### Expected result
-
-Hide the score or display “No match criteria” and sort by a transparent fallback.
-
-#### Actual result
-
-Every unfiltered candidate receives 100%.
-
-#### Evidence
-
-- [Unfiltered results](evidence/MT-EMPV-003-candidate-results.png)
-
-#### Technical analysis
-
-Confirmed backend design: zero active score groups return 100 and tests assert
-it. The algorithm is internally consistent but the UI label is misleading.
-
-#### Likely root cause
-
-Product semantics were optimized for numeric consistency rather than user
-interpretation.
-
-#### Frontend recommendation
-
-Hide the percentage when `matchBreakdown` is empty and label the ordering (for
-example, recently updated).
-
-#### Backend recommendation
-
-Optionally return nullable score or an explicit `hasMatchCriteria` flag; do not
-force clients to infer meaning from an empty breakdown.
-
-#### Suggested UX solution
-
-Display “Add filters to calculate fit” above results.
-
-#### Acceptance criteria
-
-- [ ] No 100% claim is shown with zero criteria.
-- [ ] Filtered searches retain accurate score and breakdown.
+- [ ] Rapid Employer→Next cannot enter a role-less shell.
+- [ ] Repeated Next taps create/grant one role and one transition.
+- [ ] Network failure stays on role selection with a retryable message.
 
 ## 22. Frontend Developer Action List
 
-| ID | Severity | Screen | Problem | Frontend Action |
-|---|---|---|---|---|
-| MT-001 | CRITICAL | Candidate Home | Release placeholder | Map a real Home screen; add production-route placeholder test. |
-| MT-002 | CRITICAL | Admin Users | User management unavailable | Wire list/detail/status flows to existing admin APIs. |
-| MT-003 | CRITICAL | Vacancy Submit | UI accepts immediately active result | Render explicit Under moderation state; add environment E2E assertion. |
-| MT-004 | HIGH | Admin Dictionaries | Dictionary management unavailable | Ship mobile type/item CRUD, activation, hierarchy, and merge UI. |
-| MT-005 | HIGH | All roles | No notification center/push/deep links | Implement list, badges, token lifecycle, permission, preferences, and routing. |
-| MT-006 | HIGH | Wallet | Top up is roadmap snackbar | Implement provider-driven checkout/status/history and empty-provider state. |
-| MT-007 | HIGH | Company profile | Blank save locks employer type | Require explicit type and valid fields; support safe reset/change. |
-| MT-008 | HIGH | Admin shell | No sign-out/account route | Expose common Account/Security from admin app bar. |
-| MT-009 | MEDIUM | Candidate attachment | Purpose code treated as UUID | Resolve code correctly and introduce distinct client value types. |
-| MT-010 | MEDIUM | Employer shell | Prerequisite failures lack CTA | Model domain prerequisites and route directly to correction. |
-| MT-011 | MEDIUM | Company/Verification | Dependent state stale after save | Invalidate all dependent providers after create/update. |
-| MT-012 | MEDIUM | Verification/Admin review | Raw codes and bare salary | Centralize code localization and money formatting. |
-| MT-013 | MEDIUM | Auth | Premature submit/global errors | Align button validity and inline error mapping with known formats. |
-| MT-014 | MEDIUM | Network states | Developer error copy | Separate production copy from diagnostic logs. |
-| MT-015 | MEDIUM | Shared components | Duplicate/unlabelled semantics | Fix semantics in design-system controls and run TalkBack regression. |
-| MT-016 | MEDIUM | Vacancy feed | Landscape actions clipped | Add responsive layout/insets and rotation tests. |
-| MT-017 | MEDIUM | Admin Complaints | Cards omit identity | Render safe target summary on each card. |
-| MT-018 | MEDIUM | Candidate Invitations | Recipient sees “Sent” | Use role-perspective status labels. |
-| MT-019 | LOW | Candidate Search | 100% with no criteria | Hide score when breakdown is empty. |
+| Order | ID | Action |
+|---:|---|---|
+| 1 | MT-020 | Replace notification read `POST`s with `PUT`; add repository and integration tests. |
+| 2 | MT-013 | Bind auth button enablement to complete validators and suppress global local-validation errors. |
+| 3 | MT-009 | Resolve file purpose by code or carry dictionary UUID separately. |
+| 4 | MT-016 | Add safe bottom padding and compact/200% golden tests to role-shell scrollables. |
+| 5 | MT-015 | Fix shared semantic composition and label icon-only picker buttons. |
+| 6 | MT-021 | Make role mutation/persistence/navigation one awaited state transition. |
+| 7 | MT-012 | Centralize dictionary and currency display formatting. |
+| 8 | MT-014 | Replace development network copy with user-facing localized states. |
+| 9 | MT-017 | Render complaint target summary and stable short ID. |
+| 10 | Quality gate | Resolve 28 analyzer findings so `flutter analyze` is clean. |
+
+Do not change the now-working duplicate guards, server-built file download path,
+push token cleanup, or invitation wording while addressing these items.
 
 ## 23. Backend Developer Action List
 
-| ID | Severity | Endpoint/Module | Problem | Backend Action |
-|---|---|---|---|---|
-| MT-003 | CRITICAL | Vacancy submit / deployment | Moderation flag disabled | Enable in release/staging and add deployment smoke gate for non-discoverability before approval. |
-| MT-005 | HIGH | Notifications/FCM | Client delivery path not operational | Configure DEV/staging FCM, token lifecycle, monitoring; retain in-app records on push failure. |
-| MT-006 | HIGH | Payments | No configured checkout provider | Configure approved sandbox/store provider and run UAT-20–23 callback/idempotency matrix. |
-| MT-007 | HIGH | Employer profile | Empty, wrong-type draft can persist | Define/reject empty create and support safe unused-incomplete type reset. |
-| MT-009 | MEDIUM | Dictionaries contract | String code can be misused as UUID | Strengthen generated contract/docs/types; existing UUID validation should remain. |
-| MT-010 | MEDIUM | Domain error codes | Known prerequisite rendered generically | Preserve stable reason/action codes; no rule relaxation. |
-| MT-012 | MEDIUM | Admin/verification DTOs | Presentation context may be incomplete | Ensure history/detail includes period/currency and stable localization codes. |
-| MT-013 | MEDIUM | Auth | Client validation weak | Retain server TTL/attempt/rate limits and distinct stable error reasons. |
-| MT-017 | MEDIUM | Admin complaint list | Target summary insufficient | Add authorized target display summary with deleted-target fallback if absent. |
-| MT-019 | LOW | Candidate score | Empty criteria returns 100 | Consider nullable score or explicit `hasMatchCriteria`. |
+| Order | ID | Action |
+|---:|---|---|
+| 1 | MT-003 | Enforce moderation in release runtime and add a fail-closed deployment check. |
+| 2 | MT-006 | Complete policy-compliant Payment Orders, callbacks, ledger, and idempotency. |
+| 3 | MT-020 | Publish/generated-client contract tests for notification methods; retain PUT behavior. |
+| 4 | MT-017 | Add target summary/status to complaint-list DTO if not already present. |
+| 5 | MT-021 | Ensure role-grant response is authoritative/idempotent for client synchronization. |
 
-Before real users: revert the temporary DEV master-key state by clearing
-`OTP_STATIC_CODE`, use an actual OTP provider, and return `NODE_ENV=production`.
-Do not place real data behind the current public static-code deployment.
+Retain `OTP_ECHO_IN_RESPONSE=false`. Remove static OTP and development runtime
+before any production deployment.
 
 ## 24. UX / Product Improvement List
 
-| ID | Screen | UX Problem | Proposed Improvement | Impact |
-|---|---|---|---|---|
-| MT-001 | Candidate Home | Internal milestone instead of value | Recommended jobs + profile/action summary | Very high: fixes default candidate impression. |
-| MT-007 | Employer onboarding | Irreversible default type | Explicit no-default “Who is hiring?” step | Very high: prevents trapped accounts. |
-| MT-010 | Employer Home | Contradictory readiness message | Setup checklist with direct CTAs | High: makes activation self-service. |
-| MT-005 | All roles | No event return loop | Notification inbox/badge/deep links | Very high: prevents missed hiring events. |
-| MT-006 | Wallet | Dead-end paywall | Provider-aware funding and resume unlock | Very high: restores monetization/task completion. |
-| MT-013 | Auth | Avoidable invalid submissions | Inline, actionable, stable validation | High frequency, low complexity. |
-| MT-012 | Admin/Verification | Internal terminology | User-language labels and complete formatting | Medium: comprehension/trust. |
-| MT-017 | Complaints | Indistinguishable cards | Add target identity/context | Medium: faster, safer moderation. |
-| MT-018 | Invitations | Wrong perspective label | “Awaiting your response” | Medium: clearer primary action. |
-| MT-019 | Search | False precision | Hide score until criteria exist | Medium: improves hiring trust. |
+Quick wins:
 
-### Quick Wins
+- Replace offline/backend wording (MT-014).
+- Replace raw document/audit codes and “Unavailable value” (MT-009/012).
+- Put Admin Notifications near the top of the dashboard.
+- Identify complaint targets in list view (MT-017).
+- Hide or clearly pre-label unavailable top-up instead of promising it after tap.
 
-- Replace the offline backend/base-URL sentence with localized connection copy.
-- Hide “100% match” when `matchBreakdown` is empty.
-- Map candidate invitation `sent` to “Awaiting your response.”
-- Localize `company_registration`, `evidence`, and moderation reason codes.
-- Format admin salary with grouping, UZS, and pay period.
-- Add profile/verification CTAs to known prerequisite errors.
-- Disable OTP actions until fixed-length input is present.
-- Invalidate verification/dashboard providers after employer profile Save.
-- Add target identity to complaint cards if already present in the response.
-- Route candidate login to Vacancies until the real Home screen ships.
+Larger improvements:
+
+- Define a responsive/accessibility acceptance matrix for every role shell.
+- Make payment/top-up availability a server capability, not a hard-coded promise.
+- Add a visible, consistent “review pending” journey around moderation.
+- Keep role onboarding transitions transactional from the user's perspective.
 
 ## 25. Suggested Regression Tests
 
-### Release-shell gate — Widget + integration + E2E
+Automate at minimum:
 
-- Enumerate every production `ShellTab`; fail if it resolves to
-  `ShellPlaceholderScreen` or contains “arrives in M…”.
-- Cold-start each candidate/employer/admin role and exercise every bottom tab.
-- Assert development-only controls are absent while sign-out remains reachable.
-
-### Employer onboarding — Widget + API + E2E
-
-- No type preselection; empty/whitespace/overlong input; back/resume.
-- Wrong type then change/reset before dependent records.
-- Save valid company and individual profiles; verify dependent providers refresh.
-- Double Save, timeout retry, background during Save, stale response order.
-
-### Vacancy moderation — API + deployment smoke + E2E
-
-- Submit once/double tap/retry; exactly one status transition.
-- Assert `under_moderation`, queue membership, candidate non-discoverability.
-- Approve/reject/request changes and verify audit + employer notification.
-- Run the same smoke against the actual release environment configuration.
-
-### Wallet and unlock — Unit + API + E2E
-
-- 10 → 8 first unlock; revisit/double tap/network retry remains 8.
-- Concurrent unlock requests; debit/entitlement atomicity.
-- Balance 0/1 routes to Top up and resumes candidate context.
-- Payme/CLICK/store success, duplicate callback, invalid amount/account,
-  cancelled/failed/refunded, and reconciliation.
-
-### Notifications — API + integration + manual device
-
-- Every §9.2 event creates exactly the right recipient record.
-- Permission allowed/denied/later enabled; foreground/background/killed app.
-- Token refresh, logout token removal, invalid token, multiple devices.
-- Deep link switches role and opens only authorized target.
-
-### Hiring interactions — API + E2E
-
-- Duplicate invitation/application/interview/message under double tap and retry.
-- All application/interview legal and illegal transitions with history actor/time.
-- Employer starts chat only after unlock; candidate receives unread, replies, marks
-  read, blocks/reports, and sees read-only closed interaction.
-
-### Accessibility/responsive — Widget golden + manual
-
-- Semantics assertions for one label/action node per shared component.
-- TalkBack login, profile, search/apply, unlock, invitation, admin moderation.
-- 100%, 130%, 200% font; 720p, 1080p, API-24 minimum, landscape, tablet/foldable.
-- Assert primary action rectangles are at least 48 logical pixels and not
-  intersecting navigation/system insets.
-
-### Error/reliability — Integration + manual
-
-- Offline, DNS failure, timeout, 500/502/503, 401 refresh, 403 blocked, 409 stale,
-  422 field errors, and 429 with countdown.
-- Network loss during each critical mutation; retry must not duplicate.
-- Cached content distinguishes stale/offline from genuine empty results.
+1. Notification repository contract: both read actions use PUT; unread count and
+   row state update on 204/`{marked}` and roll back on failure.
+2. Release environment smoke test: submit vacancy → under moderation → approve →
+   discovery; fail startup if moderation is off.
+3. Authentication widget tests for 0–8 phone digits and 0–5 OTP digits.
+4. Role selection test with immediate/double Next and delayed API/storage writes.
+5. Candidate file card test where `purposeCode=cv` renders localized CV and
+   follows the server `downloadPath` verbatim.
+6. Golden/semantics tests at 360 × 640 dp, landscape, font scale 2.0, and all
+   five bottom-nav destinations.
+7. Complaint list contract/render test with active, deleted, and unavailable
+   targets.
+8. Payment tests for duplicate callbacks, failed/cancelled payments, ledger
+   append-only behavior, and exactly-once credit.
+9. Existing idempotency E2E suite for apply/save/message/invite/accept/profile
+   save under rapid repeated taps.
+10. Production route test ensuring no placeholder/milestone screen is reachable.
 
 ## 26. Test Coverage / Not Tested Areas
 
-### Coverage Matrix
+Covered in 1.11.0:
 
-| Feature | Happy | Invalid | Offline | Double action | Resume/back | UX | Permission/business |
-|---|---|---|---|---|---|---|---|
-| Launch/session | Tested | Partly | N/A | N/A | Tested | Tested | Partly |
-| Phone/OTP | Tested | Tested | Not tested during submit | Partly | Tested | Tested | Rate-limit depth not tested |
-| Employer profile | Partly | Tested empty | Not tested | Tested Save tap | Tested | Tested | Gate tested |
-| Verification | Partly | Tested incomplete | Not tested | Partly | Tested | Tested | Admin decision cancelled |
-| Candidate search | Tested no-filter | Partly | Tested failure/retry | N/A | Tested | Tested | Protected data tested |
-| Candidate Unlock | Tested | Duplicate/revisit tested | Not during debit | Tested | Tested | Tested | Atomic DB result tested |
-| Invitations | Tested send/respond | Duplicate 409 tested | Not tested | Tested | Tested | Tested | Role response tested |
-| Vacancy create/submit | Tested | Empty form tested | Not during write | Tested | Tested | Tested | Moderation config failed |
-| Discovery/save/apply | Tested | Duplicate tested | Cached Saved tested | Tested | Tested | Tested | BR-07 tested |
-| Applications/status | Tested | Partly | Not tested | Tested | Tested | Tested | History checked |
-| Interviews | Tested | Required fields partly | Not tested | Tested | Tested | Tested | History/response checked |
-| Chat | Tested two-way | Empty message partly | Not tested | Send guard partly | Tested | Tested | Unlock gate tested |
-| Wallet top-up | Unavailable | Unavailable | Unavailable | Unavailable | Unavailable | Tested dead end | UAT-19–23 incomplete |
-| Admin dashboard | Tested | N/A | Not tested | N/A | Tested | Tested | Admin-only session |
-| Admin moderation | Read/confirm tested | Decision validation partly | Not tested | Mutation cancelled | Tested | Tested | Actual decision not changed |
-| Admin complaints | List/detail tested | Not tested | Not tested | Mutation not run | Tested | Tested | Admin-only session |
-| Admin Users | Not available | Not available | Not available | Not available | Not available | Tested placeholder | UAT-14 blocked |
-| Admin Dictionaries | Not available | Not available | Not available | Not available | Not available | Tested placeholder | BR-13 admin blocked |
-| Localization | Representative tested | Raw-code cases found | N/A | N/A | Persistence tested | Tested | Four variants |
-| Accessibility | Partial | N/A | N/A | N/A | Partial | Semantics/text scale | TalkBack E2E not run |
-| Device layout | Portrait/small/landscape | Landscape failed | N/A | N/A | Rotation partly | Tested | Physical/tablet absent |
+- Fresh install, authentication, static OTP, role creation, session restart,
+  sign-out, and notification permission allow/deny behavior.
+- Candidate discovery, detail, save, apply, applications, invitations, chat,
+  and attachment download.
+- Existing/new employer dashboard, onboarding validation/save, verification gate,
+  candidate search, invitation send, wallet/top-up surface, and account security.
+- Admin dashboard, users/search/warn, dictionaries, complaints, moderation lists,
+  notifications/preferences, sign-out, and FCM token deletion.
+- Foreground notification persistence, background FCM, notification shade, and
+  deep-link opening.
+- Offline/recovery, portrait/landscape/compact layouts, 100%/200% text, four
+  locale selectors, cold/warm launch timing, Flutter analyze/test.
 
-### Explicitly Not Tested / Unavailable
+Not tested or not completed in this cycle:
 
-- Real SMS delivery; authentication used the owner-authorized static DEV code.
-- Payme, CLICK, Google Play Billing, Payment Orders, callbacks, refunds, and
-  reconciliation because no provider is available.
-- Push notification delivery, permission, device token, and notification deep
-  links because the 1.4.1 client does not implement them.
-- Exhaustive admin user/dictionary/audit/wallet/payment functions because the
-  release UI routes are missing; direct destructive API mutation was not used as
-  a substitute for absent UI.
-- Real file upload/download/cancel/progress and malware scan. Local QA API storage
-  had an external Telegram connectivity limitation; no product result is claimed.
-- Account deletion execution/retention purge; only account/security surface and
-  confirmations were reviewed.
-- Forced access-token expiry/refresh race, simultaneous multi-device session, and
-  exhaustive IDOR/security exploitation.
-- Blocked/restricted account mutation from the mobile admin UI (blocked by MT-002).
-- Vacancy deadline expiry, pause/close/reopen, offer/hired/rejected/withdrawn full
-  matrix, age/gender restriction approval, and seasonal UAT-10 data matrix.
-- Exhaustive search/filter combinations, pagination under large datasets, Unicode,
-  emoji, whitespace, and sorting edge values.
-- Slow 2G/packet loss, timeout during write/payment, background during mutation,
-  hours-long soak, memory, battery, thermal, and server load testing.
-- Physical phones, API-24 minimum device, tablet, foldable, OEM skins/keyboards,
-  camera/location flows, and iOS (project scope is Android on this Windows host).
-- Professional translation review, instrumented contrast measurement, full
-  TalkBack/switch-access journey, and external keyboard.
+- Real SMS OTP delivery and abuse/rate-limit soak.
+- Real Payme/CLICK/store billing, because top-up is not implemented.
+- Full admin approve/reject notification cycle while moderation is disabled.
+- Actual new attachment upload/file-picker interruption; download was tested.
+- Physical Android devices, Android 7 minimum, low-end performance, tablets,
+  foldables, OEM keyboards, iOS build/runtime, RTL, dark mode, TalkBack audio,
+  contrast instrumentation, battery/memory soak, and backend load/security scan.
+- Destructive account deletion and production retention jobs.
+
+These gaps prevent claiming platform-wide or production acceptance even apart
+from the open blockers.
 
 ## 27. Final Assessment
 
-If version 1.4.1 were released to thousands of ordinary users tomorrow, the first
-support complaints would be “the Home screen says it arrives later,” “I cannot
-block a user as admin,” “my vacancy appeared without review,” “I did not receive
-an update,” “I cannot buy more Coins,” and “I chose the wrong employer type and
-cannot undo it.” Those are prominent release blockers, not polish.
+JobBridge 1.11.0 is a credible DEV product and a clear step forward. Candidate
+Home, mobile admin management, dictionaries, employer onboarding, invitation
+wording, search relevance display, account security, in-app notifications, and
+background push are now real working features. Transaction/duplicate integrity
+was the strongest observed quality: every rapid repeated core action left one
+authoritative DB record.
 
-The product is nevertheless beyond a throwaway prototype. Its API/domain
-foundations showed good integrity: server-side uniqueness, wallet atomicity,
-protected contact, role gates, histories, visibility, localization, and two-way
-hiring workflows worked in meaningful DEV data. The correct strategy is not a
-rewrite; it is to finish the missing release surfaces, align deployment flags
-with the specification, and harden the shared UX/accessibility components.
+It is not yet production-ready. Release must wait until:
 
-**Minimum release gate:** close MT-001 through MT-008, enable moderation, remove
-the static OTP master key/connect real authentication delivery, complete push and
-top-up, then execute the regression suite in Section 25 on the exact signed APK
-and actual release backend configuration. MT-009 through MT-018 should be fixed
-before broad beta because they affect paid trust, onboarding recovery,
-accessibility, localization, and landscape task completion.
+- moderation is enforced and its full mobile approval path passes;
+- notification read/mark-all calls match the backend and badges clear;
+- Coin top-up is implemented and policy-approved, or paid functionality is
+  explicitly out of scope and the unavailable action is removed;
+- compact/large-text CTA clipping and critical semantics problems are fixed;
+- authentication and role-selection races no longer lead users into avoidable
+  global errors; and
+- `flutter analyze` is clean alongside the already passing 961 tests.
 
-**Final verdict: not ready for production; suitable for continued controlled DEV
-testing after acknowledging the public static-code risk.**
+**Final verdict: NO-GO for production; GO WITH KNOWN ISSUES for controlled DEV
+testing only.**

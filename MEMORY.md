@@ -501,6 +501,66 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-25 - A wrong HTTP verb hid behind a legitimate 404 for two releases
+`markRead` and `markAllRead` were written as `POST` against routes the backend
+declares as `@Put`. Both 404'd. So §9.2's notification centre shipped in 1.10.0,
+shipped again in 1.11.0, and **could never mark anything read** - the badge
+never came down and handled events kept presenting themselves as new. Found by
+the v1.11.0 audit (MT-020), not by us.
+
+Three things let it through, and the third is the general lesson.
+
+**The tests faked the repository, not the transport.** Every notification test
+supplied a `_FakeNotifications`, so the *method* was the one property in the
+file nothing asserted. A fake at the repository boundary tests everything above
+it and nothing about the wire - and the wire is exactly where a handwritten
+contract drifts.
+
+**404 is a correct answer on that route.** `notification.not_found` is returned
+deliberately for somebody else's notification, so that another user's records
+cannot be probed. That made the wrong verb indistinguishable from the refusal
+the route is designed to give: reading the failure told you nothing was wrong.
+**When a route's error code is load-bearing for privacy, it cannot also serve as
+your signal that the call is well-formed.**
+
+**Nothing compared the two repositories.** The client contract is transcribed
+from the controller by hand, and a transcription drifts silently. There is now a
+test that reads `notifications.controller.ts` and fails when the decorators and
+the calls disagree; it skips on CI, where only one repo is checked out, so it is
+a developer-machine check. It is still the only one of the eight cases in that
+file that could have caught this - the other seven pin the client against a
+table a human wrote down, which is the thing that was wrong.
+
+Worth applying to the other repositories: `auth`, `chat`, `health` and
+`shortlist` have transport-level tests; the rest are faked at the repository.
+
+### 2026-08-25 - `flutter analyze` does not reliably run riverpod_lint, so "clean" has been a weaker claim than it reads
+The v1.11.0 audit reported **28 analyzer findings in test code** against a
+commit whose message said analyze was clean. Both are true.
+
+Running `flutter analyze` repeatedly on an unchanged tree gave **28, then 0, 0,
+0, 0, then 3**. The 28-finding run took 24 seconds; every run that reported
+fewer took about 5. riverpod_lint 3.1.4 goes through the analyzer's native
+plugin system (see `analysis_options.yaml`), and the plugin's diagnostics only
+appear when it finishes starting before the command exits. Clearing
+`.dart_tool/extension_discovery`, touching every source under `lib/`, and
+touching every source under `test/` all failed to bring the 28 back.
+
+So: **core Dart lints are reliable, riverpod_lint findings are not.** A green
+`flutter analyze` means the core rules passed and says nothing either way about
+riverpod's. CI runs the same command, so CI does not close the gap.
+
+The 28 were `scoped_providers_should_specify_dependencies` in test files plus
+two `avoid_public_notifier_properties`. The second was real and is fixed. The
+first was **not** blind-fixed: adding `dependencies:` to a provider is a runtime
+change in Riverpod 3 - it marks the provider as scoped - so applying it to six
+providers to silence warnings that cannot currently be reproduced would be
+trading a lint for a behaviour change. It needs a run that reproduces them.
+
+A previous session watched these same warnings appear and vanish when an
+*unrelated* compile error was fixed, which fits: they show up when riverpod_lint
+is working from a partially resolved analysis.
+
 ### 2026-08-24 - The loud failure was worth waiting five days for
 On 2026-08-19 the rename left `google-services.json` naming the pre-rename
 packages, and the decision recorded that day was to leave it stale rather than

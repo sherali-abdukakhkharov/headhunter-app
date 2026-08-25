@@ -8,39 +8,48 @@ decision or on the backend.
 
 ---
 
-## The 1.4.1 QA audit (2026-08-23)
+## The 1.11.0 QA audit (2026-08-25)
 
-A full QA, UX, business-logic, API, accessibility and localization audit of the
-**1.4.1** APK against the DEV database, delivered as
-[mobile-test-audit.md](mobile-test-audit.md): 3 Critical, 5 High, 10 Medium, 1
-Low, verdict **NO-GO for 1.4.1**. Findings are `MT-nnn` and each carries
-evidence, a root cause and acceptance criteria — read those before starting a
-fix rather than working from the summary table.
+A full regression audit of the **1.11.0** APK on a Pixel 8 against the deployed
+DEV API, delivered as [mobile-test-audit.md](mobile-test-audit.md). It replaces
+the 1.4.1 audit of 2026-08-23: **10 of those findings are verified fixed**, 11
+remain open (1 Critical, 2 High, 8 Medium) and **2 are new** — MT-020 and
+MT-021. Verdict **NO-GO for production**, **GO with known issues for DEV**.
 
-**It audited 1.4.1, and two releases have landed since.** Read every row below
-against that: one Critical was already fixed before the audit was written up.
+Findings are `MT-nnn` and each carries evidence, a root cause and acceptance
+criteria — read those before starting a fix rather than working from the table.
+
+**Two things this audit settled that could not be checked from here.** Push was
+observed working end to end on a real device — background FCM delivery, tap
+deep-linking, and the device-token deletion at sign-out — so §9.2 is confirmed
+rather than merely tested. And the duplicate guards hold: rapid repeated taps
+created exactly one chat message, saved vacancy, application, invitation,
+invitation response and employer profile.
 
 | ID | Sev | State |
 |---|---|---|
-| MT-001 | Critical | **Fixed 1.7.0** — candidate Home is a real screen |
-| MT-002 | Critical | **Fixed 1.5.0**, before the audit was delivered — §10.4's user management, search and BR-10 actions |
-| MT-003 | Critical | **Backend/deployment**, and confirmed as such by the audit itself: `MODERATION_ENABLED=false` in the tested `.env`. The client already renders whatever status the API returns; the ask is the flag and a deployment smoke test |
-| MT-004 | High | **Fixed 1.9.0** — §10.3 ships, and the shell has no placeholders left. Label *editing* waits on a contract change; see the ask |
-| MT-005 | High | **Fixed — in-app 1.10.0, push 1.11.0.** The centre, the badge, mark-read and the per-category switches shipped first; push followed once the owner registered the three `com.jobbridge.app*` apps in Firebase on 2026-08-24. Token registration, tap-to-route from a closed app, and a foreground badge refresh are in. **The Android build itself is unverified locally** — Gradle cannot start in a Claude session, so `app-ci.yml` is what proves it |
-| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code |
-| MT-007 | High | **Fixed 1.8.0** — no default type, and the first save is held to §6.1 |
-| MT-008 | High | **Fixed 1.7.0** — the account screen is on the administrator's dashboard |
-| MT-009 | Medium | Open — CV purpose code sent to a uuid dictionary endpoint |
-| MT-010 | Medium | **Half fixed 1.8.0** — an incomplete employer never sees "Nothing is waiting on you" again; the two BR-03 gates (New vacancy, Candidates) still answer with a snackbar and a global error rather than a corrective CTA |
-| MT-011 | Medium | **Fixed 1.8.0** — a save invalidates verification |
+| MT-003 | Critical | Open — **backend/deployment**, and confirmed as such by the audit: `MODERATION_ENABLED=false` in the tested runtime. The client already renders whatever status the API returns; the ask is the flag and a fail-closed deployment check |
+| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. The audit adds a product ask: make top-up availability a **server capability** rather than a promise the app makes and then withdraws after the tap |
+| MT-020 | High | **Fixed 1.11.1** — the two read routes were `POST` against a server that declares `@Put`, so nothing in §9.2's centre could be marked read in 1.10.0 or 1.11.0. See MEMORY.md for why a 404 hid it |
+| MT-009 | Medium | Open — CV purpose code sent to a uuid dictionary endpoint, so the label resolves as "Unavailable value" |
 | MT-012 | Medium | Open — raw wire codes and unformatted salary reach the UI |
 | MT-013 | Medium | Open — OTP submits before it can succeed; errors are global rather than inline |
 | MT-014 | Medium | Open — the offline message names the backend and the base URL |
-| MT-015 | Medium | Open — duplicate semantics and unlabelled pickers. **Design-system change, so it needs a device run** |
-| MT-016 | Medium | Open — landscape clips the vacancy card's actions |
-| MT-017 | Medium | Open, and it is a **backend ask**: `GET /admin/complaints` returns complaints, not what they are about, and resolving a target is a per-kind query the detail route does one at a time. Recorded as such since the queue shipped |
-| MT-018 | Medium | **Fixed 1.7.0** — the recipient's invitation reads "Awaiting your answer" |
-| MT-019 | Low | **Fixed 1.7.0** — no match score without a match breakdown behind it |
+| MT-015 | Medium | Open — duplicate semantics and unlabelled icon-only pickers. **Design-system change, so it needs a device run** |
+| MT-016 | Medium | Open — the primary CTA is clipped on compact and 200%-text layouts |
+| MT-017 | Medium | Open, and it is a **backend ask**: `GET /admin/complaints` returns complaints, not what they are about |
+| MT-021 | Medium | **New** — tapping Employer and Next in quick succession enters the shell before the active role has persisted, showing "No active role is selected". The role *was* granted; a restart heals it. Needs the mutation, the persistence and the navigation to be one awaited transition |
+
+Fixed by 1.11.0 and verified by this audit: MT-001, MT-002, MT-004, MT-005,
+MT-007, MT-008, MT-010, MT-011, MT-018, MT-019.
+
+**The audit's tenth frontend action is a quality gate, and it is real**: it
+reports 28 analyzer findings in test code against a commit whose message says
+`flutter analyze` was clean. Both are true, and the reason is in MEMORY.md —
+riverpod_lint runs through the analyzer's plugin system and its diagnostics
+appear only sometimes. Two of the 28 are fixed; the other 26 need a run that
+reproduces them before they can be touched, because the obvious fix is a
+runtime change rather than a lint fix.
 
 Two things the audit asked for that are now standing guarantees rather than
 fixes:
@@ -57,8 +66,10 @@ fixes:
 
 ## Blocked on someone else
 
-- [?] **`GOOGLE_SERVICES_JSON_BASE64` repository secret** — one owner action,
-      **and CI is red until it exists.** Push (1.11.0) applies the
+- [x] ~~**`GOOGLE_SERVICES_JSON_BASE64` repository secret**~~ — **added by the
+      owner 2026-08-24**, and all three CI jobs restore from it since `86b8f6f`.
+      The note below is kept because it explains why a gitignored file has to be
+      restored per job. Push (1.11.0) applies the
       `com.google.gms.google-services` Gradle plugin, which reads
       `android/app/google-services.json` and refuses the build without it — and
       that file is gitignored and supplied per machine (`android/.gitignore`,
@@ -1651,10 +1662,31 @@ paywall that is not theirs.
       **Registration is driven by the session, not observed from it** — the
       DELETE needs the credentials sign-out is about to discard, and a listener
       would also close a provider cycle.
-      **Unverified:** the Gradle build. Gradle cannot start in a Claude session
-      (`Unable to establish loopback connection`), so the google-services
-      plugin under AGP 9, the new Kotlin, and the manifest merge are all
-      proven by CI rather than here.
+      **Unverified from here:** the Gradle build. Gradle cannot start in a
+      Claude session (`Unable to establish loopback connection`), so the
+      google-services plugin under AGP 9, the new Kotlin, and the manifest
+      merge were proven by CI. **The 1.11.0 audit then observed the whole thing
+      on a Pixel 8** — background delivery, tap deep-linking and the sign-out
+      token deletion — so §9.2 is confirmed on a device, which is what this
+      entry was waiting for.
+- [x] **MT-020: the centre could never mark anything read, 2026-08-25.**
+      `markRead` and `markAllRead` were written as `POST` against routes the
+      backend declares as `@Put`, so both 404'd for the whole life of the
+      feature: the badge never came down, a row tap left the row unread, and
+      "mark all read" showed *"The requested data was not found"*.
+      **Nothing caught it because the tests faked the repository rather than
+      the transport**, so the method was the one property nothing asserted —
+      and because 404 is the *correct* answer on that route for somebody else's
+      notification, so the wrong verb was indistinguishable from the refusal
+      the route is designed to give.
+      `notification_repository_test.dart` now pins the verb and path of all
+      eight routes and, where the backend repo is checked out beside this one,
+      reads its controller decorators and fails when they disagree.
+      Mutation-verified: restoring the `POST` reddens four cases, and the
+      cross-check names `POST /notifications/:id/read` outright.
+      **The same gap exists elsewhere** — `auth`, `chat`, `health` and
+      `shortlist` have transport-level tests; every other repository is faked
+      at its own boundary
 
 Runs after M10, not after M6. No Firebase package enters `pubspec.yaml` before
 this opens. Deep links moved to M8.
@@ -2070,6 +2102,20 @@ remaining item is a screen.
 
 ## M11 - Hardening
 
+- [ ] **Make `flutter analyze` a gate that means something.** It reports
+      riverpod_lint findings only when the analyzer plugin finishes starting
+      before the command exits — the same unchanged tree gave 28, then 0, then 3
+      (MEMORY.md, 2026-08-25). Until that is settled, every "analyze clean"
+      claim in this repo covers the core rules only. Wants either a way to run
+      the plugin deterministically or the 26 outstanding
+      `scoped_providers_should_specify_dependencies` warnings resolved, and the
+      second cannot be done blind: `dependencies:` marks a provider as scoped,
+      so it is a runtime change rather than a lint fix
+- [ ] **Transport-level tests for the repositories that have none.** `auth`,
+      `chat`, `health`, `shortlist` and now `notifications` drive a recording
+      `HttpClientAdapter`; every other repository is faked at its own boundary,
+      which is what let MT-020's wrong verb ship twice. Worth a sweep rather
+      than waiting for the second one to be found by an auditor
 - [ ] Small-screen and large-font-scale pass over every screen
 - [ ] **`HhMetaChip` does not shrink its label** — its `Row` is
       `MainAxisSize.min` around an unconstrained `Text`, so a label wider than

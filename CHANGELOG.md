@@ -17,6 +17,35 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.11.1+17 — 2026-08-25
+
+Notifications can be marked read again — which, it turns out, they never could.
+
+### Fixed
+
+- **Opening a notification, and "mark all read", now work.** Both asked the
+  server in a way it does not answer, so every read action failed: tapping a
+  row still took you where it led but left the row unread, "mark all read"
+  answered *"The requested data was not found"*, and the unread badge never
+  came down. The centre kept presenting things you had already dealt with as
+  new. This affected 1.10.0 and 1.11.0 — every build that has had the
+  notification centre in it.
+
+### Internal
+
+- The two calls were written as `POST` against routes the backend declares as
+  `PUT`. Nothing caught it because the notification tests supplied a fake
+  repository, so the *method* was the one property in the file nothing
+  asserted — and because a wrong verb answers **404** on that route, which is
+  also the legitimate answer for somebody else's notification. The failure was
+  indistinguishable from the refusal the route is designed to give.
+- `notification_repository_test.dart` now pins the verb and the path of all
+  eight routes, and — where the backend repository is checked out beside this
+  one — reads its controller decorators and fails when the two disagree. That
+  last case is the only one that catches this at its source; the rest pin the
+  client against a table a human transcribed, and this bug is what happens when
+  the transcription is wrong.
+
 ## 1.11.0+16 — 2026-08-24
 
 Your phone tells you now. Until this release the app could show you everything

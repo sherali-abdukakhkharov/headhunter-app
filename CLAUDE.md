@@ -332,7 +332,20 @@ from a per-provider `retry` rather than re-enabling it globally.
   (three times), so merely re-wrapping a comment to satisfy the 80-column rule
   makes `*.g.dart` stale. `flutter analyze` and `flutter test` both stay green
   when this happens; only CI catches it.
-- Line length 80. `flutter analyze` must be clean before committing.
+- **A repository's HTTP verb and path need a transport-level test.** Faking the
+  repository tests everything above it and nothing about the wire, and the wire
+  is where a handwritten contract drifts: §9.2's two mark-read routes shipped as
+  `POST` against `@Put` and 404'd for two whole releases with nothing red
+  (MEMORY.md, 2026-08-25). Drive the real repository through a recording
+  `HttpClientAdapter` — `notification_repository_test.dart` is the pattern, and
+  it also cross-checks the backend's own decorators when that repo is checked
+  out beside this one.
+- Line length 80. `flutter analyze` must be clean before committing — but note
+  that **a clean run proves less than it looks like it does**: riverpod_lint
+  goes through the analyzer's plugin system and its findings appear only
+  sometimes, so the same tree has reported 28, 3 and 0 issues on consecutive
+  runs. Core Dart lints are reliable; riverpod's are not, and CI runs the same
+  command. See MEMORY.md.
 
 ## Dependency pinning - read before upgrading
 

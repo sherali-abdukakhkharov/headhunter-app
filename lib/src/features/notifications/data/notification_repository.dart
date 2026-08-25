@@ -69,27 +69,39 @@ class NotificationRepository {
     }
   }
 
-  /// `POST /notifications/:id/read`.
+  /// `PUT /notifications/:id/read`.
+  ///
+  /// **`PUT`, not `POST`.** Both read routes were written as `POST` and every
+  /// one of them 404'd against the real server for a whole release — see the
+  /// note on [markAllRead] for why nothing caught it.
   ///
   /// A 404 is `notification.not_found` — **including somebody else's**, which
   /// is how the route refuses to confirm that another user's notification
-  /// exists.
+  /// exists. That made the wrong method indistinguishable from a legitimate
+  /// refusal at the one place anybody would have looked.
   Future<void> markRead(String id) async {
     try {
-      await _dio.post<void>('/notifications/$id/read');
+      await _dio.put<void>('/notifications/$id/read');
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }
   }
 
-  /// `POST /notifications/read` — all of them.
+  /// `PUT /notifications/read` — all of them.
   ///
   /// Returns how many were still unread, which is the only way to say
   /// "nothing to do" honestly: marking an already-read list is a success that
   /// changed nothing.
+  ///
+  /// **This route and [markRead] shipped as `POST` in 1.10.0 and 1.11.0**, so
+  /// the notification centre could be read but never marked read. The tests
+  /// faked this repository rather than the transport, so the *method* was the
+  /// one property in the file nothing asserted; `notification_repository_test`
+  /// now pins the verb and the path of every route here, and cross-checks them
+  /// against the backend's own decorators when that repo is checked out.
   Future<int> markAllRead() async {
     try {
-      final response = await _dio.post<Map<String, dynamic>>(
+      final response = await _dio.put<Map<String, dynamic>>(
         '/notifications/read',
       );
 

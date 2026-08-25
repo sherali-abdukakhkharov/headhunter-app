@@ -41,10 +41,18 @@ class _FakeSessionController extends SessionController {
   @override
   SessionState build() => _initial;
 
-  /// The answer the session has arrived at. Setting it is how a test releases
-  /// the launch tap that has been held since the app started.
-  SessionState get resolved => state;
-  set resolved(SessionState next) => state = next;
+  /// Hands the session its answer, which is how a test releases the launch tap
+  /// that has been held since the app started.
+  ///
+  /// **Three lints want three different shapes here and no shape satisfies
+  /// all of them.** A setter alone trips `avoid_setters_without_getters`; a
+  /// getter/setter pair trips riverpod_lint's `avoid_public_notifier_properties`,
+  /// which keeps a notifier's public API on `state`; and a method trips
+  /// `use_setters_to_change_properties`, whose advice is the setter we just
+  /// came from. The method is the right shape for a notifier, so the core lint
+  /// is the one silenced.
+  // ignore: use_setters_to_change_properties
+  void resolveTo(SessionState next) => state = next;
 }
 
 class _FakeMessaging implements PushMessaging {
@@ -214,9 +222,11 @@ void main() {
       // now would be undone by the redirect that follows.
       expect(locationOf(app.router), Routes.splash);
 
-      app.session.resolved = const SessionActive(
-        roles: {AppRole.candidate},
-        activeRole: AppRole.candidate,
+      app.session.resolveTo(
+        const SessionActive(
+          roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
+        ),
       );
       await settle(tester);
 
@@ -234,7 +244,7 @@ void main() {
       );
 
       final app = await pump(tester, session: const SessionUnknown());
-      app.session.resolved = const SessionUnauthenticated();
+      app.session.resolveTo(const SessionUnauthenticated());
       await settle(tester);
 
       // Not held for a later sign-in: the notification is still in the centre,
