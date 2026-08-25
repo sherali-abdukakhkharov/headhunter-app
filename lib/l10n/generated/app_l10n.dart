@@ -3977,6 +3977,168 @@ abstract class AppL10n {
   /// **'Reason (the employer reads it word for word)'**
   String get adminReasonLabel;
 
+  /// §10.5. Entry point sits on the users tab, since a wallet belongs to an employer.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallets'**
+  String get adminWalletsTitle;
+
+  /// Says why the list is in the order it is, so nobody looks for a sort control. Largest balance first is the server's order and is where both the money and the risk are.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest balance first.'**
+  String get adminWalletsOrder;
+
+  /// Empty state heading for the wallet list.
+  ///
+  /// In en, this message translates to:
+  /// **'No wallets yet'**
+  String get adminWalletsEmpty;
+
+  /// BR-15 creates a wallet at first employer registration, so an empty list means no employer has registered rather than a fault.
+  ///
+  /// In en, this message translates to:
+  /// **'A wallet is created when someone first registers as an employer.'**
+  String get adminWalletsEmptyBody;
+
+  /// BR-14 erases the person and keeps the id, because §6.7 keeps payment records for reconciliation and BR-24 forbids rewriting the ledger. So a wallet can outlive the employer behind it, and the absence is stated rather than left blank.
+  ///
+  /// In en, this message translates to:
+  /// **'Account erased'**
+  String get adminWalletUnnamed;
+
+  /// How many candidates this employer has unlocked (BR-16).
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} unlock} other{{count} unlocks}}'**
+  String adminWalletUnlocks(int count);
+
+  /// When BR-15's ten Coins were granted. Shown rather than derived from the ledger: "exactly once" is the rule, and a missing date is what a failed grant looks like.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration bonus {date}'**
+  String adminWalletBonusOn(String date);
+
+  /// A wallet that never received BR-15's bonus. Worth saying, because the absence is the diagnostic part.
+  ///
+  /// In en, this message translates to:
+  /// **'No registration bonus'**
+  String get adminWalletNoBonus;
+
+  /// Title of one employer wallet (§10.5).
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get adminWalletTitle;
+
+  /// A 404 on a wallet: BR-15 creates one at first employer registration, so a user who never became an employer has none. An outcome, not a fault.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no wallet'**
+  String get adminWalletGone;
+
+  /// Explains the 404 above.
+  ///
+  /// In en, this message translates to:
+  /// **'A wallet exists only once someone has registered as an employer.'**
+  String get adminWalletGoneBody;
+
+  /// Heading above the transaction list.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction history'**
+  String get adminWalletLedger;
+
+  /// BR-24, said on screen. Three database triggers refuse UPDATE, DELETE and TRUNCATE on the ledger — so an administrator looking at a mistaken adjustment does not go hunting for a way to remove it.
+  ///
+  /// In en, this message translates to:
+  /// **'This history cannot be edited or deleted. A correction is a new entry.'**
+  String get adminWalletImmutable;
+
+  /// A wallet whose ledger is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has moved yet'**
+  String get adminWalletNoTransactions;
+
+  /// Opens the adjustment sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust balance'**
+  String get adminAdjustAction;
+
+  /// Signed Coin amount for an adjustment. Negative takes Coins away.
+  ///
+  /// In en, this message translates to:
+  /// **'Coins (use a minus to take Coins away)'**
+  String get adminAdjustAmount;
+
+  /// Placeholder showing both directions.
+  ///
+  /// In en, this message translates to:
+  /// **'5, or -3'**
+  String get adminAdjustAmountHint;
+
+  /// Mandatory, and checked by the database as well as the DTO (§10.5). Distinct from adminReasonLabel, which is read by the employer — this one is read by whoever audits the adjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (recorded in the audit log)'**
+  String get adminAdjustReason;
+
+  /// An example of a real reason for an adjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund for a failed top-up, order 4821'**
+  String get adminAdjustReasonHint;
+
+  /// BR-24 stated before the action rather than discovered after it: the entry is permanent and is attributed to the administrator making it.
+  ///
+  /// In en, this message translates to:
+  /// **'This adds a new entry to the ledger under your name. It cannot be undone — correcting it means making another adjustment.'**
+  String get adminAdjustNote;
+
+  /// Confirms the adjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust'**
+  String get adminAdjustSubmit;
+
+  /// The server refuses zero: an entry that changes nothing is a ledger row with no meaning. Said before the request rather than as a 422 after it.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number other than zero.'**
+  String get adminAdjustZero;
+
+  /// Confirmation after an adjustment, naming the new balance so the administrator does not have to look for it.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjusted. The balance is now {balance}.'**
+  String adminAdjustDone(int balance);
+
+  /// §10.5 also asks for Payment Order search on six axes. The API has payment endpoints, but they answer only for the employer making the request — there is no administrator route. Stated on the screen rather than left as a missing feature, the same way §10.3 states what label editing is waiting on.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment order search is not available yet'**
+  String get adminPaymentsPending;
+
+  /// Says what is missing and that it is known, so nobody reports it as a bug.
+  ///
+  /// In en, this message translates to:
+  /// **'The server has no administrator route for payment orders yet — today it answers only for the employer making the request. Top-up itself is also not live.'**
+  String get adminPaymentsPendingBody;
+
+  /// §10.5 names the registration bonus, the Coin price and the unlock price as server configuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices and the registration bonus'**
+  String get adminPricingTitle;
+
+  /// The half of §10.5 that is a *rule* rather than a screen: a price change applies to future transactions only and never rewrites the ledger. Said here because the natural reading of "change the price" is that history follows. Editing them needs a server route that does not exist yet.
+  ///
+  /// In en, this message translates to:
+  /// **'These are set on the server. A change applies to future transactions only and never rewrites what the ledger already recorded.'**
+  String get adminPricingBody;
+
   /// An example that shows the field is addressed to the employer and has to be actionable. An administrator shown an empty box labelled "reason" writes one word.
   ///
   /// In en, this message translates to:

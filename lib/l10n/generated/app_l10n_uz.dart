@@ -2282,6 +2282,101 @@ class AppL10nUz extends AppL10n {
   String get adminReasonLabel => 'Sabab (ish beruvchi so\'zma-so\'z o\'qiydi)';
 
   @override
+  String get adminWalletsTitle => 'Hamyonlar';
+
+  @override
+  String get adminWalletsOrder => 'Avval eng katta balans.';
+
+  @override
+  String get adminWalletsEmpty => 'Hali hamyon yo‘q';
+
+  @override
+  String get adminWalletsEmptyBody =>
+      'Hamyon kimdir ilk marta ish beruvchi sifatida ro‘yxatdan o‘tganda yaratiladi.';
+
+  @override
+  String get adminWalletUnnamed => 'Akkaunt o‘chirilgan';
+
+  @override
+  String adminWalletUnlocks(int count) {
+    return '$count ta ochilgan nomzod';
+  }
+
+  @override
+  String adminWalletBonusOn(String date) {
+    return 'Ro‘yxatdan o‘tish bonusi $date';
+  }
+
+  @override
+  String get adminWalletNoBonus => 'Ro‘yxatdan o‘tish bonusi yo‘q';
+
+  @override
+  String get adminWalletTitle => 'Hamyon';
+
+  @override
+  String get adminWalletGone => 'Bu akkauntda hamyon yo‘q';
+
+  @override
+  String get adminWalletGoneBody =>
+      'Hamyon faqat ish beruvchi sifatida ro‘yxatdan o‘tilgandan keyin paydo bo‘ladi.';
+
+  @override
+  String get adminWalletLedger => 'Amaliyotlar tarixi';
+
+  @override
+  String get adminWalletImmutable =>
+      'Bu tarixni tahrirlab ham, o‘chirib ham bo‘lmaydi. Tuzatish — yangi yozuv.';
+
+  @override
+  String get adminWalletNoTransactions => 'Hali hech qanday amaliyot bo‘lmagan';
+
+  @override
+  String get adminAdjustAction => 'Balansni tuzatish';
+
+  @override
+  String get adminAdjustAmount => 'Coin (ayirish uchun minus qo‘ying)';
+
+  @override
+  String get adminAdjustAmountHint => '5 yoki -3';
+
+  @override
+  String get adminAdjustReason => 'Sabab (audit jurnaliga yoziladi)';
+
+  @override
+  String get adminAdjustReasonHint =>
+      'Muvaffaqiyatsiz to‘ldirish uchun qaytarish, buyurtma 4821';
+
+  @override
+  String get adminAdjustNote =>
+      'Bu sizning nomingizdan reestrga yangi yozuv qo‘shadi. Uni bekor qilib bo‘lmaydi — tuzatish yana bir korrektirovka demakdir.';
+
+  @override
+  String get adminAdjustSubmit => 'Tuzatish';
+
+  @override
+  String get adminAdjustZero => 'Noldan farqli son kiriting.';
+
+  @override
+  String adminAdjustDone(int balance) {
+    return 'Tuzatildi. Balans endi $balance.';
+  }
+
+  @override
+  String get adminPaymentsPending =>
+      'To‘lov buyurtmalarini qidirish hali mavjud emas';
+
+  @override
+  String get adminPaymentsPendingBody =>
+      'Serverda hozircha to‘lov buyurtmalari uchun administrator yo‘li yo‘q — u faqat so‘rov yuborgan ish beruvchiga javob beradi. To‘ldirishning o‘zi ham hali ishlamaydi.';
+
+  @override
+  String get adminPricingTitle => 'Narxlar va ro‘yxatdan o‘tish bonusi';
+
+  @override
+  String get adminPricingBody =>
+      'Ular serverda belgilanadi. O‘zgarish faqat keyingi amaliyotlarga ta’sir qiladi va reestrga yozilganini qayta yozmaydi.';
+
+  @override
   String get adminReasonHint =>
       'Ro\'yxatga olish guvohnomasi o\'qilmaydi — aniqroq nusxa yuklang';
 
@@ -5401,6 +5496,101 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminReasonLabel => 'Сабаб (иш берувчи сўзма-сўз ўқийди)';
+
+  @override
+  String get adminWalletsTitle => 'Ҳамёнлар';
+
+  @override
+  String get adminWalletsOrder => 'Аввал энг катта баланс.';
+
+  @override
+  String get adminWalletsEmpty => 'Ҳали ҳамён йўқ';
+
+  @override
+  String get adminWalletsEmptyBody =>
+      'Ҳамён кимдир илк марта иш берувчи сифатида рўйхатдан ўтганда яратилади.';
+
+  @override
+  String get adminWalletUnnamed => 'Аккаунт ўчирилган';
+
+  @override
+  String adminWalletUnlocks(int count) {
+    return '$count та очилган номзод';
+  }
+
+  @override
+  String adminWalletBonusOn(String date) {
+    return 'Рўйхатдан ўтиш бонуси $date';
+  }
+
+  @override
+  String get adminWalletNoBonus => 'Рўйхатдан ўтиш бонуси йўқ';
+
+  @override
+  String get adminWalletTitle => 'Ҳамён';
+
+  @override
+  String get adminWalletGone => 'Бу аккаунтда ҳамён йўқ';
+
+  @override
+  String get adminWalletGoneBody =>
+      'Ҳамён фақат иш берувчи сифатида рўйхатдан ўтилгандан кейин пайдо бўлади.';
+
+  @override
+  String get adminWalletLedger => 'Амалиётлар тарихи';
+
+  @override
+  String get adminWalletImmutable =>
+      'Бу тарихни таҳрирлаб ҳам, ўчириб ҳам бўлмайди. Тузатиш — янги ёзув.';
+
+  @override
+  String get adminWalletNoTransactions => 'Ҳали ҳеч қандай амалиёт бўлмаган';
+
+  @override
+  String get adminAdjustAction => 'Балансни тузатиш';
+
+  @override
+  String get adminAdjustAmount => 'Coin (айириш учун минус қўйинг)';
+
+  @override
+  String get adminAdjustAmountHint => '5 ёки -3';
+
+  @override
+  String get adminAdjustReason => 'Сабаб (аудит журналига ёзилади)';
+
+  @override
+  String get adminAdjustReasonHint =>
+      'Муваффақиятсиз тўлдириш учун қайтариш, буюртма 4821';
+
+  @override
+  String get adminAdjustNote =>
+      'Бу сизнинг номингиздан реестрга янги ёзув қўшади. Уни бекор қилиб бўлмайди — тузатиш яна бир корректировка демакдир.';
+
+  @override
+  String get adminAdjustSubmit => 'Тузатиш';
+
+  @override
+  String get adminAdjustZero => 'Нолдан фарқли сон киритинг.';
+
+  @override
+  String adminAdjustDone(int balance) {
+    return 'Тузатилди. Баланс энди $balance.';
+  }
+
+  @override
+  String get adminPaymentsPending =>
+      'Тўлов буюртмаларини қидириш ҳали мавжуд эмас';
+
+  @override
+  String get adminPaymentsPendingBody =>
+      'Серверда ҳозирча тўлов буюртмалари учун администратор йўли йўқ — у фақат сўров юборган иш берувчига жавоб беради. Тўлдиришнинг ўзи ҳам ҳали ишламайди.';
+
+  @override
+  String get adminPricingTitle => 'Нархлар ва рўйхатдан ўтиш бонуси';
+
+  @override
+  String get adminPricingBody =>
+      'Улар серверда белгиланади. Ўзгариш фақат кейинги амалиётларга таъсир қилади ва реестрга ёзилганини қайта ёзмайди.';
 
   @override
   String get adminReasonHint =>
@@ -8523,6 +8713,101 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminReasonLabel => 'Sabab (ish beruvchi so\'zma-so\'z o\'qiydi)';
+
+  @override
+  String get adminWalletsTitle => 'Hamyonlar';
+
+  @override
+  String get adminWalletsOrder => 'Avval eng katta balans.';
+
+  @override
+  String get adminWalletsEmpty => 'Hali hamyon yo‘q';
+
+  @override
+  String get adminWalletsEmptyBody =>
+      'Hamyon kimdir ilk marta ish beruvchi sifatida ro‘yxatdan o‘tganda yaratiladi.';
+
+  @override
+  String get adminWalletUnnamed => 'Akkaunt o‘chirilgan';
+
+  @override
+  String adminWalletUnlocks(int count) {
+    return '$count ta ochilgan nomzod';
+  }
+
+  @override
+  String adminWalletBonusOn(String date) {
+    return 'Ro‘yxatdan o‘tish bonusi $date';
+  }
+
+  @override
+  String get adminWalletNoBonus => 'Ro‘yxatdan o‘tish bonusi yo‘q';
+
+  @override
+  String get adminWalletTitle => 'Hamyon';
+
+  @override
+  String get adminWalletGone => 'Bu akkauntda hamyon yo‘q';
+
+  @override
+  String get adminWalletGoneBody =>
+      'Hamyon faqat ish beruvchi sifatida ro‘yxatdan o‘tilgandan keyin paydo bo‘ladi.';
+
+  @override
+  String get adminWalletLedger => 'Amaliyotlar tarixi';
+
+  @override
+  String get adminWalletImmutable =>
+      'Bu tarixni tahrirlab ham, o‘chirib ham bo‘lmaydi. Tuzatish — yangi yozuv.';
+
+  @override
+  String get adminWalletNoTransactions => 'Hali hech qanday amaliyot bo‘lmagan';
+
+  @override
+  String get adminAdjustAction => 'Balansni tuzatish';
+
+  @override
+  String get adminAdjustAmount => 'Coin (ayirish uchun minus qo‘ying)';
+
+  @override
+  String get adminAdjustAmountHint => '5 yoki -3';
+
+  @override
+  String get adminAdjustReason => 'Sabab (audit jurnaliga yoziladi)';
+
+  @override
+  String get adminAdjustReasonHint =>
+      'Muvaffaqiyatsiz to‘ldirish uchun qaytarish, buyurtma 4821';
+
+  @override
+  String get adminAdjustNote =>
+      'Bu sizning nomingizdan reestrga yangi yozuv qo‘shadi. Uni bekor qilib bo‘lmaydi — tuzatish yana bir korrektirovka demakdir.';
+
+  @override
+  String get adminAdjustSubmit => 'Tuzatish';
+
+  @override
+  String get adminAdjustZero => 'Noldan farqli son kiriting.';
+
+  @override
+  String adminAdjustDone(int balance) {
+    return 'Tuzatildi. Balans endi $balance.';
+  }
+
+  @override
+  String get adminPaymentsPending =>
+      'To‘lov buyurtmalarini qidirish hali mavjud emas';
+
+  @override
+  String get adminPaymentsPendingBody =>
+      'Serverda hozircha to‘lov buyurtmalari uchun administrator yo‘li yo‘q — u faqat so‘rov yuborgan ish beruvchiga javob beradi. To‘ldirishning o‘zi ham hali ishlamaydi.';
+
+  @override
+  String get adminPricingTitle => 'Narxlar va ro‘yxatdan o‘tish bonusi';
+
+  @override
+  String get adminPricingBody =>
+      'Ular serverda belgilanadi. O‘zgarish faqat keyingi amaliyotlarga ta’sir qiladi va reestrga yozilganini qayta yozmaydi.';
 
   @override
   String get adminReasonHint =>

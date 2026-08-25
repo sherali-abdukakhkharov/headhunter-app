@@ -244,6 +244,58 @@ nothing is being read. Label editing is the one action the screen does not
 offer, and it says so rather than offering a field that would quietly write a
 fallback.
 
+### 3. §10.5's Payment Order search has no administrator route — raised 2026-08-25
+
+§10.5 asks an administrator to *"search Payment Orders by employer, provider,
+status, date, internal order ID, and provider transaction ID"* and to open a
+detail with *"Coin quantity, UZS amount, provider, status history, timestamps,
+and failure/reversal reason"*.
+
+The payment module exists — `GET /payments/orders` and
+`GET /payments/orders/:orderId` are built, and `PaymentOrderDto` already carries
+almost every field the detail wants. **But both are scoped to the caller**, and
+deliberately: the route's own description says *"an order id is an identifier,
+not an authorization"*. An administrator asking about somebody else's order gets
+nothing, which is the correct behaviour for that route and leaves §10.5 with no
+route at all.
+
+**The ask is an admin-scoped list**, `GET /admin/payments`, taking the six
+filters §10.5 names and answering with the same `PaymentOrderDto` plus the
+employer — the shape `GET /admin/wallets` already establishes for this section.
+A detail route is probably unnecessary: if the list carries the DTO, the only
+thing missing is the status *history*, and whether that is a separate table or a
+column on the order is the backend's call.
+
+Worth pairing with the note that **top-up is not live on the client either**
+(M13, blocked on merchant credentials), so nothing an administrator would search
+for exists yet. That is why this is an ask rather than a blocker.
+
+**What the client does meanwhile.** The wallet half of §10.5 shipped in 1.12.0 —
+balances, the immutable ledger, and BR-24's manual adjustment. The screen states
+that payment search is not available and why, in all four variants, rather than
+leaving a gap somebody reports as a missing feature.
+
+### 4. The three money settings are not editable — raised 2026-08-25
+
+§10.5's last line makes the registration bonus, the Coin price and the Candidate
+Unlock price *"server configuration values"* an administrator may change, and
+adds the rule that matters: **a change affects future transactions only and does
+not rewrite historical ledger records.**
+
+There is no route. The values reach the client through `GET /wallet`, which is
+employer-scoped and read-only, so an administrator can neither see nor set them.
+
+**The ask is small and the rule is the interesting part**: whatever the route
+looks like, repricing must not touch `amount_uzs` on an existing ledger row.
+BR-24 already forbids rewriting the ledger, so this is likely satisfied by
+construction — worth confirming rather than assuming, because the natural
+implementation of "change the price" is an `UPDATE` somewhere.
+
+**What the client does meanwhile.** The §10.5 screen states that the three are
+server configuration and that a change applies to future transactions only. The
+rule is the half of this that is already true and worth saying; the editing is
+the half that is waiting.
+
 ## Facts §10.4 needs, from settling the above
 
 - **`AdminUserDetailDto` carries no audit entries.** It is `AdminUserDto` +

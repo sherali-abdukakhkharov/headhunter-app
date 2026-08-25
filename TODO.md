@@ -1719,8 +1719,17 @@ this opens. Deep links moved to M8.
       server-side change, no signing-key change. *Blocks nothing until M9 opens.*
 - [ ] Preferences; security/account categories not offered as disableable
 
-## M10 - Admin module *(§10.1 done 2026-08-21; §10.2 complete 2026-08-22;
-§10.4 complete 2026-08-23)*
+## M10 - Admin module *(complete 2026-08-25)*
+
+§10.1 2026-08-21 · §10.2 2026-08-22 · §10.4 2026-08-23 · §10.3 2026-08-24 ·
+§10.5's wallet half 2026-08-25.
+
+**Three things are said on screen rather than built**, and each needs a route
+that does not exist: §10.5's Payment Order search, editing the registration
+bonus and the two prices, and §10.3's label editing. All three are in
+[docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md), none blocks anything, and stating
+them is the choice this module has made consistently — a gap somebody can read
+is better than one they file as a missing feature.
 
 **The whole admin API was already built** — `src/modules/admin` on the backend
 covers §10.1 through §10.5, audit log and retention included. So nothing in this
@@ -2087,18 +2096,46 @@ remaining item is a screen.
       writing it back would turn a fallback into a translation nobody made. The
       ask is in [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md) and the screen says
       so rather than offering a field that would quietly do the wrong thing
-- [ ] **§10.5 wallet and payment administration** *(new, 2026-08-10)* — employer
-      balance and immutable history; Payment Order search on six axes (employer,
-      provider, status, date, internal order ID, provider transaction ID,
-      because the one support has is whichever the caller can read out); payment
-      detail with status history and failure/reversal reason
-- [ ] Manual wallet adjustment with a **mandatory reason**, audited (BR-24) — it
-      writes a new ledger entry, and nothing on this screen may edit an existing
-      one
-- [ ] Registration bonus / Coin price / unlock price as editable server config,
-      with the screen stating that a change **affects future transactions only**.
-      The natural reading of "change the price" is that history follows, and it
-      does not
+- [x] **§10.5's wallet half, 2026-08-25 — and it closes the admin module.**
+      Employer wallets largest-balance-first, one wallet with its **immutable**
+      ledger, and BR-24's manual adjustment: a signed Coin amount and a
+      mandatory reason, written as a new entry and audited against the
+      administrator who made it.
+      Four decisions worth keeping:
+      **The ledger row is the employer's own widget.** `WalletTransactionRow`,
+      not an admin copy — the two screens are looking at the same rows, and a
+      second rendering is how the administrator's account of a transaction
+      comes to disagree with the employer's.
+      **BR-24 is stated before the action, not discovered after it.** Three
+      database triggers refuse `UPDATE`, `DELETE` and `TRUNCATE` on that table,
+      so an administrator looking at a mistaken adjustment would otherwise hunt
+      for a way to remove it. The screen says a correction is a further entry;
+      the sheet says the same thing again before the button.
+      **The amount is signed, and the client refuses zero.** The server refuses
+      it too — an entry that changes nothing is a ledger row with no meaning —
+      but a disabled button is a promise kept, and a form that sent a magnitude
+      plus a direction flag would be one refactor away from crediting a refund.
+      **Nothing is prefetched and the result is refetched.** Every wallet read
+      is audited (§11.1), so warming a page would log reads nobody asked for;
+      and the balance after an adjustment is the server's, so the client
+      invalidates rather than splicing its own row into a ledger BR-24 says
+      only the server writes
+- [?] **§10.5's payment half — no administrator route exists.** `GET
+      /payments/orders` is built and `PaymentOrderDto` carries nearly every
+      field the detail wants, but both payment routes are **scoped to the
+      caller** on purpose ("an order id is an identifier, not an
+      authorization"), so an administrator asking about somebody else's order
+      gets nothing. The ask is `GET /admin/payments` with §10.5's six filters —
+      [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md) §3. Not urgent: top-up is not
+      live on the client either (M13), so there is nothing to search for yet.
+      **The screen says so** rather than leaving a gap somebody files as missing
+- [?] **Registration bonus / Coin price / unlock price are not editable** — no
+      route, and the values reach the client only through the employer-scoped
+      `GET /wallet`. [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md) §4.
+      **The rule shipped without the editor**: the screen states that a change
+      applies to future transactions only and never rewrites the ledger, which
+      is the half that is already true and the half people get wrong — the
+      natural reading of "change the price" is that history follows
 
 ## M11 - Hardening
 

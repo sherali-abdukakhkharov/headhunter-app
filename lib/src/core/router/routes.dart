@@ -161,6 +161,22 @@ abstract final class Routes {
   /// instead of to the account.
   static const adminAudit = '$adminUsers/audit';
 
+  /// §10.5's employer wallets.
+  ///
+  /// **A sibling of `adminUserFor` with the same ordering trap as
+  /// [adminAudit]**: `:id` would match the literal `wallets` too, so this must
+  /// be registered before it in `app_router.dart`.
+  ///
+  /// Under the users tab rather than a tab of its own, for the reason the audit
+  /// log is: the shell is capped at five destinations and all five are spoken
+  /// for. It is also where the question is asked from — a wallet belongs to an
+  /// employer, the list *is* a list of employers, and an administrator looking
+  /// at an account is one tap from its money.
+  static const adminWallets = '$adminUsers/wallets';
+
+  /// One employer's wallet and its ledger.
+  static String adminWalletFor(String userId) => '$adminWallets/$userId';
+
   /// The log's two questions, as query parameters. Named here with every other
   /// route parameter, and read by the screen — `core/` does not import a
   /// feature's domain to learn what its own paths carry.

@@ -2929,6 +2929,123 @@
   "@adminReasonLabel": {
     "description": "The parenthesis is the load-bearing part: §6.1 shows this text to the employer verbatim (§2.4), so an administrator writing a note for their own records would be writing it to the person it is about."
   },
+  "adminWalletsTitle": "Wallets",
+  "@adminWalletsTitle": {
+    "description": "§10.5. Entry point sits on the users tab, since a wallet belongs to an employer."
+  },
+  "adminWalletsOrder": "Largest balance first.",
+  "@adminWalletsOrder": {
+    "description": "Says why the list is in the order it is, so nobody looks for a sort control. Largest balance first is the server's order and is where both the money and the risk are."
+  },
+  "adminWalletsEmpty": "No wallets yet",
+  "@adminWalletsEmpty": {
+    "description": "Empty state heading for the wallet list."
+  },
+  "adminWalletsEmptyBody": "A wallet is created when someone first registers as an employer.",
+  "@adminWalletsEmptyBody": {
+    "description": "BR-15 creates a wallet at first employer registration, so an empty list means no employer has registered rather than a fault."
+  },
+  "adminWalletUnnamed": "Account erased",
+  "@adminWalletUnnamed": {
+    "description": "BR-14 erases the person and keeps the id, because §6.7 keeps payment records for reconciliation and BR-24 forbids rewriting the ledger. So a wallet can outlive the employer behind it, and the absence is stated rather than left blank."
+  },
+  "adminWalletUnlocks": "{count, plural, one{{count} unlock} other{{count} unlocks}}",
+  "@adminWalletUnlocks": {
+    "description": "How many candidates this employer has unlocked (BR-16).",
+    "placeholders": {
+      "count": {"type":"int"}
+    }
+  },
+  "adminWalletBonusOn": "Registration bonus {date}",
+  "@adminWalletBonusOn": {
+    "description": "When BR-15's ten Coins were granted. Shown rather than derived from the ledger: \"exactly once\" is the rule, and a missing date is what a failed grant looks like.",
+    "placeholders": {
+      "date": {"type":"String"}
+    }
+  },
+  "adminWalletNoBonus": "No registration bonus",
+  "@adminWalletNoBonus": {
+    "description": "A wallet that never received BR-15's bonus. Worth saying, because the absence is the diagnostic part."
+  },
+  "adminWalletTitle": "Wallet",
+  "@adminWalletTitle": {
+    "description": "Title of one employer wallet (§10.5)."
+  },
+  "adminWalletGone": "This account has no wallet",
+  "@adminWalletGone": {
+    "description": "A 404 on a wallet: BR-15 creates one at first employer registration, so a user who never became an employer has none. An outcome, not a fault."
+  },
+  "adminWalletGoneBody": "A wallet exists only once someone has registered as an employer.",
+  "@adminWalletGoneBody": {
+    "description": "Explains the 404 above."
+  },
+  "adminWalletLedger": "Transaction history",
+  "@adminWalletLedger": {
+    "description": "Heading above the transaction list."
+  },
+  "adminWalletImmutable": "This history cannot be edited or deleted. A correction is a new entry.",
+  "@adminWalletImmutable": {
+    "description": "BR-24, said on screen. Three database triggers refuse UPDATE, DELETE and TRUNCATE on the ledger — so an administrator looking at a mistaken adjustment does not go hunting for a way to remove it."
+  },
+  "adminWalletNoTransactions": "Nothing has moved yet",
+  "@adminWalletNoTransactions": {
+    "description": "A wallet whose ledger is empty."
+  },
+  "adminAdjustAction": "Adjust balance",
+  "@adminAdjustAction": {
+    "description": "Opens the adjustment sheet."
+  },
+  "adminAdjustAmount": "Coins (use a minus to take Coins away)",
+  "@adminAdjustAmount": {
+    "description": "Signed Coin amount for an adjustment. Negative takes Coins away."
+  },
+  "adminAdjustAmountHint": "5, or -3",
+  "@adminAdjustAmountHint": {
+    "description": "Placeholder showing both directions."
+  },
+  "adminAdjustReason": "Reason (recorded in the audit log)",
+  "@adminAdjustReason": {
+    "description": "Mandatory, and checked by the database as well as the DTO (§10.5). Distinct from adminReasonLabel, which is read by the employer — this one is read by whoever audits the adjustment."
+  },
+  "adminAdjustReasonHint": "Refund for a failed top-up, order 4821",
+  "@adminAdjustReasonHint": {
+    "description": "An example of a real reason for an adjustment."
+  },
+  "adminAdjustNote": "This adds a new entry to the ledger under your name. It cannot be undone — correcting it means making another adjustment.",
+  "@adminAdjustNote": {
+    "description": "BR-24 stated before the action rather than discovered after it: the entry is permanent and is attributed to the administrator making it."
+  },
+  "adminAdjustSubmit": "Adjust",
+  "@adminAdjustSubmit": {
+    "description": "Confirms the adjustment."
+  },
+  "adminAdjustZero": "Enter a number other than zero.",
+  "@adminAdjustZero": {
+    "description": "The server refuses zero: an entry that changes nothing is a ledger row with no meaning. Said before the request rather than as a 422 after it."
+  },
+  "adminAdjustDone": "Adjusted. The balance is now {balance}.",
+  "@adminAdjustDone": {
+    "description": "Confirmation after an adjustment, naming the new balance so the administrator does not have to look for it.",
+    "placeholders": {
+      "balance": {"type":"int"}
+    }
+  },
+  "adminPaymentsPending": "Payment order search is not available yet",
+  "@adminPaymentsPending": {
+    "description": "§10.5 also asks for Payment Order search on six axes. The API has payment endpoints, but they answer only for the employer making the request — there is no administrator route. Stated on the screen rather than left as a missing feature, the same way §10.3 states what label editing is waiting on."
+  },
+  "adminPaymentsPendingBody": "The server has no administrator route for payment orders yet — today it answers only for the employer making the request. Top-up itself is also not live.",
+  "@adminPaymentsPendingBody": {
+    "description": "Says what is missing and that it is known, so nobody reports it as a bug."
+  },
+  "adminPricingTitle": "Prices and the registration bonus",
+  "@adminPricingTitle": {
+    "description": "§10.5 names the registration bonus, the Coin price and the unlock price as server configuration."
+  },
+  "adminPricingBody": "These are set on the server. A change applies to future transactions only and never rewrites what the ledger already recorded.",
+  "@adminPricingBody": {
+    "description": "The half of §10.5 that is a *rule* rather than a screen: a price change applies to future transactions only and never rewrites the ledger. Said here because the natural reading of \"change the price\" is that history follows. Editing them needs a server route that does not exist yet."
+  },
   "adminReasonHint": "The registration certificate is unreadable — please upload a clearer scan",
   "@adminReasonHint": {
     "description": "An example that shows the field is addressed to the employer and has to be actionable. An administrator shown an empty box labelled \"reason\" writes one word."

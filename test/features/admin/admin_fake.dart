@@ -1,6 +1,7 @@
 import 'package:jobbridge_app/src/features/admin/data/admin_repository.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_wallet.dart';
 import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
@@ -12,6 +13,7 @@ import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
 
 /// Every §10 route, refusing by default.
 ///
@@ -137,4 +139,17 @@ abstract class FakeAdminBase implements AdminRepository {
   @override
   Future<void> mergeDictionaryItems(String itemId, String survivorId) =>
       _unused('mergeDictionaryItems');
+
+  @override
+  Future<List<AdminWallet>> wallets({int offset = 0}) => _unused('wallets');
+
+  @override
+  Future<AdminWalletDetail> wallet(String userId) => _unused('wallet');
+
+  @override
+  Future<WalletTransaction> adjustWallet(
+    String userId, {
+    required int amountCoins,
+    required String reason,
+  }) => _unused('adjustWallet');
 }

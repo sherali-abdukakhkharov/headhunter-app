@@ -16,6 +16,8 @@ import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_wallet_detail_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_wallets_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/audit_log_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/user_detail_screen.dart';
 import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
@@ -573,6 +575,39 @@ void main() {
   });
 
   group('§10.4 registers two children under one tab', () {
+    testWidgets('§10.5 wallets win the path a user id would also match', (
+      tester,
+    ) async {
+      // The same trap as the audit log below, and now two literals deep: `:id`
+      // matches `wallets` as readily as it matches a uuid, and `wallets/:userId`
+      // sits under it. Asserted through the real router, because a hand-built
+      // one would only be asserting its own registration order.
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.admin}),
+        initialLocation: Routes.adminWallets,
+      );
+
+      expect(result.location, Routes.adminWallets);
+      expect(find.byType(AdminWalletsScreen), findsOneWidget);
+      expect(find.byType(UserDetailScreen), findsNothing);
+      await _unmountTree(tester);
+    });
+
+    testWidgets('and one wallet is reachable under them', (tester) async {
+      await settle(
+        tester,
+        const SessionActive(roles: {AppRole.admin}),
+        initialLocation: Routes.adminWalletFor(
+          '3f2a1b9c-0000-4000-8000-000000000009',
+        ),
+      );
+
+      expect(find.byType(AdminWalletDetailScreen), findsOneWidget);
+      expect(find.byType(UserDetailScreen), findsNothing);
+      await _unmountTree(tester);
+    });
+
     testWidgets('the audit log wins the path a user id would also match', (
       tester,
     ) async {

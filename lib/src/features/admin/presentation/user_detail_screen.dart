@@ -248,6 +248,16 @@ class _Detail extends ConsumerWidget {
               context,
             ).go(Routes.adminAuditByActor(user.userId)),
           ),
+        // §10.5, and offered on the same rule: BR-15 creates a wallet at first
+        // *employer* registration, so this link on a candidate would lead to a
+        // 404 that reads as a fault rather than as "there is nothing here".
+        if (user.roles.contains(AppRole.employer))
+          HhButton.text(
+            label: l10n.adminWalletTitle,
+            onPressed: () => GoRouter.of(
+              context,
+            ).go(Routes.adminWalletFor(user.userId)),
+          ),
         const SizedBox(height: HhSpace.sm),
 
         if (detail.statusHistory.isEmpty)

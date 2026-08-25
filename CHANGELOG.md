@@ -17,6 +17,50 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.12.0+22 — 2026-08-25
+
+The administrator's module is finished: §10.5's wallets are the last section.
+
+### Added
+
+- **Employer wallets, for administrators (§10.5).** Under the Users tab: every
+  employer's Coin balance, largest first, with how many candidates they have
+  unlocked and when their registration bonus was granted — or that it never
+  was, which is the part worth seeing.
+- **One wallet's full history**, exactly as the employer sees it, and a plain
+  statement that it cannot be edited or deleted. A correction is a new entry,
+  never a change to an old one.
+- **Manual balance adjustment, with a mandatory reason (BR-24).** Coins can be
+  added or taken away; the reason is recorded against the administrator who
+  made it, and the sheet says before the button that it cannot be undone.
+
+### Not built, and said on screen
+
+- **Searching payment orders.** The server has no administrator access to them
+  yet — today it answers only the employer who made the request. Top-up is not
+  live either, so there is nothing to search for.
+- **Editing the registration bonus and the two prices.** No route yet. The rule
+  that goes with them *is* shown, because it is the part people expect to work
+  the other way: changing a price affects future transactions only and never
+  rewrites what the ledger already recorded.
+
+### Internal
+
+- §10.5 completes M10. §10.1 landed 2026-08-21, §10.2 on the 22nd, §10.4 on the
+  23rd, §10.3 on the 24th.
+- The ledger uses `WalletTransactionRow` — the employer's own widget, not an
+  admin copy. Two renderings of one ledger is how the two accounts of a
+  transaction come to disagree.
+- Nothing is prefetched: every wallet read is audited (§11.1), so a warmed page
+  would write audit entries for wallets nobody opened. After an adjustment the
+  wallet is **refetched**, because splicing a row in locally would be the
+  client writing a ledger BR-24 leaves to the server.
+- `/admin/users/wallets` has the same registration-order trap as the audit log
+  — `:id` matches the literal as readily as a uuid — and `app_router_test.dart`
+  now pins both, through the real router.
+- 16 new cases in `admin_wallet_test.dart`, plus two in the router suite. 1031
+  tests, up from 1013. flutter analyze clean.
+
 ## 1.11.5+21 — 2026-08-25
 
 The app stops saying everything twice to people using a screen reader.

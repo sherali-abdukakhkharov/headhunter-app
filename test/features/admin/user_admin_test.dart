@@ -787,10 +787,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Asked me to pay for the interview'), findsOneWidget);
+      // Both are below the fold of a lazy list. The first one joined them when
+      // §10.5's wallet link landed above it — this account holds the employer
+      // role, so it gets the link.
+      await reveal(tester, find.text('Asked me to pay for the interview'));
       expect(find.text('Open'), findsOneWidget);
 
-      // The second one is below the fold of a lazy list.
       await reveal(tester, find.text('Rude messages'));
       expect(find.text('Reviewed'), findsOneWidget);
     });

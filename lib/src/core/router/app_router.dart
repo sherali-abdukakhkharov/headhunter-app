@@ -12,6 +12,8 @@ import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
 import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_wallet_detail_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_wallets_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/audit_log_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/complaint_queue_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/complaint_review_screen.dart';
@@ -285,12 +287,26 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
               // empty search form — which is the whole reason the results
               // live in a provider the branch keeps.
               //
-              // **The order of these two is load-bearing.** go_router takes
-              // the first route that matches, and `:id` matches the literal
-              // `audit` as readily as it matches a uuid. The audit log is
-              // therefore registered first; nothing else can collide, because
-              // a user id is a uuid.
+              // **The order here is load-bearing.** go_router takes the first
+              // route that matches, and `:id` matches the literals `audit` and
+              // `wallets` as readily as it matches a uuid. Both are therefore
+              // registered before it; nothing else can collide, because a user
+              // id is a uuid.
               if (tab.path == Routes.adminUsers) ...[
+                GoRoute(
+                  path: 'wallets',
+                  name: 'adminWallets',
+                  builder: (context, state) => const AdminWalletsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':userId',
+                      name: 'adminWalletDetail',
+                      builder: (context, state) => AdminWalletDetailScreen(
+                        userId: state.pathParameters['userId']!,
+                      ),
+                    ),
+                  ],
+                ),
                 GoRoute(
                   path: 'audit',
                   name: 'adminAudit',

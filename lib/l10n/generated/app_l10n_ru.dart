@@ -2300,6 +2300,107 @@ class AppL10nRu extends AppL10n {
   String get adminReasonLabel => 'Причина (работодатель прочитает её дословно)';
 
   @override
+  String get adminWalletsTitle => 'Кошельки';
+
+  @override
+  String get adminWalletsOrder => 'Сначала наибольший баланс.';
+
+  @override
+  String get adminWalletsEmpty => 'Кошельков пока нет';
+
+  @override
+  String get adminWalletsEmptyBody =>
+      'Кошелёк создаётся при первой регистрации работодателя.';
+
+  @override
+  String get adminWalletUnnamed => 'Аккаунт удалён';
+
+  @override
+  String adminWalletUnlocks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count разблокировок',
+      few: '$count разблокировки',
+      one: '$count разблокировка',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminWalletBonusOn(String date) {
+    return 'Бонус за регистрацию $date';
+  }
+
+  @override
+  String get adminWalletNoBonus => 'Бонуса за регистрацию нет';
+
+  @override
+  String get adminWalletTitle => 'Кошелёк';
+
+  @override
+  String get adminWalletGone => 'У этого аккаунта нет кошелька';
+
+  @override
+  String get adminWalletGoneBody =>
+      'Кошелёк появляется только после регистрации работодателя.';
+
+  @override
+  String get adminWalletLedger => 'История операций';
+
+  @override
+  String get adminWalletImmutable =>
+      'Эту историю нельзя изменить или удалить. Исправление — это новая запись.';
+
+  @override
+  String get adminWalletNoTransactions => 'Операций ещё не было';
+
+  @override
+  String get adminAdjustAction => 'Скорректировать баланс';
+
+  @override
+  String get adminAdjustAmount => 'Коины (минус — списание)';
+
+  @override
+  String get adminAdjustAmountHint => '5 или -3';
+
+  @override
+  String get adminAdjustReason => 'Причина (записывается в журнал аудита)';
+
+  @override
+  String get adminAdjustReasonHint =>
+      'Возврат за неудачное пополнение, заказ 4821';
+
+  @override
+  String get adminAdjustNote =>
+      'Это добавит новую запись в реестр под вашим именем. Отменить её нельзя — исправление означает ещё одну корректировку.';
+
+  @override
+  String get adminAdjustSubmit => 'Скорректировать';
+
+  @override
+  String get adminAdjustZero => 'Введите число, отличное от нуля.';
+
+  @override
+  String adminAdjustDone(int balance) {
+    return 'Скорректировано. Баланс теперь $balance.';
+  }
+
+  @override
+  String get adminPaymentsPending => 'Поиск платёжных заказов пока недоступен';
+
+  @override
+  String get adminPaymentsPendingBody =>
+      'На сервере пока нет административного доступа к платёжным заказам — он отвечает только работодателю, отправившему запрос. Пополнение тоже ещё не запущено.';
+
+  @override
+  String get adminPricingTitle => 'Цены и бонус за регистрацию';
+
+  @override
+  String get adminPricingBody =>
+      'Они задаются на сервере. Изменение действует только на будущие операции и не переписывает уже записанное в реестре.';
+
+  @override
   String get adminReasonHint =>
       'Свидетельство о регистрации не читается — загрузите более чёткий скан';
 

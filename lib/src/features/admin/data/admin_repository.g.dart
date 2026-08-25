@@ -969,3 +969,193 @@ abstract class _$AuditLog extends $AsyncNotifier<AdminQueuePage<AuditEntry>> {
     return element.handleCreate(ref, () => build(_$args));
   }
 }
+
+/// §10.5's employer wallets, largest balance first.
+
+@ProviderFor(AdminWallets)
+final adminWalletsProvider = AdminWalletsProvider._();
+
+/// §10.5's employer wallets, largest balance first.
+final class AdminWalletsProvider
+    extends $AsyncNotifierProvider<AdminWallets, AdminQueuePage<AdminWallet>> {
+  /// §10.5's employer wallets, largest balance first.
+  AdminWalletsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'adminWalletsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$adminWalletsHash();
+
+  @$internal
+  @override
+  AdminWallets create() => AdminWallets();
+}
+
+String _$adminWalletsHash() => r'42779cb25bdb758cf3f39b338b2a69ddf09445c4';
+
+/// §10.5's employer wallets, largest balance first.
+
+abstract class _$AdminWallets
+    extends $AsyncNotifier<AdminQueuePage<AdminWallet>> {
+  FutureOr<AdminQueuePage<AdminWallet>> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<AdminQueuePage<AdminWallet>>,
+              AdminQueuePage<AdminWallet>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AdminQueuePage<AdminWallet>>,
+                AdminQueuePage<AdminWallet>
+              >,
+              AsyncValue<AdminQueuePage<AdminWallet>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// One wallet and its ledger (§10.5).
+///
+/// Keyed by the employer's user id, so two wallets opened in a session cannot
+/// overwrite each other — the same reason the complaint and the vacancy review
+/// are keyed.
+///
+/// **Refetched after an adjustment rather than patched locally.** The new
+/// balance and the new entry are both the server's, and a client that spliced
+/// its own row in would be writing the ledger — which is the one thing BR-24
+/// says only the server does.
+
+@ProviderFor(adminWallet)
+final adminWalletProvider = AdminWalletFamily._();
+
+/// One wallet and its ledger (§10.5).
+///
+/// Keyed by the employer's user id, so two wallets opened in a session cannot
+/// overwrite each other — the same reason the complaint and the vacancy review
+/// are keyed.
+///
+/// **Refetched after an adjustment rather than patched locally.** The new
+/// balance and the new entry are both the server's, and a client that spliced
+/// its own row in would be writing the ledger — which is the one thing BR-24
+/// says only the server does.
+
+final class AdminWalletProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AdminWalletDetail>,
+          AdminWalletDetail,
+          FutureOr<AdminWalletDetail>
+        >
+    with
+        $FutureModifier<AdminWalletDetail>,
+        $FutureProvider<AdminWalletDetail> {
+  /// One wallet and its ledger (§10.5).
+  ///
+  /// Keyed by the employer's user id, so two wallets opened in a session cannot
+  /// overwrite each other — the same reason the complaint and the vacancy review
+  /// are keyed.
+  ///
+  /// **Refetched after an adjustment rather than patched locally.** The new
+  /// balance and the new entry are both the server's, and a client that spliced
+  /// its own row in would be writing the ledger — which is the one thing BR-24
+  /// says only the server does.
+  AdminWalletProvider._({
+    required AdminWalletFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'adminWalletProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$adminWalletHash();
+
+  @override
+  String toString() {
+    return r'adminWalletProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<AdminWalletDetail> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AdminWalletDetail> create(Ref ref) {
+    final argument = this.argument as String;
+    return adminWallet(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AdminWalletProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$adminWalletHash() => r'f43719132c590d6922dd7e4f6911657aad11eb2a';
+
+/// One wallet and its ledger (§10.5).
+///
+/// Keyed by the employer's user id, so two wallets opened in a session cannot
+/// overwrite each other — the same reason the complaint and the vacancy review
+/// are keyed.
+///
+/// **Refetched after an adjustment rather than patched locally.** The new
+/// balance and the new entry are both the server's, and a client that spliced
+/// its own row in would be writing the ledger — which is the one thing BR-24
+/// says only the server does.
+
+final class AdminWalletFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<AdminWalletDetail>, String> {
+  AdminWalletFamily._()
+    : super(
+        retry: null,
+        name: r'adminWalletProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One wallet and its ledger (§10.5).
+  ///
+  /// Keyed by the employer's user id, so two wallets opened in a session cannot
+  /// overwrite each other — the same reason the complaint and the vacancy review
+  /// are keyed.
+  ///
+  /// **Refetched after an adjustment rather than patched locally.** The new
+  /// balance and the new entry are both the server's, and a client that spliced
+  /// its own row in would be writing the ledger — which is the one thing BR-24
+  /// says only the server does.
+
+  AdminWalletProvider call(String userId) =>
+      AdminWalletProvider._(argument: userId, from: this);
+
+  @override
+  String toString() => r'adminWalletProvider';
+}

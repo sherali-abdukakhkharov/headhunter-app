@@ -5,6 +5,7 @@ import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_dashboard.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/admin_user.dart';
+import 'package:jobbridge_app/src/features/admin/domain/admin_wallet.dart';
 import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint.dart';
 import 'package:jobbridge_app/src/features/admin/domain/complaint_action.dart';
@@ -16,6 +17,7 @@ import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_queue_item.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'admin_repository.g.dart';
@@ -552,6 +554,78 @@ class AdminRepository {
     }
   }
 
+  /// `GET /admin/wallets` — employer wallets, **largest balance first** (§10.5).
+  ///
+  /// The server's order, and not re-sorted here: largest balance first is where
+  /// both the money and the risk are, and sorting by name — the obvious
+  /// "improvement" — would bury the wallet worth looking at.
+  Future<List<AdminWallet>> wallets({int offset = 0}) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/wallets',
+        queryParameters: {'limit': adminPageSize, 'offset': offset},
+      );
+
+      final items = response.data?['items'];
+      if (items is! List) return const [];
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(AdminWallet.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `GET /admin/wallets/:userId` — one wallet and its immutable ledger.
+  ///
+  /// A 404 is an employer with no wallet, which is a real answer rather than a
+  /// fault: BR-15 creates one at first employer registration, so a user who
+  /// never became an employer has none.
+  Future<AdminWalletDetail> wallet(String userId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/admin/wallets/$userId',
+      );
+
+      return AdminWalletDetail.fromJson(response.data ?? const {});
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /admin/wallets/:userId/adjust` — the one route that can create
+  /// Coins from nothing (§10.5, BR-24).
+  ///
+  /// [amountCoins] is **signed**: negative takes Coins away. The server refuses
+  /// zero — an entry that changes nothing is a ledger row with no meaning — and
+  /// refuses a debit larger than the balance with a **409** rather than taking
+  /// the wallet negative.
+  ///
+  /// [reason] is mandatory, checked by the database as well as the DTO, and it
+  /// is what the audit row carries. Nothing here can rewrite an earlier entry:
+  /// correcting a mistaken adjustment means making another one.
+  ///
+  /// Returns the entry that was written, so the caller can show what it did
+  /// rather than refetching and hoping the top row is the same one.
+  Future<WalletTransaction> adjustWallet(
+    String userId, {
+    required int amountCoins,
+    required String reason,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/admin/wallets/$userId/adjust',
+        data: {'amountCoins': amountCoins, 'reason': reason},
+      );
+
+      return WalletTransaction.fromJson(response.data ?? const {});
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   /// The 409 that means the queue moved, or null for anything else.
   ///
   /// Matched on `code` and not on the status alone. 409 is also what a
@@ -997,3 +1071,54 @@ class AuditLog extends _$AuditLog {
     }
   }
 }
+
+/// §10.5's employer wallets, largest balance first.
+@riverpod
+class AdminWallets extends _$AdminWallets {
+  @override
+  Future<AdminQueuePage<AdminWallet>> build() async {
+    final items = await ref.watch(adminRepositoryProvider).wallets();
+
+    return AdminQueuePage(
+      items: items,
+      hasMore: items.length == adminPageSize,
+    );
+  }
+
+  Future<void> loadMore() async {
+    final page = state.value;
+    if (page == null || page.isLoadingMore || !page.hasMore) return;
+
+    state = AsyncData(page.copyWith(isLoadingMore: true));
+
+    try {
+      final next = await ref
+          .read(adminRepositoryProvider)
+          .wallets(offset: page.items.length);
+
+      state = AsyncData(
+        AdminQueuePage(
+          items: [...page.items, ...next],
+          hasMore: next.length == adminPageSize,
+        ),
+      );
+    } on ApiException {
+      state = AsyncData(page.copyWith(isLoadingMore: false));
+      rethrow;
+    }
+  }
+}
+
+/// One wallet and its ledger (§10.5).
+///
+/// Keyed by the employer's user id, so two wallets opened in a session cannot
+/// overwrite each other — the same reason the complaint and the vacancy review
+/// are keyed.
+///
+/// **Refetched after an adjustment rather than patched locally.** The new
+/// balance and the new entry are both the server's, and a client that spliced
+/// its own row in would be writing the ledger — which is the one thing BR-24
+/// says only the server does.
+@riverpod
+Future<AdminWalletDetail> adminWallet(Ref ref, String userId) =>
+    ref.watch(adminRepositoryProvider).wallet(userId);

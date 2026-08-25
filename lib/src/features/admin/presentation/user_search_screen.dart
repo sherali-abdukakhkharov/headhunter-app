@@ -123,8 +123,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
     registeredTo: _registeredTo,
   );
 
-  Future<void> _run() =>
-      ref.read(userSearchProvider.notifier).search(_filters);
+  Future<void> _run() => ref.read(userSearchProvider.notifier).search(_filters);
 
   void _clear() {
     setState(() {
@@ -148,24 +147,35 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
         child: ListView(
           padding: const EdgeInsets.all(HhSpace.gutter),
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.adminUsersTitle,
-                    style: HhTypography.title,
+            Text(l10n.adminUsersTitle, style: HhTypography.title),
+            const SizedBox(height: HhSpace.sm),
+            // §10.4 is "user management **and** audit", and §10.5's wallets
+            // hang off an employer, so both live under this tab: the shell is
+            // capped at five destinations and all five are spoken for.
+            //
+            // A `Wrap` rather than a `Row`, and **`double.infinity`** because a
+            // Wrap inside a stretch column shrink-wraps — the trap that left
+            // the chat timestamps ragged. Two labels do not fit beside a title
+            // at 360pt in Russian, and they must move to a second line rather
+            // than truncate: a link nobody can read is not a link.
+            SizedBox(
+              width: double.infinity,
+              child: Wrap(
+                spacing: HhSpace.sm,
+                children: [
+                  HhButton.text(
+                    label: l10n.adminAuditTitle,
+
+                    onPressed: () => GoRouter.of(context).go(Routes.adminAudit),
                   ),
-                ),
-                // §10.4 is "user management **and** audit", and this is the
-                // only way to the log that is not about somebody in
-                // particular. It costs a header row rather than a tab: the
-                // shell is capped at five and all five are spoken for.
-                HhButton.text(
-                  label: l10n.adminAuditTitle,
-                  onPressed: () =>
-                      GoRouter.of(context).go(Routes.adminAudit),
-                ),
-              ],
+                  HhButton.text(
+                    label: l10n.adminWalletsTitle,
+
+                    onPressed: () =>
+                        GoRouter.of(context).go(Routes.adminWallets),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: HhSpace.md),
 
@@ -233,9 +243,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
               loading: results.isLoading,
               // Disabled rather than refused: the server's minimums are on the
               // fields, so a search that would come back 400 never leaves.
-              onPressed: filters.isRunnable && !results.isLoading
-                  ? _run
-                  : null,
+              onPressed: filters.isRunnable && !results.isLoading ? _run : null,
             ),
             if (!filters.isEmpty) ...[
               const SizedBox(height: HhSpace.sm),

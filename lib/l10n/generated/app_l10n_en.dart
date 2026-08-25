@@ -2281,6 +2281,106 @@ class AppL10nEn extends AppL10n {
   String get adminReasonLabel => 'Reason (the employer reads it word for word)';
 
   @override
+  String get adminWalletsTitle => 'Wallets';
+
+  @override
+  String get adminWalletsOrder => 'Largest balance first.';
+
+  @override
+  String get adminWalletsEmpty => 'No wallets yet';
+
+  @override
+  String get adminWalletsEmptyBody =>
+      'A wallet is created when someone first registers as an employer.';
+
+  @override
+  String get adminWalletUnnamed => 'Account erased';
+
+  @override
+  String adminWalletUnlocks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unlocks',
+      one: '$count unlock',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminWalletBonusOn(String date) {
+    return 'Registration bonus $date';
+  }
+
+  @override
+  String get adminWalletNoBonus => 'No registration bonus';
+
+  @override
+  String get adminWalletTitle => 'Wallet';
+
+  @override
+  String get adminWalletGone => 'This account has no wallet';
+
+  @override
+  String get adminWalletGoneBody =>
+      'A wallet exists only once someone has registered as an employer.';
+
+  @override
+  String get adminWalletLedger => 'Transaction history';
+
+  @override
+  String get adminWalletImmutable =>
+      'This history cannot be edited or deleted. A correction is a new entry.';
+
+  @override
+  String get adminWalletNoTransactions => 'Nothing has moved yet';
+
+  @override
+  String get adminAdjustAction => 'Adjust balance';
+
+  @override
+  String get adminAdjustAmount => 'Coins (use a minus to take Coins away)';
+
+  @override
+  String get adminAdjustAmountHint => '5, or -3';
+
+  @override
+  String get adminAdjustReason => 'Reason (recorded in the audit log)';
+
+  @override
+  String get adminAdjustReasonHint => 'Refund for a failed top-up, order 4821';
+
+  @override
+  String get adminAdjustNote =>
+      'This adds a new entry to the ledger under your name. It cannot be undone — correcting it means making another adjustment.';
+
+  @override
+  String get adminAdjustSubmit => 'Adjust';
+
+  @override
+  String get adminAdjustZero => 'Enter a number other than zero.';
+
+  @override
+  String adminAdjustDone(int balance) {
+    return 'Adjusted. The balance is now $balance.';
+  }
+
+  @override
+  String get adminPaymentsPending =>
+      'Payment order search is not available yet';
+
+  @override
+  String get adminPaymentsPendingBody =>
+      'The server has no administrator route for payment orders yet — today it answers only for the employer making the request. Top-up itself is also not live.';
+
+  @override
+  String get adminPricingTitle => 'Prices and the registration bonus';
+
+  @override
+  String get adminPricingBody =>
+      'These are set on the server. A change applies to future transactions only and never rewrites what the ledger already recorded.';
+
+  @override
   String get adminReasonHint =>
       'The registration certificate is unreadable — please upload a clearer scan';
 
