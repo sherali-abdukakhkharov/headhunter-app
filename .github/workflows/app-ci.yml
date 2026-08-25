@@ -131,6 +131,19 @@ jobs:
 
       - run: flutter pub get
 
+      # Every job gets a fresh runner, so this is restored per job rather than
+      # once - the omission here is what turned the first push of 1.11.0 red
+      # while `build-android` next door went green.
+      - name: Restore google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::error::Missing repository secret GOOGLE_SERVICES_JSON_BASE64. Android cannot be built without android/app/google-services.json - see docs/NOTIFICATIONS_SETUP.md."
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > android/app/google-services.json
+
       # Release, not debug: --obfuscate and tree shaking are where a production
       # build breaks differently from a debug one. It signs with the debug
       # keystore for now - see TODO.md M11, that must change before any upload.

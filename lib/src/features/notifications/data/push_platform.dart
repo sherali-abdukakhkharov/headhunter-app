@@ -11,15 +11,19 @@ part 'push_platform.g.dart';
 ///
 /// The rule ARCHITECTURE.md §9 states for the attachment hand-off applies
 /// unchanged. `flutter_local_notifications` is the usual way to create a
-/// channel and it **applies the Kotlin Gradle Plugin** — the build warning this
-/// project emptied on 2026-08-19 by removing `telegram_login`, and one future
+/// channel and it **applies the Kotlin Gradle Plugin** — a build warning future
 /// Flutter versions will refuse outright. `package_info_plus` is the usual way
 /// to read a version and does the same.
 ///
 /// `firebase_core` and `firebase_messaging` were checked against that rule
 /// before they were added and are clean: both are `com.android.library` with
-/// Java sources. So the list stays empty, and the cost is the two methods
+/// Java sources. So the list did not grow, and the cost is the two methods
 /// below in `MainActivity.kt`.
+///
+/// It is **not** at zero, which several comments in this repo claimed until
+/// 2026-08-25: `file_picker` has been on it since 2026-08-07 and CI names it on
+/// every build. That makes the rule tighter rather than looser — the budget is
+/// already partly spent.
 class PushPlatform {
   const PushPlatform({MethodChannel? channel})
     : _channel = channel ?? const MethodChannel(channelName);

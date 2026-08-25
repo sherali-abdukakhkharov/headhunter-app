@@ -1409,10 +1409,16 @@ left out with the reason written down. Two things follow that are worth keeping:
 
 ### 2026-08-20 - The app's own Kotlin is not a plugin, and that is a way out
 Opening a downloaded file needs native code. Every pub package that does it is
-written in Kotlin and therefore **applies the Kotlin Gradle Plugin**, which is the
-warning this project emptied on 2026-08-19 by removing `telegram_login` and which
-future Flutter versions will refuse outright. So the obvious dependency was the
-one thing not to add.
+written in Kotlin and therefore **applies the Kotlin Gradle Plugin**, which future
+Flutter versions will refuse outright. So the obvious dependency was the one thing
+not to add.
+
+*(Corrected 2026-08-25: this entry, and half a dozen comments citing it, said the
+list had been "emptied" on 2026-08-19 by removing `telegram_login`. It had not.
+`file_picker` applies KGP and has been in `pubspec.yaml` since 2026-08-07, so
+that removal took the list from two names to one. CI prints `file_picker` on
+every build. The rule survives the correction intact - it just reads "do not
+lengthen it" rather than "keep it at zero".)*
 
 **`MainActivity.kt` does not count against that.** The KGP warning names *plugins*
 - pub packages that apply the plugin in their own build files. The app module's

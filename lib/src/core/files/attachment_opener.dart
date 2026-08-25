@@ -41,10 +41,13 @@ class NoViewerException implements Exception {
 ///
 /// Opening a file needs native code, and every pub package that does it is
 /// written in Kotlin and therefore **applies the Kotlin Gradle Plugin** — a
-/// build warning this project deliberately emptied on 2026-08-19 by removing
-/// `telegram_login`, and one future Flutter versions will refuse outright. The
-/// app's *own* Kotlin is not a plugin and does not appear on that list, so the
-/// hand-off is thirty lines in `MainActivity.kt` behind this channel.
+/// build warning future Flutter versions will refuse outright. The app's *own*
+/// Kotlin is not a plugin and does not appear on that list, so the hand-off is
+/// thirty lines in `MainActivity.kt` behind this channel.
+///
+/// The list is **not** empty — `file_picker` is on it, which is faintly ironic
+/// given that `path_provider` reached this file through `file_picker`. The rule
+/// is to keep it from growing, not to pretend it is at zero.
 class AttachmentOpener {
   const AttachmentOpener(this._dio, {MethodChannel? channel})
     : _channel = channel ?? const MethodChannel(channelName);

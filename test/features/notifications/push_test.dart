@@ -303,6 +303,39 @@ void main() {
       );
     });
 
+    test('every CI job that builds Android restores the file first', () {
+      // google-services.json is gitignored and supplied per machine, so CI
+      // writes it from a secret. **Each job gets its own runner**, so the step
+      // has to be repeated per job - and the first push of 1.11.0 shipped with
+      // it on two of the three, which turned `build-android-production` red
+      // with "File google-services.json is missing" while `build-android`
+      // next door went green off the same commit.
+      for (final workflow in [
+        '.github/workflows/app-ci.yml',
+        '.github/workflows/release-apk.yml',
+      ]) {
+        final yaml = File(workflow).readAsStringSync();
+
+        // Jobs are the two-space keys under `jobs:`; splitting on them is
+        // enough to attribute a step to a job without a YAML parser.
+        final jobs = yaml.split(RegExp(r'\n  (?=[a-z][a-z0-9-]*:\n)'));
+
+        for (final job in jobs) {
+          if (!job.contains('flutter build apk')) continue;
+
+          expect(
+            job,
+            contains('GOOGLE_SERVICES_JSON_BASE64'),
+            reason:
+                'a job in $workflow runs `flutter build apk` without '
+                'restoring android/app/google-services.json. The '
+                'google-services Gradle plugin fails the build without it, '
+                'and every job starts from a clean checkout.',
+          );
+        }
+      }
+    });
+
     test('the runtime permission Android 13 needs is declared', () {
       final manifest = File(
         'android/app/src/main/AndroidManifest.xml',

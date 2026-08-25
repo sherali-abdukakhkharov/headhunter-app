@@ -17,10 +17,14 @@ import java.io.File
  *
  * Handing a downloaded file to the OS needs `FileProvider` and an intent, and
  * every pub package that wraps them is written in Kotlin and therefore **applies
- * the Kotlin Gradle Plugin** — the build warning this project deliberately
- * emptied on 2026-08-19 by removing `telegram_login`, and one that future Flutter
- * versions will refuse outright. The app module's own Kotlin is not a plugin and
- * does not appear on that list, so the whole feature is the thirty lines below.
+ * the Kotlin Gradle Plugin** — the build warning future Flutter versions will
+ * refuse outright. The app module's own Kotlin is not a plugin and does not
+ * appear on that list, so the whole feature is the thirty lines below.
+ *
+ * **The list is not empty and never was.** `file_picker` has been on it since
+ * 2026-08-07 and CI still prints its name; removing `telegram_login` on
+ * 2026-08-19 took it from two entries to one. The rule is therefore "do not
+ * make it longer", not "keep it at zero".
  *
  * `androidx.core` needs no Gradle entry: it is already on the app's compile
  * classpath at 1.15.0 through the Flutter embedding, which the last build's
@@ -77,10 +81,9 @@ class MainActivity : FlutterActivity() {
      *
      * *Why here and not a plugin.* The same rule the attachment hand-off
      * follows: `flutter_local_notifications` is the usual answer and it applies
-     * the Kotlin Gradle Plugin, the warning this project emptied on 2026-08-19.
-     * `firebase_messaging` itself does **not** - it is a `com.android.library`
-     * with Java sources - so the whole cost of keeping that list empty is the
-     * dozen lines below.
+     * the Kotlin Gradle Plugin. `firebase_messaging` itself does **not** - it is
+     * a `com.android.library` with Java sources - so the whole cost of not
+     * lengthening that list is the dozen lines below.
      *
      * *Why the name comes from Dart.* §2.4's four interface variants are chosen
      * inside the app, not by the phone's locale, so Android string resources

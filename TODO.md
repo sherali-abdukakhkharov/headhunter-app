@@ -1078,11 +1078,11 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       thirty lines in `MainActivity.kt` hand it to the OS through a
       `FileProvider` and `ACTION_VIEW`.
       **The point of doing it this way is the KGP list.** Every pub package that
-      opens a file is written in Kotlin and applies the Kotlin Gradle Plugin — the
-      warning this project emptied on 2026-08-19 by removing `telegram_login`, and
-      one future Flutter versions refuse outright. The app module's *own* Kotlin
-      is not a plugin and does not appear on that list, so the feature costs zero
-      entries. `path_provider` was promoted from transitive (already 2.1.6 via
+      opens a file is written in Kotlin and applies the Kotlin Gradle Plugin — a
+      warning future Flutter versions refuse outright. The app module's *own*
+      Kotlin is not a plugin and does not appear on that list, so the feature
+      costs zero entries. (The list itself is not at zero: `file_picker` is on
+      it and always has been — corrected 2026-08-25.) `path_provider` was promoted from transitive (already 2.1.6 via
       `file_picker`) and `androidx.core` needed no Gradle change: it is already on
       the compile classpath at 1.15.0 through the Flutter embedding.
       Four things are load-bearing and tested:
@@ -1122,10 +1122,10 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       transitive dependency** (2.1.6, via `file_picker`), so fetching the bytes
       to a cache directory costs nothing. *Opening* them needs a viewer plugin —
       `open_filex` or equivalent — and every candidate is written in Kotlin, so
-      it would **apply the Kotlin Gradle Plugin**. That is the second name on a
-      warning list the team deliberately emptied on 2026-08-19 by removing
-      `telegram_login`, and future Flutter versions will refuse a build that has
-      one. So this is not a decision to slip in.
+      it would **apply the Kotlin Gradle Plugin**, and future Flutter versions
+      will refuse a build that has one. The list is not empty to begin with —
+      `file_picker` is on it — so this would be the second name, not the first.
+      So this is not a decision to slip in.
       Three ways out, in ascending cost:
       1. **Live with the current behaviour.** The row says opening is not
          available yet, the way §6.7's top-up does. Phone and e-mail — the two

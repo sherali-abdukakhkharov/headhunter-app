@@ -318,9 +318,14 @@ answered the next tap would defeat the only check that notices.
 
 Handing a downloaded file to the OS needs `FileProvider` and an intent, and every
 pub package that wraps them is written in Kotlin and therefore **applies the
-Kotlin Gradle Plugin** — the build warning this project deliberately emptied on
-2026-08-19 by removing `telegram_login`, and one that future Flutter versions
-will refuse outright.
+Kotlin Gradle Plugin** — a build warning that future Flutter versions will refuse
+outright.
+
+**The list is not empty**, and the phrasing here used to claim it was.
+`file_picker` has applied KGP since it arrived on 2026-08-07, twelve days before
+`telegram_login` was removed, so that removal took the warning from two names to
+one. CI prints `file_picker` on every run. The rule is "do not make the list
+longer", and the point of the sections below is that it has not grown since.
 
 The app module's Kotlin is **not** a plugin and does not appear on that list:
 `android/app/build.gradle.kts` has no `kotlin("android")` id and still carries a

@@ -267,11 +267,16 @@ things in `core/` or `shared/` when a second feature actually needs them.
 - **`/push`** creates the notification channel FCM posts to, and reads
   `versionName` for the device registration.
 
-Every pub package that does either applies the Kotlin Gradle Plugin — the
-warning this project emptied by removing `telegram_login`, and one future Flutter
-versions refuse — and the app module's *own* Kotlin does not appear on that list.
-`flutter_local_notifications` and `package_info_plus` are the usual answers and
-both are on it.
+Every pub package that does either applies the Kotlin Gradle Plugin — a warning
+future Flutter versions refuse — and the app module's *own* Kotlin does not
+appear on that list. `flutter_local_notifications` and `package_info_plus` are
+the usual answers and both are on it.
+
+**The list already has one name on it: `file_picker`**, since 2026-08-07. CI
+prints it on every build. Removing `telegram_login` on 2026-08-19 took the list
+from two to one rather than emptying it, and several comments in this repo said
+"emptied" until 2026-08-25. So the rule is **do not make it longer** — and check
+before adding, because one entry is already spending the budget.
 
 So **before adding a dependency that exists to reach the platform, check whether
 the channel can carry it**, and check what is already resolved: `path_provider` was
