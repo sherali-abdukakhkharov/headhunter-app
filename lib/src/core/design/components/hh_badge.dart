@@ -314,6 +314,11 @@ class HhBadge extends StatelessWidget {
 
     return Semantics(
       label: label,
+      // The badge is icon **plus word** by design, so the word is also a
+      // `Text` — and without this the two labels merge into "Verified
+      // employer, Verified employer" (MT-015). Nothing here is interactive, so
+      // there is no action to restate.
+      excludeSemantics: true,
       child: Container(
         // Geometry fixed by the design: 6/10/6/8 padding, radius 7, gap 5,
         // icon 13 at stroke 2.2, label 600/12.
@@ -409,6 +414,9 @@ class HhUnreadPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
     label: semanticsLabel,
+    // The count is drawn as digits and read as a sentence ("3 unread"), so
+    // letting the digits through would announce both (MT-015).
+    excludeSemantics: true,
     child: Container(
       constraints: const BoxConstraints(minWidth: 22),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),

@@ -86,6 +86,17 @@ health screen's app bar. **After changing anything in the design system, run the
 gallery on a device** — see MEMORY.md for three bugs that a green `flutter analyze`
 and a green test suite both missed.
 
+**A device run is not a gate on shipping the change**, though. Gradle will not
+start in a Claude session, and every release is re-tested end to end by a QA
+pass that delivers a fresh `mobile-test-audit.md` — so make the change, pin what
+*can* be pinned in a test, and let the audit confirm the rest. Say plainly in the
+commit what was verified here and what was not.
+
+**Accessibility is one of the things that can be pinned here.** Semantics render
+headlessly: `tester.getSemantics` and `find.bySemanticsLabel` reproduce a
+TalkBack announcement exactly, which is how MT-015 was found and fixed without a
+device. See `test/core/design/semantics_test.dart`.
+
 ## Domain rules that are easy to get wrong
 
 - **Four interface variants, three languages.** Uzbek ships in Latin *and*

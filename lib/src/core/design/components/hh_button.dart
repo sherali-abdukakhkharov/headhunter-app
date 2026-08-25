@@ -160,6 +160,11 @@ class HhButton extends StatelessWidget {
       button: true,
       enabled: _enabled,
       label: label,
+      // Without this the node's own label and the child `Text`'s merge, and a
+      // screen reader announces "Save, Save" (MT-015). The action has to be
+      // restated because excluding the subtree also drops the InkWell's.
+      excludeSemantics: true,
+      onTap: _enabled ? onPressed : null,
       child: Material(
         color: style.background,
         // `shape` only — Material asserts if both `shape` and `borderRadius`
@@ -267,6 +272,8 @@ class _TextButtonBody extends StatelessWidget {
       button: true,
       enabled: onPressed != null,
       label: label,
+      excludeSemantics: true,
+      onTap: onPressed,
       child: InkWell(
         onTap: onPressed,
         borderRadius: HhRadius.buttonAll,

@@ -111,6 +111,10 @@ class HhDictionaryPicker extends ConsumerWidget {
       errorText: errorText,
       hintText: hintText ?? l10n.pickerChoose,
       trailingIconPath: HhIconPath.chevronDown,
+      // Named after the field it opens, not "Choose": a profile form carries
+      // six pickers, and six controls all called "Choose" are six controls a
+      // screen-reader user cannot tell apart (MT-015).
+      trailingSemanticLabel: l10n.pickerChooseNamed(label),
       // A read-only field still shows a caret and an empty box, so the text is
       // supplied through the controller rather than by typing.
       controller: TextEditingController(

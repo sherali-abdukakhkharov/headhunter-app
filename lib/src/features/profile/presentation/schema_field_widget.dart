@@ -171,6 +171,7 @@ class SchemaFieldWidget extends StatelessWidget {
       errorText: errorText,
       hintText: l10n.profileDateHint,
       trailingIconPath: HhIconPath.calendar,
+      trailingSemanticLabel: l10n.commonPickDate,
       controller: TextEditingController(text: value as String? ?? ''),
       onTap: enabled ? () => _pickDate(context, current) : null,
       onTrailingTap: enabled ? () => _pickDate(context, current) : null,

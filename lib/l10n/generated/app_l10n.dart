@@ -1211,6 +1211,24 @@ abstract class AppL10n {
   /// **'Choose'**
   String get pickerChoose;
 
+  /// Accessible name for a picker's chevron, which is an icon-only button and was announced as nothing at all (MT-015). Names the field it opens, so several pickers on one form are told apart: "Choose industry, button".
+  ///
+  /// In en, this message translates to:
+  /// **'Choose {field}'**
+  String pickerChooseNamed(String field);
+
+  /// Accessible name for a date field's calendar button. Not the field's own label, which the field already carries.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a date'**
+  String get commonPickDate;
+
+  /// Accessible name for a time field's clock button.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a time'**
+  String get commonPickTime;
+
   /// Opens the list on a multi-select picker — skills, languages, employment types.
   ///
   /// In en, this message translates to:

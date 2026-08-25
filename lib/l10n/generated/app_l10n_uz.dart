@@ -641,6 +641,17 @@ class AppL10nUz extends AppL10n {
   String get pickerChoose => 'Tanlash';
 
   @override
+  String pickerChooseNamed(String field) {
+    return '$field: tanlash';
+  }
+
+  @override
+  String get commonPickDate => 'Sanani tanlash';
+
+  @override
+  String get commonPickTime => 'Vaqtni tanlash';
+
+  @override
   String get pickerAdd => 'Qo\'shish';
 
   @override
@@ -3756,6 +3767,17 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get pickerChoose => 'Танлаш';
 
   @override
+  String pickerChooseNamed(String field) {
+    return '$field: танлаш';
+  }
+
+  @override
+  String get commonPickDate => 'Санани танлаш';
+
+  @override
+  String get commonPickTime => 'Вақтни танлаш';
+
+  @override
   String get pickerAdd => 'Қўшиш';
 
   @override
@@ -6860,6 +6882,17 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get pickerChoose => 'Tanlash';
+
+  @override
+  String pickerChooseNamed(String field) {
+    return '$field: tanlash';
+  }
+
+  @override
+  String get commonPickDate => 'Sanani tanlash';
+
+  @override
+  String get commonPickTime => 'Vaqtni tanlash';
 
   @override
   String get pickerAdd => 'Qo\'shish';

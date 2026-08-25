@@ -248,6 +248,7 @@ class _InterviewFormState extends ConsumerState<_InterviewForm> {
                   enabled: !_busy,
                   hintText: l10n.interviewTimeHint,
                   trailingIconPath: HhIconPath.clock,
+                  trailingSemanticLabel: l10n.commonPickTime,
                   controller: TextEditingController(
                     text: _time == null
                         ? ''

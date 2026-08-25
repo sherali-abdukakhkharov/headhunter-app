@@ -641,6 +641,17 @@ class AppL10nRu extends AppL10n {
   String get pickerChoose => 'Выбрать';
 
   @override
+  String pickerChooseNamed(String field) {
+    return 'Выбрать: $field';
+  }
+
+  @override
+  String get commonPickDate => 'Выбрать дату';
+
+  @override
+  String get commonPickTime => 'Выбрать время';
+
+  @override
   String get pickerAdd => 'Добавить';
 
   @override

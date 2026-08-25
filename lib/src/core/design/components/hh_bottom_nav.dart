@@ -119,6 +119,13 @@ class HhBottomNav extends StatelessWidget {
                     item: item,
                     selected: i == currentIndex,
                     clampLabelBox: clampLabelBox,
+                    // "1 of 5", from Flutter's own localizations rather than a
+                    // string of ours: a destination announced without its
+                    // position leaves a screen-reader user unable to tell how
+                    // far along the bar they are (MT-015).
+                    position: MaterialLocalizations.of(
+                      context,
+                    ).tabLabel(tabIndex: i + 1, tabCount: items.length),
                     onTap: () => onSelected(i),
                   ),
                 ),
@@ -135,11 +142,15 @@ class _NavTab extends StatelessWidget {
     required this.item,
     required this.selected,
     required this.clampLabelBox,
+    required this.position,
     required this.onTap,
   });
 
   final HhNavItem item;
   final bool selected;
+
+  /// "Tab 1 of 5", localized by `MaterialLocalizations`.
+  final String position;
 
   /// Whether to hard-clamp the label box to its reserved height. True at the
   /// default text scale, false above it — see [HhBottomNav.build].
@@ -159,6 +170,14 @@ class _NavTab extends StatelessWidget {
     button: true,
     selected: selected,
     label: item.label,
+    value: position,
+    // The icon was already excluded; the *label* was not, so the node's own
+    // name and the `Text` merged and TalkBack said "Home, Home" (MT-015).
+    // Excluding the whole subtree is one rule rather than one per child, and
+    // it means a future child cannot reintroduce the duplication — at the cost
+    // of restating the tap, which the InkWell below would otherwise provide.
+    excludeSemantics: true,
+    onTap: onTap,
     child: InkWell(
       onTap: onTap,
       borderRadius: HhRadius.inputAll,

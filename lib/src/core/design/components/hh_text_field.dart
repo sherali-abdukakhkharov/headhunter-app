@@ -34,6 +34,7 @@ class HhTextField extends StatefulWidget {
     this.unit,
     this.trailingIconPath,
     this.onTrailingTap,
+    this.trailingSemanticLabel,
     this.keyboardType,
     this.textInputAction,
     this.inputFormatters,
@@ -45,7 +46,13 @@ class HhTextField extends StatefulWidget {
     this.focusNode,
     this.readOnly = false,
     this.onTap,
-  });
+  }) : assert(
+         onTrailingTap == null || trailingSemanticLabel != null,
+         'A tappable trailing icon needs a trailingSemanticLabel. An '
+         'icon-only control with no name is one a screen-reader user cannot '
+         'identify at all — MT-015 found every picker chevron in the app in '
+         'exactly that state, and an assert is what stops the next one.',
+       );
 
   /// Persistent label shown above the box.
   final String label;
@@ -73,6 +80,17 @@ class HhTextField extends StatefulWidget {
   /// Trailing affordance, from [HhIconPath] — a calendar or picker glyph.
   final String? trailingIconPath;
   final VoidCallback? onTrailingTap;
+
+  /// What a screen reader calls the trailing button.
+  ///
+  /// **Required whenever [onTrailingTap] is supplied**, and asserted below: an
+  /// icon-only control with no name is one a screen-reader user cannot
+  /// identify at all, and every picker in the app shipped that way (MT-015).
+  ///
+  /// Name the *action and its subject* — "Choose industry", not "Open" and not
+  /// the glyph. The field's own label is already announced separately, so a
+  /// bare "Choose" on a form with four pickers names four identical controls.
+  final String? trailingSemanticLabel;
 
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -238,6 +256,13 @@ class _HhTextFieldState extends State<HhTextField> {
                 const SizedBox(width: 4),
                 IconButton(
                   onPressed: widget.enabled ? widget.onTrailingTap : null,
+                  // Long-press affordance for a sighted user. **Not** the
+                  // accessible name: `Tooltip` sets the semantics *tooltip*
+                  // property rather than the label, so a button with only a
+                  // tooltip still announces nothing. Verified — the name has
+                  // to come from the icon below, which `IconButton` merges
+                  // into its own node.
+                  tooltip: widget.trailingSemanticLabel,
                   visualDensity: VisualDensity.compact,
                   constraints: const BoxConstraints(
                     minWidth: HhSize.minTarget,
@@ -248,6 +273,11 @@ class _HhTextFieldState extends State<HhTextField> {
                     size: 20,
                     color: _hasError ? HhColors.error : HhColors.inkMuted,
                     strokeWidth: 1.8,
+                    // What makes the control announceable at all. Without it
+                    // Android's hierarchy dump marks the chevron `NAF=true`,
+                    // which is how the audit found every picker in the app
+                    // (MT-015).
+                    semanticLabel: widget.trailingSemanticLabel,
                   ),
                 ),
               ],

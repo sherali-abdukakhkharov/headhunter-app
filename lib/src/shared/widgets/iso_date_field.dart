@@ -43,6 +43,7 @@ class IsoDateField extends StatelessWidget {
       enabled: enabled,
       hintText: l10n.profileDateHint,
       trailingIconPath: HhIconPath.calendar,
+      trailingSemanticLabel: l10n.commonPickDate,
       controller: TextEditingController(text: value ?? ''),
       onTap: enabled ? () => _pick(context) : null,
       onTrailingTap: enabled ? () => _pick(context) : null,

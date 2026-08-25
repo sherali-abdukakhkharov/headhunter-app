@@ -805,6 +805,21 @@
   "@pickerChoose": {
     "description": "Placeholder in a dictionary-backed field before anything is selected (§3.3)."
   },
+  "pickerChooseNamed": "Choose {field}",
+  "@pickerChooseNamed": {
+    "description": "Accessible name for a picker's chevron, which is an icon-only button and was announced as nothing at all (MT-015). Names the field it opens, so several pickers on one form are told apart: \"Choose industry, button\".",
+    "placeholders": {
+      "field": {"type":"String"}
+    }
+  },
+  "commonPickDate": "Choose a date",
+  "@commonPickDate": {
+    "description": "Accessible name for a date field's calendar button. Not the field's own label, which the field already carries."
+  },
+  "commonPickTime": "Choose a time",
+  "@commonPickTime": {
+    "description": "Accessible name for a time field's clock button."
+  },
   "pickerAdd": "Add",
   "@pickerAdd": {
     "description": "Opens the list on a multi-select picker — skills, languages, employment types."

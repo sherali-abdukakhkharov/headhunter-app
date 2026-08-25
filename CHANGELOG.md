@@ -17,6 +17,40 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.11.5+21 — 2026-08-25
+
+The app stops saying everything twice to people using a screen reader.
+
+### Fixed
+
+- **TalkBack no longer repeats every control.** Buttons announced as "Save,
+  Save", navigation destinations as "Home, Home", status badges as "Verified
+  employer, Verified employer" — three of the most-used components in the app,
+  every time they were focused.
+- **Navigation destinations say where they are**: "Home, tab 1 of 5, selected".
+- **Picker chevrons have names.** Every icon-only button that opens a picker,
+  a date or a time was announced as nothing at all, which made the one control
+  on a picker that matters impossible to find. They now say what they open, and
+  by the name of their own field — "Choose industry", not six identical
+  "Choose"s on one form.
+
+### Internal
+
+- MT-015. `Semantics(label: X, child: … Text(X) …)` merges into `"X\nX"`; the
+  fix is `excludeSemantics: true` on the wrapper, which also drops the child's
+  tap and enabled state, so both are restated on the node.
+- `HhTextField.trailingSemanticLabel`, **asserted** whenever `onTrailingTap` is
+  supplied. Naming the six existing chevrons fixes today; the assert is what
+  stops the seventh.
+- Eight cases in `semantics_test.dart`, including one that tests the *shape* of
+  the bug rather than its three instances — no shared component may produce a
+  label containing its own text twice.
+- **MT-016 could not be reproduced.** The employer dashboard's CTA clears the
+  bottom bar by more than a spacing token and is hit-testable at 360 × 640 dp,
+  200% text, with a status bar and a gesture strip. That is now a test rather
+  than an opinion, and it passes — so the next device pass is what settles it.
+  No speculative padding was added for a defect that cannot be demonstrated.
+
 ## 1.11.4+20 — 2026-08-25
 
 Choosing your role no longer occasionally tells you to choose your role.

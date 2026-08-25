@@ -639,6 +639,17 @@ class AppL10nEn extends AppL10n {
   String get pickerChoose => 'Choose';
 
   @override
+  String pickerChooseNamed(String field) {
+    return 'Choose $field';
+  }
+
+  @override
+  String get commonPickDate => 'Choose a date';
+
+  @override
+  String get commonPickTime => 'Choose a time';
+
+  @override
   String get pickerAdd => 'Add';
 
   @override

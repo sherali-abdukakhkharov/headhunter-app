@@ -44,8 +44,11 @@ void main() {
     ApiException? vacanciesError,
     EmployerProfile? employer,
     bool hasProfile = true,
+    Size viewport = const Size(1080, 2400),
+    double textScale = 1,
+    bool withShellNav = false,
   }) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = viewport;
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
@@ -90,7 +93,54 @@ void main() {
           locale: const Locale('en'),
           localizationsDelegates: AppL10n.localizationsDelegates,
           supportedLocales: AppL10n.supportedLocales,
-          home: const EmployerDashboardScreen(),
+          // The shell around the screen, for the layout cases: the dashboard
+          // lives inside `RoleShell`, whose bottom bar is what MT-016 says the
+          // primary action ends up behind.
+          home: Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(textScale),
+                // A real phone's insets, which the test binding does not
+                // supply: a status bar and a gesture-navigation strip. They
+                // are where "missing safe-area padding" would actually bite,
+                // so a layout case without them is not the tested device.
+                padding: withShellNav
+                    ? const EdgeInsets.only(top: 24, bottom: 48)
+                    : EdgeInsets.zero,
+                viewPadding: withShellNav
+                    ? const EdgeInsets.only(top: 24, bottom: 48)
+                    : EdgeInsets.zero,
+              ),
+              child: withShellNav
+                  ? const Scaffold(
+                      body: EmployerDashboardScreen(),
+                      bottomNavigationBar: HhBottomNav(
+                        items: [
+                          HhNavItem(iconPath: HhIconPath.home, label: 'Home'),
+                          HhNavItem(
+                            iconPath: HhIconPath.briefcase,
+                            label: 'Vacancies',
+                          ),
+                          HhNavItem(
+                            iconPath: HhIconPath.people,
+                            label: 'Candidates',
+                          ),
+                          HhNavItem(
+                            iconPath: HhIconPath.chat,
+                            label: 'Messages',
+                          ),
+                          HhNavItem(
+                            iconPath: HhIconPath.building,
+                            label: 'Company',
+                          ),
+                        ],
+                        currentIndex: 0,
+                        onSelected: _ignoreIndex,
+                      ),
+                    )
+                  : const EmployerDashboardScreen(),
+            ),
+          ),
         ),
       ),
     );
@@ -391,6 +441,68 @@ void main() {
       expect(find.textContaining('Nothing is waiting on you'), findsOneWidget);
     });
   });
+
+  group('MT-016: the primary action on the smallest supported screen', () {
+    /// 360 x 640 dp — the audit's compact device — at 200% text.
+    Future<void> pumpCompact(WidgetTester tester) => pump(
+      tester,
+      viewport: const Size(360 * 3, 640 * 3),
+      textScale: 2,
+      withShellNav: true,
+      vacancies: [_vacancy(id: 'a')],
+      counts: {'a': const ApplicationCounts(hiredCount: 0, byStatus: {})},
+    );
+
+    Future<Finder> scrollToCta(WidgetTester tester) async {
+      final cta = find.widgetWithText(HhButton, 'New vacancy');
+      await tester.scrollUntilVisible(
+        cta,
+        400,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      return cta;
+    }
+
+    testWidgets('New vacancy scrolls fully clear of the bar', (tester) async {
+      await pumpCompact(tester);
+      final cta = await scrollToCta(tester);
+
+      final button = tester.getRect(cta);
+      final nav = tester.getRect(find.byType(HhBottomNav));
+
+      // The audit's symptom stated as geometry: the CTA "reduced to a thin
+      // blue strip behind bottom navigation". Whatever the mechanism, this is
+      // the property that has to hold — the whole control clears the bar.
+      // The audit's UX ask, made measurable: "keep the primary CTA fully
+      // visible with at least one spacing token above the nav". Clearance
+      // rather than mere non-overlap, because a control flush against the bar
+      // is one a thumb misses in the direction of changing tabs.
+      expect(
+        nav.top - button.bottom,
+        greaterThanOrEqualTo(HhSpace.md),
+        reason: 'only ${nav.top - button.bottom}pt between the CTA and the bar',
+      );
+      // And it is a control, not a sliver of one. The bar grows with text
+      // scale by design, so at 200% there is meaningfully less room and a
+      // squeezed button would still technically be "above" it.
+      expect(button.height, greaterThanOrEqualTo(HhSize.minTarget));
+    });
+
+    testWidgets('and it is still the action it says it is', (tester) async {
+      // Visible is not the same as reachable: a control can clear the bar and
+      // still be disabled, or under something else.
+      await pumpCompact(tester);
+      final cta = await scrollToCta(tester);
+
+      expect(tester.widget<HhButton>(cta).onPressed, isNotNull);
+      // Hit-testable, not merely painted: a control drawn under the bar still
+      // measures as visible, and this is what says a finger would land on it.
+      // Not an actual tap — the callback navigates, and there is no router in
+      // this harness.
+      expect(cta.hitTestable(), findsOneWidget);
+    });
+  });
 }
 
 CandidateCard _card() => CandidateCard.fromJson(const {
@@ -445,3 +557,5 @@ EmployerProfile _employer({bool complete = true, int percent = 100}) =>
       'canPublish': complete,
       'missingFields': const <dynamic>[],
     });
+
+void _ignoreIndex(int _) {}
