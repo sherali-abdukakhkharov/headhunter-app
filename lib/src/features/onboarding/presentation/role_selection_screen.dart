@@ -58,6 +58,13 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   ];
 
   Future<void> _submit() async {
+    // `onPressed` is decided during build, and `setState` only schedules one —
+    // so two taps inside a single frame both see the button as enabled and both
+    // reach here. `POST /auth/roles` is idempotent server-side, but the second
+    // call would still race the first through the state transition below
+    // (MT-021), and the audit reproduced this by tapping fast.
+    if (_submitting) return;
+
     setState(() {
       _submitting = true;
       _error = null;

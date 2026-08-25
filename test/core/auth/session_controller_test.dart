@@ -52,11 +52,34 @@ class _FakeAuthRepository extends AuthRepository {
 
   int logoutCalls = 0;
 
+  /// Every call this fake saw, in order, plus whatever a test appends. The
+  /// *sequence* is the claim MT-021 turns on — see the group at the bottom.
+  final events = <String>[];
+
+  /// What `/auth/roles` answers with. Not the set it was sent: an administrator
+  /// may have granted more (§10).
+  Set<AppRole> grants = const {AppRole.employer};
+
+  ApiException? selectFailure;
+
   @override
   Future<AuthSession> refresh(String refreshToken) async {
     final build = onRefresh;
     if (build == null) throw const ApiException('unexpected refresh');
     return build();
+  }
+
+  @override
+  Future<Set<AppRole>> selectRoles(Set<AppRole> roles) async {
+    events.add('roles');
+    if (selectFailure case final failure?) throw failure;
+    return grants;
+  }
+
+  @override
+  Future<String> switchActiveRole(AppRole role) async {
+    events.add('active-role:${role.wire}');
+    return 'access-naming-${role.wire}';
   }
 
   @override
@@ -255,5 +278,134 @@ void main() {
     final state = container.read(sessionControllerProvider);
     expect(state, isA<SessionUnauthenticated>());
     expect((state as SessionUnauthenticated).expired, isTrue);
+  });
+
+  group('MT-021: finishing registration is one transition', () {
+    /// A signed-in account that holds no role yet — which is every account
+    /// between `POST /auth/otp/verify` and role selection, because verifying a
+    /// code creates the account and a new account deliberately holds none.
+    Future<ProviderContainer> registering() async {
+      tokens.refreshToken = 'refresh-1';
+      repo = _FakeAuthRepository(
+        onRefresh: () => _session(roles: const [], activeRole: null),
+      );
+
+      final container = containerWith();
+      final state = await settled(container);
+
+      expect(state, isA<SessionActive>());
+      expect((state as SessionActive).roles, isEmpty);
+
+      // The restore itself is not part of the claim below.
+      repo.events.clear();
+      return container;
+    }
+
+    /// Appends `state` to the log the first time a session with granted roles
+    /// is published. That is the exact moment the redirect chain is free to
+    /// leave this screen for a role shell.
+    void recordShellEntry(ProviderContainer container) {
+      var entered = false;
+      container.listen<SessionState>(sessionControllerProvider, (_, next) {
+        if (entered) return;
+        if (next is SessionActive && next.roles.isNotEmpty) {
+          entered = true;
+          repo.events.add('state');
+        }
+      });
+    }
+
+    test('the token names the role before the shell can be entered', () async {
+      final container = await registering();
+      recordShellEntry(container);
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .selectRoles({AppRole.employer});
+
+      // The whole finding in one assertion. `state` last is what stops the
+      // shell rendering against a token that names no role — which the server
+      // answers with 403 `role.none_active`, rendered as *"No active role is
+      // selected. Choose a role first."* to somebody who had just chosen one.
+      expect(repo.events, ['roles', 'active-role:employer', 'state']);
+    });
+
+    test('and the state that lands carries both halves at once', () async {
+      final container = await registering();
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .selectRoles({AppRole.employer});
+
+      final state = container.read(sessionControllerProvider) as SessionActive;
+      expect(state.roles, {AppRole.employer});
+      // Not merely derivable through `effectiveRole` — actually set, and
+      // therefore persisted, so a cold start agrees with what is on screen.
+      expect(state.activeRole, AppRole.employer);
+    });
+
+    test('the choice survives a cold start', () async {
+      // The audit noted a restart *healed* the broken state, which is the
+      // clue that persistence was happening after the transition rather than
+      // before it.
+      final container = await registering();
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .selectRoles({AppRole.employer});
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('session.active_role'), AppRole.employer.wire);
+    });
+
+    test('the server’s set wins over the one that was sent (§10)', () async {
+      final container = await registering();
+      repo.grants = const {AppRole.candidate, AppRole.employer};
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .selectRoles({AppRole.candidate});
+
+      final state = container.read(sessionControllerProvider) as SessionActive;
+      expect(state.roles, {AppRole.candidate, AppRole.employer});
+    });
+
+    test('a refused grant moves nothing and stays retryable', () async {
+      // The third acceptance criterion. Recording the roles locally on a
+      // failed call would drop the user into a shell the server does not agree
+      // they can use, and every request from it would 403.
+      final container = await registering();
+      repo.selectFailure = const ApiException('offline');
+
+      await expectLater(
+        container
+            .read(sessionControllerProvider.notifier)
+            .selectRoles({AppRole.employer}),
+        throwsA(isA<ApiException>()),
+      );
+
+      final state = container.read(sessionControllerProvider) as SessionActive;
+      expect(state.roles, isEmpty);
+      expect(repo.events, ['roles']);
+    });
+
+    test('granting nothing publishes anyway rather than hanging', () async {
+      // A server that answers with an empty set leaves nothing to be active.
+      // The screen must not sit on a spinner: the redirect chain sends it
+      // straight back to role selection, which is the honest outcome.
+      final container = await registering();
+      repo.grants = const {};
+      recordShellEntry(container);
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .selectRoles({AppRole.employer});
+
+      final state = container.read(sessionControllerProvider) as SessionActive;
+      expect(state.roles, isEmpty);
+      expect(state.activeRole, isNull);
+      // No token rotation, because there is no role to name.
+      expect(repo.events, ['roles']);
+    });
   });
 }

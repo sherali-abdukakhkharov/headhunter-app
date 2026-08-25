@@ -38,7 +38,7 @@ invitation response and employer profile.
 | MT-015 | Medium | Open — duplicate semantics and unlabelled icon-only pickers. **Design-system change, so it needs a device run** |
 | MT-016 | Medium | Open — the primary CTA is clipped on compact and 200%-text layouts |
 | MT-017 | Medium | Open, and it is a **backend ask**: `GET /admin/complaints` returns complaints, not what they are about |
-| MT-021 | Medium | **New** — tapping Employer and Next in quick succession enters the shell before the active role has persisted, showing "No active role is selected". The role *was* granted; a restart heals it. Needs the mutation, the persistence and the navigation to be one awaited transition |
+| MT-021 | Medium | **Fixed 1.11.4** — and it was not really a race on *taps*: `selectRoles` published the granted roles, which is what lets the redirect chain into the shell, and rotated the access token three awaits later. So the shell's first role-scoped request carried a token naming no role and came back 403 `role.none_active` — the server's own sentence, shown to somebody who had just chosen one. Now the token is rotated and the choice persisted **before** the single state transition that carries both halves |
 
 Fixed by 1.11.0 and verified by this audit: MT-001, MT-002, MT-004, MT-005,
 MT-007, MT-008, MT-010, MT-011, MT-018, MT-019.

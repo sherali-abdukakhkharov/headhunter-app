@@ -281,22 +281,51 @@ class SessionController extends _$SessionController {
   /// would 403.
   Future<void> selectRoles(Set<AppRole> roles) async {
     final granted = await ref.read(authRepositoryProvider).selectRoles(roles);
-    setGrantedRoles(granted);
+
+    // Built, not published. Publishing the granted roles is what lets the
+    // redirect chain into the shell, so everything the shell needs has to be
+    // true *before* the state moves — see below.
+    final current = state;
+    final next = current is SessionActive
+        ? current.copyWith(roles: granted)
+        : SessionActive(roles: granted);
+
+    final active = next.effectiveRole;
+    if (active == null) {
+      // The server granted nothing at all. Publish anyway rather than leaving
+      // the screen spinning: the redirect chain sends it straight back here,
+      // which is the honest outcome.
+      _set(next);
+      return;
+    }
+
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    await prefs.setString(_activeRoleKey, active.wire);
 
     // The token minted at sign-in names no role, and `/auth/roles` does not
     // reissue it — the backend says so explicitly ("the new roles reach the
-    // token on the next refresh or role switch"). Without this the very first
-    // screen after registration calls a role-scoped endpoint and gets a 403.
-    final current = state;
-    if (current is SessionActive) {
-      final active = current.effectiveRole;
-      if (active != null) {
-        final prefs = await ref.read(sharedPreferencesProvider.future);
-        await prefs.setString(_activeRoleKey, active.wire);
-        _set(current.copyWith(activeRole: active));
-        await _publishActiveRole(active);
-      }
-    }
+    // token on the next refresh or role switch").
+    //
+    // **Awaited before the state moves, and that ordering is the whole fix for
+    // MT-021.** This used to publish the roles first and rotate the token
+    // three awaits later, so the router entered the shell while the token
+    // still named no role, and the shell's first role-scoped request came back
+    // 403 `role.none_active` — rendered as *"No active role is selected.
+    // Choose a role first."* on the screen of somebody who had just chosen
+    // one. A cold restart healed it, because `restore` reads the role that had
+    // been persisted by then, which is what made it look intermittent.
+    //
+    // [switchRole] deliberately does the opposite and publishes state first.
+    // The two are not inconsistent: **registration is already a network
+    // operation** and the user is already waiting on `/auth/roles`, so one
+    // more round trip costs nothing they can perceive. Changing tabs is not —
+    // blocking a role switch on the network would make it fail offline, for a
+    // token rotation that is only needed by the next request.
+    await _publishActiveRole(active);
+
+    // One transition, with the roles and the active role together. Anything
+    // watching the session sees a session that can act, never a half of one.
+    _set(next.copyWith(activeRole: active));
   }
 
   /// Records the roles the server granted, preserving the active choice where

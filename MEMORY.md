@@ -501,6 +501,35 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-25 - Publishing session state *is* navigation, so everything the shell needs must be true first
+`selectRoles` did three things in this order: publish the granted roles,
+persist the active role, rotate the access token. The first of those is what
+the redirect chain watches, so the router entered the role shell immediately —
+while the token still named no role. The shell's first role-scoped request came
+back **403 `role.none_active`**, which the backend words as *"No active role is
+selected. Choose a role first."*, and that sentence was shown to somebody who
+had just chosen one. Found by the 1.11.0 audit as MT-021.
+
+**A cold restart healed it**, because `restore` reads the role that had been
+persisted by then. That is what made it look like an intermittent tap race
+rather than a fixed ordering bug, and it is why the audit filed it as
+"reproduced once with immediate consecutive taps".
+
+The general rule: **`_set` on `SessionController` is a navigation instruction.**
+Anything the destination needs — a persisted choice, a token that names a role —
+has to be done before it, not after. Awaiting a network call before publishing
+is normally the wrong trade, and here it is the right one, because registration
+is *already* a network operation the user is waiting on.
+
+`switchRole` deliberately keeps the opposite order and that is not an
+inconsistency: changing tabs is not a network operation, and blocking it on one
+would make a role switch fail offline. Both orderings are now stated where they
+are, with the reason.
+
+The test that pins it records an ordered log of side effects and asserts
+`['roles', 'active-role:employer', 'state']`. Mutation-verified — restoring the
+old order produces `['roles', 'state', 'active-role:employer']`.
+
 ### 2026-08-25 - A wrong HTTP verb hid behind a legitimate 404 for two releases
 `markRead` and `markAllRead` were written as `POST` against routes the backend
 declares as `@Put`. Both 404'd. So §9.2's notification centre shipped in 1.10.0,

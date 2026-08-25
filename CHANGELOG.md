@@ -17,6 +17,39 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.11.4+20 — 2026-08-25
+
+Choosing your role no longer occasionally tells you to choose your role.
+
+### Fixed
+
+- **Finishing registration lands in a working shell.** Picking Employer and
+  tapping Next could open the employer area showing *"No active role is
+  selected. Choose a role first."* — on the screen right after choosing one.
+  The role really had been granted, and closing and reopening the app fixed it,
+  which made it look random. It was not: the app moved into the shell a moment
+  before it finished telling the server which role you were acting as, so the
+  first thing the shell asked for came back refused.
+
+### Internal
+
+- MT-021. Not a tap race in the end — a fixed ordering bug that a fast tap made
+  easy to see. Publishing the granted roles is what releases the redirect
+  chain, and the token rotation and the persisted choice both happened after
+  it. Both now complete first, and the roles and the active role land in **one**
+  state transition, so nothing watching the session ever sees half of one.
+- `switchRole` keeps the opposite order on purpose: a tab change is not a
+  network operation and blocking it on one would make switching roles fail
+  offline. Registration already is one, so the extra round trip costs nothing
+  anybody can perceive. Both orderings are now stated where they live.
+- The Next button also guards re-entry itself. `onPressed` is decided during
+  build and `setState` only schedules one, so two taps inside a single frame
+  both saw an enabled button.
+- Six cases in `session_controller_test.dart` over an ordered log of side
+  effects. Mutation-verified: the old order produces
+  `['roles', 'state', 'active-role:employer']` instead of
+  `['roles', 'active-role:employer', 'state']`.
+
 ## 1.11.3+19 — 2026-08-25
 
 Column names and raw numbers stop showing up where words and money belong.
