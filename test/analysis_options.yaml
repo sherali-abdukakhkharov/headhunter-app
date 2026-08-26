@@ -1,0 +1,63 @@
+# Analyzer configuration for the test tree only (MT-024).
+#
+# Everything from the root file applies. Two riverpod_lint diagnostics are
+# silenced here and **nowhere else**: both exist to protect an application's
+# provider graph, and neither describes a test.
+#
+# The reason this file exists is that `flutter analyze` was exiting 1 with 32
+# findings, every one of them in this directory, on a repository whose documented
+# pre-commit gate is that command. Worse, it did so intermittently: the same
+# unchanged tree reported 32, 35, 3 and 0 on consecutive runs, and the runs that
+# reported everything were the slow ones — 95 seconds against 5. A gate that is
+# sometimes red for reasons nobody changed teaches people to re-run it, which is
+# the habit that hides a real regression.
+#
+# **They are under `analyzer.errors`, not `linter.rules`**, and that is not a
+# style choice. riverpod_lint ships through the analysis server's plugin system
+# rather than as core lints, so the linter does not know these names at all —
+# listing them under `rules` produces "isn't a recognized lint rule" and silences
+# nothing. It also explains half of MT-024: whether a plugin diagnostic appears
+# depends on how far the plugin got before the command returned.
+#
+# Suppressing them is defensible because the findings are wrong *here*, not
+# because there are many. Neither is touched under `lib/`, where either firing
+# would be a real finding.
+
+include: ../analysis_options.yaml
+
+analyzer:
+  errors:
+    # The two codes below belong to the riverpod_lint plugin, and the analyzer
+    # only knows they exist when the plugin has loaded. When it has not, it
+    # reports *this file* for naming codes it does not recognise — so the gate is
+    # red either way, which is the catch-22 that made MT-024 look unfixable.
+    #
+    # Silenced here and only here. It is narrow: this file's whole content is
+    # plugin diagnostics, so an unrecognised code in it means the plugin is
+    # absent, not that somebody mistyped a core lint. The root options file is
+    # untouched, so a typo there is still reported.
+    unrecognized_error_code: ignore
+
+    # Fires on `provider.overrideWith(...)` inside a `ProviderScope`. The rule is
+    # about *scoping* a provider part-way down a real tree, where a consumer
+    # above the scope silently reads a different instance from one below it.
+    #
+    # A widget test's `ProviderScope` is the root of the tree it pumps: nothing
+    # above it to disagree with, and no second scope. Declaring `dependencies:`
+    # to satisfy it would mean editing the *production* providers to describe a
+    # relationship that exists only in a test — and in Riverpod 3 `dependencies`
+    # changes runtime behaviour, so that is a shipped change made to quiet a lint
+    # about test code.
+    scoped_providers_should_specify_dependencies: ignore
+
+    # Fires on a public field or getter on a Notifier. The rule is about API
+    # surface: real state belongs in `state`, so listeners see it change.
+    #
+    # A test double records what it was asked to do — `calls`, `onRestore`, a
+    # canned answer for the next call — and none of that is state anybody
+    # watches. The alternative is a method pair, which trips
+    # `use_setters_to_change_properties`, which trips
+    # `avoid_setters_without_getters`; that three-way argument was had once and
+    # settled with an inline ignore, which is this diagnostic being silenced one
+    # file at a time.
+    avoid_public_notifier_properties: ignore

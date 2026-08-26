@@ -391,12 +391,17 @@ from a per-provider `retry` rather than re-enabling it globally.
   `HttpClientAdapter` — `notification_repository_test.dart` is the pattern, and
   it also cross-checks the backend's own decorators when that repo is checked
   out beside this one.
-- Line length 80. `flutter analyze` must be clean before committing — but note
-  that **a clean run proves less than it looks like it does**: riverpod_lint
-  goes through the analyzer's plugin system and its findings appear only
-  sometimes, so the same tree has reported 28, 3 and 0 issues on consecutive
-  runs. Core Dart lints are reliable; riverpod's are not, and CI runs the same
-  command. See MEMORY.md.
+- Line length 80, and **`flutter analyze` is a real gate again** (MT-024,
+  2026-08-27). It had been exiting 1 with up to 32 findings, all riverpod_lint,
+  all in `test/` — and intermittently: the same unchanged tree reported 32, 35,
+  3 and 0 on consecutive runs, the noisy ones being the slow ones (95s against
+  5s). riverpod_lint ships through the analysis server's **plugin** system, so
+  how much of it has run when the command returns is a scheduling accident.
+  `test/analysis_options.yaml` silences the two diagnostics involved **there and
+  nowhere else**, and they sit under `analyzer.errors` rather than
+  `linter.rules` because the linter does not know plugin codes at all. Core Dart
+  lints still reach the test tree — proven by breaking one deliberately. Under
+  `lib/` either diagnostic firing is a real finding.
 
 ## Dependency pinning - read before upgrading
 

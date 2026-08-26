@@ -41,7 +41,7 @@ release checklist rather than in somebody's memory.
 | MT-015 | Medium | **Partially fixed, still open.** The 1.11.5 work held — tabs, actions and picker icons are clean — but radio, checkbox, switch and segmented-button labels still announce twice. The remaining fix is composition inside the shared components, and one semantics assertion per implementation |
 | MT-017 | Medium | Open, both halves. `GET /admin/complaints` returns complaints and not what they are about, so the queue's cards are visually identical. The ask is a localized `targetSummary` and a stable `targetRef` on the list DTO, rendered on the card, with the detail screen staying authoritative |
 | MT-023 | Medium | Open, and it is **the cost of 1.17's own feature**. A chat upload creates `stored_files` immediately; "remove the attachment" only forgets it locally, so the row stays active, linked to nothing, unreachable. Ownership bounds the exposure but BR-14 has no retention answer for it. The audit prefers a short-lived draft state with a scheduled, idempotent, ownership-safe cleanup over deleting synchronously on a UI tap — because deleting on removal makes re-attaching worse |
-| MT-024 | Medium | Open — `flutter analyze` exits 1 with 32 findings, all riverpod_lint, all in test code, several emitted twice. **This matches what has been seen here for weeks**: the same unchanged tree has reported 32, 35, 3 and 0 on consecutive runs, and the 32-finding runs are the slow ones (95s against 5s). The documented pre-commit gate is therefore red on release source and cannot distinguish a regression from noise |
+| MT-024 | Medium | **Fixed 1.19.0** — the noise was riverpod_lint, all of it under `test/`, and the flakiness was the plugin system: how much of a plugin has run when `flutter analyze` returns is a scheduling accident. `test/analysis_options.yaml` silences the two diagnostics there and nowhere else, under `analyzer.errors` rather than `linter.rules` because the linter does not know plugin codes at all — listing them as rules silences nothing and reports the options file instead. CI now runs analyze and test as independent gates |
 
 Verified fixed by 1.17.0 and to be kept pinned: MT-001, MT-002, MT-004, MT-005,
 MT-007, MT-008, MT-009, MT-010, MT-011, MT-012, MT-013, MT-014, MT-016, MT-018,
@@ -2207,15 +2207,35 @@ remaining item is a screen.
 
 ## M11 - Hardening
 
-- [ ] **Make `flutter analyze` a gate that means something.** It reports
-      riverpod_lint findings only when the analyzer plugin finishes starting
-      before the command exits — the same unchanged tree gave 28, then 0, then 3
-      (MEMORY.md, 2026-08-25). Until that is settled, every "analyze clean"
-      claim in this repo covers the core rules only. Wants either a way to run
-      the plugin deterministically or the 26 outstanding
-      `scoped_providers_should_specify_dependencies` warnings resolved, and the
-      second cannot be done blind: `dependencies:` marks a provider as scoped,
-      so it is a runtime change rather than a lint fix
+- [x] **`flutter analyze` is a gate that means something, 2026-08-27**
+      (MT-024). It had been exiting 1 with up to 32 findings and doing it
+      *intermittently* — the same unchanged tree reported 32, 35, 3 and 0 on
+      consecutive runs, and the noisy runs were the slow ones, 95 seconds
+      against 5.
+      **The cause is the plugin system.** riverpod_lint ships through the
+      analysis server rather than as core lints, so how far it has got when the
+      command returns is a scheduling accident. That also produced the catch-22
+      that made this look unfixable: name its diagnostics in an options file and
+      the analyzer reports *that file* for unrecognised codes whenever the
+      plugin has not loaded, so the gate is red either way.
+      `test/analysis_options.yaml` silences the two diagnostics — and
+      `unrecognized_error_code` with them — **in the test tree only**, under
+      `analyzer.errors` rather than `linter.rules`, because the linter does not
+      know plugin codes at all and listing them there silences nothing.
+      Both findings were wrong where they fired: a widget test's
+      `ProviderScope` is the root of the tree it pumps, and a test double's
+      recorder is not notifier state anybody watches. Satisfying the first
+      properly would have meant editing *production* providers to declare a
+      relationship that exists only in a test — and `dependencies` changes
+      runtime behaviour in Riverpod 3.
+      Core Dart lints still reach `test/`, proven by breaking one deliberately
+      rather than assumed. Under `lib/` either diagnostic firing is a real
+      finding and nothing here touches it.
+      **CI runs analyze and test as independent gates.** They were two plain
+      steps, so a failing analyze stopped the job before a single test ran: a
+      red run said "something is wrong" and you had to fix the lint to find out
+      whether anything else was
+
 - [ ] **Transport-level tests for the repositories that have none.** `auth`,
       `chat`, `health`, `shortlist` and now `notifications` drive a recording
       `HttpClientAdapter`; every other repository is faked at its own boundary,
