@@ -81,4 +81,43 @@ void main() {
       throwsFormatException,
     );
   });
+
+  group('§4.2: the challenge describes its own rules', () {
+    OtpChallenge parse(Map<String, dynamic> extra) => OtpChallenge.fromJson({
+      'expiresAt': '2026-08-05T12:05:00+05:00',
+      'resendAvailableAt': '2026-08-05T12:01:00+05:00',
+      ...extra,
+    }, receivedAt: DateTime.utc(2026, 8, 5, 7));
+
+    test('takes the length and the attempt limit from the server', () {
+      // Both are configuration. Until the backend published them
+      // (2026-08-26) the app hard-coded six digits, so changing OTP_LENGTH
+      // would have given every installed app an input that refuses the code
+      // it was sent — with nothing on screen to say why.
+      final c = parse({'codeLength': 4, 'maxAttempts': 7});
+
+      expect(c.codeLength, 4);
+      expect(c.maxAttempts, 7);
+    });
+
+    test('falls back where an older server does not send them', () {
+      // The two deploys are not simultaneous and the app is on phones.
+      final c = parse({});
+
+      expect(c.codeLength, OtpChallenge.defaultCodeLength);
+      expect(c.maxAttempts, OtpChallenge.defaultMaxAttempts);
+    });
+
+    test('and where it sends something unusable', () {
+      // A zero-length code field accepts nothing and a zero attempt limit
+      // shows "0 attempts left" before the first try. Read defensively rather
+      // than cast: this is a value the screen sizes itself from.
+      for (final bad in <Object?>[0, -1, '6', null, 6.5]) {
+        final c = parse({'codeLength': bad, 'maxAttempts': bad});
+
+        expect(c.codeLength, OtpChallenge.defaultCodeLength, reason: '$bad');
+        expect(c.maxAttempts, OtpChallenge.defaultMaxAttempts, reason: '$bad');
+      }
+    });
+  });
 }

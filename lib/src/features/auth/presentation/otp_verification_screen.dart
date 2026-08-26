@@ -41,13 +41,14 @@ class OtpVerificationScreen extends ConsumerStatefulWidget {
 
   final OtpVerificationArgs args;
 
-  /// Digits in a code, matching the backend's `OTP_LENGTH` default.
+  /// Digits in a code, when the challenge does not say.
   ///
-  /// A default, not a constant: §4.2 makes the length server configuration. The
-  /// send response does not currently carry it, so this is the app's assumption
-  /// — and it is only used for input length and a validation message, never to
-  /// decide whether a code is correct. That decision is entirely the server's.
-  static const codeLength = 6;
+  /// It used to be the app's standing assumption, with a comment admitting that
+  /// the send response did not carry the length. **It does now** — the backend
+  /// publishes `codeLength` and `maxAttempts` on the challenge as of
+  /// 2026-08-26 — so this is only the fallback for a server that predates that,
+  /// and `OtpChallenge.codeLength` is what the screen actually reads.
+  static const int codeLength = OtpChallenge.defaultCodeLength;
 
   @override
   ConsumerState<OtpVerificationScreen> createState() =>
@@ -78,10 +79,47 @@ class _OtpVerificationScreenState
   /// own guidance are derived from.
   String get _code => _controller.text.trim();
 
-  bool get _isComplete => _code.length == OtpVerificationScreen.codeLength;
+  /// The challenge's own rules, not the app's assumption about them (§4.2).
+  int get _codeLength => _challenge.codeLength;
+
+  bool get _isComplete => _code.length == _codeLength;
 
   /// Confirm is offered only for a code that could succeed.
-  bool get _canVerify => _isComplete && !_busy;
+  bool get _canVerify => _isComplete && !_busy && !_lockedOut;
+
+  /// Wrong codes submitted since this challenge was issued.
+  ///
+  /// **Counted here rather than reported by the server, and that is a security
+  /// decision rather than a shortcut.** `/auth/otp/verify` answers
+  /// `auth.otp_invalid` identically for "no code", "expired" and "wrong code",
+  /// so probing a number cannot reveal whether one is pending — and a
+  /// remaining-attempt count attached to that refusal would be exactly that
+  /// oracle. The *limit* travels on the send, where it reveals nothing.
+  ///
+  /// Local counting is accurate for the person actually typing, which is the
+  /// only party a countdown is for. It can undercount — a code entered on a
+  /// second device, an app restart — and the server remains authoritative
+  /// either way, answering `auth.otp_too_many_attempts` whatever this side
+  /// believed. Undercounting shows a smaller number than the truth, which errs
+  /// toward warning early.
+  int _wrongAttempts = 0;
+
+  /// True once the *server* has said this code is finished.
+  ///
+  /// Not derived from [_wrongAttempts]: the client's count is advisory and
+  /// disabling the button on it would refuse an attempt the server would have
+  /// accepted.
+  bool _lockedOut = false;
+
+  /// How many the user has left, or null once there is no point saying.
+  ///
+  /// Held back until the last two, deliberately. "5 attempts left" on a first
+  /// mistype is nagging; "1 attempt left" is the one a person needs, and a
+  /// warning that appears only when it matters is one they read.
+  int? get _attemptsLeft {
+    final left = _challenge.maxAttempts - _wrongAttempts;
+    return left > 0 && left <= 2 ? left : null;
+  }
 
   @override
   void initState() {
@@ -108,7 +146,7 @@ class _OtpVerificationScreenState
   /// field: the user has just arrived and has been told nothing yet.
   String? _codeError(AppL10n l10n) => _code.isEmpty || _isComplete
       ? null
-      : l10n.authCodeInvalid(OtpVerificationScreen.codeLength);
+      : l10n.authCodeInvalid(_codeLength);
 
   /// Ticks the countdown down locally rather than recomputing it from the wall
   /// clock each second.
@@ -155,6 +193,20 @@ class _OtpVerificationScreenState
       // server will not say which: distinguishing them would tell an attacker
       // which numbers have a code pending.
       _report(e.message);
+
+      if (mounted) {
+        setState(() {
+          // **401 only.** A 5xx, a timeout or an offline failure never reached
+          // the code, so counting them would burn attempts the server has not
+          // taken — and would tell somebody on a bad connection they were one
+          // guess from being locked out.
+          if (e.statusCode == 401) _wrongAttempts += 1;
+          // 429 on *this* route is the lockout (§4.2), not the resend delay:
+          // resend has its own handler below. The server has finished with
+          // this code, so the only way forward is a new one.
+          if (e.statusCode == 429) _lockedOut = true;
+        });
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -177,6 +229,12 @@ class _OtpVerificationScreenState
       setState(() {
         _challenge = challenge;
         _resendIn = challenge.resendIn;
+        // A new code is a new challenge, with its own attempt budget — so the
+        // count restarts and the lockout lifts. Carrying either across would
+        // leave somebody who did the one thing the app told them to do still
+        // looking at "1 attempt left".
+        _wrongAttempts = 0;
+        _lockedOut = false;
         // The previous code is dead the moment a new one is issued - the
         // backend supersedes it. Leaving the old digits in the box invites the
         // user to submit them and be told they are wrong.
@@ -222,11 +280,32 @@ class _OtpVerificationScreenState
               if (_error case final message?) ...[
                 HhErrorState(
                   title: l10n.stateErrorTitle,
-                  message: message,
+                  // The server's refusal, then what to do about it. Once the
+                  // code is locked out the refusal alone is a dead end: it
+                  // says this attempt failed, not that the only way on is a
+                  // new code.
+                  message: _lockedOut
+                      ? '$message\n\n${l10n.authAttemptsExhausted}'
+                      : message,
                   retryLabel: l10n.commonRetry,
                   onRetry: _canVerify ? _verify : null,
                 ),
                 const SizedBox(height: HhSpace.lg),
+              ],
+
+              // §4.2's budget, counted here and shown only once it is nearly
+              // spent. A caption rather than a notice: it is a fact about how
+              // many tries are left, not a state the account is in, and toning
+              // it as a warning on every mistype is how a warning stops being
+              // read.
+              if (_attemptsLeft case final left? when !_lockedOut) ...[
+                Text(
+                  l10n.authAttemptsLeft(left),
+                  style: HhTypography.caption.copyWith(
+                    color: HhColors.warning,
+                  ),
+                ),
+                const SizedBox(height: HhSpace.md),
               ],
 
               HhTextField(
@@ -237,7 +316,7 @@ class _OtpVerificationScreenState
                 // state, whose heading says "Something went wrong" (MT-013).
                 errorText: _codeError(l10n),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                maxLength: OtpVerificationScreen.codeLength,
+                maxLength: _codeLength,
                 textInputAction: TextInputAction.done,
                 enabled: !_busy,
                 onSubmitted: (_) {

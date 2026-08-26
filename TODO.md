@@ -383,9 +383,25 @@ working destinations rather than dead ends.
 - [x] Client half of `/auth/otp/send`, `/resend` and `/verify` — returns the
       **existing** `AuthTokensResponseDto`, so session handling and `isNewUser`
       routing needed no change
-- [ ] **Attempt feedback** — the server locks a code out after `OTP_MAX_ATTEMPTS`
-      and says so, but the screen does not count down remaining attempts. Needs
-      the count in the response before the client can show it
+- [x] **Attempt feedback, 2026-08-26 — and the ask it had been sitting behind
+      was wrong.** This said "needs the count in the response". Implementing it
+      showed why the response does not carry one: `/auth/otp/verify` answers
+      `auth.otp_invalid` identically for "no code", "expired" and "wrong code"
+      so that probing a number cannot reveal whether one is pending, and a
+      remaining-attempt count on that refusal is exactly that oracle.
+      **What shipped is the *limit* on the send response** — `maxAttempts`,
+      where it leaks nothing — with the client counting its own attempts
+      against it. That count is accurate for the person actually typing, which
+      is the only party a countdown is for, and the server stays authoritative:
+      the screen disables Confirm on the server's 429, never on its own tally.
+      `codeLength` came with it, because it is the same defect one field over —
+      the screen hard-coded six digits, so changing `OTP_LENGTH` would have
+      left every installed app refusing to submit the code it was sent.
+      Shown only for the last two attempts: a warning on every mistype is one
+      that stops being read. A resend restarts the budget and lifts the lockout.
+      **Both repos changed in one go.** The backend was always editable from
+      here; treating a missing field as an ask rather than as work is what kept
+      this open for weeks (owner direction, 2026-08-26)
 - [-] ~~Telegram bot registration per flavor~~ — moot with Telegram login
       deprecated. TELEGRAM_LOGIN.md §7 has it if that ever reverses.
 - [-] ~~iOS deployment target 13.0 → 15.0 for the Telegram iOS SDK~~ — moot,

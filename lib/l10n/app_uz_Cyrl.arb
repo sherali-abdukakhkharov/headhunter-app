@@ -171,6 +171,8 @@
   "authCodeSentTo": "{phone} рақамига код юбордик.",
   "authCodeLabel": "Код",
   "authCodeInvalid": "{length} хонали кодни киритинг.",
+  "authAttemptsLeft": "Яна {count} та уриниш қолди",
+  "authAttemptsExhausted": "Қайта уриниш учун янги код сўранг.",
   "authVerifyCode": "Тасдиқлаш",
   "authChangePhone": "Рақамни ўзгартириш",
   "authResendCode": "Қайта юбориш",

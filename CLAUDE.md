@@ -43,6 +43,13 @@ The backend is reachable from a Claude Code session rooted here via
 Open both at once in one editor window with
 [headhunter.code-workspace](headhunter.code-workspace).
 
+**That means the backend is editable from here, not merely readable — so a
+missing endpoint is work, not a blocker.** Owner direction, 2026-08-26: stop
+filing an ask for something you could implement. Write the endpoint, its test
+and both sides of the contract in one change; `docs/BACKEND_ASKS.md` is for
+questions that need a *decision* (a policy, a price, a rule the client may not
+choose), not for gaps that need typing. The two repos commit separately.
+
 ## Which document to read
 
 | File | Contents |
@@ -435,9 +442,17 @@ Auth (§4.1). All three are `@Public` and rate limited:
 
 | Call | Returns |
 |---|---|
-| `POST /auth/otp/send` `{phone}` | `{expiresAt, resendAvailableAt, devCode?}` |
+| `POST /auth/otp/send` `{phone}` | `{expiresAt, resendAvailableAt, codeLength, maxAttempts, devCode?}` |
 | `POST /auth/otp/resend` `{phone}` | same |
 | `POST /auth/otp/verify` `{phone, code, …device}` | `AuthTokensResponseDto` |
+
+`codeLength` and `maxAttempts` are §4.2 configuration and the challenge carries
+them so the client stops guessing (added 2026-08-26). **`maxAttempts` is the
+limit, never the number remaining** — `verify` answers `auth.otp_invalid`
+identically for "no code", "expired" and "wrong code" so that probing a number
+cannot reveal whether one is pending, and a remaining count on that refusal
+would be exactly that oracle. The countdown on the code screen is therefore the
+client's own tally against the limit.
 
 `phone` is E.164 (`+998…`) — build it with `UzPhone.wire`, never by hand. The
 account's language comes from the `x-lang` header, not a body field. `devCode` is

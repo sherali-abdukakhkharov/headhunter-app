@@ -17,6 +17,46 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.14.0+24 — 2026-08-26
+
+The code screen warns you before you run out of tries.
+
+### Added
+
+- **"1 attempt left"**, on the last two. Until now a wrong code was wrong, and
+  wrong, and wrong, and then the code was dead with no warning that it was
+  close. Held back until it matters: a caution on every mistype is one nobody
+  reads.
+- **When the code is finished, the screen says what to do about it** — request
+  a new one — rather than only repeating that the last attempt failed. Asking
+  for a new code restarts the budget and re-enables Confirm.
+
+### Fixed
+
+- **The code field now sizes itself from the server.** It had six digits
+  hard-coded, so changing that setting would have left everyone with an app
+  that refuses to submit the code it was just sent.
+
+### Internal
+
+- §4.2's attempt feedback, **both repos in one change**. The backend's
+  `OtpSent` response gains `codeLength` and `maxAttempts`.
+- **The ask this had been sitting behind was wrong, and finding that out was
+  worth more than the feature.** It read "needs the count in the response";
+  implementing it showed why no such count exists. `/auth/otp/verify` answers
+  `auth.otp_invalid` identically for "no code", "expired" and "wrong code" so
+  that probing a number cannot reveal whether one is pending — and a
+  remaining-attempt count on that refusal is exactly that oracle.
+  So the **limit** travels instead, where it leaks nothing, and the client
+  counts its own attempts against it: accurate for the person actually typing,
+  which is the only party a countdown is for. The server stays authoritative —
+  Confirm is disabled by the server's 429, never by the client's tally.
+- Only a 401 counts. Offline, a timeout and a 5xx never reached the code, and
+  counting them would tell somebody on a bad connection they were one guess
+  from lockout.
+- 12 new client cases plus 2 on the backend. 1056 app tests, up from 1044; the
+  backend's auth integration suite is 38, up from 36.
+
 ## 1.13.0+23 — 2026-08-25
 
 Opening the app without signal no longer looks like being signed out.

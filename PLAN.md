@@ -93,7 +93,7 @@ after M11 while being delivered before M8.
 |---|---|---|
 | M0 | Foundations: toolchain, health slice, error handling | **done** |
 | M0.5 | App shell: localization, flavors, design system, role shell skeleton | **done** - two items carried, see TODO.md. The design system is now complete: §01's brand mark, lockups, launch screen and launcher icon landed 2026-08-20, the last undrawn section of the design document |
-| M1 | Onboarding: language, phone + OTP, role selection, session | **done bar one** — language, terms, phone + OTP, session restore, sign-out and §4.2's account screen all shipped; role selection finished 2026-08-20, and §12.4's offline cold-start state on 2026-08-25. The one left is **OTP attempt feedback**, which needs the remaining-attempt count in the server's response before the client can show one |
+| M1 | Onboarding: language, phone + OTP, role selection, session | **done 2026-08-26** — language, terms, phone + OTP, session restore, sign-out and §4.2's account screen; role selection 2026-08-20, §12.4's offline cold-start state 2026-08-25, and §4.2's attempt feedback 2026-08-26. The last one had been recorded as blocked on a server field for weeks; it was not blocked, it was unwritten, and writing it showed the field it asked for would have been a phone-number oracle |
 | M2 | Dictionary cache + reusable pickers | after M1 |
 | M3 | Candidate profile: dynamic forms, completeness, privacy, CV | after M2 |
 | M4 | Employer profile + verification status | after M1 |

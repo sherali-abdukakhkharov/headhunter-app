@@ -1331,6 +1331,18 @@ abstract class AppL10n {
   /// **'Enter the {length}-digit code.'**
   String authCodeInvalid(int length);
 
+  /// §4.2. Counted by the client against the limit the send response carries, not reported by the server — a remaining-attempt count on a failed verify would reveal that a code is pending for that number. Shown only once it is low enough to matter, so it warns rather than nags.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} attempt left} other{{count} attempts left}}'**
+  String authAttemptsLeft(int count);
+
+  /// The server has locked this code out and words its own refusal; this is what the screen says the user should *do*, which the refusal does not.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a new code to try again.'**
+  String get authAttemptsExhausted;
+
   /// Primary action on the code screen.
   ///
   /// In en, this message translates to:

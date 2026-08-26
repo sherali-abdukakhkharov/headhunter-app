@@ -171,6 +171,8 @@
   "authCodeSentTo": "Мы отправили код на номер {phone}.",
   "authCodeLabel": "Код",
   "authCodeInvalid": "Введите код из {length} цифр.",
+  "authAttemptsLeft": "{count, plural, one{Осталась {count} попытка} few{Осталось {count} попытки} other{Осталось {count} попыток}}",
+  "authAttemptsExhausted": "Запросите новый код, чтобы попробовать снова.",
   "authVerifyCode": "Подтвердить",
   "authChangePhone": "Изменить номер",
   "authResendCode": "Отправить ещё раз",

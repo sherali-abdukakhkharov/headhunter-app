@@ -900,6 +900,17 @@
       }
     }
   },
+  "authAttemptsLeft": "{count, plural, one{{count} attempt left} other{{count} attempts left}}",
+  "@authAttemptsLeft": {
+    "description": "§4.2. Counted by the client against the limit the send response carries, not reported by the server — a remaining-attempt count on a failed verify would reveal that a code is pending for that number. Shown only once it is low enough to matter, so it warns rather than nags.",
+    "placeholders": {
+      "count": {"type":"int"}
+    }
+  },
+  "authAttemptsExhausted": "Request a new code to try again.",
+  "@authAttemptsExhausted": {
+    "description": "The server has locked this code out and words its own refusal; this is what the screen says the user should *do*, which the refusal does not."
+  },
   "authVerifyCode": "Confirm",
   "@authVerifyCode": {
     "description": "Primary action on the code screen."

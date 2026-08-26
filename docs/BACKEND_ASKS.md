@@ -9,6 +9,18 @@ so nobody re-derives a settled question. Spec citations are `§n`, `BR-nn`,
 stops work gets guessed at, and a guess becomes a second thing to undo. Each item
 names how the client worked *without* the change.
 
+**Owner direction, 2026-08-26: this file is for questions that need a decision,
+not for gaps that need typing.** The backend repo is editable from a session
+rooted in the client (`permissions.additionalDirectories`), so a missing field
+or a missing endpoint is work rather than an ask — write it, test it, and change
+both sides of the contract in one go. What still belongs here is anything the
+client may not decide alone: a policy, a price, a rule, or a change whose
+consequences reach past the API surface.
+
+The first item settled that way is **§4.2's attempt feedback**, which sat under
+"open" as *"needs the count in the response"* for weeks. Implementing it turned
+out to expose a security question worth more than the feature — see below.
+
 The pattern this file exists to repeat: write the **reasoning**, not a bug title.
 Every item below went across as a brief explaining why it mattered and what the
 client was doing meanwhile; the two that should have been fixed were fixed and
@@ -295,6 +307,40 @@ implementation of "change the price" is an `UPDATE` somewhere.
 server configuration and that a change applies to future transactions only. The
 rule is the half of this that is already true and worth saying; the editing is
 the half that is waiting.
+
+### 5. §4.2's attempt feedback — **done 2026-08-26, both sides, and not as asked**
+
+The ask, as it had stood: *"the server locks a code out after `OTP_MAX_ATTEMPTS`
+and says so, but the screen cannot count down remaining attempts — it needs the
+count in the response."*
+
+**Implementing it showed the ask was wrong.** Returning a remaining-attempt
+count on a failed `verify` would have been a phone-number oracle. That route
+answers `auth.otp_invalid` identically for "no code", "expired" and "wrong code"
+— on purpose, so probing a number cannot reveal whether one is pending — and a
+counter attached to that refusal undoes it exactly: a number with a live code
+answers with a figure, a number without one does not.
+
+What shipped instead: the **send** response carries `codeLength` and
+`maxAttempts`, and the client counts its own attempts against the limit.
+
+- The limit leaks nothing. It is policy, and an attacker learns it by guessing
+  wrong five times.
+- The count is accurate for the person actually typing, who is the only party a
+  countdown is for. It can undercount — a second device, an app restart — which
+  errs toward warning early.
+- The server stays authoritative and answers `auth.otp_too_many_attempts`
+  whatever the client believed. The screen does not disable anything on its own
+  tally; it disables on the server's 429.
+
+`codeLength` came along because it is the same defect one field over: the client
+hard-coded six digits with a comment admitting it was an assumption, so changing
+`OTP_LENGTH` would have given every installed app an input that refuses the code
+it was sent, with nothing on screen to say why.
+
+**Worth keeping as a pattern**: an ask phrased as "send me X" deserves one pass
+asking *why the server does not already send X*. Here the answer was a
+deliberate security property, and the useful change was a different field.
 
 ## Facts §10.4 needs, from settling the above
 

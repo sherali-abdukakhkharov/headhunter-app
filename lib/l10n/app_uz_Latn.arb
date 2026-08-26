@@ -171,6 +171,8 @@
   "authCodeSentTo": "{phone} raqamiga kod yubordik.",
   "authCodeLabel": "Kod",
   "authCodeInvalid": "{length} xonali kodni kiriting.",
+  "authAttemptsLeft": "Yana {count} ta urinish qoldi",
+  "authAttemptsExhausted": "Qayta urinish uchun yangi kod so‘rang.",
   "authVerifyCode": "Tasdiqlash",
   "authChangePhone": "Raqamni o'zgartirish",
   "authResendCode": "Qayta yuborish",

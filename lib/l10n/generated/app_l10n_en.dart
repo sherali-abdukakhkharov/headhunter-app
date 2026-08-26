@@ -707,6 +707,20 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String authAttemptsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attempts left',
+      one: '$count attempt left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get authAttemptsExhausted => 'Request a new code to try again.';
+
+  @override
   String get authVerifyCode => 'Confirm';
 
   @override

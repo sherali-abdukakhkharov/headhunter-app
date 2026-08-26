@@ -708,6 +708,14 @@ class AppL10nUz extends AppL10n {
   }
 
   @override
+  String authAttemptsLeft(int count) {
+    return 'Yana $count ta urinish qoldi';
+  }
+
+  @override
+  String get authAttemptsExhausted => 'Qayta urinish uchun yangi kod so‘rang.';
+
+  @override
   String get authVerifyCode => 'Tasdiqlash';
 
   @override
@@ -3939,6 +3947,14 @@ class AppL10nUzCyrl extends AppL10nUz {
   }
 
   @override
+  String authAttemptsLeft(int count) {
+    return 'Яна $count та уриниш қолди';
+  }
+
+  @override
+  String get authAttemptsExhausted => 'Қайта уриниш учун янги код сўранг.';
+
+  @override
   String get authVerifyCode => 'Тасдиқлаш';
 
   @override
@@ -7159,6 +7175,14 @@ class AppL10nUzLatn extends AppL10nUz {
   String authCodeInvalid(int length) {
     return '$length xonali kodni kiriting.';
   }
+
+  @override
+  String authAttemptsLeft(int count) {
+    return 'Yana $count ta urinish qoldi';
+  }
+
+  @override
+  String get authAttemptsExhausted => 'Qayta urinish uchun yangi kod so‘rang.';
 
   @override
   String get authVerifyCode => 'Tasdiqlash';
