@@ -227,6 +227,24 @@ abstract class AppL10n {
   /// **'Your session has expired. Please sign in again.'**
   String get sessionExpired;
 
+  /// §12.4. Heading when there are tokens and the server could not be reached to exchange them — the server answered badly rather than not at all. The offline case uses stateOfflineTitle, which already exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reach your account'**
+  String get sessionUnreachableTitle;
+
+  /// The reassurance that is the whole point of this screen: the account is still there. Without it, a screen that cannot say who you are reads as a session that has been lost — which is what the old behaviour (sending the user to sign in) actually said.
+  ///
+  /// In en, this message translates to:
+  /// **'You are still signed in. The app just needs to reach the server before it can show your account.'**
+  String get sessionUnreachableBody;
+
+  /// The way out for somebody who cannot get back in — a wrong token, a server that stays down. Sign-out is best-effort and clears locally, so it works without the network that is missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with a different number'**
+  String get sessionUnreachableSignOut;
+
   /// Shown when the request never reached the server. Names the connection, never the backend or a base URL - a user cannot act on either (MT-014).
   ///
   /// In en, this message translates to:

@@ -25,6 +25,34 @@ final class SessionUnknown extends SessionState {
   const SessionUnknown();
 }
 
+/// There are tokens, and the server could not be reached to exchange them.
+///
+/// **Not the same as signed out, and the difference is the whole point.** A
+/// refresh that is *refused* ends the session; a refresh that could not
+/// *complete* — offline, DNS, a 500 — says nothing about whether the session is
+/// valid. `restore` has always kept the tokens in that case, which is right,
+/// but the state it then published was [SessionUnauthenticated] — so a
+/// signed-in user who opened the app in a lift was shown the sign-in screen,
+/// with no way to say *try again* and no hint that their account was there.
+///
+/// §12.4 asks for offline to be an explicit state rather than a degraded
+/// version of another one. This is it: the app knows it has an account and
+/// knows it cannot describe it yet, and the screen says exactly that.
+///
+/// Both fields are for the screen. [message] is already localized — it comes
+/// from `ApiException`, which words transport failures from the ARB — and
+/// [offline] is what separates "check your connection" from "the server is
+/// having a problem", which are different sentences and different expectations.
+final class SessionUnreachable extends SessionState {
+  const SessionUnreachable({required this.message, required this.offline});
+
+  /// The failure, in the user's language. Rendered as given.
+  final String message;
+
+  /// True when the request never left the device.
+  final bool offline;
+}
+
 /// No usable session.
 final class SessionUnauthenticated extends SessionState {
   const SessionUnauthenticated({this.expired = false});

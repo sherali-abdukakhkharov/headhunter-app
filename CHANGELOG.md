@@ -17,6 +17,46 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.13.0+23 — 2026-08-25
+
+Opening the app without signal no longer looks like being signed out.
+
+### Fixed
+
+- **A cold start with no connection now says so.** If the app could not reach
+  the server when you opened it, it showed the sign-in screen — as though your
+  account had gone. It had not: you were still signed in the whole time, and
+  the only thing on offer was to type your number again and wait for an SMS
+  that could not arrive either.
+  It now tells you your account is still there, and gives you a **Try again**.
+  When the connection comes back, one tap puts you where you were.
+- **"No connection" and "the server has a problem" are told apart**, because
+  one is fixed by moving and the other by waiting.
+- **There is a way out**, for a phone that will never get back in: sign in with
+  a different number, which works without the connection this screen is about.
+
+### Internal
+
+- §12.4's explicit offline state, and M1's last open item bar one.
+  `SessionUnreachable` joins the sealed session hierarchy and the redirect chain
+  places it **ahead of** unauthenticated, because it is not that one: a refresh
+  that is *refused* ends the session, a refresh that could not *complete* says
+  nothing about whether it is valid. The tokens were always kept; what was
+  missing was a state that said so.
+- The sealed hierarchy earned itself again — adding the case broke the dev-tools
+  screen's exhaustive `switch` at compile time, which is exactly what it is for.
+- Retry re-runs the whole `restore`, not a bare refresh: the stored role, the
+  granted set, the account status and the no-token fallback all come with it.
+- 13 new cases across the controller, the router and the screen. 1044 tests, up
+  from 1031.
+- **The riverpod_lint mystery is settled** (MEMORY.md, 2026-08-25). Its
+  `scoped_providers_should_specify_dependencies` warnings appear only when the
+  tree does not resolve: the run that reported the exhaustiveness error above
+  also reported eight of them in unrelated files, and fixing the switch made
+  them vanish with nothing else changed. So the audit's 28 findings were an
+  artefact of analysing an unresolved checkout, and there is nothing to fix in
+  the providers they name.
+
 ## 1.12.0+22 — 2026-08-25
 
 The administrator's module is finished: §10.5's wallets are the last section.

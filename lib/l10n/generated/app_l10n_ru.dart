@@ -74,6 +74,16 @@ class AppL10nRu extends AppL10n {
   String get sessionExpired => 'Сеанс истёк. Войдите снова.';
 
   @override
+  String get sessionUnreachableTitle => 'Не удаётся получить доступ к аккаунту';
+
+  @override
+  String get sessionUnreachableBody =>
+      'Вы по-прежнему в аккаунте. Приложению нужно связаться с сервером, чтобы его показать.';
+
+  @override
+  String get sessionUnreachableSignOut => 'Войти с другим номером';
+
+  @override
   String get apiErrorOffline =>
       'Нет подключения к интернету. Проверьте соединение и попробуйте снова.';
 

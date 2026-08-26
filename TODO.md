@@ -398,10 +398,27 @@ working destinations rather than dead ends.
       and a separate bare client so the refresh call cannot re-enter it
 - [x] Sign-out revokes the session server-side (`POST /auth/logout`),
       best-effort so a failed call still ends the local session
-- [ ] **Offline cold start shows onboarding** — a refresh that cannot complete
-      keeps the tokens (correct) but there is no "we cannot reach the server,
-      retry" state, so the user sees sign-in and has no way to say *try again*.
-      Needs a `SessionState` case; §12.4 asks for explicit offline state
+- [x] **Offline cold start no longer shows onboarding, 2026-08-25** (§12.4).
+      A refresh that cannot *complete* now publishes **`SessionUnreachable`**
+      rather than `SessionUnauthenticated`, and the redirect chain sends it to
+      `/offline` — ahead of the unauthenticated case, because it is not that
+      one. The tokens were always kept; what was missing was a state that said
+      so, and a way to retry.
+      Three decisions worth keeping:
+      **The screen says the account is still there.** That sentence is the
+      whole reason it exists: a screen that cannot name you reads as a session
+      that has been lost, which is exactly what sending the user to sign in
+      actually said. And the action that screen offered needed an SMS, over the
+      network that was missing.
+      **Offline and a bad server answer are different headings.** One is fixed
+      by moving, the other by waiting; a single "no connection" would send
+      somebody hunting for signal they already have. `ApiFailureKind` from
+      1.11.2 is what makes the distinction cheap.
+      **Retry re-runs the whole `restore`, and there is a way out.** Not a bare
+      refresh — `restore` also reads the stored role, adopts the granted set and
+      the account status, and handles the no-token case. Sign-out is offered
+      too, because a revoked token or a server that stays down would otherwise
+      trap somebody on a screen whose only button does nothing
 - [x] ~~**Role switch does not tell the server**~~ — it does, and has for a
       while: `SessionController._publishActiveRole` calls
       `AuthRepository.switchActiveRole` on every switch and stores the access
@@ -2165,7 +2182,7 @@ remaining item is a screen.
       with this pass, and changing the design system means **running the gallery
       on a device**
 - [ ] Cached primary screens open without blocking; loading states complete
-- [ ] Offline state explicit; retry safe; no duplicate writes
+- [~] Offline state explicit; retry safe; no duplicate writes — **the cold start is done** (`SessionUnreachable`, 2026-08-25). What is left is the same treatment inside the shell: a screen whose fetch fails offline still shows the generic error state rather than saying the connection is the problem, though `ApiException.kind` now makes that a rendering choice rather than a guess
 - [ ] Crash reporting + structured logging, no sensitive data
 - [x] **Android release signing config** — `android/upload-keystore.jks` (RSA
       2048, valid to 2053, gitignored) read via `android/key.properties`; falls

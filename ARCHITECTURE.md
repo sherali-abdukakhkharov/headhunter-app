@@ -82,6 +82,13 @@ information architectures, plus runtime switching (§2.3).
   chosen → role selection; blocked account → a blocking notice screen (BR-10, so
   the client explains rather than failing mysteriously); role not granted → back
   to the default shell.
+- **"Cannot reach the server" is its own state, ahead of "signed out"**
+  (`SessionUnreachable` → `/offline`, §12.4). A refresh that is *refused* ends
+  the session; a refresh that could not *complete* says nothing about whether it
+  is valid, so the tokens stay and the app says it cannot describe the account
+  yet. Folding the two together — which is what shipped until 2026-08-25 — put a
+  signed-in user on the sign-in screen, where the only action needs an SMS over
+  the network they do not have.
 - Route paths are constants in one place, never inline strings, and a shell path
   starts with its role's prefix (`/candidate`, `/employer`, `/admin`). The prefix
   is load-bearing: it is how a path states which role it needs.

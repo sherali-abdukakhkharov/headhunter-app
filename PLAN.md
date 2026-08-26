@@ -93,7 +93,7 @@ after M11 while being delivered before M8.
 |---|---|---|
 | M0 | Foundations: toolchain, health slice, error handling | **done** |
 | M0.5 | App shell: localization, flavors, design system, role shell skeleton | **done** - two items carried, see TODO.md. The design system is now complete: §01's brand mark, lockups, launch screen and launcher icon landed 2026-08-20, the last undrawn section of the design document |
-| M1 | Onboarding: language, phone + OTP, role selection, session | **done bar two** — language, terms, phone + OTP, session restore, sign-out and §4.2's account screen all shipped, and role selection was finished 2026-08-20. The two left are an **offline cold-start state** (§12.4 asks for it; a refresh that cannot reach the server currently shows sign-in with no retry) and **OTP attempt feedback**, which needs the remaining-attempt count in the server's response before the client can show one. The row said "blocked on the auth contract" until 2026-08-20, long after that contract landed |
+| M1 | Onboarding: language, phone + OTP, role selection, session | **done bar one** — language, terms, phone + OTP, session restore, sign-out and §4.2's account screen all shipped; role selection finished 2026-08-20, and §12.4's offline cold-start state on 2026-08-25. The one left is **OTP attempt feedback**, which needs the remaining-attempt count in the server's response before the client can show one |
 | M2 | Dictionary cache + reusable pickers | after M1 |
 | M3 | Candidate profile: dynamic forms, completeness, privacy, CV | after M2 |
 | M4 | Employer profile + verification status | after M1 |

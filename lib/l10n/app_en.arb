@@ -84,6 +84,18 @@
   "@sessionExpired": {
     "description": "Shown when refresh fails and the user is returned to onboarding."
   },
+  "sessionUnreachableTitle": "Cannot reach your account",
+  "@sessionUnreachableTitle": {
+    "description": "§12.4. Heading when there are tokens and the server could not be reached to exchange them — the server answered badly rather than not at all. The offline case uses stateOfflineTitle, which already exists."
+  },
+  "sessionUnreachableBody": "You are still signed in. The app just needs to reach the server before it can show your account.",
+  "@sessionUnreachableBody": {
+    "description": "The reassurance that is the whole point of this screen: the account is still there. Without it, a screen that cannot say who you are reads as a session that has been lost — which is what the old behaviour (sending the user to sign in) actually said."
+  },
+  "sessionUnreachableSignOut": "Sign in with a different number",
+  "@sessionUnreachableSignOut": {
+    "description": "The way out for somebody who cannot get back in — a wrong token, a server that stays down. Sign-out is best-effort and clears locally, so it works without the network that is missing."
+  },
   "apiErrorOffline": "You're offline. Check your connection and try again.",
   "@apiErrorOffline": {
     "description": "Shown when the request never reached the server. Names the connection, never the backend or a base URL - a user cannot act on either (MT-014)."

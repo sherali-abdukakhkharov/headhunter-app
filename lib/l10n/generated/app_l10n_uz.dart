@@ -76,6 +76,16 @@ class AppL10nUz extends AppL10n {
       'Sessiya muddati tugadi. Iltimos, qaytadan kiring.';
 
   @override
+  String get sessionUnreachableTitle => 'Akkauntingizga ulanib bo‘lmadi';
+
+  @override
+  String get sessionUnreachableBody =>
+      'Siz hamon tizimdasiz. Ilova akkauntingizni ko‘rsatishi uchun serverga ulanishi kerak.';
+
+  @override
+  String get sessionUnreachableSignOut => 'Boshqa raqam bilan kirish';
+
+  @override
   String get apiErrorOffline =>
       'Internet aloqasi yo\'q. Ulanishni tekshirib, qayta urinib ko\'ring.';
 
@@ -3299,6 +3309,16 @@ class AppL10nUzCyrl extends AppL10nUz {
       'Сессия муддати тугади. Илтимос, қайтадан киринг.';
 
   @override
+  String get sessionUnreachableTitle => 'Аккаунтингизга уланиб бўлмади';
+
+  @override
+  String get sessionUnreachableBody =>
+      'Сиз ҳамон тизимдасиз. Илова аккаунтингизни кўрсатиши учун серверга уланиши керак.';
+
+  @override
+  String get sessionUnreachableSignOut => 'Бошқа рақам билан кириш';
+
+  @override
   String get apiErrorOffline =>
       'Интернет алоқаси йўқ. Уланишни текшириб, қайта уриниб кўринг.';
 
@@ -6507,6 +6527,16 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get sessionExpired =>
       'Sessiya muddati tugadi. Iltimos, qaytadan kiring.';
+
+  @override
+  String get sessionUnreachableTitle => 'Akkauntingizga ulanib bo‘lmadi';
+
+  @override
+  String get sessionUnreachableBody =>
+      'Siz hamon tizimdasiz. Ilova akkauntingizni ko‘rsatishi uchun serverga ulanishi kerak.';
+
+  @override
+  String get sessionUnreachableSignOut => 'Boshqa raqam bilan kirish';
 
   @override
   String get apiErrorOffline =>

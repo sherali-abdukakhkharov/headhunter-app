@@ -124,7 +124,18 @@ class SessionController extends _$SessionController {
           _set(const SessionUnauthenticated(expired: true));
           return;
         }
-        // Anything else: fall through with the tokens intact.
+
+        // Could not *complete*, as opposed to refused. The tokens stay — they
+        // are probably fine — and the state says so rather than falling
+        // through to "signed out", which is what put a signed-in user on the
+        // sign-in screen with no way to retry (§12.4).
+        _set(
+          SessionUnreachable(
+            message: e.message,
+            offline: e.kind == ApiFailureKind.offline,
+          ),
+        );
+        return;
       }
     }
 

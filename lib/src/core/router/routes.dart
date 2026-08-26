@@ -49,6 +49,14 @@ abstract final class Routes {
   /// mysteriously.
   static const blocked = '/blocked';
 
+  /// §12.4: there are tokens and the server could not be reached to exchange
+  /// them, so the app knows it has an account and cannot yet describe it.
+  ///
+  /// Its own path rather than a flag on onboarding, because it is a different
+  /// answer: onboarding asks for a phone number, and this screen has nothing to
+  /// ask for — it has a retry.
+  static const offline = '/offline';
+
   // --- Candidate shell -----------------------------------------------------
 
   static const candidateHome = '/candidate/home';

@@ -177,15 +177,81 @@ void main() {
       // back in until they have signal *and* their phone.
       tokens.refreshToken = 'refresh-1';
       repo = _FakeAuthRepository(
-        onRefresh: () => throw const ApiException('Cannot reach the server.'),
+        onRefresh: () => throw const ApiException(
+          "You're offline.",
+          kind: ApiFailureKind.offline,
+        ),
       );
 
       final state = await settled(containerWith());
 
-      expect(state, isA<SessionUnauthenticated>());
-      expect((state as SessionUnauthenticated).expired, isFalse);
+      // **Not `SessionUnauthenticated`**, which is what this used to be and
+      // what put a signed-in user on the sign-in screen (§12.4). The session
+      // is unknown, not over.
+      expect(state, isA<SessionUnreachable>());
       expect(tokens.cleared, isFalse);
       expect(tokens.refreshToken, 'refresh-1');
+    });
+
+    test('and carries what to say, in the user’s language', () async {
+      tokens.refreshToken = 'refresh-1';
+      repo = _FakeAuthRepository(
+        onRefresh: () => throw const ApiException(
+          "You're offline. Check your connection and try again.",
+          kind: ApiFailureKind.offline,
+        ),
+      );
+
+      final state = await settled(containerWith()) as SessionUnreachable;
+
+      // Already localized — `ApiException` words transport failures from the
+      // ARB — so the screen renders it as given.
+      expect(state.message, contains('offline'));
+      expect(state.offline, isTrue);
+    });
+
+    test('a server that answered badly is not the same as offline', () async {
+      // Different problem, different sentence, different expectation: one is
+      // fixed by moving, the other by waiting.
+      tokens.refreshToken = 'refresh-1';
+      repo = _FakeAuthRepository(
+        onRefresh: () => throw const ApiException(
+          'The server ran into a problem.',
+          statusCode: 500,
+          kind: ApiFailureKind.server,
+        ),
+      );
+
+      final state = await settled(containerWith()) as SessionUnreachable;
+
+      expect(state.offline, isFalse);
+      expect(tokens.cleared, isFalse);
+    });
+
+    test('a retry after the network returns lands in the shell', () async {
+      // The whole point of keeping the tokens. `restore` is re-run in full
+      // rather than just the refresh call, so the stored role, the granted
+      // roles and the account status all come back with it.
+      tokens.refreshToken = 'refresh-1';
+      var offline = true;
+      repo = _FakeAuthRepository(
+        onRefresh: () {
+          if (offline) {
+            throw const ApiException('no', kind: ApiFailureKind.offline);
+          }
+          return _session();
+        },
+      );
+
+      final container = containerWith();
+      expect(await settled(container), isA<SessionUnreachable>());
+
+      offline = false;
+      await container.read(sessionControllerProvider.notifier).restore();
+
+      final state = container.read(sessionControllerProvider);
+      expect(state, isA<SessionActive>());
+      expect((state as SessionActive).roles, {AppRole.candidate});
     });
 
     test('falls back to the remembered role when the server names none',

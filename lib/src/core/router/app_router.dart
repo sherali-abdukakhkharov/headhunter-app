@@ -42,6 +42,7 @@ import 'package:jobbridge_app/src/features/onboarding/presentation/role_selectio
 import 'package:jobbridge_app/src/features/profile/presentation/candidate_profile_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/blocked_account_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/role_shell.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/session_offline_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/shell_placeholder_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/splash_screen.dart';
 import 'package:jobbridge_app/src/features/vacancy/presentation/vacancy_editor_screen.dart';
@@ -122,6 +123,11 @@ GoRouter appRouter(Ref ref) {
         path: Routes.blocked,
         name: 'blocked',
         builder: (context, state) => const BlockedAccountScreen(),
+      ),
+      GoRoute(
+        path: Routes.offline,
+        name: 'offline',
+        builder: (context, state) => const SessionOfflineScreen(),
       ),
       for (final role in AppRole.values) _shellFor(role),
 
@@ -366,6 +372,13 @@ String? _redirect(Ref ref, GoRouterState state) {
   switch (session) {
     case SessionUnknown():
       return location == Routes.splash ? null : Routes.splash;
+
+    // Ahead of "unauthenticated", because it is **not** that: the tokens are
+    // intact and the session is probably fine. Sending this user to sign in
+    // asks them to re-enter a phone number to fix a problem that is not theirs,
+    // and the OTP it would send needs the network they do not have (§12.4).
+    case SessionUnreachable():
+      return location == Routes.offline ? null : Routes.offline;
 
     case SessionUnauthenticated():
       // `startsWith`, not equality: sign-in is two screens (§4.1 - phone, then

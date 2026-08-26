@@ -586,9 +586,19 @@ change in Riverpod 3 - it marks the provider as scoped - so applying it to six
 providers to silence warnings that cannot currently be reproduced would be
 trading a lint for a behaviour change. It needs a run that reproduces them.
 
-A previous session watched these same warnings appear and vanish when an
-*unrelated* compile error was fixed, which fits: they show up when riverpod_lint
-is working from a partially resolved analysis.
+**Mechanism confirmed 2026-08-25**, twice, and it is the second half of the
+story: `scoped_providers_should_specify_dependencies` is reported **when the
+tree does not resolve**. Adding `SessionUnreachable` left one non-exhaustive
+switch in `dev_tools_screen.dart`, and the same run that reported that error
+also reported eight of these warnings in unrelated admin test files. Fixing the
+switch made the warnings disappear in the very next run, with nothing else
+changed. A previous session had watched exactly this and recorded it as a guess.
+
+So the warnings are an **artefact of an unresolved analysis**, not a finding —
+which also explains the audit's 28: an auditor running `flutter analyze` against
+a checkout that has not resolved (no `flutter pub get`, or mid-codegen) gets
+them. There is nothing to fix in the six providers. What is worth doing is
+making the *gate* honest, which is the M11 item.
 
 ### 2026-08-24 - The loud failure was worth waiting five days for
 On 2026-08-19 the rename left `google-services.json` naming the pre-rename

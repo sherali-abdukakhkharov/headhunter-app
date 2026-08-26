@@ -24,6 +24,7 @@ import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/shell/presentation/session_offline_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/shell_placeholder_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -273,6 +274,33 @@ void main() {
         const SessionActive(roles: {}),
       );
       expect(result.location, Routes.roleSelection);
+    });
+
+    testWidgets('an unreachable session goes to the offline screen, not to '
+        'sign-in (§12.4)', (tester) async {
+      // The distinction this state exists to draw. Sending this user to
+      // onboarding says their session is gone — nothing indicates that — and
+      // the only action there needs an SMS, over the network that is missing.
+      final result = await settle(
+        tester,
+        const SessionUnreachable(message: "You're offline.", offline: true),
+      );
+
+      expect(result.location, Routes.offline);
+      expect(find.byType(SessionOfflineScreen), findsOneWidget);
+      expect(result.location, isNot(startsWith(Routes.onboarding)));
+    });
+
+    testWidgets('and cannot be navigated out of into a shell', (tester) async {
+      // The app does not know the granted roles, so it cannot honour a deep
+      // link into one. Holding the location is the honest answer.
+      final result = await settle(
+        tester,
+        const SessionUnreachable(message: 'no', offline: true),
+        initialLocation: Routes.homeFor(AppRole.candidate),
+      );
+
+      expect(result.location, Routes.offline);
     });
 
     testWidgets('a blocked account goes to the notice (BR-10)', (tester) async {

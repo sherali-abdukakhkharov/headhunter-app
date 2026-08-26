@@ -173,6 +173,10 @@ class DevToolsScreen extends ConsumerWidget {
 
   static String _describe(SessionState session) => switch (session) {
     SessionUnknown() => 'restoring…',
+    // Tokens intact, server unreachable — deliberately *not* folded in with
+    // "signed out", which is the distinction §12.4's state exists to draw.
+    SessionUnreachable(:final offline) =>
+      'unreachable (${offline ? 'offline' : 'server'})',
     SessionUnauthenticated(expired: true) => 'signed out (session expired)',
     SessionUnauthenticated() => 'signed out',
     SessionActive(:final roles, :final status) =>

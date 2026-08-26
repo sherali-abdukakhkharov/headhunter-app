@@ -75,6 +75,16 @@ class AppL10nEn extends AppL10n {
       'Your session has expired. Please sign in again.';
 
   @override
+  String get sessionUnreachableTitle => 'Cannot reach your account';
+
+  @override
+  String get sessionUnreachableBody =>
+      'You are still signed in. The app just needs to reach the server before it can show your account.';
+
+  @override
+  String get sessionUnreachableSignOut => 'Sign in with a different number';
+
+  @override
   String get apiErrorOffline =>
       'You\'re offline. Check your connection and try again.';
 

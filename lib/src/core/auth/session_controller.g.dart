@@ -140,7 +140,7 @@ final class SessionControllerProvider
   }
 }
 
-String _$sessionControllerHash() => r'd1928fab0968a580b3e19ef0d5ac0117ba38c813';
+String _$sessionControllerHash() => r'3bcab0613ab1dddfccf2915632bb0258d40cac11';
 
 /// App-wide session and active-role state.
 ///
