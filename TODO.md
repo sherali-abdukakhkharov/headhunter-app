@@ -121,7 +121,15 @@ fixes:
       never `Z` (API_CONTRACTS.md §2, frozen). `ZonedTimestamp` renders the
       carried wall clock and never `.toLocal()`, and `Interview` consumes it.
       Stale marker — M8's interview half shipped against this on 2026-08-20.
-- [?] **App icons and launch screen** - still Flutter defaults.
+- [x] ~~**App icons and launch screen**~~ — **shipped 2026-08-20** with §01 of
+      the design document: the adaptive and legacy launcher icons, and a navy
+      platform launch window. This line said "still Flutter defaults" for six
+      days after they were not, while the M1 entry below recorded the work —
+      the same staleness the SMS blocker had, in the same section, and worth
+      noticing as a pattern rather than twice as an accident.
+      What is left is the **mark itself**, which is placeholder-grade until the
+      client supplies a logo; that is in the design-system list below and in
+      `docs/design-feedback.md` ROUND 6.
 - [?] **Payme and CLICK merchant credentials** for the providers' *test*
       environments (§12.6). Nothing in M13 can be finished without them, and
       UAT-22 — the duplicated callback — has to be demonstrated rather than
@@ -1738,8 +1746,10 @@ paywall that is not theirs.
 Runs after M10, not after M6. No Firebase package enters `pubspec.yaml` before
 this opens. Deep links moved to M8.
 
-- [ ] In-app list, unread badge, mark read *(no push dependency; can be pulled
-      forward at no cost if the client wants notification history earlier)*
+- [x] ~~In-app list, unread badge, mark read~~ — **done 2026-08-24**, and
+      recorded in full further down this section. Left checked-off rather than
+      deleted because an open box above a closed entry gets read as the
+      pessimistic half being current.
 - [~] Push registration and foreground/background handling — **config in place**
       2026-08-07: `android/app/google-services.json` holds the Firebase project
       `headhunter-app-b463f`, so one file covers every flavor. **No Firebase
