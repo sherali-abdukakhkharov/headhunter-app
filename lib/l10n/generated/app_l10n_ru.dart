@@ -1834,14 +1834,20 @@ class AppL10nRu extends AppL10n {
       'Вакансии с оплатой по договорённости тоже показываются.';
 
   @override
+  String get filtersSalaryTo => 'Оплата до';
+
+  @override
+  String get filtersExperienceUpTo => 'Требуемый опыт, не более (лет)';
+
+  @override
+  String get filtersExperienceAnyNote =>
+      'Вакансии без требования к опыту тоже показываются.';
+
+  @override
+  String get filtersLanguageRequired => 'Требуемый язык';
+
+  @override
   String get filtersPublishedFrom => 'Опубликовано с';
-
-  @override
-  String get filtersUnavailableTitle => 'Три фильтра пока недоступны';
-
-  @override
-  String get filtersUnavailableBody =>
-      'Пока нельзя фильтровать по опыту, языку и верхней границе оплаты. Остальное работает.';
 
   @override
   String feedFilteredNote(int count) {

@@ -9,16 +9,21 @@ import 'package:flutter/foundation.dart';
 /// three of the four interface variants — silently, which is what makes it
 /// worth restating on every model that holds one.
 ///
-/// ## Three of §5.5's nine filters have no query parameter
+/// ## Two of the nine mean the opposite of what they look like
 ///
-/// §5.5 lists "occupation, region, employment type, work format, shift,
-/// salary/payment range, experience, language, and publication date".
-/// `FeedQueryDto` accepts six of them plus the lower half of the range, and
-/// has nothing for **experience**, **language**, or the range's upper bound.
-/// They are deliberately absent here rather than modelled and dropped at the
-/// boundary: a filter a candidate can set and the server ignores is worse than
-/// one never offered, because the result list looks like an answer. Recorded as
-/// a backend ask in TODO.md.
+/// [experienceYearsMax] is a ceiling on what the **vacancy demands**, not a
+/// floor on what the candidate has, so a vacancy that asks for no experience
+/// passes it. The employer's candidate search uses the same word for the other
+/// thing, over the people rather than over the work.
+///
+/// [languageIds] is the reverse: it matches vacancies that *require* one of
+/// them, so a vacancy naming no language does **not** pass. "Show me work where
+/// my Russian is wanted" is the question; hiding work the candidate is
+/// unqualified for is a different one, and it is what the recommended feed's
+/// ranking does.
+///
+/// Both directions are the server's, and `docs/API_CONTRACTS.md` states them
+/// with the SQL.
 @immutable
 class FeedFilters {
   const FeedFilters({
@@ -26,9 +31,12 @@ class FeedFilters {
     this.employmentTypeIds = const {},
     this.workFormatIds = const {},
     this.shiftIds = const {},
+    this.languageIds = const {},
     this.regionId,
     this.districtId,
     this.salaryFrom,
+    this.salaryTo,
+    this.experienceYearsMax,
     this.publishedFrom,
   });
 
@@ -50,12 +58,12 @@ class FeedFilters {
     employmentTypeIds: _ids(json['employmentTypeIds']),
     workFormatIds: _ids(json['workFormatIds']),
     shiftIds: _ids(json['shiftIds']),
+    languageIds: _ids(json['languageIds']),
     regionId: _text(json['regionId']),
     districtId: _text(json['districtId']),
-    salaryFrom: switch (json['salaryFrom']) {
-      final num value => value.toInt(),
-      _ => null,
-    },
+    salaryFrom: _int(json['salaryFrom']),
+    salaryTo: _int(json['salaryTo']),
+    experienceYearsMax: _int(json['experienceYearsMax']),
     publishedFrom: _text(json['publishedFrom']),
   );
 
@@ -63,6 +71,13 @@ class FeedFilters {
   final Set<String> employmentTypeIds;
   final Set<String> workFormatIds;
   final Set<String> shiftIds;
+
+  /// `language` ids the vacancy must **require**, any one of them, at any
+  /// level.
+  ///
+  /// Level is not sent: §5.5 asks for "language", and a vacancy wanting Russian
+  /// at C1 is still a Russian vacancy to somebody filtering for Russian work.
+  final Set<String> languageIds;
 
   /// Both are ids in the **`region`** dictionary: districts are its children
   /// (§5.1), not a type of their own.
@@ -78,6 +93,21 @@ class FeedFilters {
   /// otherwise read it as a broken filter.
   final int? salaryFrom;
 
+  /// Maximum pay, and **not the mirror** of [salaryFrom].
+  ///
+  /// A vacancy is excluded only when its *floor* is above this, so any
+  /// overlapping range is in and a vacancy offering "up to 3,000,000" survives
+  /// a ceiling of 2,000,000 — it might well pay it. Negotiable passes here too.
+  final int? salaryTo;
+
+  /// §5.5's "experience", as a ceiling on what the vacancy **demands**.
+  ///
+  /// A vacancy requiring more years than this is hidden; one that states no
+  /// requirement passes, because it demands nothing. See the class comment for
+  /// why this is the opposite direction to the employer's filter of the same
+  /// name.
+  final int? experienceYearsMax;
+
   /// `YYYY-MM-DD`, and published **on or after** it.
   ///
   /// A plain string rather than a `DateTime`: the server matches on the date it
@@ -90,9 +120,12 @@ class FeedFilters {
       employmentTypeIds.isEmpty &&
       workFormatIds.isEmpty &&
       shiftIds.isEmpty &&
+      languageIds.isEmpty &&
       regionId == null &&
       districtId == null &&
       salaryFrom == null &&
+      salaryTo == null &&
+      experienceYearsMax == null &&
       publishedFrom == null;
 
   /// How many distinct filters are set, for a badge on the filter control.
@@ -100,14 +133,20 @@ class FeedFilters {
   /// A **set** counts once however many ids it holds: three occupations is one
   /// narrowing decision, and a badge reading "5" for one row of chips tells
   /// nobody anything useful.
+  ///
+  /// **The pay range counts once too, for both bounds.** §5.5 lists it as one
+  /// of its nine filters — "salary/payment range" — and a candidate who types
+  /// two numbers into one labelled pair has made one decision about pay.
   int get count => [
     occupationIds.isNotEmpty,
     employmentTypeIds.isNotEmpty,
     workFormatIds.isNotEmpty,
     shiftIds.isNotEmpty,
+    languageIds.isNotEmpty,
     regionId != null,
     districtId != null,
-    salaryFrom != null,
+    salaryFrom != null || salaryTo != null,
+    experienceYearsMax != null,
     publishedFrom != null,
   ].where((set) => set).length;
 
@@ -122,9 +161,12 @@ class FeedFilters {
       'employmentTypeIds': employmentTypeIds.toList(),
     if (workFormatIds.isNotEmpty) 'workFormatIds': workFormatIds.toList(),
     if (shiftIds.isNotEmpty) 'shiftIds': shiftIds.toList(),
+    if (languageIds.isNotEmpty) 'languageIds': languageIds.toList(),
     'regionId': ?regionId,
     'districtId': ?districtId,
     'salaryFrom': ?salaryFrom,
+    'salaryTo': ?salaryTo,
+    'experienceYearsMax': ?experienceYearsMax,
     'publishedFrom': ?publishedFrom,
   };
 
@@ -133,9 +175,12 @@ class FeedFilters {
     'employmentTypeIds': employmentTypeIds.toList(),
     'workFormatIds': workFormatIds.toList(),
     'shiftIds': shiftIds.toList(),
+    'languageIds': languageIds.toList(),
     'regionId': ?regionId,
     'districtId': ?districtId,
     'salaryFrom': ?salaryFrom,
+    'salaryTo': ?salaryTo,
+    'experienceYearsMax': ?experienceYearsMax,
     'publishedFrom': ?publishedFrom,
   };
 
@@ -147,28 +192,43 @@ class FeedFilters {
     Set<String>? employmentTypeIds,
     Set<String>? workFormatIds,
     Set<String>? shiftIds,
+    Set<String>? languageIds,
     String? regionId,
     String? districtId,
     int? salaryFrom,
+    int? salaryTo,
+    int? experienceYearsMax,
     String? publishedFrom,
     bool clearRegion = false,
     bool clearDistrict = false,
-    bool clearSalary = false,
+    bool clearSalaryFrom = false,
+    bool clearSalaryTo = false,
+    bool clearExperience = false,
     bool clearPublished = false,
   }) => FeedFilters(
     occupationIds: occupationIds ?? this.occupationIds,
     employmentTypeIds: employmentTypeIds ?? this.employmentTypeIds,
     workFormatIds: workFormatIds ?? this.workFormatIds,
     shiftIds: shiftIds ?? this.shiftIds,
+    languageIds: languageIds ?? this.languageIds,
     regionId: clearRegion ? null : regionId ?? this.regionId,
     districtId: clearDistrict ? null : districtId ?? this.districtId,
-    salaryFrom: clearSalary ? null : salaryFrom ?? this.salaryFrom,
+    salaryFrom: clearSalaryFrom ? null : salaryFrom ?? this.salaryFrom,
+    salaryTo: clearSalaryTo ? null : salaryTo ?? this.salaryTo,
+    experienceYearsMax: clearExperience
+        ? null
+        : experienceYearsMax ?? this.experienceYearsMax,
     publishedFrom: clearPublished ? null : publishedFrom ?? this.publishedFrom,
   );
 
   /// A non-empty string, or null for anything else.
   static String? _text(Object? raw) => switch (raw) {
     final String value when value.isNotEmpty => value,
+    _ => null,
+  };
+
+  static int? _int(Object? raw) => switch (raw) {
+    final num value => value.toInt(),
     _ => null,
   };
 
@@ -187,9 +247,12 @@ class FeedFilters {
       setEquals(other.employmentTypeIds, employmentTypeIds) &&
       setEquals(other.workFormatIds, workFormatIds) &&
       setEquals(other.shiftIds, shiftIds) &&
+      setEquals(other.languageIds, languageIds) &&
       other.regionId == regionId &&
       other.districtId == districtId &&
       other.salaryFrom == salaryFrom &&
+      other.salaryTo == salaryTo &&
+      other.experienceYearsMax == experienceYearsMax &&
       other.publishedFrom == publishedFrom;
 
   /// Deep, because the sets are part of the identity. `vacancyFeedProvider`
@@ -202,9 +265,12 @@ class FeedFilters {
     Object.hashAllUnordered(employmentTypeIds),
     Object.hashAllUnordered(workFormatIds),
     Object.hashAllUnordered(shiftIds),
+    Object.hashAllUnordered(languageIds),
     regionId,
     districtId,
     salaryFrom,
+    salaryTo,
+    experienceYearsMax,
     publishedFrom,
   );
 }

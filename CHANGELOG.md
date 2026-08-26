@@ -17,6 +17,60 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.15.0+25 — 2026-08-26
+
+Filtering by experience, language and an upper pay limit — the three §5.5 asked
+for and the app had been apologising about.
+
+### Added
+
+- **An upper pay limit.** The filter screen had "Pay from" and a notice saying
+  the other half was not possible. Both bounds now work, and a vacancy is hidden
+  only when its *floor* is above the limit — so "up to 3,000,000" still appears
+  under a limit of 2,000,000, because it might well pay it. Negotiable pay passes
+  both bounds, as it always has.
+- **Experience.** Reads as a ceiling on what the *vacancy* asks for: set 3 and
+  nothing demanding more than three years appears. **Vacancies that ask for no
+  experience are still shown** — they demand nothing, so nothing is too much —
+  and the screen says so, because a candidate who sets a limit and still sees
+  results would otherwise assume the filter is broken.
+- **Language.** Matches vacancies that *require* the language, at any level. This
+  is "show me work where my Russian is wanted", not "hide work I am unqualified
+  for" — the recommended feed already does the second.
+
+### Removed
+
+- **The notice naming those three as unavailable.** It had been on the filter
+  screen since the filters shipped, and taking it down is the point of this
+  release.
+
+### Internal
+
+- Both halves written together, in both repositories
+  (`headhunter-backend@63d459d`). This had been sitting as a backend ask.
+- The pay range counts as **one** filter on the badge however many of its two
+  bounds are set, matching §5.5, which lists it as one of nine.
+- A first integration suite for discovery on the backend — 17 cases, each of the
+  three filters mutation-checked — and 11 widget cases here covering the whole
+  round trip: typed on screen, stored, sent.
+- **A pre-existing flaky test fixed** in the backend's candidate search. It made
+  three candidates and read their positions out of a 50-row page of a database
+  holding 910, so it failed whenever another suite filled the page first.
+- 1070 tests, up from 1056. `flutter analyze` clean.
+
+### Documentation
+
+- **CLAUDE.md and ARCHITECTURE.md said there was no SMS provider.** There has
+  been one since 2026-08-20 — Eskiz.uz, real numbers, random codes, with the
+  static-code and echo backdoors cleared and refused at boot. Both files now say
+  so, and TODO.md's blocker is closed. Two consequences worth knowing: there is
+  no `devCode` any more, so a test account needs a phone that can receive a
+  message, and each login costs about 160 UZS.
+- **docs/design-feedback.md gains ROUND 6**, collecting every outstanding design
+  asset into one list: five category photographs with their crop constraint,
+  three empty-state illustrations, the success drawing, the client logo, and the
+  two questions still open from earlier rounds.
+
 ## 1.14.0+24 — 2026-08-26
 
 The code screen warns you before you run out of tries.

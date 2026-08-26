@@ -41,35 +41,61 @@ void main() {
         employmentTypeIds: {'emp'},
         workFormatIds: {'fmt'},
         shiftIds: {'shift'},
+        languageIds: {'lang'},
         regionId: 'region',
         districtId: 'district',
         salaryFrom: 5000000,
+        salaryTo: 9000000,
+        experienceYearsMax: 3,
         publishedFrom: '2026-08-01',
       );
 
+      // All nine of §5.5's, since 2026-08-26. The list is spelled out rather
+      // than counted because the names are the contract - `languageIds` sent as
+      // `languages` would be dropped by the server without complaining.
       expect(filters.toQuery().keys, containsAll(<String>[
         'occupationIds',
         'employmentTypeIds',
         'workFormatIds',
         'shiftIds',
+        'languageIds',
         'regionId',
         'districtId',
         'salaryFrom',
+        'salaryTo',
+        'experienceYearsMax',
         'publishedFrom',
       ]));
     });
 
-    test('the three §5.5 filters with no parameter are not modelled', () {
-      // Experience, language and an upper pay bound have no query parameter, so
-      // there is deliberately no field for them: a filter a candidate can set
-      // and the server ignores is worse than one never offered, because the
-      // result list looks like an answer.
-      const filters = FeedFilters(salaryFrom: 1);
-      final keys = filters.toQuery().keys.join(' ');
+    test('the last three of §5.5 send, rather than being dropped here', () {
+      // These had no query parameter until 2026-08-26 and were deliberately
+      // absent from this model rather than modelled and dropped at the
+      // boundary. They exist now, and this is what stops them regressing to
+      // fields that go nowhere - which is the failure that looks like an
+      // answer, because the result list still renders.
+      const filters = FeedFilters(
+        salaryTo: 2000000,
+        experienceYearsMax: 3,
+        languageIds: {'ru'},
+      );
 
-      expect(keys.contains('experience'), isFalse);
-      expect(keys.contains('language'), isFalse);
-      expect(keys.contains('salaryTo'), isFalse);
+      expect(filters.toQuery(), {
+        'languageIds': ['ru'],
+        'salaryTo': 2000000,
+        'experienceYearsMax': 3,
+      });
+    });
+
+    test('an experience ceiling of zero is sent, not swallowed as falsy', () {
+      // "Vacancies asking for no experience at all" is a real and useful
+      // request, and 0 is how it is expressed. A truthiness check anywhere on
+      // this path would silently widen it to every vacancy.
+      const filters = FeedFilters(experienceYearsMax: 0);
+
+      expect(filters.toQuery(), {'experienceYearsMax': 0});
+      expect(filters.isEmpty, isFalse);
+      expect(filters.count, 1);
     });
   });
 
@@ -91,6 +117,28 @@ void main() {
 
       expect(filters.count, 3);
     });
+
+    test('the pay range counts once for both of its bounds', () {
+      // §5.5 lists it as one filter of nine - "salary/payment range" - and
+      // somebody who typed two numbers into one labelled pair made one decision
+      // about pay, the same way three occupations are one decision about work.
+      const both = FeedFilters(salaryFrom: 100, salaryTo: 900);
+      const floorOnly = FeedFilters(salaryFrom: 100);
+      const ceilingOnly = FeedFilters(salaryTo: 900);
+
+      expect(both.count, 1);
+      expect(floorOnly.count, 1);
+      expect(ceilingOnly.count, 1);
+    });
+
+    test('experience and language each count on their own', () {
+      const filters = FeedFilters(
+        experienceYearsMax: 3,
+        languageIds: {'ru', 'en'},
+      );
+
+      expect(filters.count, 2);
+    });
   });
 
   group('clearing is as expressible as setting', () {
@@ -107,13 +155,17 @@ void main() {
         regionId: 'r',
         districtId: 'd',
         salaryFrom: 100,
+        salaryTo: 900,
+        experienceYearsMax: 3,
         publishedFrom: '2026-08-01',
       );
 
       final cleared = filters.copyWith(
         clearRegion: true,
         clearDistrict: true,
-        clearSalary: true,
+        clearSalaryFrom: true,
+        clearSalaryTo: true,
+        clearExperience: true,
         clearPublished: true,
       );
 
@@ -156,9 +208,12 @@ void main() {
         employmentTypeIds: {'emp-1'},
         workFormatIds: {'fmt-1'},
         shiftIds: {'shift-1'},
+        languageIds: {'lang-1', 'lang-2'},
         regionId: 'region-1',
         districtId: 'district-1',
         salaryFrom: 4500000,
+        salaryTo: 9000000,
+        experienceYearsMax: 3,
         publishedFrom: '2026-08-01',
       );
 

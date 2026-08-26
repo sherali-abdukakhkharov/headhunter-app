@@ -1819,14 +1819,20 @@ class AppL10nEn extends AppL10n {
       'Vacancies with negotiable pay are still shown.';
 
   @override
+  String get filtersSalaryTo => 'Pay up to';
+
+  @override
+  String get filtersExperienceUpTo => 'Experience required, up to (years)';
+
+  @override
+  String get filtersExperienceAnyNote =>
+      'Vacancies that ask for no experience are still shown.';
+
+  @override
+  String get filtersLanguageRequired => 'Language required';
+
+  @override
   String get filtersPublishedFrom => 'Published from';
-
-  @override
-  String get filtersUnavailableTitle => 'Three filters are not available yet';
-
-  @override
-  String get filtersUnavailableBody =>
-      'Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.';
 
   @override
   String feedFilteredNote(int count) {

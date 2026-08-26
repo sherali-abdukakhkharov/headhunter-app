@@ -1814,14 +1814,21 @@ class AppL10nUz extends AppL10n {
       'Maoshi kelishilgan vakansiyalar ham ko\'rsatiladi.';
 
   @override
+  String get filtersSalaryTo => 'Maosh, gacha';
+
+  @override
+  String get filtersExperienceUpTo =>
+      'Talab qilinadigan tajriba, ko‘pi bilan (yil)';
+
+  @override
+  String get filtersExperienceAnyNote =>
+      'Tajriba talab qilmaydigan vakansiyalar ham ko‘rsatiladi.';
+
+  @override
+  String get filtersLanguageRequired => 'Talab qilinadigan til';
+
+  @override
   String get filtersPublishedFrom => 'Chop etilgan, dan';
-
-  @override
-  String get filtersUnavailableTitle => 'Uchta filtr hozircha mavjud emas';
-
-  @override
-  String get filtersUnavailableBody =>
-      'Tajriba, til va maoshning yuqori chegarasi bo\'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.';
 
   @override
   String feedFilteredNote(int count) {
@@ -5051,14 +5058,21 @@ class AppL10nUzCyrl extends AppL10nUz {
       'Маоши келишилган вакансиялар ҳам кўрсатилади.';
 
   @override
+  String get filtersSalaryTo => 'Маош, гача';
+
+  @override
+  String get filtersExperienceUpTo =>
+      'Талаб қилинадиган тажриба, кўпи билан (йил)';
+
+  @override
+  String get filtersExperienceAnyNote =>
+      'Тажриба талаб қилмайдиган вакансиялар ҳам кўрсатилади.';
+
+  @override
+  String get filtersLanguageRequired => 'Талаб қилинадиган тил';
+
+  @override
   String get filtersPublishedFrom => 'Чоп этилган, дан';
-
-  @override
-  String get filtersUnavailableTitle => 'Учта филтр ҳозирча мавжуд эмас';
-
-  @override
-  String get filtersUnavailableBody =>
-      'Тажриба, тил ва маошнинг юқори чегараси бўйича ҳозирча филтрлаш мумкин эмас. Қолгани ишлайди.';
 
   @override
   String feedFilteredNote(int count) {
@@ -8283,14 +8297,21 @@ class AppL10nUzLatn extends AppL10nUz {
       'Maoshi kelishilgan vakansiyalar ham ko\'rsatiladi.';
 
   @override
+  String get filtersSalaryTo => 'Maosh, gacha';
+
+  @override
+  String get filtersExperienceUpTo =>
+      'Talab qilinadigan tajriba, ko‘pi bilan (yil)';
+
+  @override
+  String get filtersExperienceAnyNote =>
+      'Tajriba talab qilmaydigan vakansiyalar ham ko‘rsatiladi.';
+
+  @override
+  String get filtersLanguageRequired => 'Talab qilinadigan til';
+
+  @override
   String get filtersPublishedFrom => 'Chop etilgan, dan';
-
-  @override
-  String get filtersUnavailableTitle => 'Uchta filtr hozircha mavjud emas';
-
-  @override
-  String get filtersUnavailableBody =>
-      'Tajriba, til va maoshning yuqori chegarasi bo\'yicha hozircha filtrlash mumkin emas. Qolgani ishlaydi.';
 
   @override
   String feedFilteredNote(int count) {

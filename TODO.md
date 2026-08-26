@@ -89,13 +89,19 @@ fixes:
       Telegram login was deprecated the same day it was adopted and sign-in is
       phone + OTP again, which is what BR-01 and UAT-01 already say. Nothing to
       re-word and nothing to sign.
-- [?] **SMS provider** — none is connected, so the backend issues a fixed
-      `OTP_STATIC_CODE=666666` and no message is actually sent. Needs a provider
-      (or Telegram Gateway at ~$0.01/code, see
-      [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) §2C) chosen and paid for.
-      *Blocks UAT-01 on a real device with a real number, and blocks any
-      production deploy — the backend refuses to boot with the static code set
-      when `NODE_ENV=production`.*
+- [x] ~~**SMS provider**~~ — **connected 2026-08-20, and real numbers are
+      signing in through it** (owner, 2026-08-26). Eskiz.uz; connecting it was
+      two environment variables and no code change, which is what the
+      `SmsSender` seam was for. `OTP_STATIC_CODE` and `OTP_ECHO_IN_RESPONSE` are
+      cleared and `NODE_ENV=production` makes the schema refuse both at boot, so
+      neither hole can be reopened by editing a file. UAT-01 on a real number is
+      unblocked, and so is production.
+      This entry read "none is connected" for six days after it was, which is
+      the more useful lesson: a blocker is not closed until the list that names
+      it says so. Details, including the outage connecting it caused, are in
+      `headhunter-backend/docs/SMS_PROVIDER.md`.
+      **A login now costs a real message (~160 UZS)** — worth knowing before
+      writing a test that resends in a loop.
 - [x] ~~**Dictionary contract**~~ — **delivered.** `GET /dictionaries/:type` and
       `/dictionaries/items` are consumed by `dictionary_repository.dart` and every
       picker in the app runs on them. The marker was left stale here long after
@@ -749,20 +755,28 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       stored** data, not a server response, so a field of the wrong type is an
       older build's format rather than a contract violation. Every field is read
       defensively; a cast would have lost the whole set over one renamed key
-- [!] **Backend ask: three of §5.5's nine vacancy filters have no query
-      parameter.** `FeedQueryDto` accepts `occupationIds`, `category`,
-      `regionId`, `districtId`, `employmentTypeIds`, `workFormatIds`,
-      `shiftIds`, `salaryFrom` and `publishedFrom` — and nothing for
-      **experience**, **language**, or the pay range's **upper bound**, all three
-      of which §5.5 lists by name.
-      They are deliberately not modelled and not offered: a filter a candidate
-      can set and the server ignores is worse than one that was never there,
-      because the result list looks like an answer. The filter screen says which
-      three are missing rather than leaving somebody hunting for a control, and
-      that notice is deleted the day the parameters exist.
-      Worth pairing with the employer side, which already filters candidates on
-      experience and language (§7.1) — so the shapes exist, on the other
-      resource
+- [x] **§5.5's last three filters, 2026-08-26.** `salaryTo`,
+      `experienceYearsMax` and `languageIds` exist on `FeedQueryDto` now, so all
+      nine of §5.5's filters work and the notice naming these three as
+      unavailable is gone. Written in both repos in one pass — this had been
+      filed as a backend ask and sat open for weeks, which is the habit the
+      2026-08-26 owner direction ended.
+      **Two of the three mean the opposite of what they look like**, and that is
+      the part worth remembering:
+      `salaryTo` is **not** the mirror of `salaryFrom`. A vacancy is excluded
+      only when its *floor* is above the ceiling asked for, so an overlapping
+      range is in — written field for field against the floor it would compare a
+      NULL and drop "up to 3,000,000" from a search with a ceiling of 2,000,000.
+      `experienceYearsMax` is a **`NOT EXISTS`**. Experience on a vacancy is a
+      *demand*, not an attribute, so the filter hides what the candidate cannot
+      reach, and a vacancy stating no requirement passes because it demands
+      nothing. The employer's filter of the same name is the other polarity, over
+      people rather than over work.
+      `languageIds` is the reverse again: a vacancy naming no language does not
+      pass, because "show me Russian-speaking work" cannot be satisfied by work
+      that never mentioned Russian.
+      A first integration suite for discovery came with it — 17 cases, each of
+      the three mutation-checked — plus 11 widget cases on the filter screen
 - [x] ~~Deadline-expired / closed vacancy rendering (UAT-15)~~ — **built
       2026-08-20**, and the entry below says why it distinguishes only "gone"
       from "broken": the server answers `vacancy.not_found` for unknown, closed,

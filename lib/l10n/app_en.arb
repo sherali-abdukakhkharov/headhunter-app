@@ -2362,17 +2362,25 @@
   "@filtersSalaryNegotiableNote": {
     "description": "The server's rule, stated where somebody would otherwise conclude the filter is broken: a negotiable vacancy passes a pay floor because it has not said no to the figure, and excluding it would hide much of the seasonal work."
   },
+  "filtersSalaryTo": "Pay up to",
+  "@filtersSalaryTo": {
+    "description": "The upper half of section 5.5's pay range. A vacancy is excluded only when its floor is above this, so an overlapping range is in and a negotiable vacancy passes — the same rule as the lower half."
+  },
+  "filtersExperienceUpTo": "Experience required, up to (years)",
+  "@filtersExperienceUpTo": {
+    "description": "Section 5.5's experience filter. Not filtersExperience, which is the employer filter builder's section heading for the opposite thing. Note the direction: it is a ceiling on what the vacancy demands, not a floor on what the candidate has. The employer's candidate search uses the same word for the opposite thing."
+  },
+  "filtersExperienceAnyNote": "Vacancies that ask for no experience are still shown.",
+  "@filtersExperienceAnyNote": {
+    "description": "Says why blank-experience vacancies survive the filter, in the same place and for the same reason as the negotiable-pay note: a candidate who sets a ceiling and still sees results would otherwise read it as broken."
+  },
+  "filtersLanguageRequired": "Language required",
+  "@filtersLanguageRequired": {
+    "description": "Section 5.5's language filter. Not filtersLanguages, which is the employer filter builder's heading for filtering *people* by the languages they speak. Matches vacancies that require the language at any level — \"show me work where my Russian is wanted\", not \"hide work I am unqualified for\"."
+  },
   "filtersPublishedFrom": "Published from",
   "@filtersPublishedFrom": {
     "description": "Section 5.5's publication date. Matched on or after, and sent as `YYYY-MM-DD` — the server compares against the date it published in its own zone, so the client must not turn this into an instant."
-  },
-  "filtersUnavailableTitle": "Three filters are not available yet",
-  "@filtersUnavailableTitle": {
-    "description": "Says out loud what section 5.5 lists and the API cannot do, rather than leaving somebody hunting for a control that is not there. Removed the day the query parameters exist."
-  },
-  "filtersUnavailableBody": "Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.",
-  "@filtersUnavailableBody": {
-    "description": "Names the three rather than apologising generically, and says the rest works — otherwise a reader has no way to tell which of the controls above to trust."
   },
   "feedFilteredNote": "{count} filters applied",
   "@feedFilteredNote": {

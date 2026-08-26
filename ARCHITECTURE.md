@@ -218,10 +218,13 @@ Three rules that constrain everything downstream:
   resend countdown is driven by `resendAvailableAt` from the send response, never
   a constant in the app.
 
-**No SMS provider is connected yet.** `OTP_STATIC_CODE` makes the backend issue a
-fixed code, substituted where a random code would be generated and nowhere else,
-so every other property of the flow is the real one. Removing the backdoor is
-clearing one variable.
+**SMS is connected.** Eskiz.uz has delivered since 2026-08-20;
+`OTP_STATIC_CODE` and `OTP_ECHO_IN_RESPONSE` are cleared, and `NODE_ENV=production`
+makes the schema refuse both at boot rather than trusting the `.env` file to stay
+correct. Two consequences on this side: `devCode` is never populated, so the
+development hint on the code screen renders for nobody but a local backend; and
+**signing in costs a real message** (~160 UZS), which is a reason not to loop a
+resend in a test.
 
 Telegram login is deprecated and uncalled, but the code and endpoint remain —
 [docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md) has the header explaining what

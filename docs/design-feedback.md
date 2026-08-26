@@ -6,6 +6,102 @@
 
 ---
 
+## ROUND 6 — the asset list, in one place
+
+**2026-08-26.** Nearly every screen in the specification is built - the coin
+storefront is the one still waiting on a payment provider - and what is left that
+only design can supply is **nine files, a logo, and two questions**. They have
+been scattered across four rounds; this collects them so nothing needs hunting.
+
+Everything below ships *today* with a documented fallback, so none of it blocks a
+release — it is the difference between a product that works and one that looks
+finished.
+
+### A. Five category photographs — the largest single gap
+
+One 3:2 master per work category, **1620 × 1080**, JPEG or PNG.
+
+| # | Category (§2.1) | Examples the specification gives |
+|---|---|---|
+| 1 | Professional roles | software developer, accountant, manager, designer, doctor, engineer |
+| 2 | Service and operations | call-centre operator, salesperson, waiter, courier, driver, cleaner |
+| 3 | Physical and industrial work | loader, construction worker, welder, warehouse worker, installer |
+| 4 | Seasonal and agricultural work | planting, harvesting, garden work, livestock assistant, field crew |
+| 5 | Temporary and shift work | daily work, weekly work, fixed-date assignment, replacement worker |
+
+**The one constraint that matters: keep the subject inside the middle 60 %
+vertically.** One file is cropped two ways — 4.15 : 1 on the vacancy card and
+2.6 : 1 on the detail hero — and a subject near either edge survives one crop and
+loses its head in the other. Everything else is art direction.
+
+Stock is fine, art-directed by you. Uzbek subjects and settings where the
+category allows it; these sit at the top of every card a candidate scans.
+
+**Today:** the band renders the category tint plus its glyph and name, at full
+height. It never collapses — card geometry must not change between the two cases
+or a mixed list loses its rhythm — so dropping the photographs in changes nothing
+structural.
+
+### B. Three empty-state illustrations
+
+Two-colour line work, **navy `#0B2545` + turquoise `#12B0BE`**, transparent
+background, SVG. Drawn to fit **110 × 80** — that is the reserved box, and the
+component centres whatever it is given.
+
+| Slot | The moment it appears | What it should say |
+|---|---|---|
+| `st-empty-first` | a list that has never had anything in it | this fills up when you *do* something |
+| `proto-empty-filter` | a list emptied by the filters just set | widen the filters — the work exists |
+| `cmp-empty-1` | the generic component fallback | neutral; used where neither of the above fits |
+
+The distinction between the first two is the point: one is fixed by acting, the
+other by undoing, and a single drawing for both would tell somebody with four
+filters set to go and wait for employers to publish.
+
+**Today:** a plain sand-coloured rounded rectangle occupies the box.
+
+### C. The success illustration (`proto-success-art`)
+
+Same treatment as B, same 110 × 80. One drawing, for the confirmation screens.
+
+### D. The client's logo — this one is a decision, not a file
+
+The mark, both lockups, the launch screen and the Android launcher icon are all
+built from §01 and are geometrically exact. **The mark itself is
+placeholder-grade**, because the client has never supplied a logo.
+
+If one exists, we need it as vector (SVG or AI) with the construction panel §01
+already provides for the placeholder: shoulder and apex y-positions, head radius,
+and the crop `viewBox`. That panel is why the current mark could be rebuilt
+without tracing, and why our Android drawable path data is byte-identical to
+yours — please keep doing it.
+
+If one does *not* exist, say so and the placeholder becomes the mark; it is a
+reasonable one, and the app icon cannot stay unresolved indefinitely.
+
+### E. Two questions from earlier rounds, still open
+
+1. **The nav label at 320 pt and 2.0× text scale.** "Bosh sahifa" cannot fit two
+   lines across five tabs. The design's own remedy is a shorter string or a soft
+   hyphen, and which of the two is your call. A shorter Uzbek string is our
+   preference if one reads naturally.
+2. **The chat composer's height.** §9.1 is a surface the document never drew. It
+   currently uses the multiline text field exactly as written — persistent label
+   plus a 1.6 × 52 pt minimum — so an empty composer is about 110 pt tall. That is
+   the design system used correctly, and a chat-specific control size is the one
+   thing the "one control size for everyone" rule forbids. So this needs a drawn
+   answer rather than a unilateral shrink.
+
+### F. Still owed from rounds 3, 4 and 5
+
+- **Item 7's copy** (round 3).
+- **`helpCircle`** (round 4) — we drew it to match its three siblings: same
+  9-radius circle, same stroke. Confirm or replace.
+- **The arch's overhang** (round 5) — the lockup gap rule refers to it and we
+  could not find a measurable one, so we used the specimens' ratios instead.
+
+---
+
 ## ROUND 5 — the mark is in, and three sentences disagree with three drawings
 
 **2026-08-20.** §01 is built: the mark, both lockups, the launch screen, and the

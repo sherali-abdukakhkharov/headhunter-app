@@ -14,7 +14,7 @@ Future<void> showFeedFilters(BuildContext context) => Navigator.of(
   rootNavigator: true,
 ).push<void>(MaterialPageRoute(builder: (_) => const FeedFilterScreen()));
 
-/// §5.5's vacancy filters.
+/// §5.5's vacancy filters — all nine of them, since 2026-08-26.
 ///
 /// ## Edited locally, applied on Apply
 ///
@@ -24,13 +24,17 @@ Future<void> showFeedFilters(BuildContext context) => Navigator.of(
 /// filter set — occupation chosen, region not yet — which is the one state they
 /// do not want results for.
 ///
-/// ## Three of §5.5's filters are not here
+/// ## Two of the controls read backwards
 ///
-/// Experience, language, and the upper end of the pay range have no query
-/// parameter on `GET /discovery/{feed}`. Offering them would produce controls
-/// that visibly do nothing to the list, which is worse than controls that were
-/// never there — the results look like an answer. The screen says so out loud
-/// rather than leaving somebody hunting, and it is a backend ask in TODO.md.
+/// **Experience** is a ceiling on what the *vacancy* asks for, so a vacancy
+/// requiring nothing passes it — the opposite of the employer's filter of the
+/// same name, which is a floor on what a person has. **Language** is the other
+/// way: it matches vacancies that require the language, so one naming no
+/// language does not pass.
+///
+/// Both are the server's rules and both are stated on screen, next to the
+/// control, for the same reason the negotiable-pay note is: a filter whose
+/// results look wrong is indistinguishable from a broken one.
 class FeedFilterScreen extends ConsumerStatefulWidget {
   const FeedFilterScreen({super.key});
 
@@ -40,11 +44,17 @@ class FeedFilterScreen extends ConsumerStatefulWidget {
 
 class _FeedFilterScreenState extends ConsumerState<FeedFilterScreen> {
   FeedFilters? _draft;
-  final _salary = TextEditingController();
+
+  /// The three free-text numbers, read on Apply rather than per keystroke.
+  final _salaryFrom = TextEditingController();
+  final _salaryTo = TextEditingController();
+  final _experience = TextEditingController();
 
   @override
   void dispose() {
-    _salary.dispose();
+    _salaryFrom.dispose();
+    _salaryTo.dispose();
+    _experience.dispose();
     super.dispose();
   }
 
@@ -59,7 +69,9 @@ class _FeedFilterScreenState extends ConsumerState<FeedFilterScreen> {
       final stored = ref.watch(feedFilterControllerProvider);
       if (stored case AsyncData(:final value)) {
         _draft = value;
-        _salary.text = value.salaryFrom?.toString() ?? '';
+        _salaryFrom.text = value.salaryFrom?.toString() ?? '';
+        _salaryTo.text = value.salaryTo?.toString() ?? '';
+        _experience.text = value.experienceYearsMax?.toString() ?? '';
       }
     }
 
@@ -81,7 +93,9 @@ class _FeedFilterScreenState extends ConsumerState<FeedFilterScreen> {
                   Expanded(
                     child: _Form(
                       draft: draft,
-                      salary: _salary,
+                      salaryFrom: _salaryFrom,
+                      salaryTo: _salaryTo,
+                      experience: _experience,
                       onChanged: (next) => setState(() => _draft = next),
                     ),
                   ),
@@ -94,18 +108,28 @@ class _FeedFilterScreenState extends ConsumerState<FeedFilterScreen> {
 
   void _reset() {
     setState(() => _draft = const FeedFilters());
-    _salary.clear();
+    _salaryFrom.clear();
+    _salaryTo.clear();
+    _experience.clear();
   }
 
   Future<void> _apply(FeedFilters draft) async {
-    // The pay field is free text, read here rather than tracked per keystroke.
-    // An empty box clears the filter, and anything unparseable is treated as
-    // empty rather than as zero — a floor of 0 is one every vacancy passes,
-    // which is not what somebody who typed letters meant.
-    final typed = int.tryParse(_salary.text.trim());
-    final applied = typed == null
-        ? draft.copyWith(clearSalary: true)
-        : draft.copyWith(salaryFrom: typed);
+    // An empty box clears its filter, and anything unparseable is treated as
+    // empty rather than as zero. Zero is a real and very different answer in
+    // two of the three: a pay floor of 0 passes every vacancy, and an
+    // experience ceiling of 0 hides every vacancy that asks for any.
+    final from = int.tryParse(_salaryFrom.text.trim());
+    final to = int.tryParse(_salaryTo.text.trim());
+    final years = int.tryParse(_experience.text.trim());
+
+    final applied = draft.copyWith(
+      salaryFrom: from,
+      clearSalaryFrom: from == null,
+      salaryTo: to,
+      clearSalaryTo: to == null,
+      experienceYearsMax: years,
+      clearExperience: years == null,
+    );
 
     await ref.read(feedFilterControllerProvider.notifier).set(applied);
     if (mounted) Navigator.of(context).pop();
@@ -115,12 +139,16 @@ class _FeedFilterScreenState extends ConsumerState<FeedFilterScreen> {
 class _Form extends StatelessWidget {
   const _Form({
     required this.draft,
-    required this.salary,
+    required this.salaryFrom,
+    required this.salaryTo,
+    required this.experience,
     required this.onChanged,
   });
 
   final FeedFilters draft;
-  final TextEditingController salary;
+  final TextEditingController salaryFrom;
+  final TextEditingController salaryTo;
+  final TextEditingController experience;
   final ValueChanged<FeedFilters> onChanged;
 
   @override
@@ -181,19 +209,51 @@ class _Form extends StatelessWidget {
         ),
         const SizedBox(height: HhSpace.md),
 
+        // §5.5's "salary/payment range" — one filter, two boxes, and one note
+        // covering both because the negotiable rule applies to each.
         HhTextField(
           label: l10n.filtersSalaryFrom,
-          controller: salary,
+          controller: salaryFrom,
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: HhSpace.md),
+        HhTextField(
+          label: l10n.filtersSalaryTo,
+          controller: salaryTo,
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: HhSpace.xs),
         // The server's rule, stated where somebody would otherwise conclude
-        // the filter is broken: a negotiable vacancy **passes** a pay floor,
+        // the filter is broken: a negotiable vacancy **passes** a pay bound,
         // because it has not said no to the figure — and excluding it would
         // hide much of the seasonal work.
         Text(
           l10n.filtersSalaryNegotiableNote,
           style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+        ),
+        const SizedBox(height: HhSpace.md),
+
+        HhTextField(
+          label: l10n.filtersExperienceUpTo,
+          controller: experience,
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: HhSpace.xs),
+        // The direction, in the one place it can be misread. This is a ceiling
+        // on what the *vacancy* asks for, so vacancies asking for nothing are
+        // the ones a candidate setting it most wants to see.
+        Text(
+          l10n.filtersExperienceAnyNote,
+          style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+        ),
+        const SizedBox(height: HhSpace.md),
+
+        HhDictionaryMultiPicker(
+          label: l10n.filtersLanguageRequired,
+          type: DictionaryType.language,
+          values: draft.languageIds.toList(),
+          onChanged: (ids) =>
+              onChanged(draft.copyWith(languageIds: ids.toSet())),
         ),
         const SizedBox(height: HhSpace.md),
 
@@ -207,13 +267,6 @@ class _Form extends StatelessWidget {
           ),
         ),
         const SizedBox(height: HhSpace.sectionGap),
-
-        // Says plainly what §5.5 asks for and the API cannot do, rather than
-        // leaving somebody hunting for a control that is not there.
-        HhNotice.permission(
-          title: l10n.filtersUnavailableTitle,
-          message: l10n.filtersUnavailableBody,
-        ),
       ],
     );
   }

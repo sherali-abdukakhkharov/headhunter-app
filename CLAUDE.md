@@ -146,12 +146,17 @@ device. See `test/core/design/semantics_test.dart`.
   path that guards every account, for a feature nothing called. The backend's
   `POST /auth/telegram` still exists and still works; the client can no longer
   reach it ([docs/TELEGRAM_LOGIN.md](docs/TELEGRAM_LOGIN.md)).
-- **There is no SMS provider yet.** The backend issues a fixed code set by
-  `OTP_STATIC_CODE` (currently `666666`), substituted at the point a random code
-  would be generated and nowhere else — so TTL, resend delay, attempt limits and
-  single-use consumption all still apply. **Removing the backdoor is clearing one
-  environment variable**; do not add a second code path that would have to be
-  removed with it. Refused at boot when `NODE_ENV=production`.
+- **SMS is real, and codes are random.** Eskiz.uz has delivered since
+  2026-08-20 and real numbers are signing in through it — confirmed by the owner
+  on 2026-08-26. `OTP_STATIC_CODE` and `OTP_ECHO_IN_RESPONSE` are both cleared,
+  `NODE_ENV=production` is set, and the env schema *refuses* both at boot rather
+  than trusting an `.env` file to stay correct. So there is no fixed code any
+  more, and no `devCode` in a send response: **a test account needs a phone that
+  can receive a message**, and the emulator flow needs one too. About 160 UZS a
+  login, which is a real reason not to loop a resend in a test.
+  This paragraph said the opposite until 2026-08-26 — see
+  `headhunter-backend/docs/SMS_PROVIDER.md` for what was actually done, including
+  the outage that connecting the provider caused.
 - **Idempotency keys are persisted, not regenerated per attempt** (§12.4, BR-07).
 - **User-entered content is never translated** (§2.4).
 

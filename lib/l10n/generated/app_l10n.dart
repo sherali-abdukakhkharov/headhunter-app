@@ -3161,23 +3161,35 @@ abstract class AppL10n {
   /// **'Vacancies with negotiable pay are still shown.'**
   String get filtersSalaryNegotiableNote;
 
+  /// The upper half of section 5.5's pay range. A vacancy is excluded only when its floor is above this, so an overlapping range is in and a negotiable vacancy passes — the same rule as the lower half.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay up to'**
+  String get filtersSalaryTo;
+
+  /// Section 5.5's experience filter. Not filtersExperience, which is the employer filter builder's section heading for the opposite thing. Note the direction: it is a ceiling on what the vacancy demands, not a floor on what the candidate has. The employer's candidate search uses the same word for the opposite thing.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience required, up to (years)'**
+  String get filtersExperienceUpTo;
+
+  /// Says why blank-experience vacancies survive the filter, in the same place and for the same reason as the negotiable-pay note: a candidate who sets a ceiling and still sees results would otherwise read it as broken.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacancies that ask for no experience are still shown.'**
+  String get filtersExperienceAnyNote;
+
+  /// Section 5.5's language filter. Not filtersLanguages, which is the employer filter builder's heading for filtering *people* by the languages they speak. Matches vacancies that require the language at any level — "show me work where my Russian is wanted", not "hide work I am unqualified for".
+  ///
+  /// In en, this message translates to:
+  /// **'Language required'**
+  String get filtersLanguageRequired;
+
   /// Section 5.5's publication date. Matched on or after, and sent as `YYYY-MM-DD` — the server compares against the date it published in its own zone, so the client must not turn this into an instant.
   ///
   /// In en, this message translates to:
   /// **'Published from'**
   String get filtersPublishedFrom;
-
-  /// Says out loud what section 5.5 lists and the API cannot do, rather than leaving somebody hunting for a control that is not there. Removed the day the query parameters exist.
-  ///
-  /// In en, this message translates to:
-  /// **'Three filters are not available yet'**
-  String get filtersUnavailableTitle;
-
-  /// Names the three rather than apologising generically, and says the rest works — otherwise a reader has no way to tell which of the controls above to trust.
-  ///
-  /// In en, this message translates to:
-  /// **'Experience, language and an upper pay limit cannot be filtered on yet. Everything else here works.'**
-  String get filtersUnavailableBody;
 
   /// Shown above a filtered feed. A set of ids counts once however many it holds — three occupations is one narrowing decision, and a badge reading 5 for one row of chips tells nobody anything.
   ///
