@@ -97,6 +97,23 @@ final class SessionActive extends SessionState {
   /// Whether the user still has to choose a role.
   bool get needsRoleSelection => roles.isEmpty;
 
+  /// The account holds roles and **none of them is the acting one** (MT-022).
+  ///
+  /// A shell must not open here. [effectiveRole] would happily name one, but
+  /// the *access token* names none, so every role-scoped call answers
+  /// `role.none_active` — a 403 on an account that genuinely holds the role,
+  /// and the screen says "No active role is selected" to somebody who has one.
+  ///
+  /// This is a fresh install signing into an existing multi-role account: the
+  /// server sends no active role, nothing is stored locally, and the guess made
+  /// at render time was never told to the server.
+  ///
+  /// `SessionController._adopt` resolves and *publishes* a role before moving
+  /// here, so this should not arise. It is named anyway because the router has
+  /// to have somewhere honest to send it if it ever does — the difference
+  /// between an account that looks broken and one that asks a question.
+  bool get hasUnresolvedRole => roles.isNotEmpty && activeRole == null;
+
   /// The role to actually render, or null if none is granted.
   ///
   /// Falls back through [AppRole.preferenceOrder] when [activeRole] is unset or

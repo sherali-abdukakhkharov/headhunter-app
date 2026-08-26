@@ -17,6 +17,50 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.18.0+28 — 2026-08-27
+
+Signing in on a new phone with more than one role no longer lands you in an app
+that refuses everything.
+
+### Fixed
+
+- **MT-022.** An account holding two roles, signing in on a fresh install, was
+  put into a shell before the server had been told which role it was acting as.
+  Every screen then answered "No active role is selected" — to somebody who has
+  two. A restart did not help.
+- The role is now **chosen and confirmed with the server before any screen
+  opens**, and the same account lands in the same place on every device.
+- **If confirming it fails**, the app says it cannot reach the server and offers
+  to retry, instead of opening a shell that cannot load anything.
+
+### Internal
+
+- `_adopt` resolves the acting role through preference order and awaits
+  `POST /auth/active-role` before the state transition the router redirects on
+  — the same ordering rule as MT-021, now applied to sign-in as well as to
+  registration.
+- `SessionActive.hasUnresolvedRole` names the condition, and the redirect chain
+  sends it to role selection rather than into a shell. Role selection ends by
+  publishing a role, so it is a repair rather than a dead end.
+- **Fifteen router fixtures were encoding the bug** — a session with grants and
+  no acting role, expected to open a shell. They now carry a resolved role,
+  which is what a real session has.
+- No backend change: the server was already strict, and
+  `role.guard.spec.ts` already covers a multi-role caller with no active role.
+  That strictness is what made the client defect visible.
+- 1097 tests, up from 1090. Four mutations checked, including one that proved
+  the router backstop was unreachable until a test reached for it directly.
+
+### Documentation
+
+- TODO.md's audit table is now the **1.17.0** audit: seven open findings, seven
+  verified fixed, three new. MT-016 closed with no code change — pinning the
+  geometry in a test and waiting for a device pass was the right call.
+- Recorded there too: **the APK, backend `80905b7` and the
+  `message_attachment` seed are one deployment unit.** The audit had to rebuild
+  the API to test 1.17 fairly, which is the first time a client release has had
+  a server prerequisite.
+
 ## 1.17.0+27 — 2026-08-26
 
 You can send a file in a chat, not only receive one.

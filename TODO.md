@@ -8,61 +8,44 @@ decision or on the backend.
 
 ---
 
-## The 1.11.0 QA audit (2026-08-25)
+## The 1.17.0 QA audit (2026-08-27)
 
-A full regression audit of the **1.11.0** APK on a Pixel 8 against the deployed
-DEV API, delivered as [mobile-test-audit.md](mobile-test-audit.md). It replaces
-the 1.4.1 audit of 2026-08-23: **10 of those findings are verified fixed**, 11
-remain open (1 Critical, 2 High, 8 Medium) and **2 are new** — MT-020 and
-MT-021. Verdict **NO-GO for production**, **GO with known issues for DEV**.
+A full regression audit of the **1.17.0** APK against the deployed DEV API,
+delivered as [mobile-test-audit.md](mobile-test-audit.md). It replaces the
+1.11.0 audit of 2026-08-25.
+
+**Seven findings open: 1 Critical, 2 High, 4 Medium.** Verdict **NO-GO for
+production**. Seven of the previous eleven are verified fixed — MT-009, MT-012,
+MT-013, MT-014, MT-016, MT-020 and MT-021 — and MT-015 is confirmed partially
+fixed. Three findings are new: MT-022, MT-023 and MT-024.
 
 Findings are `MT-nnn` and each carries evidence, a root cause and acceptance
-criteria — read those before starting a fix rather than working from the table.
+criteria — read those before starting a fix rather than working from this table.
 
-**Two things this audit settled that could not be checked from here.** Push was
-observed working end to end on a real device — background FCM delivery, tap
-deep-linking, and the device-token deletion at sign-out — so §9.2 is confirmed
-rather than merely tested. And the duplicate guards hold: rapid repeated taps
-created exactly one chat message, saved vacancy, application, invitation,
-invitation response and employer profile.
+**MT-016 closed without a change**, which is worth recording: it could not be
+reproduced from here and the geometry was pinned in a test instead. The audit
+found it fixed. Pinning the property and waiting was the right call.
+
+**One thing this audit settled that nothing here could.** The tested API image
+pre-dated 1.17's chat route, and rebuilding backend `80905b7` plus running the
+idempotent seed made attachment upload work. So **the APK, that commit and the
+`message_attachment` dictionary row are one deployment unit** — which is the
+first time a client release has had a server prerequisite, and it belongs in the
+release checklist rather than in somebody's memory.
 
 | ID | Sev | State |
 |---|---|---|
-| MT-003 | Critical | Open — **backend/deployment**, and confirmed as such by the audit: `MODERATION_ENABLED=false` in the tested runtime. The client already renders whatever status the API returns; the ask is the flag and a fail-closed deployment check |
-| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. The audit adds a product ask: make top-up availability a **server capability** rather than a promise the app makes and then withdraws after the tap |
-| MT-020 | High | **Fixed 1.11.1** — the two read routes were `POST` against a server that declares `@Put`, so nothing in §9.2's centre could be marked read in 1.10.0 or 1.11.0. See MEMORY.md for why a 404 hid it |
-| MT-009 | Medium | **Fixed 1.11.3** — the DTO carries `purposeCode`, and it was being handed to the id resolver. `DictionaryCodeLabel` resolves by code; both are `String`, which is why nothing complained |
-| MT-012 | Medium | **Fixed 1.11.3** — purpose codes now resolve to labels on all three screens, pay is one shared formatter with separators, currency and period, and the two **server-written** moderation reasons are worded rather than shown verbatim |
-| MT-013 | Medium | **Fixed 1.11.2** — both sign-in buttons now derive their enabled state from the same value the submit path checks, and local validation renders on the field instead of in the page's error state |
-| MT-014 | Medium | **Fixed 1.11.2** — and it was larger than the copy: every transport-failure message was **hardcoded English** in a four-variant product. Now twelve ARB keys reached through `ApiException.localizations`, plus an `ApiFailureKind` so a screen can branch on the condition rather than on the words |
-| MT-015 | Medium | **Fixed 1.11.5** — and it needed no device after all: semantics are fully testable headlessly, which is how all three duplications (`Home\nHome`, `Save\nSave`, `Verified employer\nVerified employer`) were reproduced and then fixed. Icon-only trailing buttons are now named, and an assert refuses a tappable one without a name |
-| MT-016 | Medium | **Could not reproduce — needs the next device pass.** The property is now pinned: the employer dashboard's CTA is asserted to clear the bar by a spacing token and to be hit-testable, at 360 × 640 dp, 200% text, with a status bar and a gesture strip. It passes. Something outside the widget tree is involved, so the next audit is what settles it rather than another blind change |
-| MT-017 | Medium | Open, and it is a **backend ask**: `GET /admin/complaints` returns complaints, not what they are about |
-| MT-021 | Medium | **Fixed 1.11.4** — and it was not really a race on *taps*: `selectRoles` published the granted roles, which is what lets the redirect chain into the shell, and rotated the access token three awaits later. So the shell's first role-scoped request carried a token naming no role and came back 403 `role.none_active` — the server's own sentence, shown to somebody who had just chosen one. Now the token is rotated and the choice persisted **before** the single state transition that carries both halves |
+| MT-003 | Critical | Open — **backend/deployment**. `MODERATION_ENABLED=false` in the tested runtime, for the third audit running. The client renders whatever status the API returns; the ask is the flag plus a deployment check that *fails to start* rather than warning, and a smoke test that submits a vacancy and asserts it is not discoverable until approved |
+| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. The audit repeats the product ask: make top-up availability a **server capability** rather than a promise the app makes and then withdraws after the tap |
+| MT-022 | High | **Fixed 1.18.0** — a fresh install on an existing multi-role account entered a shell whose token named no role. `effectiveRole` invented one when the router asked; the server had never been told. Now `_adopt` resolves it deterministically and **publishes it before the state moves**, and the router has a named backstop state rather than a comment asserting the case cannot happen |
+| MT-015 | Medium | **Partially fixed, still open.** The 1.11.5 work held — tabs, actions and picker icons are clean — but radio, checkbox, switch and segmented-button labels still announce twice. The remaining fix is composition inside the shared components, and one semantics assertion per implementation |
+| MT-017 | Medium | Open, both halves. `GET /admin/complaints` returns complaints and not what they are about, so the queue's cards are visually identical. The ask is a localized `targetSummary` and a stable `targetRef` on the list DTO, rendered on the card, with the detail screen staying authoritative |
+| MT-023 | Medium | Open, and it is **the cost of 1.17's own feature**. A chat upload creates `stored_files` immediately; "remove the attachment" only forgets it locally, so the row stays active, linked to nothing, unreachable. Ownership bounds the exposure but BR-14 has no retention answer for it. The audit prefers a short-lived draft state with a scheduled, idempotent, ownership-safe cleanup over deleting synchronously on a UI tap — because deleting on removal makes re-attaching worse |
+| MT-024 | Medium | Open — `flutter analyze` exits 1 with 32 findings, all riverpod_lint, all in test code, several emitted twice. **This matches what has been seen here for weeks**: the same unchanged tree has reported 32, 35, 3 and 0 on consecutive runs, and the 32-finding runs are the slow ones (95s against 5s). The documented pre-commit gate is therefore red on release source and cannot distinguish a regression from noise |
 
-Fixed by 1.11.0 and verified by this audit: MT-001, MT-002, MT-004, MT-005,
-MT-007, MT-008, MT-010, MT-011, MT-018, MT-019.
-
-**The audit's tenth frontend action is a quality gate, and it is real**: it
-reports 28 analyzer findings in test code against a commit whose message says
-`flutter analyze` was clean. Both are true, and the reason is in MEMORY.md —
-riverpod_lint runs through the analyzer's plugin system and its diagnostics
-appear only sometimes. Two of the 28 are fixed; the other 26 need a run that
-reproduces them before they can be touched, because the obvious fix is a
-runtime change rather than a lint fix.
-
-Two things the audit asked for that are now standing guarantees rather than
-fixes:
-
-- **A release-shell gate.** `app_router_test.dart` walks every tab of every
-  role and asserts the placeholders are **exactly** `[/admin/dictionaries]`. It
-  fails when a tab regresses into a placeholder *and* on the day §10.3 lands —
-  which is the point: a test that merely allowed placeholders would have gone on
-  passing through all three of 1.4.1's.
-- **The DEV static code is a master key.** `OTP_STATIC_CODE=666666` on a public
-  host admits anybody to any phone number. It was already recorded as blocking
-  production; the audit adds that it must be cleared before *any* real data goes
-  behind that deployment, not just before release.
+Verified fixed by 1.17.0 and to be kept pinned: MT-001, MT-002, MT-004, MT-005,
+MT-007, MT-008, MT-009, MT-010, MT-011, MT-012, MT-013, MT-014, MT-016, MT-018,
+MT-019, MT-020, MT-021.
 
 ## Blocked on someone else
 

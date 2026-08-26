@@ -391,12 +391,17 @@ String? _redirect(Ref ref, GoRouterState state) {
     case SessionActive(status: AccountStatus.blocked):
       return location == Routes.blocked ? null : Routes.blocked;
 
-    case SessionActive(needsRoleSelection: true):
+    // The second arm is MT-022's backstop. `_adopt` resolves and publishes an
+    // active role before it ever sets this state, so an account with grants and
+    // no acting role should not reach here — and if it does, role selection
+    // ends by publishing one, which is the repair. A shell would 403 instead.
+    case SessionActive(needsRoleSelection: true) ||
+        SessionActive(hasUnresolvedRole: true):
       return location == Routes.roleSelection ? null : Routes.roleSelection;
 
     case SessionActive():
-      // needsRoleSelection is false, so at least one role is granted and
-      // effectiveRole cannot be null.
+      // Neither arm above matched, so a role is granted *and* resolved —
+      // effectiveRole cannot be null, and it names what the token names.
       final fallback = Routes.homeFor(session.effectiveRole!);
 
       final target = AppRole.fromLocation(location);

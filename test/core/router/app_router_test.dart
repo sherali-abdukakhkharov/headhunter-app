@@ -276,6 +276,38 @@ void main() {
       expect(result.location, Routes.roleSelection);
     });
 
+    testWidgets('MT-022: grants with no acting role do not open a shell', (
+      tester,
+    ) async {
+      // `SessionController._adopt` resolves and publishes a role before it
+      // sets this state, so this should be unreachable — it is asserted
+      // because the alternative destination is a shell whose token names no
+      // role, which answers `role.none_active` to every call it makes and
+      // tells a valid account it has not chosen one.
+      //
+      // Role selection is the honest destination: it ends by publishing one.
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.employer, AppRole.admin}),
+      );
+
+      expect(result.location, Routes.roleSelection);
+    });
+
+    testWidgets('MT-022: and a deep link into a granted role does not '
+        'override that', (tester) async {
+      // The deep-link arm reads the location and switches to the role that
+      // owns it. Reached before the role is published, that is the same defect
+      // by another door.
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.employer, AppRole.admin}),
+        initialLocation: Routes.employerCandidates,
+      );
+
+      expect(result.location, Routes.roleSelection);
+    });
+
     testWidgets('an unreachable session goes to the offline screen, not to '
         'sign-in (§12.4)', (tester) async {
       // The distinction this state exists to draw. Sending this user to
@@ -308,6 +340,7 @@ void main() {
         tester,
         const SessionActive(
           roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
           status: AccountStatus.blocked,
         ),
       );
@@ -331,6 +364,7 @@ void main() {
         tester,
         const SessionActive(
           roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
           status: AccountStatus.blocked,
         ),
         initialLocation: Routes.candidateHome,
@@ -347,6 +381,7 @@ void main() {
         tester,
         const SessionActive(
           roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
           status: AccountStatus.restricted,
         ),
       );
@@ -355,7 +390,13 @@ void main() {
 
     testWidgets('each role lands in its own shell home', (tester) async {
       for (final role in AppRole.values) {
-        final result = await settle(tester, SessionActive(roles: {role}));
+        final result = await settle(
+          tester,
+          SessionActive(
+            roles: {role},
+            activeRole: role,
+          ),
+        );
         expect(result.location, Routes.homeFor(role), reason: role.name);
       }
       await _unmountTree(tester);
@@ -366,7 +407,10 @@ void main() {
     ) async {
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.candidate}),
+        const SessionActive(
+          roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
+        ),
         initialLocation: Routes.adminUsers,
       );
       expect(result.location, Routes.candidateHome);
@@ -474,7 +518,7 @@ void main() {
   group('role shells', () {
     testWidgets('each role gets its own five destinations', (tester) async {
       for (final role in AppRole.values) {
-        await settle(tester, SessionActive(roles: {role}));
+        await settle(tester, SessionActive(roles: {role}, activeRole: role));
 
         final bar = tester.widget<HhBottomNav>(find.byType(HhBottomNav));
         expect(bar.items, hasLength(5), reason: role.name);
@@ -491,7 +535,13 @@ void main() {
     testWidgets('a candidate destination never appears in the employer shell', (
       tester,
     ) async {
-      await settle(tester, const SessionActive(roles: {AppRole.employer}));
+      await settle(
+        tester,
+        const SessionActive(
+          roles: {AppRole.employer},
+          activeRole: AppRole.employer,
+        ),
+      );
 
       final context = tester.element(find.byType(HhBottomNav));
       final l10n = AppL10n.of(context);
@@ -506,7 +556,10 @@ void main() {
     testWidgets('tapping a destination moves to its route', (tester) async {
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.candidate}),
+        const SessionActive(
+          roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
+        ),
       );
 
       final context = tester.element(find.byType(HhBottomNav));
@@ -553,7 +606,7 @@ void main() {
         for (final tab in ShellTabs.forRole(role)) {
           final result = await settle(
             tester,
-            SessionActive(roles: {role}),
+            SessionActive(roles: {role}, activeRole: role),
             initialLocation: tab.path,
           );
           expect(result.location, tab.path, reason: tab.path);
@@ -575,7 +628,10 @@ void main() {
     ) async {
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.candidate}),
+        const SessionActive(
+          roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
+        ),
         initialLocation: Routes.candidateVacanciesWith(Feed.saved.wire),
       );
 
@@ -612,7 +668,7 @@ void main() {
       // one would only be asserting its own registration order.
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.admin}),
+        const SessionActive(roles: {AppRole.admin}, activeRole: AppRole.admin),
         initialLocation: Routes.adminWallets,
       );
 
@@ -625,7 +681,7 @@ void main() {
     testWidgets('and one wallet is reachable under them', (tester) async {
       await settle(
         tester,
-        const SessionActive(roles: {AppRole.admin}),
+        const SessionActive(roles: {AppRole.admin}, activeRole: AppRole.admin),
         initialLocation: Routes.adminWalletFor(
           '3f2a1b9c-0000-4000-8000-000000000009',
         ),
@@ -641,7 +697,7 @@ void main() {
     ) async {
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.admin}),
+        const SessionActive(roles: {AppRole.admin}, activeRole: AppRole.admin),
         initialLocation: Routes.adminAudit,
       );
 
@@ -658,7 +714,7 @@ void main() {
     testWidgets('and a uuid still reaches the account', (tester) async {
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.admin}),
+        const SessionActive(roles: {AppRole.admin}, activeRole: AppRole.admin),
         initialLocation: Routes.adminUserFor(
           '3f2a1b9c-0000-4000-8000-000000000001',
         ),
@@ -704,7 +760,7 @@ void main() {
       // routes_test's development-path assertions instead.
       final result = await settle(
         tester,
-        const SessionActive(roles: {AppRole.admin}),
+        const SessionActive(roles: {AppRole.admin}, activeRole: AppRole.admin),
         initialLocation: Routes.developerTools,
       );
       expect(result.location, Routes.developerTools);

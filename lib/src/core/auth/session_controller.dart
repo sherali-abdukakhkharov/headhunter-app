@@ -149,7 +149,15 @@ class SessionController extends _$SessionController {
     _set(
       developmentRoles.isEmpty
           ? const SessionUnauthenticated()
-          : SessionActive(roles: developmentRoles, activeRole: storedRole),
+          // Resolved the same way, and for the same reason — `/_dev` grants
+          // roles locally with no server session, so nothing else would.
+          : SessionActive(
+              roles: developmentRoles,
+              activeRole: SessionActive(
+                roles: developmentRoles,
+                activeRole: storedRole,
+              ).effectiveRole,
+            ),
     );
   }
 
@@ -192,15 +200,47 @@ class SessionController extends _$SessionController {
     await ref.read(tokenStoreProvider).save(session.tokens);
 
     final roles = session.grantedRoles;
-    final active =
-        session.active ??
-        (fallbackRole != null && roles.contains(fallbackRole)
-            ? fallbackRole
-            : null);
+
+    // Resolved here, not at render time, and that is MT-022. The server sends
+    // no active role for an account that has never chosen one on this device;
+    // `effectiveRole` would then invent one when the router asked, the shell
+    // would open, and every role-scoped call would answer `role.none_active`
+    // because the *token* still named none. Deterministic and by preference
+    // order, so the same account lands in the same place on every device.
+    final active = SessionActive(
+      roles: roles,
+      activeRole:
+          session.active ??
+          (fallbackRole != null && roles.contains(fallbackRole)
+              ? fallbackRole
+              : null),
+    ).effectiveRole;
 
     final prefs = await ref.read(sharedPreferencesProvider.future);
     if (active != null) {
       await prefs.setString(_activeRoleKey, active.wire);
+    }
+
+    // Published **before** the state moves, for the same reason the tokens are
+    // written before it: the shell this lands on may fetch immediately. Only
+    // when the server does not already name this role — a session that arrived
+    // naming one needs no round trip.
+    if (active != null && active != session.active) {
+      final failure = await _publishActiveRole(active);
+
+      if (failure != null) {
+        // The tokens are saved, so this is recoverable by retrying the whole
+        // restore — which is what the offline screen's button does. Entering
+        // the shell anyway would be the defect this method exists to prevent,
+        // one network failure later.
+        _set(
+          SessionUnreachable(
+            message: failure.message,
+            offline: failure.kind == ApiFailureKind.offline,
+          ),
+        );
+        return;
+      }
     }
 
     _set(SessionActive(roles: roles, activeRole: active));
@@ -252,16 +292,23 @@ class SessionController extends _$SessionController {
   /// such endpoint existed - exactly the kind of gap found in a feature rather
   /// than in auth.
   ///
-  /// Best-effort and deliberately non-fatal: the local switch has already
-  /// happened and the shell has already moved. A failure here leaves the token
-  /// naming the previous role, and the next call that needs it gets a 403 whose
-  /// message says so. Blocking the switch on a network round trip would make
+  /// Returns the failure rather than throwing, because its two callers want
+  /// opposite things from one.
+  ///
+  /// **A switch ignores it**, deliberately: the local switch has already
+  /// happened and the shell has already moved, so a failure leaves the token
+  /// naming the previous role and the next call that needs it gets a 403 whose
+  /// message says so. Blocking a tab change on a network round trip would make
   /// changing tabs fail offline.
+  ///
+  /// **Adopting a session cannot ignore it** (MT-022). There is no previous
+  /// role to fall back to there, so entering a shell would enter one whose
+  /// token can call nothing.
   ///
   /// Only the access token rotates — [TokenPair] is rebuilt with the existing
   /// refresh token, because this is not a new session and the refresh chain
   /// must not be disturbed.
-  Future<void> _publishActiveRole(AppRole role) async {
+  Future<ApiException?> _publishActiveRole(AppRole role) async {
     final store = ref.read(tokenStoreProvider);
 
     try {
@@ -270,13 +317,17 @@ class SessionController extends _$SessionController {
           .switchActiveRole(role);
 
       final refreshToken = await store.readRefreshToken();
-      if (refreshToken == null) return;
+      if (refreshToken == null) return null;
 
       await store.save(
         TokenPair(accessToken: accessToken, refreshToken: refreshToken),
       );
+
+      return null;
     } on ApiException catch (e) {
       debugPrint('[session] active role not published: ${e.message}');
+
+      return e;
     }
   }
 

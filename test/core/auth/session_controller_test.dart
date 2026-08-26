@@ -76,9 +76,16 @@ class _FakeAuthRepository extends AuthRepository {
     return grants;
   }
 
+  /// Set to make publishing the active role fail — MT-022's unhappy path.
+  ApiException? activeRoleFailure;
+
   @override
   Future<String> switchActiveRole(AppRole role) async {
     events.add('active-role:${role.wire}');
+
+    final failure = activeRoleFailure;
+    if (failure != null) throw failure;
+
     return 'access-naming-${role.wire}';
   }
 
@@ -254,22 +261,24 @@ void main() {
       expect((state as SessionActive).roles, {AppRole.candidate});
     });
 
-    test('falls back to the remembered role when the server names none',
-        () async {
-      tokens.refreshToken = 'refresh-1';
-      repo = _FakeAuthRepository(
-        onRefresh: () => _session(
-          roles: ['candidate', 'employer'],
-          activeRole: null,
-        ),
-      );
+    test(
+      'falls back to the remembered role when the server names none',
+      () async {
+        tokens.refreshToken = 'refresh-1';
+        repo = _FakeAuthRepository(
+          onRefresh: () => _session(
+            roles: ['candidate', 'employer'],
+            activeRole: null,
+          ),
+        );
 
-      final state = await settled(
-        containerWith(prefs: {'session.active_role': 'employer'}),
-      );
+        final state = await settled(
+          containerWith(prefs: {'session.active_role': 'employer'}),
+        );
 
-      expect((state as SessionActive).activeRole, AppRole.employer);
-    });
+        expect((state as SessionActive).activeRole, AppRole.employer);
+      },
+    );
 
     test('ignores a remembered role the account no longer holds', () async {
       // Revoked while the app was closed. Local storage must not resurrect it.
@@ -282,8 +291,114 @@ void main() {
         containerWith(prefs: {'session.active_role': 'employer'}),
       );
 
-      expect((state as SessionActive).activeRole, isNull);
-      expect(state.roles, {AppRole.candidate});
+      expect(state, isA<SessionActive>());
+      expect((state as SessionActive).roles, {AppRole.candidate});
+      // Falls through to what the account *does* hold rather than staying
+      // null. Leaving it null is what MT-022 was: the shell would open on a
+      // role invented at render time and 403 every call. `employer` is still
+      // refused, which is the half this test was always about.
+      expect(state.activeRole, AppRole.candidate);
+      expect(repo.events, contains('active-role:candidate'));
+    });
+  });
+
+  group('MT-022: a granted account always acts as something', () {
+    test(
+      'a fresh install on a multi-role account resolves and publishes',
+      () async {
+        // The reported case: two grants, no server active role, nothing stored
+        // locally. `effectiveRole` would have named one when the router
+        // asked, and the token would still have named none.
+        tokens.refreshToken = 'refresh-1';
+        repo = _FakeAuthRepository(
+          onRefresh: () =>
+              _session(roles: ['employer', 'admin'], activeRole: null),
+        );
+
+        final state = await settled(containerWith());
+
+        expect(state, isA<SessionActive>());
+        expect((state as SessionActive).activeRole, isNotNull);
+        expect(state.hasUnresolvedRole, isFalse);
+        // Told to the server, which is the whole point: role-scoped routes read
+        // the role from the token, not from this object.
+        expect(repo.events, contains('active-role:${state.activeRole!.wire}'));
+      },
+    );
+
+    test(
+      'the choice is deterministic, not whichever role arrived first',
+      () async {
+        // Same account, twice. A chooser is one acceptable answer and a stable
+        // default is the other; this is the second, so it has to be stable.
+        tokens.refreshToken = 'refresh-1';
+        repo = _FakeAuthRepository(
+          onRefresh: () =>
+              _session(roles: ['admin', 'employer'], activeRole: null),
+        );
+        final first = await settled(containerWith());
+
+        repo = _FakeAuthRepository(
+          onRefresh: () =>
+              _session(roles: ['employer', 'admin'], activeRole: null),
+        );
+        final second = await settled(containerWith());
+
+        expect(
+          (first as SessionActive).activeRole,
+          (second as SessionActive).activeRole,
+        );
+      },
+    );
+
+    test('a remembered role is honoured and published', () async {
+      tokens.refreshToken = 'refresh-1';
+      repo = _FakeAuthRepository(
+        onRefresh: () =>
+            _session(roles: ['employer', 'admin'], activeRole: null),
+      );
+
+      final state = await settled(
+        containerWith(prefs: {'session.active_role': 'admin'}),
+      );
+
+      expect((state as SessionActive).activeRole, AppRole.admin);
+      expect(repo.events, contains('active-role:admin'));
+    });
+
+    test('a role the server already named costs no round trip', () async {
+      // The token already names it, so publishing would be a request that
+      // changes nothing — and sign-in is not a place to spend one.
+      tokens.refreshToken = 'refresh-1';
+      repo = _FakeAuthRepository(
+        onRefresh: () => _session(roles: ['candidate']),
+      );
+
+      final state = await settled(containerWith());
+
+      expect((state as SessionActive).activeRole, AppRole.candidate);
+      expect(repo.events, isNot(contains('active-role:candidate')));
+    });
+
+    test('a failed publish does not enter a shell', () async {
+      // The acceptance criterion, stated directly: no role shell renders with a
+      // token whose active role is null. Offline is recoverable — the tokens
+      // are saved and the offline screen re-runs the whole restore.
+      tokens.refreshToken = 'refresh-1';
+      repo =
+          _FakeAuthRepository(
+              onRefresh: () =>
+                  _session(roles: ['employer', 'admin'], activeRole: null),
+            )
+            ..activeRoleFailure = const ApiException(
+              'No connection',
+              kind: ApiFailureKind.offline,
+            );
+
+      final state = await settled(containerWith());
+
+      expect(state, isA<SessionUnreachable>());
+      expect((state as SessionUnreachable).offline, isTrue);
     });
   });
 
@@ -385,9 +500,9 @@ void main() {
       final container = await registering();
       recordShellEntry(container);
 
-      await container
-          .read(sessionControllerProvider.notifier)
-          .selectRoles({AppRole.employer});
+      await container.read(sessionControllerProvider.notifier).selectRoles({
+        AppRole.employer,
+      });
 
       // The whole finding in one assertion. `state` last is what stops the
       // shell rendering against a token that names no role — which the server
@@ -399,9 +514,9 @@ void main() {
     test('and the state that lands carries both halves at once', () async {
       final container = await registering();
 
-      await container
-          .read(sessionControllerProvider.notifier)
-          .selectRoles({AppRole.employer});
+      await container.read(sessionControllerProvider.notifier).selectRoles({
+        AppRole.employer,
+      });
 
       final state = container.read(sessionControllerProvider) as SessionActive;
       expect(state.roles, {AppRole.employer});
@@ -416,9 +531,9 @@ void main() {
       // before it.
       final container = await registering();
 
-      await container
-          .read(sessionControllerProvider.notifier)
-          .selectRoles({AppRole.employer});
+      await container.read(sessionControllerProvider.notifier).selectRoles({
+        AppRole.employer,
+      });
 
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getString('session.active_role'), AppRole.employer.wire);
@@ -428,9 +543,9 @@ void main() {
       final container = await registering();
       repo.grants = const {AppRole.candidate, AppRole.employer};
 
-      await container
-          .read(sessionControllerProvider.notifier)
-          .selectRoles({AppRole.candidate});
+      await container.read(sessionControllerProvider.notifier).selectRoles({
+        AppRole.candidate,
+      });
 
       final state = container.read(sessionControllerProvider) as SessionActive;
       expect(state.roles, {AppRole.candidate, AppRole.employer});
@@ -444,9 +559,9 @@ void main() {
       repo.selectFailure = const ApiException('offline');
 
       await expectLater(
-        container
-            .read(sessionControllerProvider.notifier)
-            .selectRoles({AppRole.employer}),
+        container.read(sessionControllerProvider.notifier).selectRoles({
+          AppRole.employer,
+        }),
         throwsA(isA<ApiException>()),
       );
 
@@ -463,9 +578,9 @@ void main() {
       repo.grants = const {};
       recordShellEntry(container);
 
-      await container
-          .read(sessionControllerProvider.notifier)
-          .selectRoles({AppRole.employer});
+      await container.read(sessionControllerProvider.notifier).selectRoles({
+        AppRole.employer,
+      });
 
       final state = container.read(sessionControllerProvider) as SessionActive;
       expect(state.roles, isEmpty);
