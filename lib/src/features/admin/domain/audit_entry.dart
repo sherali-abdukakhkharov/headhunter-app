@@ -56,7 +56,9 @@ class AuditEntry {
     required this.action,
     required this.targetType,
     required this.createdAt,
+    this.actorName,
     this.targetId,
+    this.targetName,
     this.reason,
     this.details,
   });
@@ -64,10 +66,12 @@ class AuditEntry {
   factory AuditEntry.fromJson(Map<String, dynamic> json) => AuditEntry(
     id: json['id'] as String,
     actorUserId: json['actorUserId'] as String,
+    actorName: json['actorName'] as String?,
     action: json['action'] as String,
     targetType: AuditTargetType.fromWire(json['targetType'] as String?),
     createdAt: ZonedTimestamp.parse(json['createdAt'] as String),
     targetId: json['targetId'] as String?,
+    targetName: json['targetName'] as String?,
     reason: json['reason'] as String?,
     details: switch (json['details']) {
       final Map<String, dynamic> bag => bag,
@@ -77,16 +81,28 @@ class AuditEntry {
 
   final String id;
 
-  /// The administrator who did it — a **bare uuid**, and the client does not
-  /// resolve it.
+  /// The administrator who did it.
   ///
-  /// There is no name on the DTO and no cheap route to one: turning this into
-  /// a name means `GET /admin/users/:id` per distinct actor, which returns a
-  /// phone number, a status history and a complaint list to obtain a string,
-  /// and writes a §11.1 access log line for each. So the id is shown as it is
-  /// and made a way *into* that screen, where one deliberate tap costs one
-  /// deliberate read. Raised as a contract ask — see docs/BACKEND_ASKS.md.
+  /// Kept beside [actorName] rather than replaced by it, because a name is not
+  /// an account: this is what the row *opens*, and what "everything this
+  /// administrator has done" filters on.
   final String actorUserId;
+
+  /// Who [actorUserId] is, resolved by the server (2026-08-26).
+  ///
+  /// Null for an administrator with no name anywhere, which a seeded account
+  /// is — so a reader still needs the uuid as a fallback, and the screen shows
+  /// it.
+  ///
+  /// The client deliberately does **not** resolve this itself, and could not
+  /// affordably: a name per distinct actor would mean `GET /admin/users/:id`
+  /// each, which returns a phone number, a status history and a complaint list
+  /// to obtain a string, and writes a §11.1 access log line every time. Twenty
+  /// rows would buy a page of names with a page of logged reads of other
+  /// people's contact details, on a screen nobody opened to read contact
+  /// details. The server resolves it once, in the query already reading the
+  /// row.
+  final String? actorName;
 
   /// A dotted code from one exported constant on the server, e.g.
   /// `user.blocked`, `vacancy.moderated`, `dictionary.items_merged`.
@@ -99,9 +115,18 @@ class AuditEntry {
 
   final AuditTargetType targetType;
 
-  /// Null on the few actions with no single target. Also a bare uuid — and for
+  /// Null on the few actions with no single target. A uuid — and for
   /// [AuditTargetType.user] it is the one kind this app has a screen for.
   final String? targetId;
+
+  /// Who [targetId] is, and **only when [targetType] is
+  /// [AuditTargetType.user]**.
+  ///
+  /// Null for the other four, which are not accounts and have no name to
+  /// resolve. A vacancy's title and a dictionary item's label are in [details]
+  /// instead, put there by the action that touched them — so a row about one of
+  /// those is not nameless, it just does not name it here.
+  final String? targetName;
 
   /// What the administrator typed, shown **verbatim** (§2.4).
   final String? reason;

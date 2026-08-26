@@ -17,6 +17,37 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.16.0+26 — 2026-08-26
+
+The audit log reads as names instead of twenty rows of hex.
+
+### Changed
+
+- **§10.4's log shows who acted**, not which uuid. The administrator's name is
+  on the row, and so is the name of the person acted on when the row is about
+  one. Tapping still opens that account — that has not changed, and it is what
+  the id was there for.
+- **The uuid appears only when there is no name**, which happens for an
+  administrator seeded into the deployment rather than registered through the
+  app. Showing both would put 36 unusable characters under every row.
+- A row about a vacancy, a complaint or a dictionary entry keeps its id, because
+  those are not accounts and have no name to show. What they were is already
+  written into "What changed" by the action that touched them.
+
+### Internal
+
+- Server half in `headhunter-backend@19e8876`, resolved in the query that
+  already reads the row. The client could not have done this affordably: a name
+  per distinct id meant one account fetch each, returning a phone number and a
+  status history to obtain a string, and writing a §11.1 access log line every
+  time — a page of names would have cost a page of logged reads of other
+  people's contact details.
+- `DISPLAY_NAME` moved out of the users service into its own module, so the
+  three callers share one expression rather than drifting into one person shown
+  under two names depending on the screen.
+- 1075 tests, up from 1070. Five new backend cases, five here, all mutation-
+  checked. `flutter analyze` clean.
+
 ## 1.15.0+25 — 2026-08-26
 
 Filtering by experience, language and an upper pay limit — the three §5.5 asked

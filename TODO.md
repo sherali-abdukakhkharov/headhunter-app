@@ -2079,10 +2079,20 @@ remaining item is a screen.
       line each time. Twenty rows would buy a page of names with a page of
       logged reads of other people's contact details, on a screen nobody opened
       to read contact details. So the id is shown as it is and the row *opens*
-      that account instead. Raised as an ask — one `actorName` field, resolved
-      by the expression `GET /admin/users` already uses; see
-      [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md). The navigation is worth
-      keeping either way: a name is not an account.
+      that account instead. **Answered 2026-08-26**: `actorName` *and*
+      `targetName` are on the DTO, resolved by the same `DISPLAY_NAME`
+      expression `GET /admin/users` uses — which moved to its own module so
+      there is one copy of it rather than three.
+      Two things about the answer differ from the ask. **The name replaces the
+      id** rather than sitting above it: 36 characters nobody can use on a
+      phone is not a second fact, and the way into the account is the tap,
+      which is unchanged. The uuid is the fallback, for a seeded administrator
+      with no profile to take a name from. And **a target name came too**,
+      which this ask had argued against on the grounds that labelling four
+      target types is a much larger job — it is not, because the same
+      expression answers both ids and a target that is not an account resolves
+      to null with no joins to arrange. §10.4's second question had the same
+      defect as its first, and half an answer was an odd place to stop.
       **Only a `user` target links.** A vacancy id has no screen that would
       accept it — the moderation review holds only `under_moderation` ones —
       and a complaint id would open the review with its decide buttons live,

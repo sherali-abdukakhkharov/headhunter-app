@@ -38,18 +38,24 @@ class _FakeAdmin extends FakeAdminBase {
 AuditEntry _entry({
   String id = 'aud-1',
   String actorUserId = 'usr-admin',
+  // Null by default, so every test written before the server resolved names
+  // keeps asserting the fallback it was written against.
+  String? actorName,
   String action = 'user.blocked',
   String targetType = 'user',
   String? targetId = 'usr-1',
+  String? targetName,
   String? reason = 'Asked candidates for money',
   Map<String, dynamic>? details,
   String createdAt = '2026-08-22T14:05:00+05:00',
 }) => AuditEntry.fromJson({
   'id': id,
   'actorUserId': actorUserId,
+  'actorName': actorName,
   'action': action,
   'targetType': targetType,
   'targetId': targetId,
+  'targetName': targetName,
   'reason': reason,
   'details': details,
   'createdAt': createdAt,
@@ -248,7 +254,90 @@ void main() {
     });
   });
 
-  group('a uuid is a way in, not a name', () {
+  group('the server resolves the names, and the uuid is the fallback', () {
+    testWidgets('the actor is shown by name when there is one', (tester) async {
+      await pump(
+        tester,
+        pages: [
+          [_entry(actorName: 'Dilnoza Rashidova')],
+        ],
+      );
+
+      expect(find.text('Dilnoza Rashidova'), findsOneWidget);
+      // Not both. Once there is a name the uuid is 36 characters nobody can do
+      // anything with on a phone, and the way into the account is the tap.
+      expect(find.text('usr-admin'), findsNothing);
+    });
+
+    testWidgets('a named actor still opens that account', (tester) async {
+      final app = await pump(
+        tester,
+        pages: [
+          [_entry(actorName: 'Dilnoza Rashidova')],
+        ],
+      );
+
+      await tester.tap(find.text('Dilnoza Rashidova'));
+      await tester.pumpAndSettle();
+
+      expect(
+        app.router.routerDelegate.currentConfiguration.uri.path,
+        Routes.adminUserFor('usr-admin'),
+      );
+    });
+
+    testWidgets('an administrator with no name falls back to the uuid', (
+      tester,
+    ) async {
+      // A seeded administrator has no profile to take a name from, so the
+      // server answers null and something still has to identify the row.
+      await pump(
+        tester,
+        pages: [
+          [_entry()],
+        ],
+      );
+
+      expect(find.text('usr-admin'), findsOneWidget);
+    });
+
+    testWidgets('a user target is shown by name too', (tester) async {
+      await pump(
+        tester,
+        pages: [
+          [_entry(targetName: 'Bekzod Yusupov')],
+        ],
+      );
+
+      expect(find.text('Bekzod Yusupov'), findsOneWidget);
+      expect(find.text('usr-1'), findsNothing);
+    });
+
+    testWidgets('a non-user target keeps its id, having no name to show', (
+      tester,
+    ) async {
+      // The server sends null for the four target types that are not accounts.
+      // Their identity is in `details`, put there by the action that touched
+      // them — so this row is not nameless, it just does not name it here.
+      await pump(
+        tester,
+        pages: [
+          [
+            _entry(
+              action: 'vacancy.moderated',
+              targetType: 'vacancy',
+              targetId: 'vac-1',
+            ),
+          ],
+        ],
+      );
+
+      expect(find.text('vac-1'), findsOneWidget);
+    });
+  });
+
+  // Naming is the group above; this one is about where a row leads.
+  group('where a row leads, and where it deliberately does not', () {
     testWidgets('the actor opens that administrator account', (tester) async {
       final app = await pump(
         tester,

@@ -21,21 +21,24 @@ import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 /// *from* the account you were reading, and the way back to the whole log is
 /// one button.
 ///
-/// ## Nothing here resolves a uuid to a name
+/// ## The names arrive resolved, and the uuid is the fallback
 ///
-/// `AuditEntryDto` carries `actorUserId` and `targetId` and no names. Turning
-/// each into one means `GET /admin/users/:id` per distinct id — a request that
-/// returns a phone number, a status history and a complaint list to obtain a
-/// string, and writes a §11.1 access log line every time. Twenty rows would
-/// pay for a page of names with a page of logged reads of other people's
-/// contact details, on a screen nobody opened to read contact details.
+/// `actorName` and `targetName` come from the server (2026-08-26). This screen
+/// does not resolve either itself and could not affordably: a name per distinct
+/// id would mean `GET /admin/users/:id` each — a request that returns a phone
+/// number, a status history and a complaint list to obtain a string, and writes
+/// a §11.1 access log line every time. Twenty rows would have paid for a page
+/// of names with a page of logged reads of other people's contact details, on
+/// a screen nobody opened to read contact details.
 ///
-/// So an id stays an id and is made a **way in** instead: the actor line opens
-/// that administrator's account, where one deliberate tap costs one deliberate
-/// read, and from there "everything this administrator has done" comes back
-/// here filtered. It is raised as a contract ask — an `actorName` on the DTO
-/// would be resolved once server-side, in the query that already reads the
-/// row. See docs/BACKEND_ASKS.md.
+/// **A name replaces the id rather than sitting above it.** Once there is a
+/// name, the uuid is not a second fact a reader uses — it is 36 characters
+/// nobody can do anything with on a phone, and the *way in* to that account is
+/// the tap, which is still there. The id is shown when the name is null, which
+/// is a real case: a seeded administrator has no profile to take one from.
+///
+/// `targetName` is set for a `user` target only. The other four are not
+/// accounts; their identity is in `details`, put there by the action.
 ///
 /// **Only a `user` target links.** A vacancy id has no screen that would
 /// accept it (the moderation review holds only `under_moderation` ones), and a
@@ -205,7 +208,7 @@ class _EntryCard extends StatelessWidget {
           ],
 
           const SizedBox(height: HhSpace.sm),
-          _Actor(actorUserId: entry.actorUserId),
+          _Actor(actorUserId: entry.actorUserId, actorName: entry.actorName),
         ],
       ),
     );
@@ -254,8 +257,15 @@ class _Target extends StatelessWidget {
         const SizedBox(width: HhSpace.sm),
         Expanded(
           child: Text(
-            targetId ?? '',
-            style: HhTypography.caption.copyWith(color: HhColors.inkSubtle),
+            // Same rule as the actor: the name where there is one, the id
+            // where there is not. A non-user target never has one, and its
+            // identity is in `details` rather than here.
+            entry.targetName ?? targetId ?? '',
+            style: HhTypography.caption.copyWith(
+              color: entry.targetName == null
+                  ? HhColors.inkSubtle
+                  : HhColors.ink,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -282,11 +292,15 @@ class _Target extends StatelessWidget {
   }
 }
 
-/// Who did it. An id, and a way to find out whose.
+/// Who did it, and a way into their account.
 class _Actor extends StatelessWidget {
-  const _Actor({required this.actorUserId});
+  const _Actor({required this.actorUserId, this.actorName});
 
   final String actorUserId;
+
+  /// Null for an administrator with no name anywhere — a seeded one has no
+  /// profile to take one from, and then the uuid is all there is to show.
+  final String? actorName;
 
   @override
   Widget build(BuildContext context) {
@@ -311,9 +325,13 @@ class _Actor extends StatelessWidget {
             const SizedBox(width: HhSpace.sm),
             Expanded(
               child: Text(
-                actorUserId,
+                actorName ?? actorUserId,
                 style: HhTypography.caption.copyWith(
-                  color: HhColors.inkSubtle,
+                  // The name is a fact about a person and the id is a
+                  // fallback, so they do not read at the same weight.
+                  color: actorName == null
+                      ? HhColors.inkSubtle
+                      : HhColors.ink,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

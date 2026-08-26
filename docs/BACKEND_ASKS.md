@@ -190,37 +190,36 @@ exactly where nobody notices that question is unanswered.
 
 ## Open
 
-### 1. The audit log has no name on it — raised 2026-08-23
+### ~~1. The audit log has no name on it~~ — **done 2026-08-26**
 
-`AuditEntryDto` carries `actorUserId` and `targetId` and no names, and §10.4's
-first question of the log is *"what has this administrator done"*. A screen full
-of uuids cannot answer it: an administrator reading twenty rows sees twenty
-36-character strings and has to open each one to learn who acted.
+`actorName` **and** `targetName` are on `AuditEntryDto`, resolved server-side by
+the same `DISPLAY_NAME` expression `GET /admin/users` uses — which moved to its
+own module so there is one copy of it rather than three
+(`headhunter-backend@19e8876`). Client half in 1.16.0.
 
-**Why the client is not resolving them itself.** The only route from an id to a
-name is `GET /admin/users/:id`, which returns a phone number, a BR-08 status
-history and a complaint list to obtain a string — and logs a §11.1 access every
-time. A page of twenty rows would buy a page of names with a page of logged
-reads of other people's contact details, on a screen nobody opened to read
-contact details.
+Two things about the answer differ from the ask, and both are worth keeping:
 
-**The ask is one field**: `actorName`, resolved by the same `DISPLAY_NAME`
-expression `GET /admin/users` already uses, in the query that already reads the
-row. Not a target name — a target can be a vacancy, a complaint or a dictionary
-item, and four joins to label a trail is a different and much larger ask that
-nothing has needed yet.
+**A target name came too**, for a `user` target. This ask explicitly did not want
+one, on the grounds that four joins to label a trail is a much larger job. That
+was wrong about the cost: the same expression answers both ids, and a target that
+is not an account resolves to null with no joins to arrange. §10.4's *second*
+question — "what was done to this user" — had the same defect as the first, and
+half an answer would have been an odd place to stop.
 
-**What the client does meanwhile, and it is not a workaround to undo.** The
-actor id is shown as it is and made a *way in*: tapping the row opens that
-administrator's account, where one deliberate tap costs one deliberate read.
-That navigation is worth keeping whatever happens to the field — a name is not
-an account. If `actorName` arrives, the row shows it above the id and **nothing
-else changes**, the same way the employer name lit up on the vacancy review
-with no client release.
+**The name replaces the id rather than sitting above it.** The ask said "shows it
+above the id and nothing else changes". On a phone that is 36 characters nobody
+can use under every row, and the way into the account is the tap, which is
+unchanged. So the id is the *fallback*, shown when the name is null — which is a
+real case, since a seeded administrator has no profile to take a name from.
 
-**Not asked for: a target name.** See above; and for a `user` target the row
-already opens the account, which answers the question better than a label
-would.
+**The reasoning that made this an ask rather than client work still holds**, and
+is the reusable part: the only client route from an id to a name was
+`GET /admin/users/:id`, which returns a phone number, a BR-08 status history and
+a complaint list to obtain a string, and logs a §11.1 access every time. Twenty
+rows would have bought a page of names with a page of logged reads of other
+people's contact details, on a screen nobody opened to read contact details.
+When resolving something client-side costs a privacy log line per row, it belongs
+in the query that already reads the row.
 
 ### 2. §10.3 cannot edit a label it cannot read — raised 2026-08-24
 

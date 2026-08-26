@@ -3655,7 +3655,7 @@
   },
   "adminAuditActor": "Administrator",
   "@adminAuditActor": {
-    "description": "Who wrote the row. The id beside it is not resolved to a name — see the screen doc — and the row opens that account instead."
+    "description": "Who wrote the row. The server resolves the name; the uuid is shown only when there is none, which a seeded administrator has. Either way the row opens that account."
   },
   "adminAuditDetails": "What changed",
   "@adminAuditDetails": {

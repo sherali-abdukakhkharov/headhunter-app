@@ -5015,7 +5015,7 @@ abstract class AppL10n {
   /// **'Show the whole log'**
   String get adminAuditShowAll;
 
-  /// Who wrote the row. The id beside it is not resolved to a name — see the screen doc — and the row opens that account instead.
+  /// Who wrote the row. The server resolves the name; the uuid is shown only when there is none, which a seeded administrator has. Either way the row opens that account.
   ///
   /// In en, this message translates to:
   /// **'Administrator'**
