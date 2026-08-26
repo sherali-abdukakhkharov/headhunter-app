@@ -321,13 +321,13 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
       tokens with reuse detection, so a double refresh logs the user out.
       — 8 tests in `test/core/network/auth_interceptor_test.dart`. The backend
       confirmed the server half: reuse revokes the **whole session family**.
-- [~] **Install `AuthInterceptor` into `dio_provider`** — **unblocked.** The
-      backend's `src/modules/auth` already implements `POST /auth/refresh` with
-      rotation and reuse detection, returning `AuthTokensResponseDto`. It was
-      never in `docs/API_CONTRACTS.md`, which is why this was recorded as blocked;
-      the code is the contract. Remaining work is the refresh callback plus
-      `interceptors.add`, and `SessionController.expire()` is already the
-      destination for `onAuthFailure`.
+- [x] ~~**Install `AuthInterceptor` into `dio_provider`**~~ — **done.** It is
+      installed with its refresh callback against the bare client, and
+      `onAuthFailure` reports a lost session; `auth_interceptor_test.dart` and
+      `interceptors_test.dart` cover it.
+      Worth keeping the reason it was ever "blocked": `POST /auth/refresh` was
+      never written into `docs/API_CONTRACTS.md`, so it looked missing. The code
+      was the contract, and reading it took less time than the wait did.
 - [x] Idempotency-key interceptor with **persisted** keys (regenerating per
       attempt provides no protection) — installed; header name
       `Idempotency-Key` still needs confirming with the backend before M3 ships
@@ -1390,13 +1390,17 @@ money and is enabled by a constant somebody has to remember.
       `tanga` / `монета` were inventions — exactly the machine translation of a
       money string the handoff calls "a liability, not a shortcut". Still owed:
       the client's certified uz-Cyrl and ru translation to confirm it
-- [ ] Files behind an unlock. The route now exists
-      (`/unlocks/{candidateUserId}/files/{fileId}/content`), so what is left is
-      the client half: saving bytes and opening them needs `path_provider` and an
-      opener, weighed against pubspec.yaml's load-bearing pins. **Always use the
-      `downloadPath` the server hands back** — an employer holding both an
-      application and an unlock is served through `/applications/…`, because the
-      application is the stronger claim
+- [x] ~~Files behind an unlock~~ — **done.** `AttachmentOpener` saves the bytes
+      and hands them to the OS through the `/attachments` channel, and the
+      candidate detail screen opens a CV through it. No new dependency was
+      needed: `path_provider` was already transitive and `androidx.core` already
+      on the compile classpath, so `build.gradle.kts` was never touched.
+      **The `downloadPath` is used verbatim**, which is the rule that outlives
+      this entry: an employer holding both an application and an unlock is served
+      through `/applications/…` because the application is the stronger claim,
+      and only the server knows which entitlement is in play. The same opener now
+      serves three surfaces — this one, §9.1's message attachments and §10.1's
+      verification evidence — all on the same rule
 
 ## M13 - Coin top-up: Payme and CLICK *(designed 2026-08-19; still blocked)*
 
