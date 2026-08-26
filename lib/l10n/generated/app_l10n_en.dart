@@ -1918,6 +1918,20 @@ class AppL10nEn extends AppL10n {
   String get chatAttachment => 'Attachment';
 
   @override
+  String get chatAttach => 'Attach a file';
+
+  @override
+  String chatAttachmentReady(String name) {
+    return 'Ready to send: $name';
+  }
+
+  @override
+  String get chatAttachmentRemove => 'Remove the attachment';
+
+  @override
+  String get chatAttachmentUploading => 'Uploading…';
+
+  @override
   String get chatReadOnly => 'Read-only';
 
   @override

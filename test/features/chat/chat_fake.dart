@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:jobbridge_app/src/features/chat/data/chat_repository.dart';
 import 'package:jobbridge_app/src/features/chat/domain/chat_message.dart';
 import 'package:jobbridge_app/src/features/chat/domain/chat_outcome.dart';
 import 'package:jobbridge_app/src/features/chat/domain/conversation.dart';
+import 'package:jobbridge_app/src/features/chat/domain/message_attachment.dart';
 
 /// A `ChatRepository` that answers from memory (§9.1).
 ///
@@ -26,11 +28,45 @@ class FakeChat implements ChatRepository {
   SendOutcome? sendOutcome;
 
   final sent = <(String id, String? body, String? fileId)>[];
+  final uploads = <(String conversationId, String fileName)>[];
+
+  /// What the next upload answers. Null is the ordinary success below.
+  MessageAttachment? uploadResult;
+
+  /// Set to make the next upload throw — a refusal, or a cancel.
+  Exception? uploadError;
   final marked = <String>[];
   final blocked = <(String id, String? reason)>[];
   final unblocked = <String>[];
   final reports = <(String conversationId, String messageId, String reason)>[];
   final pageRequests = <(String id, DateTime? before)>[];
+
+  @override
+  Future<MessageAttachment> uploadAttachment(
+    String conversationId, {
+    required String filePath,
+    required String fileName,
+    void Function(int sent, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    uploads.add((conversationId, fileName));
+
+    // Reported before the throw as well as before the success: a composer that
+    // leaves a progress bar at zero after a failure looks stuck rather than
+    // failed, and that is a state worth being able to reproduce.
+    onProgress?.call(1, 1);
+
+    final error = uploadError;
+    if (error != null) throw error;
+
+    return uploadResult ??
+        MessageAttachment(
+          fileId: 'file-${uploads.length}',
+          fileName: fileName,
+          mimeType: 'application/pdf',
+          sizeBytes: 1024,
+        );
+  }
 
   @override
   Future<List<Conversation>> list() async => threads;

@@ -15,7 +15,7 @@ publish_to: 'none'
 # sharing a number cannot upgrade each other on a device: the install fails, or
 # the tester keeps looking at the old app. One build number per release, counted
 # from the first — see CHANGELOG.md.
-version: 1.16.0+26
+version: 1.17.0+27
 
 environment:
   sdk: ^3.12.2
@@ -123,6 +123,12 @@ dev_dependencies:
     sdk: flutter
 
   json_serializable: ^6.13.0
+
+  # Already on the graph through file_picker; declared because a test
+  # substitutes FilePicker.platform, and its setter verifies a token that only
+  # MockPlatformInterfaceMixin satisfies. Pure Dart — it applies no Gradle
+  # plugin, so it does not lengthen the list in CLAUDE.md.
+  plugin_platform_interface: ^2.1.8
 
   riverpod_generator: ">=4.0.4 <4.0.6"
 

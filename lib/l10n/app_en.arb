@@ -2478,6 +2478,27 @@
   "@chatAttachment": {
     "description": "The preview line when the last message carried a file and no text. Three cases, not two: the server sends the last message's body, and a message with only an attachment has none — which is not the same fact as a thread nobody has written in."
   },
+  "chatAttach": "Attach a file",
+  "@chatAttach": {
+    "description": "The paperclip's accessible name. A tooltip is not a name — TalkBack reads the label, and an icon-only control with none announces as \"button\"."
+  },
+  "chatAttachmentReady": "Ready to send: {name}",
+  "@chatAttachmentReady": {
+    "description": "Shown once the upload has landed and before the message is sent. Says ready-to-send rather than \"attached\", because nothing is attached until the message carries it.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatAttachmentRemove": "Remove the attachment",
+  "@chatAttachmentRemove": {
+    "description": "Drops the uploaded file from the draft. The file stays stored and owned by the sender — there is nothing to detach, so this removes it from the composer only."
+  },
+  "chatAttachmentUploading": "Uploading…",
+  "@chatAttachmentUploading": {
+    "description": "While the bytes are going up. Separate from the send, which has its own spinner: the two are different waits and a single indicator would make a slow upload look like a slow send."
+  },
   "chatReadOnly": "Read-only",
   "@chatReadOnly": {
     "description": "Badge on a thread whose hiring interaction has ended (§9.1). The word says what the reader can still do, not what they cannot: the history stays readable on purpose."

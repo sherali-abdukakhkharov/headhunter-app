@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/network/upload_cancelled.dart';
 import 'package:jobbridge_app/src/features/chat/data/chat_repository.dart';
 import 'package:jobbridge_app/src/features/chat/data/thread_controller.dart';
 import 'package:jobbridge_app/src/features/chat/domain/chat_message.dart';
 import 'package:jobbridge_app/src/features/chat/domain/chat_outcome.dart';
 import 'package:jobbridge_app/src/features/chat/domain/conversation.dart';
+import 'package:jobbridge_app/src/features/chat/domain/message_attachment.dart';
 import 'package:jobbridge_app/src/features/chat/presentation/chat_sheets.dart';
 import 'package:jobbridge_app/src/features/chat/presentation/message_bubble.dart';
 import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
@@ -393,10 +396,25 @@ class _Messages extends ConsumerWidget {
 ///
 /// ## Sending is refused locally only when there is nothing to send
 ///
-/// The button is inert on an empty field and enabled otherwise. It is never
-/// disabled by a rule about *whether this person may chat*: that is the
-/// server's, and a client that guessed would refuse sends the API would have
-/// accepted.
+/// The button is inert when there is neither text nor an attachment, and
+/// enabled otherwise. It is never disabled by a rule about *whether this
+/// person may chat*: that is the server's, and a client that guessed would
+/// refuse sends the API would have accepted.
+///
+/// ## An attachment is uploaded before it is sent, and the two are separate
+///
+/// Picking a file uploads it immediately and holds the returned `fileId`. Two
+/// waits, shown as two things: a refused or failed *send* keeps the upload, so
+/// somebody whose thread closed under them does not pay for the bytes twice.
+///
+/// **Removing it only removes it from the composer.** The file stays stored and
+/// owned by the sender — nothing was attached to anything, so there is nothing
+/// to detach, and the server treats an unsent upload as an ordinary owned file.
+///
+/// **The extension list decides what the picker offers, not what is allowed.**
+/// The server is the authority and refuses with a message it has already
+/// translated; the list exists so the picker does not offer files that will
+/// bounce.
 class _Composer extends ConsumerStatefulWidget {
   const _Composer({required this.conversation});
 
@@ -410,6 +428,14 @@ class _ComposerState extends ConsumerState<_Composer> {
   final _body = TextEditingController();
   bool _busy = false;
   String? _refusal;
+
+  /// Uploaded and waiting for a message to carry it.
+  MessageAttachment? _attachment;
+
+  /// True while the bytes are going up — a different wait from [_busy], which
+  /// is the send. One indicator for both would make a slow upload look like a
+  /// slow send.
+  bool _uploading = false;
 
   @override
   void initState() {
@@ -427,6 +453,8 @@ class _ComposerState extends ConsumerState<_Composer> {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final trimmed = _body.text.trim();
+    final attachment = _attachment;
+    final canSend = trimmed.isNotEmpty || attachment != null;
 
     return Container(
       padding: const EdgeInsets.all(HhSpace.gutter),
@@ -443,9 +471,76 @@ class _ComposerState extends ConsumerState<_Composer> {
             ),
             const SizedBox(height: HhSpace.md),
           ],
+          if (_uploading) ...[
+            Row(
+              children: [
+                const SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: HhSpace.sm),
+                Text(
+                  l10n.chatAttachmentUploading,
+                  style: HhTypography.caption,
+                ),
+              ],
+            ),
+            const SizedBox(height: HhSpace.sm),
+          ] else if (attachment != null) ...[
+            Row(
+              children: [
+                // The same glyph the bubble gives a received attachment: it is
+                // the same thing, one moment earlier.
+                const HhIcon(
+                  HhIconPath.document,
+                  size: 15,
+                  color: HhColors.inkSubtle,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l10n.chatAttachmentReady(attachment.fileName),
+                    style: HhTypography.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                IconButton(
+                  onPressed: _busy
+                      ? null
+                      : () => setState(() => _attachment = null),
+                  icon: const HhIcon(
+                    HhIconPath.close,
+                    size: 16,
+                    color: HhColors.inkSubtle,
+                  ),
+                  tooltip: l10n.chatAttachmentRemove,
+                ),
+              ],
+            ),
+            const SizedBox(height: HhSpace.sm),
+          ],
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              // The name is on the icon, not on the tooltip: a tooltip is
+              // not an accessible name, and an icon-only control without one
+              // announces as "button" (MT-015).
+              IconButton(
+                onPressed: _busy || _uploading || attachment != null
+                    ? null
+                    : _pickAndUpload,
+                // `upload` is the act; `document` is the thing. The set has no
+                // paperclip, which is the conventional affordance here — raised
+                // in docs/design-feedback.md rather than invented.
+                icon: HhIcon(
+                  HhIconPath.upload,
+                  size: 20,
+                  color: HhColors.inkMuted,
+                  semanticLabel: l10n.chatAttach,
+                ),
+              ),
               Expanded(
                 child: HhTextField(
                   label: l10n.chatComposerLabel,
@@ -465,13 +560,57 @@ class _ComposerState extends ConsumerState<_Composer> {
                 expand: false,
                 compact: true,
                 loading: _busy,
-                onPressed: trimmed.isEmpty ? null : _send,
+                onPressed: canSend ? _send : null,
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _pickAndUpload() async {
+    final picked = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ChatRepository.attachmentExtensions,
+    );
+
+    final file = picked?.files.singleOrNull;
+    final path = file?.path;
+    if (file == null || path == null) return;
+
+    setState(() {
+      _uploading = true;
+      _refusal = null;
+    });
+
+    try {
+      final repository = await ref.read(chatRepositoryProvider.future);
+      final attachment = await repository.uploadAttachment(
+        widget.conversation.id,
+        filePath: path,
+        fileName: file.name,
+      );
+
+      if (!mounted) return;
+      setState(() {
+        _attachment = attachment;
+        _uploading = false;
+      });
+    } on UploadCancelled {
+      // Something the user did, not something that went wrong.
+      if (mounted) setState(() => _uploading = false);
+    } on ApiException catch (e) {
+      // Includes the gate: a thread that closed while the picker was open
+      // refuses here rather than at send, which is the earlier and cheaper
+      // place to find out.
+      if (mounted) {
+        setState(() {
+          _refusal = e.message;
+          _uploading = false;
+        });
+      }
+    }
   }
 
   Future<void> _send() async {
@@ -481,12 +620,16 @@ class _ComposerState extends ConsumerState<_Composer> {
     });
 
     final body = _body.text.trim();
+    final attachment = _attachment;
 
     try {
       final repository = await ref.read(chatRepositoryProvider.future);
       final outcome = await repository.send(
         widget.conversation.id,
-        body: body,
+        // Empty rather than absent would be a message with a blank line above
+        // its attachment; the server takes either field alone.
+        body: body.isEmpty ? null : body,
+        fileId: attachment?.fileId,
       );
 
       if (!mounted) return;
@@ -501,7 +644,10 @@ class _ComposerState extends ConsumerState<_Composer> {
           // The list's preview line and its ordering both changed.
           ref.invalidate(conversationsProvider);
           _body.clear();
-          setState(() => _busy = false);
+          setState(() {
+            _busy = false;
+            _attachment = null;
+          });
 
         case SendRefusedReadOnly(:final message) ||
             SendRefusedBlocked(:final message):

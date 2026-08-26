@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/network/interceptors/idempotency_interceptor.dart';
+import 'package:jobbridge_app/src/core/network/upload_cancelled.dart';
 import 'package:jobbridge_app/src/core/storage/preferences_provider.dart';
 import 'package:jobbridge_app/src/features/chat/domain/chat_message.dart';
 import 'package:jobbridge_app/src/features/chat/domain/chat_outcome.dart';
 import 'package:jobbridge_app/src/features/chat/domain/conversation.dart';
+import 'package:jobbridge_app/src/features/chat/domain/message_attachment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -150,6 +152,63 @@ class ChatRepository {
   /// the key and the server replays the original message, and different text
   /// mints a new one. One slot per conversation, overwritten rather than
   /// accumulated, so an abandoned draft leaks nothing.
+  /// The file types the picker offers for a message attachment.
+  ///
+  /// Mirrors the server's accepted list, and **the server is the authority**:
+  /// this decides what the picker shows, not what is allowed. A file that gets
+  /// past it is refused on upload with a message the server has already
+  /// translated, which is the failure worth having — the alternative is a
+  /// picker that offers everything and an upload that usually fails.
+  static const attachmentExtensions = [
+    'pdf',
+    'doc',
+    'docx',
+    'jpg',
+    'jpeg',
+    'png',
+  ];
+
+  /// `POST /conversations/:id/attachments` — store a file to send here (§9.1).
+  ///
+  /// **Two calls, not a multipart send.** The send route takes a `fileId` the
+  /// caller owns, so a refused or failed send costs the typed message and not
+  /// the upload as well — and an upload with a progress bar and a send without
+  /// one are two different things to show.
+  ///
+  /// No idempotency key. A replayed upload stores a second file rather than
+  /// a second *message*, which costs bytes and nothing else; the key that
+  /// matters is on the send, where a replay would be a duplicate somebody
+  /// reads.
+  Future<MessageAttachment> uploadAttachment(
+    String conversationId, {
+    required String filePath,
+    required String fileName,
+    void Function(int sent, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      final form = FormData.fromMap({
+        // No purpose field: every file this route takes is a message
+        // attachment. Naming one would let a caller mint a profile document
+        // through the chat gate, so the server does not accept it.
+        'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      });
+
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/conversations/$conversationId/attachments',
+        data: form,
+        cancelToken: cancelToken,
+        onSendProgress: onProgress,
+      );
+
+      return MessageAttachment.fromJson(_body(response.data));
+    } on DioException catch (e) {
+      // A cancel is a thing the user did, not a thing that went wrong.
+      if (CancelToken.isCancel(e)) throw const UploadCancelled();
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   Future<SendOutcome> send(
     String conversationId, {
     String? body,

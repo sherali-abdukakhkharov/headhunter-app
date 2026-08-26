@@ -1914,6 +1914,20 @@ class AppL10nUz extends AppL10n {
   String get chatAttachment => 'Ilova';
 
   @override
+  String get chatAttach => 'Fayl biriktirish';
+
+  @override
+  String chatAttachmentReady(String name) {
+    return 'Yuborishga tayyor: $name';
+  }
+
+  @override
+  String get chatAttachmentRemove => 'Ilovani olib tashlash';
+
+  @override
+  String get chatAttachmentUploading => 'Yuklanmoqda…';
+
+  @override
   String get chatReadOnly => 'Faqat o\'qish';
 
   @override
@@ -5158,6 +5172,20 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get chatAttachment => 'Илова';
 
   @override
+  String get chatAttach => 'Файл бириктириш';
+
+  @override
+  String chatAttachmentReady(String name) {
+    return 'Юборишга тайёр: $name';
+  }
+
+  @override
+  String get chatAttachmentRemove => 'Иловани олиб ташлаш';
+
+  @override
+  String get chatAttachmentUploading => 'Юкланмоқда…';
+
+  @override
   String get chatReadOnly => 'Фақат ўқиш';
 
   @override
@@ -8395,6 +8423,20 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get chatAttachment => 'Ilova';
+
+  @override
+  String get chatAttach => 'Fayl biriktirish';
+
+  @override
+  String chatAttachmentReady(String name) {
+    return 'Yuborishga tayyor: $name';
+  }
+
+  @override
+  String get chatAttachmentRemove => 'Ilovani olib tashlash';
+
+  @override
+  String get chatAttachmentUploading => 'Yuklanmoqda…';
 
   @override
   String get chatReadOnly => 'Faqat o\'qish';

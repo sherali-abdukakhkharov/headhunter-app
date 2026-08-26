@@ -1936,6 +1936,20 @@ class AppL10nRu extends AppL10n {
   String get chatAttachment => 'Вложение';
 
   @override
+  String get chatAttach => 'Прикрепить файл';
+
+  @override
+  String chatAttachmentReady(String name) {
+    return 'Готово к отправке: $name';
+  }
+
+  @override
+  String get chatAttachmentRemove => 'Убрать вложение';
+
+  @override
+  String get chatAttachmentUploading => 'Загрузка…';
+
+  @override
   String get chatReadOnly => 'Только чтение';
 
   @override

@@ -10,7 +10,7 @@
 
 **2026-08-26.** Nearly every screen in the specification is built - the coin
 storefront is the one still waiting on a payment provider - and what is left that
-only design can supply is **nine files, a logo, and two questions**. They have
+only design can supply is **nine files, a logo, and three questions**. They have
 been scattered across four rounds; this collects them so nothing needs hunting.
 
 Everything below ships *today* with a documented fallback, so none of it blocks a
@@ -91,6 +91,27 @@ reasonable one, and the app icon cannot stay unresolved indefinitely.
    the design system used correctly, and a chat-specific control size is the one
    thing the "one control size for everyone" rule forbids. So this needs a drawn
    answer rather than a unilateral shrink.
+
+### F. One glyph the set does not have: a paperclip
+
+§9.1's composer can now attach a file, and the icon set has no paperclip — the
+conventional affordance for exactly this. We did **not** invent one.
+
+What ships instead reuses two glyphs you did draw, on the rule that a shared
+glyph means the same thing everywhere: `upload` on the button, because it is the
+*act* of putting a file up and that is what `upload` means on the submission
+badge; `document` beside the file once it has landed, because that is what a
+received attachment already shows in the message bubble. So the button and the
+result are deliberately different glyphs — one is a verb, the other a noun.
+
+It reads correctly and it is not what a person expects there. If you would rather
+have a paperclip, it is one path and a one-line change; if you would rather keep
+`upload`, say so and this stops being an open question.
+
+This is the second glyph raised this way. `helpCircle` (round 4) was drawn to
+match its three siblings rather than left missing, because "request details"
+needed a *question* mark and `infoCircle` means "here is information". Both are
+the same request: tell us whether to draw it or use what is there.
 
 ### F. Still owed from rounds 3, 4 and 5
 

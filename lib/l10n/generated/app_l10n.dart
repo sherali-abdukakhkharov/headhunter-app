@@ -3311,6 +3311,30 @@ abstract class AppL10n {
   /// **'Attachment'**
   String get chatAttachment;
 
+  /// The paperclip's accessible name. A tooltip is not a name — TalkBack reads the label, and an icon-only control with none announces as "button".
+  ///
+  /// In en, this message translates to:
+  /// **'Attach a file'**
+  String get chatAttach;
+
+  /// Shown once the upload has landed and before the message is sent. Says ready-to-send rather than "attached", because nothing is attached until the message carries it.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to send: {name}'**
+  String chatAttachmentReady(String name);
+
+  /// Drops the uploaded file from the draft. The file stays stored and owned by the sender — there is nothing to detach, so this removes it from the composer only.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the attachment'**
+  String get chatAttachmentRemove;
+
+  /// While the bytes are going up. Separate from the send, which has its own spinner: the two are different waits and a single indicator would make a slow upload look like a slow send.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading…'**
+  String get chatAttachmentUploading;
+
   /// Badge on a thread whose hiring interaction has ended (§9.1). The word says what the reader can still do, not what they cannot: the history stays readable on purpose.
   ///
   /// In en, this message translates to:

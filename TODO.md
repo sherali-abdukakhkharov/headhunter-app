@@ -1533,16 +1533,30 @@ paywall that is not theirs.
       Gating harder than the API would tell an employer to pay for something the
       server would have given them free. **Recorded for the client as the second
       instance of the §8.2 "then" pattern**, not as a code change
-- [!] **Backend ask: a `file_purpose` code for a message attachment.** §9.1's
-      "approved attachments" work in one direction only. *Receiving* one is done
-      — a message's `downloadPath` is scoped to its conversation and
-      `AttachmentOpener` follows it verbatim. *Sending* one needs an upload to
-      `POST /files` with a `purpose`, and the dictionary has `cv`, `photo`,
-      `certificate` and `evidence`. None is a message attachment, and the
-      purpose is a dictionary row an admin edits at runtime (§10.3) — so
-      inventing a code here would be the client inventing server data. One row
-      and the composer grows a paperclip; the parsing and the bubble are already
-      built and tested
+- [x] **§9.1's attachments now work both ways, 2026-08-26.** This had been a
+      backend ask for a `file_purpose` row; written in both repos in one pass
+      instead. `message_attachment` is the row, and
+      `POST /conversations/:id/attachments` is the route.
+      **It is its own purpose rather than a reuse of `evidence`**, and that was
+      the decision worth making slowly: purpose is what *authorizes a read*. A
+      profile attachment is readable by an employer who has unlocked that
+      candidate; a message attachment by the other participant in one
+      conversation. Two rules on one code is a rule nobody can state. It is also
+      the one purpose with no attachment *slot*, which is what makes the profile
+      upload route refuse it — that route supersedes past `maxCount`, so a
+      shared code would have retired yesterday's attachment when today's was
+      sent, and a chat history is not a slot.
+      **Two calls, not a multipart send.** The send route already took an owned
+      `fileId`, so a refused send costs the typed message and not the bytes as
+      well — and an upload with a progress bar and a send without one are two
+      different waits to show. `assertOwnFile` binds them and was already there.
+      **Removing an attachment before sending detaches nothing**, because
+      nothing was attached: the file stays one its owner uploaded and did not
+      send, which is also why an abandoned upload is not a dangling row.
+      `UploadCancelled` moved to `core/network/` — two features upload now.
+      **Deploying it needs `pnpm seed` re-run**, the purpose being a dictionary
+      row; the seeder writes nothing on a second run, which was verified rather
+      than assumed
 - [ ] **The thread does not update itself.** No poll, on purpose: M9's push is
       what makes it live, and a timer asking every few seconds would drain a
       battery to answer "nothing yet" on a product whose users are often on

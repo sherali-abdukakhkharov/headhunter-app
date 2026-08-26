@@ -17,6 +17,52 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.17.0+27 — 2026-08-26
+
+You can send a file in a chat, not only receive one.
+
+### Added
+
+- **A file can be attached to a message.** The composer has an attach control;
+  pick a file, it uploads, and the next message carries it. Receiving one has
+  worked since the chat shipped — sending was the half that had nowhere to put
+  the file.
+- **A file is enough on its own.** Sending is offered with an attachment and no
+  text, because a document with no covering note is a real message.
+- **Removing one before sending takes it out of the message**, and deletes
+  nothing: it was never attached to anything. The typed text stays where it is.
+
+### Changed
+
+- **The upload and the send are two separate waits**, each with its own
+  indicator. A send that is refused — a conversation that closed while the
+  screen was open — keeps both the typed text and the uploaded file, so nothing
+  has to be done twice.
+
+### Internal
+
+- Server half in `headhunter-backend@80905b7`:
+  `POST /conversations/{id}/attachments`, and a `message_attachment` file
+  purpose of its own rather than a reuse of the profile ones. Purpose is what
+  authorizes a read, and a profile document and a chat attachment are read by
+  different people.
+- **Deploying it needs `pnpm seed` re-run** — the purpose is a dictionary row.
+  The seeder writes nothing on a second run, verified rather than assumed.
+- `UploadCancelled` moved to `core/network/`; two features upload now.
+- `plugin_platform_interface` declared as a dev dependency. Already on the
+  graph through `file_picker`, and pure Dart — it adds no Gradle plugin. It is
+  what lets a test substitute the file picker, so the whole path runs
+  headlessly: pick, upload, hold, send.
+- 1090 tests, up from 1075. 15 new here and 9 on the backend, all
+  mutation-checked. `flutter analyze` clean.
+
+### Documentation
+
+- `docs/design-feedback.md` ROUND 6 gains the paperclip question. The icon set
+  has none, so the button reuses `upload` (the act) and the landed file reuses
+  `document` (the thing) — correct by the shared-glyph rule and not what a
+  person expects there. The designer decides whether to draw one.
+
 ## 1.16.0+26 — 2026-08-26
 
 The audit log reads as names instead of twenty rows of hex.
