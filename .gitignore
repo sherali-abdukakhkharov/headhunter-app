@@ -64,3 +64,9 @@ app.*.map.json
 # mobile-test-audit.md resolve only on the machine the audit ran on. Anyone who
 # needs a screenshot asks the owner for the directory.
 /evidence/
+
+# Working files for the screenshot guide: UI dumps, a contact-sheet script and
+# raw device captures. Useful to whoever is generating a guide, worth nothing to
+# anybody cloning this. Three of them reached a commit on 2026-08-27 because a
+# `git add -A` was run without reading `git status` first.
+/tmp/
