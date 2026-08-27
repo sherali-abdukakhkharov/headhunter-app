@@ -2281,11 +2281,29 @@ remaining item is a screen.
       red run said "something is wrong" and you had to fix the lint to find out
       whether anything else was
 
-- [ ] **Transport-level tests for the repositories that have none.** `auth`,
-      `chat`, `health`, `shortlist` and now `notifications` drive a recording
-      `HttpClientAdapter`; every other repository is faked at its own boundary,
-      which is what let MT-020's wrong verb ship twice. Worth a sweep rather
-      than waiting for the second one to be found by an auditor
+- [x] **Every route this app calls is checked against the API's own
+      controllers, 2026-08-28.** `test/core/network/wire_contract_test.dart`
+      reads every `_dio` call in the repository layer and every `@Get`/`@Post`/
+      `@Put`/`@Patch`/`@Delete` in the backend, and fails on a route the server
+      does not declare. It covers repositories that do not exist yet, which
+      fifteen hand-written route tables would not have.
+
+      **It found one on its first run.** BR-14's account deletion called
+      `POST /users/deletion-request`; the controller is mounted at `users/me`,
+      so the route is `/users/me/deletion-request`. Confirmed against the
+      running API — the client's path answers 404, the server's answers 401 —
+      which means "request account deletion" has never worked. Fixed, with a
+      driven test on `account_repository` as well, because a source sweep
+      cannot see a body.
+
+      Two paths it cannot resolve statically (`'/auth/otp$suffix'` and the
+      history repository's caller-supplied base) are listed by name in the test
+      rather than skipped, so adding a third is a deliberate act.
+
+      The driven tests are still worth writing where the *request* matters —
+      `auth`, `chat`, `health`, `notifications`, `evidence` and now `account`
+      have them, and they check what a sweep cannot: query parameters,
+      multipart field names, bodies
 - [ ] Small-screen and large-font-scale pass over every screen
 - [x] **`HhMetaChip` shrinks its label, 2026-08-27.** `Flexible` plus an
       ellipsis, which is what `HhRemovableChip` already did — the meta chip

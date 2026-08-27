@@ -59,7 +59,7 @@ class AccountRepository {
     }
   }
 
-  /// `POST /users/deletion-request` — BR-14's request, not a deletion.
+  /// `POST /users/me/deletion-request` — BR-14's request, not a deletion.
   ///
   /// The account moves to `deletion_requested` and a status-history row is
   /// written; nothing is purged synchronously. **The server returns
@@ -71,7 +71,7 @@ class AccountRepository {
   Future<ZonedTimestamp> requestDeletion({String? reason}) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
-        '/users/deletion-request',
+        '/users/me/deletion-request',
         data: {'reason': ?reason},
       );
 
