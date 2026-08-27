@@ -3,14 +3,35 @@
 # Strict rule set. Swap for `package:flutter_lints/flutter.yaml` if too noisy.
 include: package:very_good_analysis/analysis_options.yaml
 
-# riverpod_lint uses the analyzer's native plugin system (analysis_server_plugin)
-# since v3, so it is declared here rather than in pubspec dev_dependencies.
+# riverpod_lint is **deliberately not enabled** (MT-024, 2026-08-27).
 #
-# Pinned exactly, NOT with a caret: 3.1.4 is the release built against
-# analyzer ^12 / riverpod 3.3.2, which is what this project resolves to.
-# riverpod_lint >=3.1.6 requires analyzer ^13 and would not load.
-plugins:
-  riverpod_lint: 3.1.4
+# Since v3 it runs through the analyzer's plugin system rather than as core
+# lints, and in this project it loaded on roughly one run in four. The same
+# unchanged tree reported 32, 35, 3 and 0 findings on consecutive runs, and the
+# runs that reported everything were the slow ones - 95 seconds against 5. So
+# `flutter analyze`, which this repository documents as its pre-commit gate and
+# which CI runs, was red on a coin flip.
+#
+# A gate that fails for reasons nobody changed teaches people to re-run it until
+# it passes. That habit is what hides a real regression, and it is a worse
+# outcome than not having the lint.
+#
+# **Every finding it ever produced here was in `test/`**, and all of them were
+# wrong there: `scoped_providers_should_specify_dependencies` on a widget test's
+# root `ProviderScope` (nothing above it to disagree with), and
+# `avoid_public_notifier_properties` on a test double's call recorder. It never
+# once flagged anything under `lib/`.
+#
+# Suppressing them was tried first and could not be *verified*: a plugin
+# diagnostic named in an options file is reported as an unrecognised code on
+# every run where the plugin has not loaded, and on the runs where it has, there
+# is no way to force the state in order to check. An unverifiable fix to a
+# reliability problem is not a fix.
+#
+# To bring it back: add `plugins: {riverpod_lint: <version>}` here and confirm
+# that a suppression actually applies while the plugin is loaded. 3.1.4 is the
+# release built against analyzer ^12 / riverpod 3.3.2, which is what this
+# project resolves to; >=3.1.6 needs analyzer ^13 and will not load at all.
 
 analyzer:
   exclude:

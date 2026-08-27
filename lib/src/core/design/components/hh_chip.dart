@@ -28,6 +28,12 @@ class HhFilterChip extends StatelessWidget {
     button: true,
     selected: selected,
     label: label,
+    // "Ready to travel, Ready to travel" without this: the label is drawn as a
+    // `Text` inside as well (MT-015). Restating the tap is what keeps the chip
+    // operable once the subtree's own semantics are gone.
+    excludeSemantics: true,
+    enabled: onTap != null,
+    onTap: onTap,
     child: InkWell(
       onTap: onTap,
       borderRadius: HhRadius.pillAll,

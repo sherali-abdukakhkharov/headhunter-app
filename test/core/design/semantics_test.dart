@@ -12,6 +12,16 @@
 ///   product was in that state, which is the one control on a picker a
 ///   screen-reader user has to find.
 ///
+/// The 1.17.0 audit reopened this as **partially fixed**: buttons, badges, nav
+/// and picker icons held, but every *selection* control still said its name
+/// twice — `English\nEnglish`, `Candidate\nCandidate`,
+/// `Ready to travel\nReady to travel`. Same shape, four more components, and
+/// they were missed the first time because the first pass fixed the three that
+/// had been named in the report rather than the pattern.
+///
+/// So there is now **one test per shared component that carries a label**, and
+/// a new one is expected to join it. That is cheaper than another audit round.
+///
 /// Semantics are fully testable headlessly, so these need no device — which is
 /// the point of writing them here rather than filing them for a QA pass.
 library;
@@ -152,6 +162,20 @@ void main() {
             HhButton.text(label: 'Skip', onPressed: () {}),
             const HhBadge.verificationVerified(label: 'Verified employer'),
             const HhMetaChip(label: 'Tashkent'),
+            // The four the 1.17.0 audit found still doing it.
+            HhCheckboxRow(label: 'Candidate', value: true, onChanged: (_) {}),
+            HhRadioRow<String>(
+              label: 'English',
+              value: 'en',
+              groupValue: 'en',
+              onChanged: (_) {},
+            ),
+            HhSwitchRow(
+              label: 'Ready to travel',
+              value: false,
+              onChanged: (_) {},
+            ),
+            HhFilterChip(label: '30 days', selected: true, onTap: () {}),
           ],
         ),
       );
@@ -162,6 +186,10 @@ void main() {
         'Skip',
         'Verified employer',
         'Tashkent',
+        'Candidate',
+        'English',
+        'Ready to travel',
+        '30 days',
       ]) {
         expect(
           find.bySemanticsLabel('$name\n$name'),
@@ -170,6 +198,177 @@ void main() {
         );
         expect(find.bySemanticsLabel(name), findsOneWidget);
       }
+
+      handle.dispose();
+    });
+  });
+
+  group('a selection control says its state and stays operable', () {
+    // Excluding a subtree to stop the double announcement also drops the
+    // InkWell's action and the child text. Everything the row was saying has to
+    // be restated on the node, and these are the four things that are.
+
+    testWidgets('a checkbox reports checked, and can still be tapped', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      var taps = 0;
+      await pump(
+        tester,
+        HhCheckboxRow(
+          label: 'Candidate',
+          value: true,
+          onChanged: (_) => taps++,
+        ),
+      );
+
+      final node = tester.getSemantics(find.bySemanticsLabel('Candidate'));
+      expect(node, isSemantics(hasCheckedState: true, isChecked: true));
+      expect(node, isSemantics(hasEnabledState: true, isEnabled: true));
+      // See the chip test: the geometric tap below would pass without this.
+      expect(node, isSemantics(hasTapAction: true));
+
+      await tester.tap(find.bySemanticsLabel('Candidate'));
+      expect(taps, 1);
+
+      handle.dispose();
+    });
+
+    testWidgets('a radio says it is one of a group', (tester) async {
+      // Without `inMutuallyExclusiveGroup` a screen reader calls it a checkbox,
+      // and "checked" then reads as "on" rather than "chosen instead of the
+      // others".
+      final handle = tester.ensureSemantics();
+      await pump(
+        tester,
+        HhRadioRow<String>(
+          label: 'English',
+          value: 'en',
+          groupValue: 'en',
+          onChanged: (_) {},
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('English')),
+        isSemantics(isInMutuallyExclusiveGroup: true, isChecked: true),
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('a switch reports toggled, not checked', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pump(
+        tester,
+        HhSwitchRow(
+          label: 'Ready to travel',
+          value: true,
+          onChanged: (_) {},
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Ready to travel')),
+        isSemantics(hasToggledState: true, isToggled: true),
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('every disabled row says so rather than going silent', (
+      tester,
+    ) async {
+      // The same rule the disabled button follows: a control that is present
+      // and unusable has to announce that it is unusable, or a screen-reader
+      // user is left tapping something that never responds.
+      //
+      // All three, not one of them. The first version of this test covered the
+      // checkbox alone, and a mutation that hardcoded the switch's `enabled`
+      // to true went unnoticed.
+      final handle = tester.ensureSemantics();
+      await pump(
+        tester,
+        const Column(
+          children: [
+            HhCheckboxRow(label: 'Candidate', value: false, onChanged: null),
+            HhRadioRow<String>(
+              label: 'English',
+              value: 'en',
+              groupValue: null,
+              onChanged: null,
+            ),
+            HhSwitchRow(
+              label: 'Ready to travel',
+              value: false,
+              onChanged: null,
+            ),
+          ],
+        ),
+      );
+
+      for (final name in ['Candidate', 'English', 'Ready to travel']) {
+        expect(
+          tester.getSemantics(find.bySemanticsLabel(name)),
+          isSemantics(hasEnabledState: true, isEnabled: false),
+          reason: '"$name" does not say it is disabled',
+        );
+      }
+
+      handle.dispose();
+    });
+
+    testWidgets('a description is a hint, not a second thing to focus', (
+      tester,
+    ) async {
+      // It used to be a `Text` of its own inside the node, so it merged into
+      // the name: "Candidate\nLooking for work". A hint is announced after the
+      // name and role, which is where an explanation belongs.
+      final handle = tester.ensureSemantics();
+      await pump(
+        tester,
+        HhCheckboxRow(
+          label: 'Candidate',
+          description: 'Looking for work',
+          value: false,
+          onChanged: (_) {},
+        ),
+      );
+
+      expect(find.bySemanticsLabel('Candidate'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Candidate\nLooking for work'),
+        findsNothing,
+      );
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Candidate')).hint,
+        'Looking for work',
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('a filter chip reports selected and stays tappable', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      var taps = 0;
+      await pump(
+        tester,
+        HhFilterChip(label: '30 days', selected: true, onTap: () => taps++),
+      );
+
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('30 days')),
+        // `hasTapAction`, not just a tap that works: a tap by finder lands on
+        // the InkWell by geometry whether or not the node advertises an
+        // action, so the geometric tap below proves nothing on its own. What a
+        // screen reader can activate is the node's action.
+        isSemantics(isSelected: true, isButton: true, hasTapAction: true),
+      );
+
+      await tester.tap(find.bySemanticsLabel('30 days'));
+      expect(taps, 1);
 
       handle.dispose();
     });

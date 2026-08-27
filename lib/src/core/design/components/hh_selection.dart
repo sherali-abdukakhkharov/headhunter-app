@@ -134,6 +134,14 @@ class HhSwitchRow extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     toggled: value,
     label: label,
+    // Same three as the checkbox and radio rows above, for the same reason:
+    // the label is also drawn as a `Text`, so without `excludeSemantics` a
+    // screen reader says it twice (MT-015) — and excluding the subtree drops
+    // the InkWell's action with it.
+    hint: description,
+    enabled: onChanged != null,
+    excludeSemantics: true,
+    onTap: onChanged == null ? null : () => onChanged!(!value),
     child: InkWell(
       onTap: onChanged == null ? null : () => onChanged!(!value),
       child: Container(
@@ -214,6 +222,16 @@ class _SelectionRow extends StatelessWidget {
     checked: semantics.checked,
     inMutuallyExclusiveGroup: semantics.inMutuallyExclusiveGroup,
     label: label,
+    // The description is announced **after** the name and state rather than as
+    // a second focus stop, which is what a hint is for: "Candidate, checkbox,
+    // not checked" then what a candidate can do here.
+    hint: description,
+    enabled: onTap != null,
+    // Without this the node's label and the child `Text`'s merge, and a screen
+    // reader announces "Candidate, Candidate" (MT-015). The action has to be
+    // restated because excluding the subtree also drops the InkWell's.
+    excludeSemantics: true,
+    onTap: onTap,
     child: InkWell(
       onTap: onTap,
       child: Container(

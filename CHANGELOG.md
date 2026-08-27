@@ -17,6 +17,40 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.20.0+30 — 2026-08-27
+
+Screen readers stop saying everything twice.
+
+### Fixed
+
+- **MT-015.** Checkboxes, radio buttons, switches and filter chips each
+  announced their label twice — "Candidate, Candidate", "English, English". The
+  three controls fixed in 1.11.5 held; these four had the same defect and were
+  missed because that pass fixed the reported instances rather than the pattern.
+- **A second line of explanation is now read as a hint**, after the control's
+  name and state, instead of being glued onto the name.
+- Every one of these controls still says whether it is checked, selected,
+  on, or unavailable, and can still be activated by a screen reader.
+
+### Internal
+
+- **1.19.0's MT-024 fix was wrong and this replaces it.** That release silenced
+  two Riverpod lint findings and was checked on three runs where the lint plugin
+  happened not to load — which proved nothing. The next run that did load it
+  reported all 32 again.
+  The plugin is now switched off. It ran on roughly one invocation in four,
+  every finding it ever produced in this project was a false positive in test
+  code, and a suppression for it cannot be verified because its loading cannot
+  be forced. Six consecutive clean runs, none of them slow — the slow ones were
+  the plugin.
+- One test per shared component that carries a label, so the next component
+  added joins the list rather than waiting for an audit to find it.
+- Six mutations checked. Two survived the first attempt and are worth recording:
+  tapping a widget found by its accessibility label still hits it by geometry,
+  so it does not prove the control advertises an action, and a disabled-state
+  test that covered one of three rows let the other two regress.
+- 1103 tests, up from 1097.
+
 ## 1.19.0+29 — 2026-08-27
 
 No user-visible change. The build's own quality gate works again.

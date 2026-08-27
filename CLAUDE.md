@@ -392,16 +392,19 @@ from a per-provider `retry` rather than re-enabling it globally.
   it also cross-checks the backend's own decorators when that repo is checked
   out beside this one.
 - Line length 80, and **`flutter analyze` is a real gate again** (MT-024,
-  2026-08-27). It had been exiting 1 with up to 32 findings, all riverpod_lint,
-  all in `test/` — and intermittently: the same unchanged tree reported 32, 35,
-  3 and 0 on consecutive runs, the noisy ones being the slow ones (95s against
-  5s). riverpod_lint ships through the analysis server's **plugin** system, so
-  how much of it has run when the command returns is a scheduling accident.
-  `test/analysis_options.yaml` silences the two diagnostics involved **there and
-  nowhere else**, and they sit under `analyzer.errors` rather than
-  `linter.rules` because the linter does not know plugin codes at all. Core Dart
-  lints still reach the test tree — proven by breaking one deliberately. Under
-  `lib/` either diagnostic firing is a real finding.
+  2026-08-27) — because **riverpod_lint is deliberately not enabled**. It ran
+  through the analysis server's plugin system on about one invocation in four:
+  the same unchanged tree reported 32, 35, 3 and 0 findings on consecutive runs,
+  and the runs that reported everything were the slow ones (95s against 5s).
+  Every finding it ever produced here was in `test/` and wrong there.
+  **Suppressing them was tried first and could not be verified** — a plugin
+  diagnostic named in an options file is reported as an unrecognised code
+  whenever the plugin has not loaded, and the plugin's state cannot be forced,
+  so three clean runs proved only that those runs had no plugin. The next one
+  that did have it reported all 32 again. The reasoning, and what to check
+  before re-enabling it, are in `analysis_options.yaml`.
+  Core Dart lints are unaffected and still reach the test tree — proven by
+  breaking one deliberately rather than assumed.
 
 ## Dependency pinning - read before upgrading
 
