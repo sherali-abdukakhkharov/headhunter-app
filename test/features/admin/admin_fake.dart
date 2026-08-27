@@ -9,6 +9,7 @@ import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
 import 'package:jobbridge_app/src/features/admin/domain/dictionary_draft.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/platform_pricing.dart';
 import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
@@ -152,4 +153,13 @@ abstract class FakeAdminBase implements AdminRepository {
     required int amountCoins,
     required String reason,
   }) => _unused('adjustWallet');
+  @override
+  Future<PlatformPricing> pricing() => _unused('GET /admin/pricing');
+
+  @override
+  Future<PlatformPricing> setPricing(
+    Map<PricingField, int> changes, {
+    String? reason,
+  }) => _unused('PUT /admin/pricing');
+
 }

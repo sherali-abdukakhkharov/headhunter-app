@@ -3104,11 +3104,11 @@
       "balance": {"type":"int"}
     }
   },
-  "adminPaymentsPending": "Payment order search is not available yet",
+  "adminPaymentsPending": "Payment order search is not useful yet",
   "@adminPaymentsPending": {
     "description": "§10.5 also asks for Payment Order search on six axes. The API has payment endpoints, but they answer only for the employer making the request — there is no administrator route. Stated on the screen rather than left as a missing feature, the same way §10.3 states what label editing is waiting on."
   },
-  "adminPaymentsPendingBody": "The server has no administrator route for payment orders yet — today it answers only for the employer making the request. Top-up itself is also not live.",
+  "adminPaymentsPendingBody": "The search exists on the server, but top-up is not live yet, so there are no orders to find. It opens with the first payment provider.",
   "@adminPaymentsPendingBody": {
     "description": "Says what is missing and that it is known, so nobody reports it as a bug."
   },
@@ -3116,7 +3116,62 @@
   "@adminPricingTitle": {
     "description": "§10.5 names the registration bonus, the Coin price and the unlock price as server configuration."
   },
-  "adminPricingBody": "These are set on the server. A change applies to future transactions only and never rewrites what the ledger already recorded.",
+  "adminPricingBody": "A change applies to future transactions only and never rewrites what the ledger already recorded.",
+  "adminPricingEdit": "Edit prices",
+  "@adminPricingEdit": {
+    "description": "§10.5. Opens the editor from the wallets screen."
+  },
+  "adminPricingCoinPrice": "Price of one Coin",
+  "adminPricingUnlockCost": "Candidate unlock",
+  "adminPricingBonus": "Registration bonus",
+  "adminPricingCoins": "{count, plural, one{{count} Coin} other{{count} Coins}}",
+  "@adminPricingCoins": {
+    "description": "A Coin count, for a setting measured in Coins.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminPricingDefault": "Deployment default: {value}",
+  "@adminPricingDefault": {
+    "description": "What this deployment declared, shown under a setting so an administrator can see what a reset would give. Already formatted.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "adminPricingChanged": "Changed",
+  "@adminPricingChanged": {
+    "description": "Marks a setting that differs from the deployment default — the only way to tell, since both are just numbers."
+  },
+  "adminPricingReset": "Restore default",
+  "adminPricingReason": "Why (optional)",
+  "adminPricingSaved": "Saved. New quotes use these prices.",
+  "adminPricingNothingChanged": "Nothing to save",
+  "adminPricingBelowMinimum": "At least {minimum}.",
+  "@adminPricingBelowMinimum": {
+    "description": "The floor the server enforces, restated on the field so the control is refused before a request rather than after one.",
+    "placeholders": {
+      "minimum": {
+        "type": "String"
+      }
+    }
+  },
+  "adminPricingFreeUnlock": "An unlock cannot be free — paying for it is what makes contact details a paid entitlement.",
+  "@adminPricingFreeUnlock": {
+    "description": "BR-16: a free unlock voids the entitlement §6.6 exists to charge for. Said in words rather than as \"at least 1\", because the number is not the point."
+  },
+  "adminPricingUnlockValue": "An unlock costs {value} at these prices.",
+  "@adminPricingUnlockValue": {
+    "description": "The money an unlock costs at the prices on screen — the product of two fields the administrator is editing, so it moves as they type. Already formatted.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "@adminPricingBody": {
     "description": "The half of §10.5 that is a *rule* rather than a screen: a price change applies to future transactions only and never rewrites the ledger. Said here because the natural reading of \"change the price\" is that history follows. Editing them needs a server route that does not exist yet."
   },

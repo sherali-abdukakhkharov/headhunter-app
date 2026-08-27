@@ -2447,18 +2447,78 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get adminPaymentsPending => 'Поиск платёжных заказов пока недоступен';
+  String get adminPaymentsPending => 'Поиск платёжных заказов пока бесполезен';
 
   @override
   String get adminPaymentsPendingBody =>
-      'На сервере пока нет административного доступа к платёжным заказам — он отвечает только работодателю, отправившему запрос. Пополнение тоже ещё не запущено.';
+      'Поиск на сервере есть, но пополнение ещё не работает, поэтому заказов нет. Он откроется вместе с первым платёжным провайдером.';
 
   @override
   String get adminPricingTitle => 'Цены и бонус за регистрацию';
 
   @override
   String get adminPricingBody =>
-      'Они задаются на сервере. Изменение действует только на будущие операции и не переписывает уже записанное в реестре.';
+      'Изменение действует только на будущие операции и никогда не переписывает уже записанное в реестре.';
+
+  @override
+  String get adminPricingEdit => 'Изменить цены';
+
+  @override
+  String get adminPricingCoinPrice => 'Цена одной монеты';
+
+  @override
+  String get adminPricingUnlockCost => 'Открытие контактов';
+
+  @override
+  String get adminPricingBonus => 'Бонус при регистрации';
+
+  @override
+  String adminPricingCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count монеты',
+      many: '$count монет',
+      few: '$count монеты',
+      one: '$count монета',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminPricingDefault(String value) {
+    return 'Значение по умолчанию: $value';
+  }
+
+  @override
+  String get adminPricingChanged => 'Изменено';
+
+  @override
+  String get adminPricingReset => 'Вернуть по умолчанию';
+
+  @override
+  String get adminPricingReason => 'Причина (необязательно)';
+
+  @override
+  String get adminPricingSaved =>
+      'Сохранено. Новые расчёты используют эти цены.';
+
+  @override
+  String get adminPricingNothingChanged => 'Нечего сохранять';
+
+  @override
+  String adminPricingBelowMinimum(String minimum) {
+    return 'Не менее $minimum.';
+  }
+
+  @override
+  String get adminPricingFreeUnlock =>
+      'Открытие контактов не может быть бесплатным — именно оплата делает контакты платной услугой.';
+
+  @override
+  String adminPricingUnlockValue(String value) {
+    return 'При этих ценах открытие стоит $value.';
+  }
 
   @override
   String get adminReasonHint =>

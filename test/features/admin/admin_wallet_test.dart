@@ -187,21 +187,23 @@ void main() {
   }
 
   group('the wallet list', () {
-    testWidgets('says what is waiting on the server, before the list', (
+    testWidgets('says what is still waiting, and links to what is not', (
       tester,
     ) async {
-      // §10.5 asks for four things and the API supports two. Stated on the
-      // screen rather than left as a gap, the same choice §10.3 made about
-      // label editing — otherwise the next audit files it as a missing screen.
+      // §10.5 asks for four things. Three are here as of 2026-08-28; the
+      // payment order search is still empty, and that is stated on the screen
+      // rather than left as a gap — the same choice §10.3 made about label
+      // editing, and otherwise the next audit files it as a missing screen.
       await pumpList(tester, pages: [
         [_wallet()],
       ]);
 
       expect(find.text(en.adminPaymentsPending), findsOneWidget);
+
+      // The prices are no longer a notice about a missing route: they are a
+      // screen, one tap from where the money is read.
       expect(find.text(en.adminPricingTitle), findsOneWidget);
-      // The rule that goes with the prices, which is the part that is *not*
-      // waiting on anything: a change never rewrites the ledger.
-      expect(find.textContaining('future transactions only'), findsOneWidget);
+      expect(find.textContaining('future transactions only'), findsNothing);
     });
 
     testWidgets('says how it is ordered, so nobody hunts for a sort', (
@@ -266,6 +268,9 @@ void main() {
         400,
         scrollable: find.byType(Scrollable).first,
       );
+      // The prices card pushed this below the fold on a 360x800 surface.
+      await tester.ensureVisible(find.text(en.commonShowMore));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(en.commonShowMore));
       await tester.pumpAndSettle();
 

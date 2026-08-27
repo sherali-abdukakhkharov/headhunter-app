@@ -2416,18 +2416,75 @@ class AppL10nUz extends AppL10n {
 
   @override
   String get adminPaymentsPending =>
-      'To‘lov buyurtmalarini qidirish hali mavjud emas';
+      'To\'lov buyurtmalari qidiruvi hozircha foydasiz';
 
   @override
   String get adminPaymentsPendingBody =>
-      'Serverda hozircha to‘lov buyurtmalari uchun administrator yo‘li yo‘q — u faqat so‘rov yuborgan ish beruvchiga javob beradi. To‘ldirishning o‘zi ham hali ishlamaydi.';
+      'Qidiruv serverda bor, lekin to\'ldirish hali ishlamaydi, shuning uchun buyurtmalar yo\'q. U birinchi to\'lov provayderi bilan ochiladi.';
 
   @override
   String get adminPricingTitle => 'Narxlar va ro‘yxatdan o‘tish bonusi';
 
   @override
   String get adminPricingBody =>
-      'Ular serverda belgilanadi. O‘zgarish faqat keyingi amaliyotlarga ta’sir qiladi va reestrga yozilganini qayta yozmaydi.';
+      'O\'zgarish faqat keyingi operatsiyalarga ta\'sir qiladi va reestrda yozilganini hech qachon qayta yozmaydi.';
+
+  @override
+  String get adminPricingEdit => 'Narxlarni o\'zgartirish';
+
+  @override
+  String get adminPricingCoinPrice => 'Bitta tanga narxi';
+
+  @override
+  String get adminPricingUnlockCost => 'Nomzod kontaktini ochish';
+
+  @override
+  String get adminPricingBonus => 'Ro\'yxatdan o\'tish bonusi';
+
+  @override
+  String adminPricingCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminPricingDefault(String value) {
+    return 'Standart qiymat: $value';
+  }
+
+  @override
+  String get adminPricingChanged => 'O\'zgartirilgan';
+
+  @override
+  String get adminPricingReset => 'Standartga qaytarish';
+
+  @override
+  String get adminPricingReason => 'Sabab (ixtiyoriy)';
+
+  @override
+  String get adminPricingSaved =>
+      'Saqlandi. Yangi hisob-kitoblar shu narxlarda.';
+
+  @override
+  String get adminPricingNothingChanged => 'Saqlaydigan narsa yoq';
+
+  @override
+  String adminPricingBelowMinimum(String minimum) {
+    return 'Kamida $minimum.';
+  }
+
+  @override
+  String get adminPricingFreeUnlock =>
+      'Kontaktni ochish bepul bo\'la olmaydi — aynan to\'lov uni pullik xizmatga aylantiradi.';
+
+  @override
+  String adminPricingUnlockValue(String value) {
+    return 'Bu narxlarda ochish $value turadi.';
+  }
 
   @override
   String get adminReasonHint =>
@@ -5685,18 +5742,74 @@ class AppL10nUzCyrl extends AppL10nUz {
 
   @override
   String get adminPaymentsPending =>
-      'Тўлов буюртмаларини қидириш ҳали мавжуд эмас';
+      'Тўлов буюртмалари қидируви ҳозирча фойдасиз';
 
   @override
   String get adminPaymentsPendingBody =>
-      'Серверда ҳозирча тўлов буюртмалари учун администратор йўли йўқ — у фақат сўров юборган иш берувчига жавоб беради. Тўлдиришнинг ўзи ҳам ҳали ишламайди.';
+      'Қидирув серверда бор, лекин тўлдириш ҳали ишламайди, шунинг учун буюртмалар йўқ. У биринчи тўлов провайдери билан очилади.';
 
   @override
   String get adminPricingTitle => 'Нархлар ва рўйхатдан ўтиш бонуси';
 
   @override
   String get adminPricingBody =>
-      'Улар серверда белгиланади. Ўзгариш фақат кейинги амалиётларга таъсир қилади ва реестрга ёзилганини қайта ёзмайди.';
+      'Ўзгариш фақат кейинги операцияларга таъсир қилади ва реестрда ёзилганини ҳеч қачон қайта ёзмайди.';
+
+  @override
+  String get adminPricingEdit => 'Нархларни ўзгартириш';
+
+  @override
+  String get adminPricingCoinPrice => 'Битта танга нархи';
+
+  @override
+  String get adminPricingUnlockCost => 'Номзод контактини очиш';
+
+  @override
+  String get adminPricingBonus => 'Рўйхатдан ўтиш бонуси';
+
+  @override
+  String adminPricingCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count танга',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminPricingDefault(String value) {
+    return 'Стандарт қиймат: $value';
+  }
+
+  @override
+  String get adminPricingChanged => 'Ўзгартирилган';
+
+  @override
+  String get adminPricingReset => 'Стандартга қайтариш';
+
+  @override
+  String get adminPricingReason => 'Сабаб (ихтиёрий)';
+
+  @override
+  String get adminPricingSaved => 'Сақланди. Янги ҳисоб-китоблар шу нархларда.';
+
+  @override
+  String get adminPricingNothingChanged => 'Сақлайдиган нарса йўқ';
+
+  @override
+  String adminPricingBelowMinimum(String minimum) {
+    return 'Камида $minimum.';
+  }
+
+  @override
+  String get adminPricingFreeUnlock =>
+      'Контактни очиш бепул бўла олмайди — айнан тўлов уни пуллик хизматга айлантиради.';
+
+  @override
+  String adminPricingUnlockValue(String value) {
+    return 'Бу нархларда очиш $value туради.';
+  }
 
   @override
   String get adminReasonHint =>
@@ -8955,18 +9068,75 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get adminPaymentsPending =>
-      'To‘lov buyurtmalarini qidirish hali mavjud emas';
+      'To\'lov buyurtmalari qidiruvi hozircha foydasiz';
 
   @override
   String get adminPaymentsPendingBody =>
-      'Serverda hozircha to‘lov buyurtmalari uchun administrator yo‘li yo‘q — u faqat so‘rov yuborgan ish beruvchiga javob beradi. To‘ldirishning o‘zi ham hali ishlamaydi.';
+      'Qidiruv serverda bor, lekin to\'ldirish hali ishlamaydi, shuning uchun buyurtmalar yo\'q. U birinchi to\'lov provayderi bilan ochiladi.';
 
   @override
   String get adminPricingTitle => 'Narxlar va ro‘yxatdan o‘tish bonusi';
 
   @override
   String get adminPricingBody =>
-      'Ular serverda belgilanadi. O‘zgarish faqat keyingi amaliyotlarga ta’sir qiladi va reestrga yozilganini qayta yozmaydi.';
+      'O\'zgarish faqat keyingi operatsiyalarga ta\'sir qiladi va reestrda yozilganini hech qachon qayta yozmaydi.';
+
+  @override
+  String get adminPricingEdit => 'Narxlarni o\'zgartirish';
+
+  @override
+  String get adminPricingCoinPrice => 'Bitta tanga narxi';
+
+  @override
+  String get adminPricingUnlockCost => 'Nomzod kontaktini ochish';
+
+  @override
+  String get adminPricingBonus => 'Ro\'yxatdan o\'tish bonusi';
+
+  @override
+  String adminPricingCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tanga',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminPricingDefault(String value) {
+    return 'Standart qiymat: $value';
+  }
+
+  @override
+  String get adminPricingChanged => 'O\'zgartirilgan';
+
+  @override
+  String get adminPricingReset => 'Standartga qaytarish';
+
+  @override
+  String get adminPricingReason => 'Sabab (ixtiyoriy)';
+
+  @override
+  String get adminPricingSaved =>
+      'Saqlandi. Yangi hisob-kitoblar shu narxlarda.';
+
+  @override
+  String get adminPricingNothingChanged => 'Saqlaydigan narsa yoq';
+
+  @override
+  String adminPricingBelowMinimum(String minimum) {
+    return 'Kamida $minimum.';
+  }
+
+  @override
+  String get adminPricingFreeUnlock =>
+      'Kontaktni ochish bepul bo\'la olmaydi — aynan to\'lov uni pullik xizmatga aylantiradi.';
+
+  @override
+  String adminPricingUnlockValue(String value) {
+    return 'Bu narxlarda ochish $value turadi.';
+  }
 
   @override
   String get adminReasonHint =>

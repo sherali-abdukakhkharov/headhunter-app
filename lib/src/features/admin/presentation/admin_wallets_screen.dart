@@ -11,18 +11,18 @@ import 'package:jobbridge_app/src/features/wallet/presentation/wallet_transactio
 
 /// §10.5's employer wallets — the last screen of the admin module.
 ///
-/// ## Two of §10.5's four parts are here, and two are not
+/// ## Three of §10.5's four parts are here, and one is not
 ///
 /// The wallet half is built: balance, the immutable ledger, and the manual
-/// adjustment BR-24 governs. The **payment half is not, and cannot be** — the
-/// API has payment endpoints, but they are scoped to the employer making the
-/// request, so there is no administrator route to search Payment Orders on
-/// §10.5's six axes. Editing the registration bonus and the two prices has no
-/// route either.
+/// adjustment BR-24 governs. **The prices are now editable too** — the route
+/// exists as of 2026-08-28, and [Routes.adminPricing] is one tap from here.
 ///
-/// Both are **stated on this screen** rather than left as blanks somebody
-/// reports as a bug, which is the same choice §10.3 made about label editing.
-/// The asks are in docs/BACKEND_ASKS.md.
+/// The **payment order search is still empty**, and that is not a missing
+/// route any more: `GET /admin/payments` exists with §10.5's six filters. It
+/// is that top-up is not live on the client (M13, waiting on merchant
+/// credentials), so there are no orders to search for. That is **stated on
+/// this screen** rather than left as a blank somebody reports as a bug, which
+/// is the same choice §10.3 made about label editing.
 ///
 /// ## The order is the server's
 ///
@@ -83,18 +83,43 @@ class _List extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(HhSpace.gutter),
       children: [
-        // The two halves of §10.5 that are waiting on the server, said before
-        // the list rather than discovered by looking for them.
+        // The half of §10.5 that is still waiting on a live provider, said
+        // before the list rather than discovered by looking for it.
         HhNotice(
           title: l10n.adminPaymentsPending,
           message: l10n.adminPaymentsPendingBody,
           iconPath: HhIconPath.infoCircle,
         ),
         const SizedBox(height: HhSpace.md),
-        HhNotice(
-          title: l10n.adminPricingTitle,
-          message: l10n.adminPricingBody,
-          iconPath: HhIconPath.coin,
+
+        // The prices live beside the wallets because this is where the money is
+        // read, and a wallet balance means nothing without what a Coin costs.
+        HhCard(
+          onTap: () => context.push(Routes.adminPricing),
+          child: Row(
+            children: [
+              const HhIcon(
+                HhIconPath.coin,
+                size: 20,
+                color: HhColors.inkMuted,
+                strokeWidth: 2,
+              ),
+              const SizedBox(width: HhSpace.md),
+              Expanded(
+                child: Text(
+                  l10n.adminPricingTitle,
+                  style: HhTypography.body.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const HhIcon(
+                HhIconPath.chevronRight,
+                size: 18,
+                color: HhColors.inkDisabled,
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: HhSpace.sectionGap),
 

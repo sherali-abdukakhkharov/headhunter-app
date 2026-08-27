@@ -182,6 +182,17 @@ abstract final class Routes {
   /// at an account is one tap from its money.
   static const adminWallets = '$adminUsers/wallets';
 
+  /// §10.5's three money settings.
+  ///
+  /// **The same ordering trap as [adminAudit] and [adminWallets]**: `:id` would
+  /// match the literal `pricing` too, so this must be registered before it in
+  /// `app_router.dart`.
+  ///
+  /// Beside the wallets rather than under them: the prices are the platform's,
+  /// not one employer's, and `/wallets/pricing` would collide with the wallet
+  /// detail route's `:userId` as well as reading as somebody's own.
+  static const adminPricing = '$adminUsers/pricing';
+
   /// One employer's wallet and its ledger.
   static String adminWalletFor(String userId) => '$adminWallets/$userId';
 

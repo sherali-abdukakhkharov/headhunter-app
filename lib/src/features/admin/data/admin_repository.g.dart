@@ -51,6 +51,62 @@ final class AdminRepositoryProvider
 
 String _$adminRepositoryHash() => r'e369349b36a30b5bfe413df6ec69f6dad14f8c00';
 
+/// §10.5's pricing, re-read after every write.
+///
+/// Not cached beyond the provider's own lifetime: these are the numbers every
+/// quote in the product is made from, and a screen showing a stale one is how
+/// an administrator concludes a change did not take.
+
+@ProviderFor(platformPricing)
+final platformPricingProvider = PlatformPricingProvider._();
+
+/// §10.5's pricing, re-read after every write.
+///
+/// Not cached beyond the provider's own lifetime: these are the numbers every
+/// quote in the product is made from, and a screen showing a stale one is how
+/// an administrator concludes a change did not take.
+
+final class PlatformPricingProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PlatformPricing>,
+          PlatformPricing,
+          FutureOr<PlatformPricing>
+        >
+    with $FutureModifier<PlatformPricing>, $FutureProvider<PlatformPricing> {
+  /// §10.5's pricing, re-read after every write.
+  ///
+  /// Not cached beyond the provider's own lifetime: these are the numbers every
+  /// quote in the product is made from, and a screen showing a stale one is how
+  /// an administrator concludes a change did not take.
+  PlatformPricingProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'platformPricingProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$platformPricingHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<PlatformPricing> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<PlatformPricing> create(Ref ref) {
+    return platformPricing(ref);
+  }
+}
+
+String _$platformPricingHash() => r'd69b3a04bb65d112487052d85d0c196b91dd4762';
+
 /// The period the §10.1 dashboard is showing, or null for the server's default.
 ///
 /// A provider of its own rather than a field on the dashboard notifier, so that

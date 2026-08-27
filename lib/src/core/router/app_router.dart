@@ -11,6 +11,7 @@ import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
 import 'package:jobbridge_app/src/features/admin/domain/audit_entry.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_dashboard_screen.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_pricing_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_queue_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_wallet_detail_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_wallets_screen.dart';
@@ -312,6 +313,11 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                       ),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'pricing',
+                  name: 'adminPricing',
+                  builder: (context, state) => const AdminPricingScreen(),
                 ),
                 GoRoute(
                   path: 'audit',

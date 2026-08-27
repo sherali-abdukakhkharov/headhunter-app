@@ -255,7 +255,17 @@ nothing is being read. Label editing is the one action the screen does not
 offer, and it says so rather than offering a field that would quietly write a
 fallback.
 
-### 3. §10.5's Payment Order search has no administrator route — raised 2026-08-25
+### ~~3. §10.5's Payment Order search has no administrator route~~ — **built 2026-08-28**
+
+`GET /admin/payments` exists with all six filters, ANDed, separate from the
+caller-scoped route for the reason this ask gave. Written here rather than
+asked for: since the 2026-08-26 direction, a gap that needs typing is work, not
+a question. **The client screen is still deliberately absent** — top-up is not
+live, so it would search an empty table.
+
+The original text follows, because the reasoning about scoping is still why
+there are two routes rather than a flag on one.
+
 
 §10.5 asks an administrator to *"search Payment Orders by employer, provider,
 status, date, internal order ID, and provider transaction ID"* and to open a
@@ -286,7 +296,18 @@ balances, the immutable ledger, and BR-24's manual adjustment. The screen states
 that payment search is not available and why, in all four variants, rather than
 leaving a gap somebody reports as a missing feature.
 
-### 4. The three money settings are not editable — raised 2026-08-25
+### ~~4. The three money settings are not editable~~ — **done 2026-08-28, both sides**
+
+`GET`/`PUT /admin/pricing`, `platform_settings`, an editor in the admin shell.
+The one decision this ask did not anticipate: **the environment variable stays
+the default and the table holds only changes**, so a deployment that never
+opens the screen behaves exactly as it did, and reverting is a delete rather
+than writing today's default back — the two differ the next time the deployment
+changes its mind about the default.
+
+The original text follows for the rule it states, which is the half people get
+wrong.
+
 
 §10.5's last line makes the registration bonus, the Coin price and the Candidate
 Unlock price *"server configuration values"* an administrator may change, and

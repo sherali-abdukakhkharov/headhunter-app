@@ -2222,22 +2222,33 @@ remaining item is a screen.
       and the balance after an adjustment is the server's, so the client
       invalidates rather than splicing its own row into a ledger BR-24 says
       only the server writes
-- [?] **§10.5's payment half — no administrator route exists.** `GET
-      /payments/orders` is built and `PaymentOrderDto` carries nearly every
-      field the detail wants, but both payment routes are **scoped to the
-      caller** on purpose ("an order id is an identifier, not an
-      authorization"), so an administrator asking about somebody else's order
-      gets nothing. The ask is `GET /admin/payments` with §10.5's six filters —
-      [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md) §3. Not urgent: top-up is not
-      live on the client either (M13), so there is nothing to search for yet.
-      **The screen says so** rather than leaving a gap somebody files as missing
-- [?] **Registration bonus / Coin price / unlock price are not editable** — no
-      route, and the values reach the client only through the employer-scoped
-      `GET /wallet`. [docs/BACKEND_ASKS.md](docs/BACKEND_ASKS.md) §4.
-      **The rule shipped without the editor**: the screen states that a change
-      applies to future transactions only and never rewrites the ledger, which
-      is the half that is already true and the half people get wrong — the
-      natural reading of "change the price" is that history follows
+- [~] **§10.5's payment order search — the route exists, the screen does
+      not.** `GET /admin/payments` was written on 2026-08-28 with §10.5's six
+      filters (employer, provider, status, date range, internal order id,
+      provider transaction id), separate from the caller-scoped
+      `GET /payments/orders` because "an order id is an identifier, not an
+      authorization". **The client screen is deliberately not built yet:**
+      top-up is not live (M13, waiting on merchant credentials), so it would
+      search an empty table and could not be tested against anything real.
+      **The wallets screen says so** rather than leaving a gap somebody files
+      as missing. Build it with M13, against orders that exist
+- [x] **Registration bonus, Coin price and unlock price are editable,
+      2026-08-28.** `GET`/`PUT /admin/pricing`, and an editor one tap from the
+      wallets list. Three things worth knowing before touching it:
+      **the environment variable stays the default** — `platform_settings`
+      holds only what has been changed, so a deployment that never opens the
+      screen behaves as it always did and "restore default" deletes the
+      override rather than typing today's default back;
+      **the values are read per call, never cached** — they used to be
+      constructor fields on `WalletService`, which is exactly what made them
+      un-editable, and a price the API kept quoting for hours after a change
+      would be worse than no screen;
+      **only what moved is sent**, because the server writes one audit row per
+      setting that actually changes and a form posting all three would log two
+      decisions nobody took.
+      The rule that shipped before the editor is still on the screen and is
+      still the half people get wrong: a change applies to future transactions
+      only and never rewrites the ledger
 
 ## M11 - Hardening
 

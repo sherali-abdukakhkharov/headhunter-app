@@ -13,6 +13,7 @@ import 'package:jobbridge_app/src/features/admin/domain/complaint_detail.dart';
 import 'package:jobbridge_app/src/features/admin/domain/dictionary_draft.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_decision.dart';
 import 'package:jobbridge_app/src/features/admin/domain/moderation_queue_item.dart';
+import 'package:jobbridge_app/src/features/admin/domain/platform_pricing.dart';
 import 'package:jobbridge_app/src/features/admin/domain/user_search_filters.dart';
 import 'package:jobbridge_app/src/features/admin/domain/vacancy_review.dart';
 import 'package:jobbridge_app/src/features/admin/domain/verification_decision.dart';
@@ -626,6 +627,44 @@ class AdminRepository {
     }
   }
 
+  /// `GET /admin/pricing` — §10.5's three settings and their declared defaults.
+  Future<PlatformPricing> pricing() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/admin/pricing');
+
+      return PlatformPricing.fromJson(response.data ?? const {});
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PUT /admin/pricing` — writes only the settings given.
+  ///
+  /// Deliberately sparse: the server records one audit row per setting that
+  /// actually moves, so submitting all three when one was edited would put
+  /// three decisions in the log that nobody took.
+  ///
+  /// Returns the whole view rather than an acknowledgement, so the screen shows
+  /// what the server now holds instead of what it hoped it wrote.
+  Future<PlatformPricing> setPricing(
+    Map<PricingField, int> changes, {
+    String? reason,
+  }) async {
+    try {
+      final response = await _dio.put<Map<String, dynamic>>(
+        '/admin/pricing',
+        data: {
+          for (final entry in changes.entries) entry.key.wire: entry.value,
+          'reason': ?reason,
+        },
+      );
+
+      return PlatformPricing.fromJson(response.data ?? const {});
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   /// The 409 that means the queue moved, or null for anything else.
   ///
   /// Matched on `code` and not on the status alone. 409 is also what a
@@ -647,6 +686,15 @@ class AdminRepository {
 @riverpod
 AdminRepository adminRepository(Ref ref) =>
     AdminRepository(ref.watch(dioProvider));
+
+/// §10.5's pricing, re-read after every write.
+///
+/// Not cached beyond the provider's own lifetime: these are the numbers every
+/// quote in the product is made from, and a screen showing a stale one is how
+/// an administrator concludes a change did not take.
+@riverpod
+Future<PlatformPricing> platformPricing(Ref ref) =>
+    ref.watch(adminRepositoryProvider).pricing();
 
 /// The period the §10.1 dashboard is showing, or null for the server's default.
 ///

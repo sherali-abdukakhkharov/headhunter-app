@@ -2424,19 +2424,75 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get adminPaymentsPending =>
-      'Payment order search is not available yet';
+  String get adminPaymentsPending => 'Payment order search is not useful yet';
 
   @override
   String get adminPaymentsPendingBody =>
-      'The server has no administrator route for payment orders yet — today it answers only for the employer making the request. Top-up itself is also not live.';
+      'The search exists on the server, but top-up is not live yet, so there are no orders to find. It opens with the first payment provider.';
 
   @override
   String get adminPricingTitle => 'Prices and the registration bonus';
 
   @override
   String get adminPricingBody =>
-      'These are set on the server. A change applies to future transactions only and never rewrites what the ledger already recorded.';
+      'A change applies to future transactions only and never rewrites what the ledger already recorded.';
+
+  @override
+  String get adminPricingEdit => 'Edit prices';
+
+  @override
+  String get adminPricingCoinPrice => 'Price of one Coin';
+
+  @override
+  String get adminPricingUnlockCost => 'Candidate unlock';
+
+  @override
+  String get adminPricingBonus => 'Registration bonus';
+
+  @override
+  String adminPricingCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Coins',
+      one: '$count Coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminPricingDefault(String value) {
+    return 'Deployment default: $value';
+  }
+
+  @override
+  String get adminPricingChanged => 'Changed';
+
+  @override
+  String get adminPricingReset => 'Restore default';
+
+  @override
+  String get adminPricingReason => 'Why (optional)';
+
+  @override
+  String get adminPricingSaved => 'Saved. New quotes use these prices.';
+
+  @override
+  String get adminPricingNothingChanged => 'Nothing to save';
+
+  @override
+  String adminPricingBelowMinimum(String minimum) {
+    return 'At least $minimum.';
+  }
+
+  @override
+  String get adminPricingFreeUnlock =>
+      'An unlock cannot be free — paying for it is what makes contact details a paid entitlement.';
+
+  @override
+  String adminPricingUnlockValue(String value) {
+    return 'An unlock costs $value at these prices.';
+  }
 
   @override
   String get adminReasonHint =>

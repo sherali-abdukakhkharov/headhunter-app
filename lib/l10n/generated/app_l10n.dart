@@ -4202,13 +4202,13 @@ abstract class AppL10n {
   /// §10.5 also asks for Payment Order search on six axes. The API has payment endpoints, but they answer only for the employer making the request — there is no administrator route. Stated on the screen rather than left as a missing feature, the same way §10.3 states what label editing is waiting on.
   ///
   /// In en, this message translates to:
-  /// **'Payment order search is not available yet'**
+  /// **'Payment order search is not useful yet'**
   String get adminPaymentsPending;
 
   /// Says what is missing and that it is known, so nobody reports it as a bug.
   ///
   /// In en, this message translates to:
-  /// **'The server has no administrator route for payment orders yet — today it answers only for the employer making the request. Top-up itself is also not live.'**
+  /// **'The search exists on the server, but top-up is not live yet, so there are no orders to find. It opens with the first payment provider.'**
   String get adminPaymentsPendingBody;
 
   /// §10.5 names the registration bonus, the Coin price and the unlock price as server configuration.
@@ -4220,8 +4220,92 @@ abstract class AppL10n {
   /// The half of §10.5 that is a *rule* rather than a screen: a price change applies to future transactions only and never rewrites the ledger. Said here because the natural reading of "change the price" is that history follows. Editing them needs a server route that does not exist yet.
   ///
   /// In en, this message translates to:
-  /// **'These are set on the server. A change applies to future transactions only and never rewrites what the ledger already recorded.'**
+  /// **'A change applies to future transactions only and never rewrites what the ledger already recorded.'**
   String get adminPricingBody;
+
+  /// §10.5. Opens the editor from the wallets screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit prices'**
+  String get adminPricingEdit;
+
+  /// No description provided for @adminPricingCoinPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price of one Coin'**
+  String get adminPricingCoinPrice;
+
+  /// No description provided for @adminPricingUnlockCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate unlock'**
+  String get adminPricingUnlockCost;
+
+  /// No description provided for @adminPricingBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration bonus'**
+  String get adminPricingBonus;
+
+  /// A Coin count, for a setting measured in Coins.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} Coin} other{{count} Coins}}'**
+  String adminPricingCoins(int count);
+
+  /// What this deployment declared, shown under a setting so an administrator can see what a reset would give. Already formatted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deployment default: {value}'**
+  String adminPricingDefault(String value);
+
+  /// Marks a setting that differs from the deployment default — the only way to tell, since both are just numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get adminPricingChanged;
+
+  /// No description provided for @adminPricingReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default'**
+  String get adminPricingReset;
+
+  /// No description provided for @adminPricingReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Why (optional)'**
+  String get adminPricingReason;
+
+  /// No description provided for @adminPricingSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved. New quotes use these prices.'**
+  String get adminPricingSaved;
+
+  /// No description provided for @adminPricingNothingChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to save'**
+  String get adminPricingNothingChanged;
+
+  /// The floor the server enforces, restated on the field so the control is refused before a request rather than after one.
+  ///
+  /// In en, this message translates to:
+  /// **'At least {minimum}.'**
+  String adminPricingBelowMinimum(String minimum);
+
+  /// BR-16: a free unlock voids the entitlement §6.6 exists to charge for. Said in words rather than as "at least 1", because the number is not the point.
+  ///
+  /// In en, this message translates to:
+  /// **'An unlock cannot be free — paying for it is what makes contact details a paid entitlement.'**
+  String get adminPricingFreeUnlock;
+
+  /// The money an unlock costs at the prices on screen — the product of two fields the administrator is editing, so it moves as they type. Already formatted.
+  ///
+  /// In en, this message translates to:
+  /// **'An unlock costs {value} at these prices.'**
+  String adminPricingUnlockValue(String value);
 
   /// An example that shows the field is addressed to the employer and has to be actionable. An administrator shown an empty box labelled "reason" writes one word.
   ///
