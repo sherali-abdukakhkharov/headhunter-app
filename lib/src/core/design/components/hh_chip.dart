@@ -175,9 +175,18 @@ class HhMetaChip extends StatelessWidget {
           ),
           const SizedBox(width: 4),
         ],
-        Text(
-          label,
-          style: HhTypography.meta.copyWith(fontSize: dense ? 11.5 : 12),
+        // `Flexible` and an ellipsis, exactly as `HhRemovableChip` does it: an
+        // unconstrained `Text` in a `Row` overflows its line rather than
+        // wrapping, so one long label paints a striped bar across the card.
+        // Everything using this chip was one word until §10.4, and **Russian
+        // would have shipped it broken** while English fitted.
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: HhTypography.meta.copyWith(fontSize: dense ? 11.5 : 12),
+          ),
         ),
       ],
     ),

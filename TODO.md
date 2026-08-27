@@ -350,10 +350,23 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
       *(shipped with the design system)*
 - [x] Buttons, text fields, chips *(shipped with the design system)*
 - [x] Font-scale tolerance check on the primitives *(design system, 2.0x clamp)*
-- [ ] **Bottom sheets** — the only design-system primitive still missing.
-      `HhRadius.sheetTop` and `HhElevation.sheet` exist and the theme styles
-      `BottomSheetTheme`, but there is no `HhSheet` component. First needed by the
-      M2 pickers and the M6 filter sheets
+- [x] **Bottom sheets, 2026-08-27.** `HhSheet` and `showHhSheet` — the last
+      design-system primitive, and the twelve hand-rolled copies are why it was
+      worth a component rather than a convention.
+      **The copies had drifted exactly as copies do**: three had no drag handle
+      and two did not lift for the keyboard, so a text field sat behind it.
+      Nobody chose either; those sheets started from a copy that lacked it.
+      There were also *three* spellings of the chrome — a transparent
+      background with a `DecoratedBox` inside, a white `backgroundColor` with
+      `shape:`, and one with neither.
+      `scrollable` is the caller's, and getting it wrong is silent: a
+      `ListView` inside a `SingleChildScrollView` has unbounded height, so it
+      either throws or builds every row at once and loses the laziness the list
+      was for.
+      **Four of the twelve are migrated** — the three missing a handle and the
+      one missing the keyboard inset, where the migration *is* the fix. The
+      other eight already have correct chrome by hand; they move when next
+      touched, and a new sheet now has something to reach for, which was the gap
 - [ ] Verified on the emulator: onboarding → dev tools → all three shells, live
       uz-Cyrl switch, BR-10 notice, session restored across a cold start, and
       `Foydalanuvchilar` / `Фойдаланувчилар` wrapping at its soft hyphen without growing the 70pt bar
@@ -2242,16 +2255,12 @@ remaining item is a screen.
       which is what let MT-020's wrong verb ship twice. Worth a sweep rather
       than waiting for the second one to be found by an auditor
 - [ ] Small-screen and large-font-scale pass over every screen
-- [ ] **`HhMetaChip` does not shrink its label** — its `Row` is
-      `MainAxisSize.min` around an unconstrained `Text`, so a label wider than
-      its card overflows rather than truncating. `HhRemovableChip` already
-      solves this ("the label shrinks before the chip does") and the meta chip
-      never got the same treatment, because everything using it until §10.4 was
-      one word. Found by a widget test at 360pt, and **Russian would have
-      shipped it broken** while English fitted (MEMORY.md, 2026-08-23). §10.4
-      works around it by making dated facts captions; the component fix belongs
-      with this pass, and changing the design system means **running the gallery
-      on a device**
+- [x] **`HhMetaChip` shrinks its label, 2026-08-27.** `Flexible` plus an
+      ellipsis, which is what `HhRemovableChip` already did — the meta chip
+      never got the same treatment because everything using it until §10.4 was
+      one word, and **Russian would have shipped it broken while English
+      fitted**. §10.4's workaround of making dated facts captions can come
+      back out whenever somebody is next in there
 - [ ] Cached primary screens open without blocking; loading states complete
 - [~] Offline state explicit; retry safe; no duplicate writes — **the cold start is done** (`SessionUnreachable`, 2026-08-25). What is left is the same treatment inside the shell: a screen whose fetch fails offline still shows the generic error state rather than saying the connection is the problem, though `ApiException.kind` now makes that a rendering choice rather than a guess
 - [ ] Crash reporting + structured logging, no sensitive data

@@ -243,10 +243,8 @@ Future<bool?> showDictionaryItemActions(
   BuildContext context, {
   required String type,
   required DictionaryItem item,
-}) => showModalBottomSheet<bool>(
-  context: context,
-  isScrollControlled: true,
-  backgroundColor: Colors.transparent,
+}) => showHhSheet<bool>(
+  context,
   builder: (_) => _ActionsSheet(type: type, item: item),
 );
 
@@ -399,10 +397,8 @@ class _ActionsSheetState extends ConsumerState<_ActionsSheet> {
 Future<bool?> showDictionaryItemForm(
   BuildContext context, {
   required String type,
-}) => showModalBottomSheet<bool>(
-  context: context,
-  isScrollControlled: true,
-  backgroundColor: Colors.transparent,
+}) => showHhSheet<bool>(
+  context,
   builder: (_) => _ItemForm(type: type),
 );
 

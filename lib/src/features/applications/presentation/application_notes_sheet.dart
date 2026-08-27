@@ -10,11 +10,8 @@ import 'package:jobbridge_app/src/features/applications/domain/candidate_for_emp
 Future<void> showApplicationNotes(
   BuildContext context, {
   required String applicationId,
-}) => showModalBottomSheet<void>(
-  context: context,
-  isScrollControlled: true,
-  backgroundColor: HhColors.white,
-  shape: const RoundedRectangleBorder(borderRadius: HhRadius.sheetTop),
+}) => showHhSheet<void>(
+  context,
   builder: (_) => ApplicationNotesSheet(applicationId: applicationId),
 );
 
@@ -60,21 +57,16 @@ class _ApplicationNotesSheetState
     final l10n = AppL10n.of(context);
     final notes = ref.watch(applicationNotesProvider(widget.applicationId));
 
-    return Padding(
-      // The sheet holds a text field, so it has to rise with the keyboard or
-      // the thing being typed into sits behind it.
-      padding: EdgeInsets.only(
-        left: HhSpace.gutter,
-        right: HhSpace.gutter,
-        top: HhSpace.gutter,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + HhSpace.gutter,
-      ),
+    // `scrollable: false` because the note list below manages its own scroll;
+    // wrapping it would give it unbounded height. The keyboard inset, the safe
+    // area and the drag handle this sheet never had all come from `HhSheet`.
+    return HhSheet(
+      title: l10n.notesTitle,
+      scrollable: false,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.notesTitle, style: HhTypography.subtitle),
-          const SizedBox(height: HhSpace.xs),
           Text(
             l10n.notesHint,
             style: HhTypography.caption.copyWith(color: HhColors.inkMuted),

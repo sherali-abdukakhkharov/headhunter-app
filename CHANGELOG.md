@@ -17,6 +17,30 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.23.0+33 — 2026-08-27
+
+Two long-standing gaps in the design system, and one of them was a bug in
+Russian.
+
+### Fixed
+
+- **A metadata chip with a long label used to overflow** instead of trimming —
+  a striped bar across the card. Everything using it was one word until the
+  admin screens, so **English fitted and Russian did not**.
+- **Three bottom sheets had no drag handle and two did not rise for the
+  keyboard**, so a text field could sit behind it. Not decisions anybody made:
+  each sheet had been copied from a different one.
+
+### Internal
+
+- `HhSheet` and `showHhSheet` are the last missing design-system primitive.
+  Twelve sheets had been copying the chrome by hand, in three different
+  spellings, which is why this was worth a component rather than a convention.
+- Four of the twelve are migrated — the ones where the migration is also the
+  fix. The other eight already look right and move when next touched.
+- 1117 tests, up from 1107. Seven mutations checked across the two components,
+  and one of them found the first version of the keyboard test asserting
+  nothing.
 ## 1.22.0+32 — 2026-08-27
 
 The complaint queue says what each report is about.

@@ -448,10 +448,8 @@ String categoryLabel(NotificationCategory category, AppL10n l10n) =>
 
 /// §9.2's per-category switches.
 Future<void> showNotificationPreferences(BuildContext context) =>
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    showHhSheet<void>(
+      context,
       builder: (_) => const _Preferences(),
     );
 
