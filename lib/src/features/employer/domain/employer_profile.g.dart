@@ -36,6 +36,13 @@ RequiredEvidence _$RequiredEvidenceFromJson(Map<String, dynamic> json) =>
       required: json['required'] as bool,
     );
 
+UploadPolicy _$UploadPolicyFromJson(Map<String, dynamic> json) => UploadPolicy(
+  acceptedExtensions: (json['acceptedExtensions'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList(),
+  maxSizeBytes: (json['maxSizeBytes'] as num).toInt(),
+);
+
 VerificationSubmission _$VerificationSubmissionFromJson(
   Map<String, dynamic> json,
 ) => VerificationSubmission(
@@ -58,6 +65,7 @@ VerificationState _$VerificationStateFromJson(Map<String, dynamic> json) =>
             (e) => VerificationSubmission.fromJson(e as Map<String, dynamic>),
           )
           .toList(),
+      upload: UploadPolicy.fromJson(json['upload'] as Map<String, dynamic>),
       reason: json['reason'] as String?,
       verifiedAt: json['verifiedAt'] as String?,
     );

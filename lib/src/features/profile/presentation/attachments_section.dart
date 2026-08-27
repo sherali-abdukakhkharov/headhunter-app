@@ -8,8 +8,8 @@ import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/upload_cancelled.dart';
 import 'package:jobbridge_app/src/features/profile/data/attachments_repository.dart';
 import 'package:jobbridge_app/src/features/profile/data/profile_controller.dart';
-import 'package:jobbridge_app/src/features/profile/domain/attachment.dart';
 import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
+import 'package:jobbridge_app/src/shared/domain/attachment.dart';
 
 /// The profile's files (§5.4, UAT-03) — one slot per schema-declared purpose.
 ///

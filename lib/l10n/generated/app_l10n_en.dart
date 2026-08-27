@@ -559,6 +559,10 @@ class AppL10nEn extends AppL10n {
       'Save your details before submitting for verification.';
 
   @override
+  String get employerEvidenceBlocked =>
+      'Upload every required document before submitting for verification.';
+
+  @override
   String get attachmentsTitle => 'Documents';
 
   @override

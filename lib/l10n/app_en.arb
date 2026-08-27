@@ -690,6 +690,10 @@
   "@employerSaveFirst": {
     "description": "Shown when the form has unsaved changes: the server verifies what it has stored, not what is on screen."
   },
+  "employerEvidenceBlocked": "Upload every required document before submitting for verification.",
+  "@employerEvidenceBlocked": {
+    "description": "Why the verification submit button is disabled (§6.1). Local to the field, never the page error state, whose heading claims the system failed (MT-013)."
+  },
   "attachmentsTitle": "Documents",
   "@attachmentsTitle": {
     "description": "Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here."

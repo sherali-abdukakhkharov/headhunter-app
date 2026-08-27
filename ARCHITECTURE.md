@@ -306,6 +306,39 @@ certificates, with **progress, success, failure and retry** states.
 - Validate type and size client-side for fast feedback, but treat the server as
   authoritative (§12.5).
 
+### Two upload routes, and which one a screen wants
+
+`POST /candidates/me/attachments` and `POST /files` both store a file against a
+`file_purpose` **code**. The difference is whose rules apply:
+
+- **The candidate's profile files go through the attachments route**, because a
+  candidate's files sit in *slots* the work-category schema declares — each with
+  its own accepted extensions, size limit and `maxCount` — and uploading past a
+  slot's `maxCount` is what retires the oldest file of that purpose. Something
+  has to enforce that, and it is that route.
+- **Everything else goes through `POST /files`**, which is owner-scoped and has
+  no slots. Employer verification evidence is the case that exists today:
+  `GET /employers/me/verification` already says which purposes are wanted and
+  `POST /employers/me/verification` already decides whether what arrived is
+  enough, so a second attachments controller would only restate both.
+
+Both answer the same shape, which is why `Attachment` lives in `shared/domain`
+rather than inside the profile feature.
+
+**Both return the purpose as a code as well as an id.** `/files` returned only
+`purposeId` until 2026-08-28, so a client that had just uploaded against
+`company_registration` could not tell which row the result belonged to without
+resolving the dictionary first — the id/code confusion CLAUDE.md warns about,
+one layer below where it usually bites.
+
+**The accepted extensions and the size cap are served, never hardcoded.** The
+candidate's come from the schema; the employer's ride along on the verification
+state. `FILE_MAX_SIZE_BYTES` is a deployment setting, so a client holding a copy
+either bounces files this instance would take or promises ones it would refuse.
+An absent policy means "do not filter locally" — the server validates the
+extension, the MIME type *and* the leading bytes regardless, so the local check
+is an optimization and losing it degrades the upload rather than the screen.
+
 ### Download is a path on this API, not a signed URL
 
 This section used to say "short-lived signed URLs". **It is not what shipped**,

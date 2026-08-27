@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/network/upload_cancelled.dart';
-import 'package:jobbridge_app/src/features/profile/domain/attachment.dart';
+import 'package:jobbridge_app/src/shared/domain/attachment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'attachments_repository.g.dart';

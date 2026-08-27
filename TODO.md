@@ -646,7 +646,7 @@ category to compare against.
 - [ ] Test: form adapts by category and irrelevant fields are not mandatory —
       needs a second category to compare against
 
-## M4 - Employer profile *(done bar evidence upload)*
+## M4 - Employer profile
 
 The employer Company tab is a real screen. Walked end to end on an emulator
 against the live API on 2026-08-07 with a freshly registered employer account.
@@ -657,12 +657,23 @@ against the live API on 2026-08-07 with a freshly registered employer account.
       an error. The type is fixed after creation (`employer.type_immutable`),
       so the chooser disappears rather than offering a control that always
       fails, and the `PUT` carries only the chosen type's fields
-- [~] Verification submission + evidence upload — state, the served
-      `requiredEvidence` list and submission are wired; **the evidence files
-      are not.** They go through `POST /files` and want the attachments widget
-      generalised, which is the next slice. The server refuses a submission
-      that lacks a required document and says so, so the gap is visible rather
-      than silent
+- [x] Verification submission + evidence upload, **completed 2026-08-28**.
+      The list and the submission shipped without the upload, so the card
+      marked a document "Required" and offered nowhere to put one — reported
+      from a device by the owner, and the right reading of the report: the
+      server's refusal made the gap *visible*, not acceptable. Each row is now
+      an upload slot with progress, cancel, a stated reason and retry, and the
+      submit button is off with the reason named until every required document
+      is there. Evidence goes through the generic `POST /files` rather than a
+      second attachments controller — it has no slots to enforce, the
+      verification state already says which purposes are wanted, and
+      `POST /employers/me/verification` already decides whether what arrived
+      is enough. Two things had to change server-side: `/files` now returns
+      `purposeCode` beside `purposeId` (it *took* a code and returned only an
+      id, so nothing could tell which document it had just uploaded without
+      resolving the dictionary), and the verification state now carries the
+      accepted extensions and `FILE_MAX_SIZE_BYTES` so the picker's filter is
+      the deployment's rather than a copy in Dart
 - [x] Status display with admin reason and changes-required path — the five
       §6.1 states through the design system's own badge constructors, and the
       administrator's reason shown **verbatim** (§2.4). An unrecognised status

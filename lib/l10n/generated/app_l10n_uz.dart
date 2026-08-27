@@ -561,6 +561,10 @@ class AppL10nUz extends AppL10n {
       'Tasdiqlashga yuborishdan oldin ma\'lumotlarni saqlang.';
 
   @override
+  String get employerEvidenceBlocked =>
+      'Tasdiqlashga yuborishdan oldin barcha majburiy hujjatlarni yuklang.';
+
+  @override
   String get attachmentsTitle => 'Hujjatlar';
 
   @override
@@ -3831,6 +3835,10 @@ class AppL10nUzCyrl extends AppL10nUz {
       'Тасдиқлашга юборишдан олдин маълумотларни сақланг.';
 
   @override
+  String get employerEvidenceBlocked =>
+      'Тасдиқлашга юборишдан олдин барча мажбурий ҳужжатларни юкланг.';
+
+  @override
   String get attachmentsTitle => 'Ҳужжатлар';
 
   @override
@@ -7090,6 +7098,10 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get employerSaveFirst =>
       'Tasdiqlashga yuborishdan oldin ma\'lumotlarni saqlang.';
+
+  @override
+  String get employerEvidenceBlocked =>
+      'Tasdiqlashga yuborishdan oldin barcha majburiy hujjatlarni yuklang.';
 
   @override
   String get attachmentsTitle => 'Hujjatlar';

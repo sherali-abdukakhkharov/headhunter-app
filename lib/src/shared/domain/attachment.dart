@@ -3,8 +3,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'attachment.g.dart';
 
-/// A file attached to the profile (§4.5, §5.4): CV, photo, certificate or
-/// supporting document.
+/// A file the account owns: CV, photo, certificate, or an employer's
+/// registration certificate (§4.5, §5.4, §6.1).
+///
+/// Shared rather than owned by the profile feature because two features now
+/// read it — the candidate's attachments come from
+/// `/candidates/me/attachments` and the employer's verification evidence from
+/// the generic `/files`. Both shapes are the same file; only the route differs.
 ///
 /// Uploads are deliberately outside the field union — §4.5 keeps every file out
 /// of `kind`, and the schema declares the slots in its own `attachments` block

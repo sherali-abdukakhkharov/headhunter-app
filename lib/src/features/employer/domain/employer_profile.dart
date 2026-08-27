@@ -122,6 +122,35 @@ class RequiredEvidence {
   final bool required;
 }
 
+/// What an evidence upload may be (`FILE_MAX_SIZE_BYTES` and the accepted
+/// extensions).
+///
+/// Served for the same reason [RequiredEvidence] is: the size cap is a
+/// deployment setting, and a client that hardcodes it either refuses files this
+/// instance would take or promises ones it would not.
+@JsonSerializable(createToJson: false)
+@immutable
+class UploadPolicy {
+  const UploadPolicy({
+    required this.acceptedExtensions,
+    required this.maxSizeBytes,
+  });
+
+  factory UploadPolicy.fromJson(Map<String, dynamic> json) =>
+      _$UploadPolicyFromJson(json);
+
+  /// Lower-case, without the dot — what `FilePicker`'s `allowedExtensions`
+  /// wants.
+  ///
+  /// **Empty means "do not filter locally"**, not "accept nothing": that is
+  /// what an API too old to serve the policy leaves behind, and a picker
+  /// offering no file types at all would be unusable rather than unhelpful.
+  final List<String> acceptedExtensions;
+
+  /// Zero means unknown — skip the local pre-check and let the server answer.
+  final int maxSizeBytes;
+}
+
 /// A past verification attempt and why it was refused.
 @JsonSerializable(createToJson: false)
 @immutable
@@ -154,12 +183,22 @@ class VerificationState {
     required this.status,
     required this.requiredEvidence,
     required this.submissions,
+    required this.upload,
     this.reason,
     this.verifiedAt,
   });
 
   factory VerificationState.fromJson(Map<String, dynamic> json) =>
-      _$VerificationStateFromJson(json);
+      _$VerificationStateFromJson({
+        // Defaulted rather than required, so an API that predates the policy
+        // being served cannot take the whole verification card down with it.
+        // The local extension filter and size check are optimizations — the
+        // server enforces both regardless — so losing them degrades to "let
+        // the server refuse it", which is a worse upload, not a dead screen.
+        // The spread order means a served policy always wins.
+        'upload': const {'acceptedExtensions': <String>[], 'maxSizeBytes': 0},
+        ...json,
+      });
 
   final String status;
   final String? reason;
@@ -168,6 +207,9 @@ class VerificationState {
 
   /// Newest first.
   final List<VerificationSubmission> submissions;
+
+  /// The accepted extensions and size cap for the evidence above.
+  final UploadPolicy upload;
 
   /// Whether the employer may submit at all right now.
   ///

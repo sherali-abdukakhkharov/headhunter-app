@@ -7,8 +7,10 @@ import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_provider
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_repository.dart';
+import 'package:jobbridge_app/src/features/employer/data/evidence_repository.dart';
 import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
 import 'package:jobbridge_app/src/features/employer/presentation/employer_profile_screen.dart';
+import 'package:jobbridge_app/src/shared/domain/attachment.dart';
 
 /// The employer profile and verification (§6.1, BR-03).
 class _FakeEmployer implements EmployerRepository {
@@ -55,9 +57,28 @@ class _FakeEmployer implements EmployerRepository {
         });
   }
 
+  /// Every list of file ids handed to `POST /employers/me/verification`.
+  final submitted = <List<String>>[];
+
   @override
-  Future<void> submitVerification(List<String> fileIds) async {}
+  Future<void> submitVerification(List<String> fileIds) async {
+    submitted.add(fileIds);
+  }
 }
+
+Attachment _file({
+  required String purposeCode,
+  String id = 'file-1',
+  String fileName = 'registration.pdf',
+}) => Attachment(
+  id: id,
+  purposeCode: purposeCode,
+  fileName: fileName,
+  mimeType: 'application/pdf',
+  sizeBytes: 1024,
+  createdAt: '2026-08-28T10:00:00+05:00',
+  downloadPath: '/files/$id/content',
+);
 
 EmployerProfile _profile({
   String type = 'company',
@@ -109,6 +130,7 @@ void main() {
   Future<_FakeEmployer> pump(
     WidgetTester tester, {
     _FakeEmployer? repository,
+    List<Attachment> evidence = const [],
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -121,6 +143,9 @@ void main() {
         retry: (retryCount, error) => null,
         overrides: [
           employerRepositoryProvider.overrideWithValue(fake),
+          // Without this the card reaches the real `/files` through the real
+          // Dio, and the pending request outlives the widget tree.
+          evidenceFilesProvider.overrideWith((ref) => evidence),
           dictionaryProvider('industry').overrideWith(
             (ref) => const <DictionaryItem>[],
           ),
@@ -337,6 +362,155 @@ void main() {
 
       expect(find.text('Required'), findsOneWidget);
       expect(find.text('Optional'), findsOneWidget);
+    });
+
+    testWidgets('offers a way to upload each document it demands', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        repository: _FakeEmployer(
+          profile: _profile(),
+          state: VerificationState.fromJson(const {
+            'status': 'not_submitted',
+            'requiredEvidence': [
+              {'purposeCode': 'company_registration', 'required': true},
+            ],
+            'submissions': <dynamic>[],
+            'upload': {
+              'acceptedExtensions': ['pdf'],
+              'maxSizeBytes': 10485760,
+            },
+          }),
+        ),
+      );
+
+      // **The bug this exists for.** The card marked the certificate
+      // "Required" from the day it shipped and gave no way to supply one:
+      // `submit` sent an empty list and left the server to explain the
+      // refusal. A screen that names an obligation it cannot let you meet is
+      // worse than one that says nothing.
+      expect(find.text('Required'), findsOneWidget);
+      expect(find.text('Upload'), findsOneWidget);
+      expect(find.text('Nothing uploaded yet'), findsOneWidget);
+    });
+
+    testWidgets('will not submit while a required document is missing', (
+      tester,
+    ) async {
+      final fake = _FakeEmployer(
+        profile: _profile(),
+        state: VerificationState.fromJson(const {
+          'status': 'not_submitted',
+          'requiredEvidence': [
+            {'purposeCode': 'company_registration', 'required': true},
+          ],
+          'submissions': <dynamic>[],
+        }),
+      );
+
+      await pump(tester, repository: fake);
+
+      // Stated, not implied: a disabled button with no reason is the same
+      // dead end as a button that fails when pressed.
+      expect(
+        find.text(
+          'Upload every required document before submitting for verification.',
+        ),
+        findsOneWidget,
+      );
+
+      final button = tester.widget<HhButton>(
+        find.widgetWithText(HhButton, 'Submit for verification'),
+      );
+      expect(button.onPressed, isNull);
+    });
+
+    testWidgets('an optional document alone does not block the submission', (
+      tester,
+    ) async {
+      final fake = _FakeEmployer(
+        profile: _profile(),
+        state: VerificationState.fromJson(const {
+          'status': 'not_submitted',
+          'requiredEvidence': [
+            {'purposeCode': 'evidence', 'required': false},
+          ],
+          'submissions': <dynamic>[],
+        }),
+      );
+
+      await pump(tester, repository: fake);
+
+      // `required: false` is §6.1's "if required by policy" saying no. Holding
+      // the submission for it would make the flag meaningless.
+      final button = tester.widget<HhButton>(
+        find.widgetWithText(HhButton, 'Submit for verification'),
+      );
+      expect(button.onPressed, isNotNull);
+    });
+
+    testWidgets('submits the ids of the documents it was asked for', (
+      tester,
+    ) async {
+      final fake = _FakeEmployer(
+        profile: _profile(),
+        state: VerificationState.fromJson(const {
+          'status': 'not_submitted',
+          'requiredEvidence': [
+            {'purposeCode': 'company_registration', 'required': true},
+          ],
+          'submissions': <dynamic>[],
+        }),
+      );
+
+      await pump(
+        tester,
+        repository: fake,
+        evidence: [
+          _file(purposeCode: 'company_registration', id: 'wanted'),
+          // The account holds this one too. Attaching it would put a document
+          // in front of an administrator that nobody asked for.
+          _file(purposeCode: 'logo', id: 'unwanted', fileName: 'logo.png'),
+        ],
+      );
+
+      // The profile form is long enough that the card sits below the fold.
+      final submit = find.text('Submit for verification');
+      await tester.ensureVisible(submit);
+      await tester.pumpAndSettle();
+      await tester.tap(submit);
+      await tester.pumpAndSettle();
+
+      expect(fake.submitted, [
+        ['wanted'],
+      ]);
+    });
+
+    testWidgets('an uploaded document is named, and offers replacement', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        repository: _FakeEmployer(
+          profile: _profile(),
+          state: VerificationState.fromJson(const {
+            'status': 'not_submitted',
+            'requiredEvidence': [
+              {'purposeCode': 'company_registration', 'required': true},
+            ],
+            'submissions': <dynamic>[],
+          }),
+        ),
+        evidence: [_file(purposeCode: 'company_registration')],
+      );
+
+      expect(find.text('registration.pdf'), findsOneWidget);
+      expect(find.text('Nothing uploaded yet'), findsNothing);
+      // §5.4's "replace": uploading again retires the old one server-side, so
+      // the button says what pressing it does.
+      expect(find.text('Replace'), findsOneWidget);
+      expect(find.text('Upload'), findsNothing);
     });
 
     testWidgets('is not offered while an attempt is under review', (

@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
-import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
-import 'package:jobbridge_app/src/features/dictionaries/presentation/dictionary_label.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
+import 'package:jobbridge_app/src/features/employer/data/evidence_repository.dart';
 import 'package:jobbridge_app/src/features/employer/domain/employer_profile.dart';
+import 'package:jobbridge_app/src/features/employer/presentation/evidence_slot.dart';
+import 'package:jobbridge_app/src/shared/domain/attachment.dart';
 
 /// The badge for one of §6.1's five verification states.
 ///
@@ -58,9 +59,10 @@ Widget verificationBadge(String status, AppL10n l10n) => switch (status) {
 ///
 /// ## What blocks submission is stated, not implied
 ///
-/// The server refuses a submission from an incomplete profile, and refuses a
-/// second one while an attempt is under review. Both are visible here rather
-/// than being discovered by pressing a button that fails.
+/// The server refuses a submission from an incomplete profile, refuses a second
+/// one while an attempt is under review, and refuses one that is missing a
+/// required document. All three are visible here rather than being
+/// discovered by pressing a button that fails.
 class VerificationCard extends ConsumerWidget {
   const VerificationCard({required this.dirty, super.key});
 
@@ -115,6 +117,17 @@ class _BodyState extends ConsumerState<_Body> {
     final l10n = AppL10n.of(context);
     final state = widget.state;
 
+    // A failure here must not blank the card: the status, the reason and the
+    // required list are all still worth reading without it.
+    final uploaded =
+        ref.watch(evidenceFilesProvider).value ?? const <Attachment>[];
+
+    // Derived from the same list the submit path sends, so the button's enabled
+    // state and what submitting would actually do cannot disagree.
+    final missing = state.requiredEvidence
+        .where((e) => e.required)
+        .any((e) => !uploaded.any((f) => f.purposeCode == e.purposeCode));
+
     return HhCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,33 +150,12 @@ class _BodyState extends ConsumerState<_Body> {
             // Served rather than hardcoded — §6.1 leaves the policy open, so
             // which documents are demanded can change without a release.
             for (final evidence in state.requiredEvidence)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      // The dictionary's word for it, not the raw
-                      // `company_registration` (MT-012). An employer being told
-                      // which document to upload is the last person who should
-                      // have to read a column name.
-                      child: DictionaryCodeLabel(
-                        type: DictionaryType.filePurpose,
-                        code: evidence.purposeCode,
-                        style: HhTypography.body,
-                      ),
-                    ),
-                    Text(
-                      evidence.required
-                          ? l10n.employerEvidenceRequired
-                          : l10n.employerEvidenceOptional,
-                      style: HhTypography.caption.copyWith(
-                        color: evidence.required
-                            ? HhColors.warning
-                            : HhColors.inkMuted,
-                      ),
-                    ),
-                  ],
-                ),
+              EvidenceSlot(
+                evidence: evidence,
+                files: uploaded
+                    .where((f) => f.purposeCode == evidence.purposeCode)
+                    .toList(),
+                policy: state.upload,
               ),
           ],
 
@@ -175,15 +167,27 @@ class _BodyState extends ConsumerState<_Body> {
             ),
           ],
 
+          if (state.canSubmit && missing && !widget.dirty) ...[
+            const SizedBox(height: HhSpace.md),
+            Text(
+              l10n.employerEvidenceBlocked,
+              style: HhTypography.caption.copyWith(color: HhColors.warning),
+            ),
+          ],
+
           if (state.canSubmit) ...[
             const SizedBox(height: HhSpace.md),
             HhButton.secondary(
               label: l10n.employerSubmitVerification,
               loading: _submitting,
-              // Blocked while the form is dirty: the server reviews what it
-              // has stored, so submitting now would put the *old* details in
-              // front of an administrator.
-              onPressed: widget.dirty || _submitting ? null : _submit,
+              // Off for three reasons, each of them stated above rather than
+              // left to be discovered by pressing it: unsaved changes (the
+              // server reviews what it has *stored*, so this would put the old
+              // details in front of an administrator), a missing required
+              // document, and a submission already in flight.
+              onPressed: widget.dirty || missing || _submitting
+                  ? null
+                  : () => _submit(uploaded),
             ),
           ],
         ],
@@ -191,16 +195,25 @@ class _BodyState extends ConsumerState<_Body> {
     );
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(List<Attachment> uploaded) async {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _submitting = true);
 
     try {
-      // No file ids yet: evidence upload goes through `POST /files` and is the
-      // next slice. The server refuses the submission when it requires a
-      // document, and says which — so the refusal is informative rather than
-      // this pretending the button is not there.
-      await ref.read(verificationProvider.notifier).submit(const []);
+      // Only files uploaded against a purpose this verification asked for. The
+      // account can hold others — a logo, a stray scan — and attaching one puts
+      // a document in front of an administrator that nobody asked for. The
+      // server caps `fileIds` at ten, which the same filter keeps this inside.
+      final wanted = widget.state.requiredEvidence
+          .map((e) => e.purposeCode)
+          .toSet();
+
+      await ref
+          .read(verificationProvider.notifier)
+          .submit([
+            for (final file in uploaded)
+              if (wanted.contains(file.purposeCode)) file.id,
+          ]);
     } on ApiException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     } finally {

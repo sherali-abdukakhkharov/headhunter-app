@@ -561,6 +561,10 @@ class AppL10nRu extends AppL10n {
       'Сохраните данные перед отправкой на проверку.';
 
   @override
+  String get employerEvidenceBlocked =>
+      'Загрузите все обязательные документы перед отправкой на проверку.';
+
+  @override
   String get attachmentsTitle => 'Документы';
 
   @override

@@ -126,6 +126,7 @@
   "employerCannotPublish": "Vakansiya joylash va nomzod taklif qilish uchun profilni to'ldiring va tasdiqdan o'ting.",
   "employerCanPublish": "Siz vakansiya joylashingiz va nomzodlarni taklif qilishingiz mumkin.",
   "employerSaveFirst": "Tasdiqlashga yuborishdan oldin ma'lumotlarni saqlang.",
+  "employerEvidenceBlocked": "Tasdiqlashga yuborishdan oldin barcha majburiy hujjatlarni yuklang.",
   "attachmentsTitle": "Hujjatlar",
   "attachmentUpload": "Yuklash",
   "attachmentReplace": "Almashtirish",

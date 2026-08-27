@@ -1061,6 +1061,12 @@ abstract class AppL10n {
   /// **'Save your details before submitting for verification.'**
   String get employerSaveFirst;
 
+  /// Why the verification submit button is disabled (§6.1). Local to the field, never the page error state, whose heading claims the system failed (MT-013).
+  ///
+  /// In en, this message translates to:
+  /// **'Upload every required document before submitting for verification.'**
+  String get employerEvidenceBlocked;
+
   /// Heading of the file section (§5.4). Covers the CV, photo, certificates and supporting documents, because the slots come from the schema rather than being listed here.
   ///
   /// In en, this message translates to:

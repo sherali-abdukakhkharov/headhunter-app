@@ -529,6 +529,10 @@ class _FakeVerification extends Verification {
     status: _status,
     requiredEvidence: const [],
     submissions: const [],
+    upload: const UploadPolicy(
+      acceptedExtensions: ['pdf'],
+      maxSizeBytes: 10 * 1024 * 1024,
+    ),
   );
 }
 
