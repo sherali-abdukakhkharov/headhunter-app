@@ -17,6 +17,24 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.21.0+31 — 2026-08-27
+
+No visible change. A file you attach and then remove no longer sits on the
+server forever.
+
+### Internal
+
+- **MT-023**, and it was the cost of 1.17''s own feature. A chat file is stored
+  the moment it is picked, so removing it before sending left a file on the
+  server that belonged to nobody''s message and that nobody — not the person who
+  uploaded it, not the other side, not an administrator — could reach again.
+- The server now expires those after **seven days**
+  (`headhunter-backend@5725f00`), alongside the other short-lived data BR-14
+  already sweeps.
+- **Nothing in the app changed.** Deleting the file the moment somebody taps
+  "remove" was the alternative, and it makes the ordinary case worse: removing a
+  file and changing your mind would mean uploading it again. What changed here is
+  the documentation, which had said the upload simply lives on.
 ## 1.20.0+30 — 2026-08-27
 
 Screen readers stop saying everything twice.

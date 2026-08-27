@@ -407,9 +407,11 @@ class _Messages extends ConsumerWidget {
 /// waits, shown as two things: a refused or failed *send* keeps the upload, so
 /// somebody whose thread closed under them does not pay for the bytes twice.
 ///
-/// **Removing it only removes it from the composer.** The file stays stored and
-/// owned by the sender — nothing was attached to anything, so there is nothing
-/// to detach, and the server treats an unsent upload as an ordinary owned file.
+/// **Removing it only removes it from the composer.** Nothing was attached to
+/// anything, so there is nothing to detach — and the upload is not left forever
+/// either: the server expires a chat upload that never became a message after
+/// seven days (MT-023). Deleting it on the tap instead would make re-attaching
+/// mean uploading again, for the very ordinary case of changing your mind.
 ///
 /// **The extension list decides what the picker offers, not what is allowed.**
 /// The server is the authority and refuses with a message it has already

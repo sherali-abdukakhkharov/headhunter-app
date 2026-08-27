@@ -8,12 +8,19 @@ import 'package:flutter/foundation.dart';
 ///
 /// The upload stores a file the caller owns; it becomes an *attachment* when a
 /// message carries its [fileId]. So a composer holding one of these has
-/// something to send, not something sent — and abandoning it costs a stored
-/// file nobody references, which the server treats as an ordinary owned file
-/// rather than a dangling row.
+/// something to send, not something sent.
 ///
-/// That is also why there is no "delete the draft attachment" call: there is
-/// nothing to detach.
+/// ## Abandoning one is safe, and it does not last (MT-023)
+///
+/// There is no "delete the draft attachment" call, because there is nothing to
+/// detach — but "nothing happens to it" was not a policy either, and an
+/// unreferenced row that nobody can reach is exactly what BR-14 exists to put a
+/// period on. The server sweeps chat uploads that never became messages after
+/// **seven days** (`unsent_message_attachments` in its retention policy).
+///
+/// Seven rather than deleting the moment somebody taps remove: removing a file
+/// and changing your mind is the ordinary case, and deleting on the tap would
+/// make re-attaching mean uploading again.
 @immutable
 class MessageAttachment {
   const MessageAttachment({

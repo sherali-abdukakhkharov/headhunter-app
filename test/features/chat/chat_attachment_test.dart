@@ -175,8 +175,10 @@ void main() {
 
       expect(find.textContaining('Ready to send'), findsNothing);
       expect(enabled(tester), isFalse);
-      // The composer forgot it; the server was never told, because there is no
-      // "detach" — the file is simply one its owner uploaded and did not send.
+      // The composer forgot it and the server was never told: there is no
+      // "detach", because nothing was attached. The row is not immortal either
+      // — the server expires an upload that never became a message after seven
+      // days (MT-023), which is why no call belongs here.
       expect(fake.sent, isEmpty);
     });
 
