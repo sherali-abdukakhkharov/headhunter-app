@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/time/zoned_timestamp.dart';
@@ -41,6 +44,14 @@ class _FakeAccount implements AccountRepository {
     deletionRequests++;
     return ZonedTimestamp.parse('2026-08-20T10:00:00+05:00');
   }
+  @override
+  Future<String?> accountLocale() =>
+      throw UnsupportedError('This suite must not read the account language.');
+
+  @override
+  Future<void> updateLocale(String tag) =>
+      throw UnsupportedError('This suite must not write the account language.');
+
 }
 
 UserSession _session({
@@ -63,8 +74,12 @@ void main() {
     WidgetTester tester, {
     List<UserSession> items = const [],
     ApiException? failure,
+    Set<AppRole> roles = const {AppRole.candidate},
   }) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    // Tall enough for the whole screen: a `ListView` builds only the children
+    // in its viewport, and the language and role sections pushed the deletion
+    // block off a phone-sized one.
+    tester.view.physicalSize = const Size(1080, 6000);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
@@ -73,7 +88,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         retry: (retryCount, error) => null,
-        overrides: [accountRepositoryProvider.overrideWithValue(fake)],
+        overrides: [
+          accountRepositoryProvider.overrideWithValue(fake),
+          sessionControllerProvider.overrideWith(() => _Session(roles)),
+        ],
         child: MaterialApp(
           theme: HhTheme.light,
           locale: const Locale('en'),
@@ -270,4 +288,95 @@ void main() {
       expect(find.text('Try again'), findsOneWidget);
     });
   });
+  group('§3.2 language', () {
+    testWidgets('is changeable here, in the words of each', (
+      tester,
+    ) async {
+      await pump(tester, items: [_session(id: 's-1')]);
+
+      // It was selectable on the sign-in screen and nowhere else, so anybody
+      // who picked wrong once had no way back short of reinstalling.
+      expect(find.text('Language'), findsOneWidget);
+
+      // nativeName, never a translated language name: a picker rendering every
+      // option in the *current* language is unusable to the one person who
+      // needs it — somebody who cannot read the current language.
+      expect(find.text('Ўзбекча (Кирилл)'), findsOneWidget);
+      expect(find.text('Русский'), findsOneWidget);
+      expect(find.text('Uzbek (Cyrillic)'), findsNothing);
+      expect(find.text('Russian'), findsNothing);
+    });
+
+    testWidgets('says the choice is stored on the account', (tester) async {
+      await pump(tester, items: [_session(id: 's-1')]);
+
+      // §3.2: it follows the user to their other devices, which is worth
+      // saying — otherwise changing it here reads as a setting on this phone.
+      expect(
+        find.textContaining('follows you to your other devices'),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('§2.3 role switching', () {
+    testWidgets('is not offered to an account with one role', (tester) async {
+      await pump(tester, items: [_session(id: 's-1')]);
+
+      // A switcher with one option is a control that does nothing.
+      expect(find.text('Role'), findsNothing);
+    });
+
+    testWidgets('lists every granted role and marks the one in use', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        items: [_session(id: 's-1')],
+        roles: {AppRole.candidate, AppRole.employer},
+      );
+
+      expect(find.text('Role'), findsOneWidget);
+      expect(find.text('Candidate'), findsOneWidget);
+      expect(find.text('Employer'), findsOneWidget);
+
+      // A word, never colour alone.
+      expect(find.text('In use'), findsOneWidget);
+
+      // The role that is not granted is absent rather than disabled: this is
+      // the product surface, not the dev screen, and an administrator row on a
+      // candidate's account would be a question nobody can answer.
+      expect(find.text('Administrator'), findsNothing);
+    });
+
+    testWidgets('the role in use is not a control', (tester) async {
+      await pump(
+        tester,
+        items: [_session(id: 's-1')],
+        roles: {AppRole.candidate, AppRole.employer},
+      );
+
+      final rows = tester.widgetList<HhCard>(
+        find.ancestor(
+          of: find.text('In use'),
+          matching: find.byType(HhCard),
+        ),
+      );
+
+      // Pressing it would switch to the role already active, which is a no-op
+      // that navigates — the worst kind, because it looks like it worked.
+      expect(rows.single.onTap, isNull);
+    });
+  });
+
+}
+
+/// A session holding exactly the roles a case needs.
+class _Session extends SessionController {
+  _Session(this.roles);
+
+  final Set<AppRole> roles;
+
+  @override
+  SessionState build() => SessionActive(roles: roles);
 }

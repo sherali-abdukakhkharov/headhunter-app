@@ -9,11 +9,11 @@ part 'locale_controller.g.dart';
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the server
-/// value wins on a fresh install, and a local change is pushed to the server.
-/// Only the local half exists today - [select] is where the server push lands
-/// when the profile endpoint arrives in M1, and the seam is marked below rather
-/// than left to be rediscovered.
+/// so local storage is the source of truth pre-auth. After sign-in the
+/// account's value wins on a device that has never been asked, and a choice
+/// made here wins and travels. **Both halves exist as of 2026-08-28** — this
+/// class owns the local one and `LocaleSync` owns the server one, because
+/// `core/` must not import a feature's repository.
 ///
 /// Kept alive: this is read by the `x-lang` interceptor on every request and by
 /// `MaterialApp.locale`, so it must not be rebuilt when a screen is disposed.
@@ -38,18 +38,33 @@ class LocaleController extends _$LocaleController {
     );
   }
 
-  /// Applies and persists a language choice.
+  /// Whether the user has ever chosen a language on this install.
+  ///
+  /// The stored key is written by [select] alone, so its absence means "never
+  /// chosen" rather than "chose the default". That distinction is what decides
+  /// who wins at sign-in: a choice made here is the more recent statement of
+  /// intent and travels to the account, and a device that has never been asked
+  /// takes the account's answer instead of overwriting it with a guess made
+  /// from the phone's system language.
+  Future<bool> hasLocalChoice() async {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+
+    return prefs.getString(_storageKey) != null;
+  }
+
+  /// Applies and persists a language choice, locally.
   ///
   /// Writes optimistically so the UI switches immediately; a failed write costs
   /// the preference on next launch, not the current session.
+  ///
+  /// **The server half lives in `LocaleSync`**, not here: pushing it needs a
+  /// repository, and `core/` reaching into a feature is the wrong direction.
+  /// Call the sync from a screen — it does this and then the push.
   Future<void> select(AppLocale locale) async {
     state = AsyncData(locale);
 
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setString(_storageKey, locale.tag);
-
-    // M1 seam: once the profile endpoint exists, push the choice to the server
-    // here so it restores on the user's other signed-in devices (§3.2).
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/role_label.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
@@ -500,7 +501,7 @@ class _HistoryRow extends StatelessWidget {
             // expired restriction writes a row with no actor, and that is the
             // difference between a decision and a deadline.
             switch (entry.actorRole) {
-              final role? => l10n.adminUserHistoryBy(_roleLabel(role, l10n)),
+              final role? => l10n.adminUserHistoryBy(roleLabel(role, l10n)),
               _ => l10n.adminUserHistoryAutomatic,
             },
             style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
@@ -516,11 +517,6 @@ class _HistoryRow extends StatelessWidget {
     );
   }
 
-  String _roleLabel(AppRole role, AppL10n l10n) => switch (role) {
-    AppRole.candidate => l10n.roleCandidate,
-    AppRole.employer => l10n.roleEmployer,
-    AppRole.admin => l10n.roleAdmin,
-  };
 }
 
 /// One complaint filed about this account.

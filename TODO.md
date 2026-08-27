@@ -267,9 +267,22 @@ Installing `AuthInterceptor` stays blocked on the backend's auth contract.
       — in `AppLocale`, **not** the generated list, which drops script codes
 - [x] **Never key on `locale.languageCode` alone** - it collapses the two Uzbek
       scripts. Use the full tag for ARB lookup, `x-lang`, and cache keys.
-- [~] Locale controller: local persistence pre-auth, server sync post-auth
-      — local half done; the server push is a marked seam in `select()` waiting
-      on the M1 profile endpoint
+- [x] **Locale controller: local pre-auth, account-wide post-auth, 2026-08-28.**
+      `PATCH /users/me/locale` on a change, `GET /users/me` at sign-in. The
+      decision worth keeping is **who wins**: a choice made on this device wins
+      and travels to the account, because §3.2 lets somebody pick before
+      registering and overwriting that would undo the last thing they did; a
+      device that has never been asked takes the account's value, because the
+      alternative is pushing a guess made from the phone's system language over
+      a deliberate choice made elsewhere. `hasLocalChoice()` tells the two
+      apart, and can only do so because the stored key is written by `select`
+      alone.
+      The server half lives in `LocaleSync` (`features/account/data/`) rather
+      than on the controller: pushing needs a repository, and `core/l10n` is
+      read by the `x-lang` interceptor — it is as low as anything in this app
+      goes and must not import a feature.
+      A failed push costs the sync, never the choice: the local write happens
+      first and is not rolled back
 - [x] `x-lang` dio interceptor — reads the locale per request, installed in
       `dio_provider.dart`
 - [x] Fallback chain `uz-Cyrl → uz-Latn → en`; a missing key must never render
@@ -488,8 +501,18 @@ working destinations rather than dead ends.
       that both lines render and the whole row stays one tap target, which is not
       the same as looking at the alignment — and MEMORY.md records three design
       bugs that a green analyze and a green suite both missed
-- [~] Role switcher in the profile area — `switchRoleAndGo` is done and exercised
-      from `/_dev`; it needs its product entry point once the profile area exists
+- [x] **Role switcher in the account screen, 2026-08-28.** `switchRoleAndGo`,
+      never `SessionController.switchRole` alone — the account screen sits
+      *inside* a role shell, which is exactly where the redirect chain's
+      deep-link rule re-activates the role that owns the current path and
+      silently undoes the switch.
+      Drawn only when the account holds more than one role, since a switcher
+      with one option is a control that does nothing, and the role in use is
+      not tappable: pressing it would navigate without changing anything, which
+      is the worst kind of no-op because it looks like it worked.
+      §3.2's language picker landed on the same screen and in the same pass —
+      it was selectable on the sign-in screen and **nowhere else**, so anybody
+      who picked wrong once had no way back short of reinstalling
 - [x] **Account and security screen, 2026-08-20.** §4.2's session list with
       per-device revoke and terminate-all, BR-14's deletion request, and — the
       part that turned out to matter most — **a sign-out an ordinary user can

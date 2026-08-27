@@ -1808,6 +1808,20 @@ class AppL10nRu extends AppL10n {
   String get accountDelete => 'Удаление аккаунта';
 
   @override
+  String get accountRole => 'Роль';
+
+  @override
+  String get accountRoleBody =>
+      'У этого аккаунта их несколько. Переключение меняет то, что вы видите в приложении, и ничего не меняет в самом аккаунте.';
+
+  @override
+  String get accountRoleActive => 'Сейчас';
+
+  @override
+  String get accountLanguageBody =>
+      'Сохраняется в аккаунте, поэтому язык переходит на ваши другие устройства.';
+
+  @override
   String get accountDeleteBody =>
       'Ваш профиль, заявки и сообщения будут удалены. Отменить это нельзя.';
 

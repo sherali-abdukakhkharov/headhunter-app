@@ -3107,6 +3107,30 @@ abstract class AppL10n {
   /// **'Delete account'**
   String get accountDelete;
 
+  /// §2.3. The section is drawn only when the account holds more than one role — a switcher with one option is a control that does nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get accountRole;
+
+  /// Says what switching does and, as importantly, what it does not: a role is granted server-side and this changes neither the grant nor anything anybody else can see.
+  ///
+  /// In en, this message translates to:
+  /// **'This account holds more than one. Switching changes what the app shows you; it changes nothing on the account itself.'**
+  String get accountRoleBody;
+
+  /// Marks the role currently in use. A word rather than colour alone, the same rule every status on this product follows.
+  ///
+  /// In en, this message translates to:
+  /// **'In use'**
+  String get accountRoleActive;
+
+  /// §3.2: the choice is stored on the account, so it follows the user to every signed-in device rather than staying on the install that changed it.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored on your account, so it follows you to your other devices.'**
+  String get accountLanguageBody;
+
   /// Says what is lost before the button rather than after it. Deliberately no date: the server sends `purgeAfter: null` because the retention period is an open client question, so naming one would be promising something nobody has agreed.
   ///
   /// In en, this message translates to:

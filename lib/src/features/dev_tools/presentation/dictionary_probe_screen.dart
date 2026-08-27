@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/features/account/data/locale_sync.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_cache.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
@@ -63,7 +64,7 @@ class _DictionaryProbeScreenState extends ConsumerState<DictionaryProbeScreen> {
               labels: [for (final l in AppLocale.values) l.tag],
               selectedIndex: AppLocale.values.indexOf(activeLocale),
               onChanged: (index) => ref
-                  .read(localeControllerProvider.notifier)
+                  .read(localeSyncProvider)
                   .select(AppLocale.values[index]),
             ),
 

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/role_label.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
@@ -329,7 +330,7 @@ class _Refinements extends StatelessWidget {
           children: [
             for (final value in AppRole.values)
               HhFilterChip(
-                label: _roleLabel(value, l10n),
+                label: roleLabel(value, l10n),
                 selected: role == value,
                 // Tapping the lit chip clears it — with no "any" chip, this is
                 // the only way back to no constraint, and it is the behaviour
@@ -381,11 +382,6 @@ class _Refinements extends StatelessWidget {
     );
   }
 
-  String _roleLabel(AppRole role, AppL10n l10n) => switch (role) {
-    AppRole.candidate => l10n.roleCandidate,
-    AppRole.employer => l10n.roleEmployer,
-    AppRole.admin => l10n.roleAdmin,
-  };
 }
 
 /// One page of results, and what the administrator has to know about it.

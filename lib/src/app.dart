@@ -10,6 +10,7 @@ import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
+import 'package:jobbridge_app/src/features/account/data/locale_sync.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/notifications/presentation/push_host.dart';
@@ -48,6 +49,12 @@ class JobBridgeApp extends ConsumerWidget {
     ref.listen(sessionControllerProvider, (previous, next) {
       if (previous is SessionActive || next is! SessionActive) return;
       ref.read(warmDictionariesProvider(DictionaryType.all).future).ignore();
+
+      // §3.2's other half: the language is stored on the account, so it has to
+      // follow the user to a device they have just signed in on. Same place and
+      // same reasoning as the warm-up — the composition root is where a feature
+      // gets wired to a session, and `core/l10n` cannot reach a repository.
+      ref.read(localeSyncProvider).reconcile().ignore();
     });
 
     return MaterialApp.router(

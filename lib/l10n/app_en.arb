@@ -2333,6 +2333,22 @@
     "description": "\"Including this one\" is the load-bearing half: \"every device\" is a phrase most people read as \"every *other* device\", and the surprise arrives after the action rather than before it."
   },
   "accountDelete": "Delete account",
+  "accountRole": "Role",
+  "@accountRole": {
+    "description": "§2.3. The section is drawn only when the account holds more than one role — a switcher with one option is a control that does nothing."
+  },
+  "accountRoleBody": "This account holds more than one. Switching changes what the app shows you; it changes nothing on the account itself.",
+  "@accountRoleBody": {
+    "description": "Says what switching does and, as importantly, what it does not: a role is granted server-side and this changes neither the grant nor anything anybody else can see."
+  },
+  "accountRoleActive": "In use",
+  "@accountRoleActive": {
+    "description": "Marks the role currently in use. A word rather than colour alone, the same rule every status on this product follows."
+  },
+  "accountLanguageBody": "Stored on your account, so it follows you to your other devices.",
+  "@accountLanguageBody": {
+    "description": "§3.2: the choice is stored on the account, so it follows the user to every signed-in device rather than staying on the install that changed it."
+  },
   "@accountDelete": {
     "description": "BR-14. A section heading, and the section exists because an app that lets people create an account has to let them delete it from inside the app."
   },

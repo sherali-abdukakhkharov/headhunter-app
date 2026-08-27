@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/app_role.dart';
+import 'package:jobbridge_app/src/core/auth/role_label.dart';
 import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
+import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/role_navigation.dart';
 import 'package:jobbridge_app/src/features/account/data/account_repository.dart';
+import 'package:jobbridge_app/src/features/account/data/locale_sync.dart';
 import 'package:jobbridge_app/src/features/account/domain/user_session.dart';
 import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 import 'package:jobbridge_app/src/shared/widgets/refreshable_fill.dart';
@@ -80,14 +87,16 @@ class AccountScreen extends ConsumerWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends ConsumerWidget {
   const _Body({required this.sessions});
 
   final List<UserSession> sessions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
+    final session = ref.watch(sessionControllerProvider);
+    final active = ref.watch(activeLocaleProvider);
 
     return ListView(
       padding: const EdgeInsets.all(HhSpace.gutter),
@@ -113,6 +122,54 @@ class _Body extends StatelessWidget {
 
         const SizedBox(height: HhSpace.sectionGap),
         const _SignOut(),
+
+        // §3.2's language, reachable after onboarding for the first time.
+        // It was selectable on the sign-in screen and nowhere else, so anybody
+        // who picked wrong once had no way back short of reinstalling.
+        const SizedBox(height: HhSpace.sectionGap),
+        Text(l10n.settingsLanguage, style: HhTypography.subtitle),
+        const SizedBox(height: HhSpace.xs),
+        Text(
+          l10n.accountLanguageBody,
+          style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+        ),
+        const SizedBox(height: HhSpace.md),
+
+        for (final option in AppLocale.values)
+          Padding(
+            padding: const EdgeInsets.only(bottom: HhSpace.sm),
+            child: HhRadioRow<AppLocale>(
+              // nativeName, never a translated language name: a picker
+              // rendering every option in the *current* language is unusable to
+              // the one person who needs it — somebody who cannot read it.
+              label: option.nativeName,
+              value: option,
+              groupValue: active,
+              onChanged: (_) =>
+                  ref.read(localeSyncProvider).select(option),
+            ),
+          ),
+
+        // §2.3's runtime role switch, drawn only when there is a choice: a
+        // switcher with one option is a control that does nothing.
+        if (session case SessionActive(:final roles, :final effectiveRole)
+            when roles.length > 1) ...[
+          const SizedBox(height: HhSpace.sectionGap),
+          Text(l10n.accountRole, style: HhTypography.subtitle),
+          const SizedBox(height: HhSpace.xs),
+          Text(
+            l10n.accountRoleBody,
+            style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+          ),
+          const SizedBox(height: HhSpace.md),
+
+          for (final role in AppRole.values)
+            if (roles.contains(role))
+              Padding(
+                padding: const EdgeInsets.only(bottom: HhSpace.sm),
+                child: _RoleRow(role: role, active: role == effectiveRole),
+              ),
+        ],
 
         const SizedBox(height: HhSpace.sectionGap),
         Text(l10n.accountDelete, style: HhTypography.subtitle),
@@ -408,4 +465,49 @@ Future<bool> _confirm(
   );
 
   return result ?? false;
+}
+
+/// One role this account holds, and the control that switches to it.
+///
+/// **`switchRoleAndGo`, never `SessionController.switchRole` alone.** The
+/// redirect chain's deep-link rule reads the *location*, so after a bare switch
+/// it re-activates the role that owns the current path and silently undoes the
+/// switch — and this screen is inside a role shell, which is exactly where that
+/// bites.
+class _RoleRow extends ConsumerWidget {
+  const _RoleRow({required this.role, required this.active});
+
+  final AppRole role;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+
+    return HhCard(
+      onTap: active ? null : () => switchRoleAndGo(context, ref, role),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              roleLabel(role, l10n),
+              style: HhTypography.body.copyWith(fontWeight: FontWeight.w500),
+            ),
+          ),
+          if (active)
+            // A word, never colour alone.
+            Text(
+              l10n.accountRoleActive,
+              style: HhTypography.caption.copyWith(color: HhColors.inkMuted),
+            )
+          else
+            const HhIcon(
+              HhIconPath.chevronRight,
+              size: 18,
+              color: HhColors.inkDisabled,
+            ),
+        ],
+      ),
+    );
+  }
 }

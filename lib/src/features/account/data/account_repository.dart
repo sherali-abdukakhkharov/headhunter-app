@@ -59,6 +59,37 @@ class AccountRepository {
     }
   }
 
+  /// `GET /users/me` — the account's stored interface language (§3.2).
+  ///
+  /// Only the locale is read here. The rest of the response is identity and
+  /// roles, which the session already holds from the token exchange; taking a
+  /// second copy would give two answers to the same question.
+  Future<String?> accountLocale() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/users/me');
+      final locale = response.data?['locale'];
+
+      return locale is String ? locale : null;
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `PATCH /users/me/locale` — stores the choice on the account (§3.2).
+  ///
+  /// So the language follows the user to every signed-in device rather than
+  /// staying on the install that changed it.
+  Future<void> updateLocale(String tag) async {
+    try {
+      await _dio.patch<Map<String, dynamic>>(
+        '/users/me/locale',
+        data: {'locale': tag},
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
   /// `POST /users/me/deletion-request` — BR-14's request, not a deletion.
   ///
   /// The account moves to `deletion_requested` and a status-history row is

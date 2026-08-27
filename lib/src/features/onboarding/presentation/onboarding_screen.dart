@@ -11,6 +11,7 @@ import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/account/data/locale_sync.dart';
 import 'package:jobbridge_app/src/features/auth/data/auth_repository.dart';
 import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
@@ -172,7 +173,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     value: option,
                     groupValue: activeLocale,
                     onChanged: (_) => ref
-                        .read(localeControllerProvider.notifier)
+                        .read(localeSyncProvider)
                         .select(option),
                   ),
                 ),

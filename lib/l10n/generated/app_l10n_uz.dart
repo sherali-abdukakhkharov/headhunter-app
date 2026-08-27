@@ -1788,6 +1788,20 @@ class AppL10nUz extends AppL10n {
   String get accountDelete => 'Hisobni o\'chirish';
 
   @override
+  String get accountRole => 'Rol';
+
+  @override
+  String get accountRoleBody =>
+      'Bu hisobda bir nechtasi bor. Almashtirish ilova sizga nima ko\'rsatishini o\'zgartiradi; hisobning o\'zida hech narsa o\'zgarmaydi.';
+
+  @override
+  String get accountRoleActive => 'Hozir';
+
+  @override
+  String get accountLanguageBody =>
+      'Hisobingizda saqlanadi, shuning uchun boshqa qurilmalaringizga ham o\'tadi.';
+
+  @override
   String get accountDeleteBody =>
       'Profilingiz, arizalaringiz va xabarlaringiz o\'chiriladi. Bu qaytarib bo\'lmaydi.';
 
@@ -5117,6 +5131,20 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get accountDelete => 'Ҳисобни ўчириш';
 
   @override
+  String get accountRole => 'Рол';
+
+  @override
+  String get accountRoleBody =>
+      'Бу ҳисобда бир нечтаси бор. Алмаштириш илова сизга нима кўрсатишини ўзгартиради; ҳисобнинг ўзида ҳеч нарса ўзгармайди.';
+
+  @override
+  String get accountRoleActive => 'Ҳозир';
+
+  @override
+  String get accountLanguageBody =>
+      'Ҳисобингизда сақланади, шунинг учун бошқа қурилмаларингизга ҳам ўтади.';
+
+  @override
   String get accountDeleteBody =>
       'Профилингиз, аризаларингиз ва хабарларингиз ўчирилади. Бу қайтариб бўлмайди.';
 
@@ -8438,6 +8466,20 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get accountDelete => 'Hisobni o\'chirish';
+
+  @override
+  String get accountRole => 'Rol';
+
+  @override
+  String get accountRoleBody =>
+      'Bu hisobda bir nechtasi bor. Almashtirish ilova sizga nima ko\'rsatishini o\'zgartiradi; hisobning o\'zida hech narsa o\'zgarmaydi.';
+
+  @override
+  String get accountRoleActive => 'Hozir';
+
+  @override
+  String get accountLanguageBody =>
+      'Hisobingizda saqlanadi, shuning uchun boshqa qurilmalaringizga ham o\'tadi.';
 
   @override
   String get accountDeleteBody =>

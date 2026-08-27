@@ -1793,6 +1793,20 @@ class AppL10nEn extends AppL10n {
   String get accountDelete => 'Delete account';
 
   @override
+  String get accountRole => 'Role';
+
+  @override
+  String get accountRoleBody =>
+      'This account holds more than one. Switching changes what the app shows you; it changes nothing on the account itself.';
+
+  @override
+  String get accountRoleActive => 'In use';
+
+  @override
+  String get accountLanguageBody =>
+      'Stored on your account, so it follows you to your other devices.';
+
+  @override
   String get accountDeleteBody =>
       'Your profile, applications and messages will be removed. This cannot be undone.';
 

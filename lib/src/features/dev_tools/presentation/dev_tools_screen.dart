@@ -11,6 +11,7 @@ import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/router/role_navigation.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
+import 'package:jobbridge_app/src/features/account/data/locale_sync.dart';
 
 /// Developer tools: mint a session with hardcoded roles, switch language, and
 /// reach the design catalogue and the health probe.
@@ -126,7 +127,7 @@ class DevToolsScreen extends ConsumerWidget {
                             '${option.nativeName}  ·  ${option.tag}'
                             '${option == locale ? '  ✓' : ''}',
                         onPressed: () => ref
-                            .read(localeControllerProvider.notifier)
+                            .read(localeSyncProvider)
                             .select(option),
                       ),
                     ),

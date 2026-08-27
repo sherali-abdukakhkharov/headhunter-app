@@ -11,11 +11,11 @@ part of 'locale_controller.dart';
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the server
-/// value wins on a fresh install, and a local change is pushed to the server.
-/// Only the local half exists today - [select] is where the server push lands
-/// when the profile endpoint arrives in M1, and the seam is marked below rather
-/// than left to be rediscovered.
+/// so local storage is the source of truth pre-auth. After sign-in the account's
+/// value wins on a device that has never been asked, and a choice made here wins
+/// and travels to the account. **Both halves exist as of 2026-08-28** — this
+/// class owns the local one and `LocaleSync` owns the server one, because
+/// `core/` must not import a feature's repository.
 ///
 /// Kept alive: this is read by the `x-lang` interceptor on every request and by
 /// `MaterialApp.locale`, so it must not be rebuilt when a screen is disposed.
@@ -26,11 +26,11 @@ final localeControllerProvider = LocaleControllerProvider._();
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the server
-/// value wins on a fresh install, and a local change is pushed to the server.
-/// Only the local half exists today - [select] is where the server push lands
-/// when the profile endpoint arrives in M1, and the seam is marked below rather
-/// than left to be rediscovered.
+/// so local storage is the source of truth pre-auth. After sign-in the account's
+/// value wins on a device that has never been asked, and a choice made here wins
+/// and travels to the account. **Both halves exist as of 2026-08-28** — this
+/// class owns the local one and `LocaleSync` owns the server one, because
+/// `core/` must not import a feature's repository.
 ///
 /// Kept alive: this is read by the `x-lang` interceptor on every request and by
 /// `MaterialApp.locale`, so it must not be rebuilt when a screen is disposed.
@@ -39,11 +39,11 @@ final class LocaleControllerProvider
   /// The active interface language.
   ///
   /// Ownership follows §3.2: the language is selectable **before** registration,
-  /// so local storage is the source of truth pre-auth. After sign-in the server
-  /// value wins on a fresh install, and a local change is pushed to the server.
-  /// Only the local half exists today - [select] is where the server push lands
-  /// when the profile endpoint arrives in M1, and the seam is marked below rather
-  /// than left to be rediscovered.
+  /// so local storage is the source of truth pre-auth. After sign-in the account's
+  /// value wins on a device that has never been asked, and a choice made here wins
+  /// and travels to the account. **Both halves exist as of 2026-08-28** — this
+  /// class owns the local one and `LocaleSync` owns the server one, because
+  /// `core/` must not import a feature's repository.
   ///
   /// Kept alive: this is read by the `x-lang` interceptor on every request and by
   /// `MaterialApp.locale`, so it must not be rebuilt when a screen is disposed.
@@ -66,16 +66,16 @@ final class LocaleControllerProvider
   LocaleController create() => LocaleController();
 }
 
-String _$localeControllerHash() => r'f0074d22d044cdb459257ca0f1749f893bb607f3';
+String _$localeControllerHash() => r'6168a54238eae4999949ac03d09c16cd763a054d';
 
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the server
-/// value wins on a fresh install, and a local change is pushed to the server.
-/// Only the local half exists today - [select] is where the server push lands
-/// when the profile endpoint arrives in M1, and the seam is marked below rather
-/// than left to be rediscovered.
+/// so local storage is the source of truth pre-auth. After sign-in the account's
+/// value wins on a device that has never been asked, and a choice made here wins
+/// and travels to the account. **Both halves exist as of 2026-08-28** — this
+/// class owns the local one and `LocaleSync` owns the server one, because
+/// `core/` must not import a feature's repository.
 ///
 /// Kept alive: this is read by the `x-lang` interceptor on every request and by
 /// `MaterialApp.locale`, so it must not be rebuilt when a screen is disposed.
