@@ -16,6 +16,7 @@ import 'package:jobbridge_app/src/core/network/dio_provider.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/admin/presentation/admin_pricing_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_wallet_detail_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/admin_wallets_screen.dart';
 import 'package:jobbridge_app/src/features/admin/presentation/audit_log_screen.dart';
@@ -688,6 +689,25 @@ void main() {
       );
 
       expect(find.byType(AdminWalletDetailScreen), findsOneWidget);
+      expect(find.byType(UserDetailScreen), findsNothing);
+      await _unmountTree(tester);
+    });
+
+    testWidgets('§10.5 pricing wins the path a user id would also match', (
+      tester,
+    ) async {
+      // Third literal under the same `:id`. Every one of these has to be
+      // registered before it, and the only thing that proves the order is
+      // right is driving the real router — a hand-built one would be
+      // asserting its own registration order back at itself.
+      final result = await settle(
+        tester,
+        const SessionActive(roles: {AppRole.admin}, activeRole: AppRole.admin),
+        initialLocation: Routes.adminPricing,
+      );
+
+      expect(result.location, Routes.adminPricing);
+      expect(find.byType(AdminPricingScreen), findsOneWidget);
       expect(find.byType(UserDetailScreen), findsNothing);
       await _unmountTree(tester);
     });

@@ -1687,8 +1687,18 @@ paywall that is not theirs.
       stage-move guard, and a hired or rejected application has no move left, so
       the one application an employer is most likely to want a note about was
       the one that offered none. Now outside the guard
-- [ ] **Deep links switch role before navigating** where required *(moved here
-      from M9 - routing infrastructure, not a notification feature)*
+- [x] **Deep links switch role before navigating** — **this was already done
+      and the checkbox was stale**, found on 2026-08-28 while looking for work.
+      `_redirect`'s `SessionActive()` arm reads the role out of the path
+      (`AppRole.fromLocation`), refuses it if it is not granted, and otherwise
+      activates it *after* the redirect returns — mutating provider state inside
+      a redirect re-enters the router mid-navigation, so the write goes through
+      a microtask, fires the `refreshListenable`, and the chain converges on the
+      second pass. `app_router_test.dart` has covered it since M8 under
+      "a deep link into a granted role activates it".
+
+      Verified against the code rather than believed from this file, which is
+      the fifth stale checkbox in as many weeks
 - [x] **The chat screens and the new badges have been looked at, 2026-08-20** —
       not on a device, but rendered from the real widget tree with the app's own
       bundled font and inspected as images. MEMORY.md has the recipe; it is the
