@@ -117,10 +117,13 @@ class _BodyState extends ConsumerState<_Body> {
     final l10n = AppL10n.of(context);
     final state = widget.state;
 
-    // A failure here must not blank the card: the status, the reason and the
-    // required list are all still worth reading without it.
-    final uploaded =
-        ref.watch(evidenceFilesProvider).value ?? const <Attachment>[];
+    // A failure here must not blank the card — the status, the reason and the
+    // required list are all still worth reading without it — but it must not
+    // disappear either. Falling back to an empty list alone would draw
+    // "Nothing uploaded yet" against documents that are uploaded, and block
+    // the submission for a reason that is not true.
+    final files = ref.watch(evidenceFilesProvider);
+    final uploaded = files.value ?? const <Attachment>[];
 
     // Derived from the same list the submit path sends, so the button's enabled
     // state and what submitting would actually do cannot disagree.
@@ -147,6 +150,25 @@ class _BodyState extends ConsumerState<_Body> {
               style: HhTypography.label.copyWith(color: HhColors.inkMuted),
             ),
             const SizedBox(height: HhSpace.sm),
+
+            if (files case AsyncValue(hasError: true, :final error?)) ...[
+              Text(
+                error is ApiException ? error.message : l10n.stateErrorBody,
+                style: HhTypography.caption.copyWith(color: HhColors.error),
+              ),
+              const SizedBox(height: 4),
+              // Local to this section: the rest of the card is fine, and the
+              // page's error heading is a claim about the whole system.
+              Align(
+                alignment: Alignment.centerLeft,
+                child: HhButton.text(
+                  label: l10n.commonRetry,
+                  onPressed: () => ref.invalidate(evidenceFilesProvider),
+                ),
+              ),
+              const SizedBox(height: HhSpace.sm),
+            ],
+
             // Served rather than hardcoded — §6.1 leaves the policy open, so
             // which documents are demanded can change without a release.
             for (final evidence in state.requiredEvidence)

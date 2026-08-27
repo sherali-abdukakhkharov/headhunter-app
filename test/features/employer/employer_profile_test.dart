@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 import 'package:jobbridge_app/src/features/employer/data/employer_controller.dart';
@@ -131,6 +132,7 @@ void main() {
     WidgetTester tester, {
     _FakeEmployer? repository,
     List<Attachment> evidence = const [],
+    ApiException? evidenceError,
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -145,7 +147,10 @@ void main() {
           employerRepositoryProvider.overrideWithValue(fake),
           // Without this the card reaches the real `/files` through the real
           // Dio, and the pending request outlives the widget tree.
-          evidenceFilesProvider.overrideWith((ref) => evidence),
+          evidenceFilesProvider.overrideWith((ref) {
+            if (evidenceError != null) throw evidenceError;
+            return evidence;
+          }),
           dictionaryProvider('industry').overrideWith(
             (ref) => const <DictionaryItem>[],
           ),
@@ -511,6 +516,33 @@ void main() {
       // the button says what pressing it does.
       expect(find.text('Replace'), findsOneWidget);
       expect(find.text('Upload'), findsNothing);
+    });
+
+    testWidgets('says so when the uploaded documents cannot be read', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        repository: _FakeEmployer(
+          profile: _profile(),
+          state: VerificationState.fromJson(const {
+            'status': 'not_submitted',
+            'requiredEvidence': [
+              {'purposeCode': 'company_registration', 'required': true},
+            ],
+            'submissions': <dynamic>[],
+          }),
+        ),
+        evidenceError: const ApiException('The connection timed out.'),
+      );
+
+      // Falling back to an empty list alone would draw "Nothing uploaded yet"
+      // against a document that *is* uploaded, and block the submission for a
+      // reason that is not true. The rest of the card still renders: the
+      // status and the required list are worth reading regardless.
+      expect(find.text('The connection timed out.'), findsOneWidget);
+      expect(find.text('Try again'), findsWidgets);
+      expect(find.text('Not submitted'), findsWidgets);
     });
 
     testWidgets('is not offered while an attempt is under review', (
