@@ -199,21 +199,35 @@ final class UnlockStateFamily extends $Family
 
 /// The append-only Coin ledger (§6.6, BR-24), newest first.
 ///
-/// A notifier rather than a family so "show more" *appends* instead of
-/// replacing: an employer checking what a Coin went on reads downwards, and a
-/// page that swapped itself out would lose the entry they were looking at.
+/// A notifier so "show more" *appends* instead of replacing: an employer
+/// checking what a Coin went on reads downwards, and a page that swapped itself
+/// out would lose the entry they were looking at.
+///
+/// **A family over [sign]**, so a filter is a different request rather than a
+/// different view of the same one. Filtering what has already been loaded
+/// answers "the spends among these twenty", which looks complete and is not —
+/// and it makes "show more" page the wrong list. Each filter keeps its own
+/// pagination, which is what an employer reading downwards through their spends
+/// actually wants.
 ///
 /// Nothing here adds anything up. Each entry carries the balance the server
 /// recorded after it, so the list is a record rather than a calculation.
 
 @ProviderFor(WalletLedger)
-final walletLedgerProvider = WalletLedgerProvider._();
+final walletLedgerProvider = WalletLedgerFamily._();
 
 /// The append-only Coin ledger (§6.6, BR-24), newest first.
 ///
-/// A notifier rather than a family so "show more" *appends* instead of
-/// replacing: an employer checking what a Coin went on reads downwards, and a
-/// page that swapped itself out would lose the entry they were looking at.
+/// A notifier so "show more" *appends* instead of replacing: an employer
+/// checking what a Coin went on reads downwards, and a page that swapped itself
+/// out would lose the entry they were looking at.
+///
+/// **A family over [sign]**, so a filter is a different request rather than a
+/// different view of the same one. Filtering what has already been loaded
+/// answers "the spends among these twenty", which looks complete and is not —
+/// and it makes "show more" page the wrong list. Each filter keeps its own
+/// pagination, which is what an employer reading downwards through their spends
+/// actually wants.
 ///
 /// Nothing here adds anything up. Each entry carries the balance the server
 /// recorded after it, so the list is a record rather than a calculation.
@@ -221,44 +235,135 @@ final class WalletLedgerProvider
     extends $AsyncNotifierProvider<WalletLedger, LedgerPage> {
   /// The append-only Coin ledger (§6.6, BR-24), newest first.
   ///
-  /// A notifier rather than a family so "show more" *appends* instead of
-  /// replacing: an employer checking what a Coin went on reads downwards, and a
-  /// page that swapped itself out would lose the entry they were looking at.
+  /// A notifier so "show more" *appends* instead of replacing: an employer
+  /// checking what a Coin went on reads downwards, and a page that swapped itself
+  /// out would lose the entry they were looking at.
+  ///
+  /// **A family over [sign]**, so a filter is a different request rather than a
+  /// different view of the same one. Filtering what has already been loaded
+  /// answers "the spends among these twenty", which looks complete and is not —
+  /// and it makes "show more" page the wrong list. Each filter keeps its own
+  /// pagination, which is what an employer reading downwards through their spends
+  /// actually wants.
   ///
   /// Nothing here adds anything up. Each entry carries the balance the server
   /// recorded after it, so the list is a record rather than a calculation.
-  WalletLedgerProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'walletLedgerProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  WalletLedgerProvider._({
+    required WalletLedgerFamily super.from,
+    required LedgerSign? super.argument,
+  }) : super(
+         retry: null,
+         name: r'walletLedgerProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$walletLedgerHash();
 
+  @override
+  String toString() {
+    return r'walletLedgerProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   WalletLedger create() => WalletLedger();
+
+  @override
+  bool operator ==(Object other) {
+    return other is WalletLedgerProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$walletLedgerHash() => r'893fc770c011146f7efe8bc4e99202e0275835e7';
+String _$walletLedgerHash() => r'd9d97e925f2e722e2e9ac8df1c01cd68532783bf';
 
 /// The append-only Coin ledger (§6.6, BR-24), newest first.
 ///
-/// A notifier rather than a family so "show more" *appends* instead of
-/// replacing: an employer checking what a Coin went on reads downwards, and a
-/// page that swapped itself out would lose the entry they were looking at.
+/// A notifier so "show more" *appends* instead of replacing: an employer
+/// checking what a Coin went on reads downwards, and a page that swapped itself
+/// out would lose the entry they were looking at.
+///
+/// **A family over [sign]**, so a filter is a different request rather than a
+/// different view of the same one. Filtering what has already been loaded
+/// answers "the spends among these twenty", which looks complete and is not —
+/// and it makes "show more" page the wrong list. Each filter keeps its own
+/// pagination, which is what an employer reading downwards through their spends
+/// actually wants.
+///
+/// Nothing here adds anything up. Each entry carries the balance the server
+/// recorded after it, so the list is a record rather than a calculation.
+
+final class WalletLedgerFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          WalletLedger,
+          AsyncValue<LedgerPage>,
+          LedgerPage,
+          FutureOr<LedgerPage>,
+          LedgerSign?
+        > {
+  WalletLedgerFamily._()
+    : super(
+        retry: null,
+        name: r'walletLedgerProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// The append-only Coin ledger (§6.6, BR-24), newest first.
+  ///
+  /// A notifier so "show more" *appends* instead of replacing: an employer
+  /// checking what a Coin went on reads downwards, and a page that swapped itself
+  /// out would lose the entry they were looking at.
+  ///
+  /// **A family over [sign]**, so a filter is a different request rather than a
+  /// different view of the same one. Filtering what has already been loaded
+  /// answers "the spends among these twenty", which looks complete and is not —
+  /// and it makes "show more" page the wrong list. Each filter keeps its own
+  /// pagination, which is what an employer reading downwards through their spends
+  /// actually wants.
+  ///
+  /// Nothing here adds anything up. Each entry carries the balance the server
+  /// recorded after it, so the list is a record rather than a calculation.
+
+  WalletLedgerProvider call(LedgerSign? sign) =>
+      WalletLedgerProvider._(argument: sign, from: this);
+
+  @override
+  String toString() => r'walletLedgerProvider';
+}
+
+/// The append-only Coin ledger (§6.6, BR-24), newest first.
+///
+/// A notifier so "show more" *appends* instead of replacing: an employer
+/// checking what a Coin went on reads downwards, and a page that swapped itself
+/// out would lose the entry they were looking at.
+///
+/// **A family over [sign]**, so a filter is a different request rather than a
+/// different view of the same one. Filtering what has already been loaded
+/// answers "the spends among these twenty", which looks complete and is not —
+/// and it makes "show more" page the wrong list. Each filter keeps its own
+/// pagination, which is what an employer reading downwards through their spends
+/// actually wants.
 ///
 /// Nothing here adds anything up. Each entry carries the balance the server
 /// recorded after it, so the list is a record rather than a calculation.
 
 abstract class _$WalletLedger extends $AsyncNotifier<LedgerPage> {
-  FutureOr<LedgerPage> build();
+  late final _$args = ref.$arg as LedgerSign?;
+  LedgerSign? get sign => _$args;
+
+  FutureOr<LedgerPage> build(LedgerSign? sign);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -271,6 +376,6 @@ abstract class _$WalletLedger extends $AsyncNotifier<LedgerPage> {
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, build);
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

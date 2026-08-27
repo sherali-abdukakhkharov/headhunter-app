@@ -1348,14 +1348,22 @@ money and is enabled by a constant somebody has to remember.
       Coin is *for* is a sentence where the table was — including that search and
       preview are free, because an employer who thinks browsing costs Coins will
       not browse
-- [ ] **Server-side ledger filtering.** `GET /wallet/transactions` takes only
-      `limit` and `offset`, so E-52's filter runs over what has been loaded:
-      choosing "spent" on a first page of twenty shows the spends *in those
-      twenty*. Handled honestly rather than hidden — "show more" stays offered
-      whenever the server may hold more, even when the filtered list looks short,
-      because the alternative is a list that looks complete and is not. A `kind`
-      or `sign` query parameter would fix it properly. *Not blocking; the wallet
-      of a real employer is unlikely to exceed one page for a long time.*
+- [x] **Server-side ledger filtering, 2026-08-28.** `GET /wallet/transactions`
+      takes `sign` — `credit` or `debit` — and filters **before** paging. Each
+      filter is its own provider instance with its own pagination, so "show
+      more" pages the list on screen rather than the one underneath it.
+
+      **Sign rather than kind**, and not for tidiness: an `admin_adjustment` can
+      be either and a `reversal` is a credit that undoes a debit, so no list of
+      kinds answers the question the chips are asking — and a list would have to
+      be kept in step on both sides, dropping a sixth kind from *both* filters
+      the day one arrives.
+
+      **One test reversed, and the reversal is the point.** "Show more stays
+      offered when the server may hold more" was right while the filter was
+      client-side, because a short filtered list was evidence of nothing. Now a
+      short page *is* the end of that slice, and still offering the control
+      would invite a request that returns nothing and reads as a bug
 - [x] **The unlock flow is built, and it cannot fire against today's server.**
       The whole thing turns on one signal: the control is offered only where
       `exposureReason` is `unlock_required`, and that code exists **only on a

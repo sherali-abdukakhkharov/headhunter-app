@@ -86,7 +86,7 @@ class _WalletBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
-    final ledger = ref.watch(walletLedgerProvider);
+    final ledger = ref.watch(walletLedgerProvider(null));
 
     return ListView(
       padding: const EdgeInsets.all(HhSpace.gutter),
@@ -292,7 +292,7 @@ class _Ledger extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
 
     try {
-      await ref.read(walletLedgerProvider.notifier).loadMore();
+      await ref.read(walletLedgerProvider(null).notifier).loadMore();
     } on ApiException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     }

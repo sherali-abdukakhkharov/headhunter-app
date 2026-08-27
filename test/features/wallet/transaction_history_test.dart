@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/ledger_sign.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
@@ -14,7 +15,13 @@ class _FakeWallet implements WalletRepository {
   _FakeWallet({this.pages = const []});
 
   List<List<WalletTransaction>> pages;
-  final requestedOffsets = <int>[];
+
+  /// Every request, so a test can assert what the *screen* asked for rather
+  /// than what it did with the answer.
+  final requests = <({int offset, LedgerSign? sign})>[];
+
+  List<int> get requestedOffsets =>
+      requests.map((r) => r.offset).toList();
 
   @override
   Future<Wallet> fetch() async => Wallet.fromJson(const {
@@ -32,10 +39,32 @@ class _FakeWallet implements WalletRepository {
   Future<List<WalletTransaction>> transactions({
     int limit = walletPageSize,
     int offset = 0,
+    LedgerSign? sign,
   }) async {
-    requestedOffsets.add(offset);
-    final i = requestedOffsets.length - 1;
-    return i < pages.length ? pages[i] : const [];
+    requests.add((offset: offset, sign: sign));
+
+    // Answered from the offset, not from how many times it has been called.
+    // A filter is its own provider instance now, and switching back and forth
+    // re-requests page zero — a call counter would serve page two instead and
+    // the screen would look like it had lost the ledger.
+    var start = 0;
+    var page = const <WalletTransaction>[];
+    for (final candidate in pages) {
+      if (start == offset) {
+        page = candidate;
+        break;
+      }
+      start += candidate.length;
+    }
+
+    // **The server filters, not the screen.** A fake that ignored `sign` would
+    // let the screen go back to filtering what it had loaded and every case
+    // below would still pass — which is exactly how the old behaviour hid.
+    if (sign == null) return page;
+
+    return page
+        .where((e) => e.isCredit == (sign == LedgerSign.credit))
+        .toList();
   }
 
   @override
@@ -73,7 +102,10 @@ void main() {
     required List<WalletTransaction> entries,
     List<List<WalletTransaction>>? pages,
   }) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    // Tall enough to lay out a full page of twenty rows and the control under
+    // them: a `ListView` builds only what its viewport reaches, so on a
+    // phone-sized surface `Show more` is not in the tree to be found.
+    tester.view.physicalSize = const Size(1080, 9000);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
@@ -148,6 +180,7 @@ void main() {
 
       await tester.tap(find.text('Spent'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Candidate unlock'), findsOneWidget);
       expect(find.text('Top-up'), findsNothing);
@@ -159,6 +192,7 @@ void main() {
 
       await tester.tap(find.text('Topped up'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Top-up'), findsOneWidget);
       expect(find.text('Registration bonus'), findsOneWidget);
@@ -182,10 +216,12 @@ void main() {
 
       await tester.tap(find.text('Topped up'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('Reversal'), findsOneWidget);
 
       await tester.tap(find.text('Spent'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('Reversal'), findsNothing);
     });
 
@@ -203,6 +239,7 @@ void main() {
 
       await tester.tap(find.text('Topped up'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Wallet activity'), findsOneWidget);
       expect(find.text('+4 Coins'), findsOneWidget);
@@ -217,6 +254,7 @@ void main() {
 
       await tester.tap(find.text('Spent'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(
         find.textContaining('No activity of this kind yet'),
@@ -224,8 +262,11 @@ void main() {
       );
       expect(find.text('Reset'), findsOneWidget);
 
+      // Clearing the filter is a request too, not a re-render of what is
+      // already held: the whole ledger is a different slice.
       await tester.tap(find.text('Reset'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Registration bonus'), findsOneWidget);
     });
@@ -309,12 +350,18 @@ void main() {
   });
 
   group('paging is still honest under a filter', () {
-    testWidgets('show more stays offered when the server may hold more', (
+    testWidgets('a filtered page that comes back short is the whole answer', (
       tester,
     ) async {
-      // The filter is client-side, so a short filtered list is not evidence
-      // there is nothing more. Hiding "show more" here would make an incomplete
-      // list look complete.
+      // **This case reversed on 2026-08-28, and the reversal is the point.**
+      // While the filter was client-side, a short filtered list was not
+      // evidence of anything — it was "the spends among the twenty rows we
+      // happen to hold" — so "show more" had to stay offered or an incomplete
+      // list would look complete.
+      //
+      // The server filters now, so a short page *is* the end of that slice,
+      // and still offering "show more" would invite a request that returns
+      // nothing and reads as a bug.
       final full = [
         for (var i = 0; i < walletPageSize; i++)
           _entry(
@@ -329,13 +376,75 @@ void main() {
 
       await tester.tap(find.text('Spent'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      // Nothing matches, and the button is still there.
+      // The server answered "no debits", so this is the whole answer and not a
+      // window onto it. Offering "show more" would invite a request that comes
+      // back empty, which reads as a bug rather than as an end.
       expect(
         find.textContaining('No activity of this kind yet'),
         findsOneWidget,
       );
+      expect(find.text('Show more'), findsNothing);
+    });
+
+    testWidgets('a full filtered page still offers more', (tester) async {
+      final debits = [
+        for (var i = 0; i < walletPageSize; i++)
+          _entry(
+            id: 'd$i',
+            kind: WalletTransactionKind.candidateUnlock,
+            amountCoins: -2,
+            balanceAfter: 100 - i,
+          ),
+      ];
+
+      await pump(tester, entries: debits, pages: [debits]);
+
+      await tester.tap(find.text('Spent'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // A full page is the only evidence there may be another, and it is now
+      // evidence about the *filtered* ledger rather than the whole one.
       expect(find.text('Show more'), findsOneWidget);
+    });
+
+    testWidgets('show more pages the slice on screen, not the whole ledger', (
+      tester,
+    ) async {
+      final debits = [
+        for (var i = 0; i < walletPageSize; i++)
+          _entry(
+            id: 'd$i',
+            kind: WalletTransactionKind.candidateUnlock,
+            amountCoins: -2,
+            balanceAfter: 100 - i,
+          ),
+      ];
+
+      final fake = await pump(
+        tester,
+        entries: debits,
+        pages: [debits, const []],
+      );
+
+      await tester.tap(find.text('Spent'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.ensureVisible(find.text('Show more'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Show more'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // The second request carries the filter. Without it the append would be
+      // twenty rows of the *unfiltered* ledger landing under a heading that
+      // says otherwise.
+      final appended = fake.requests.last;
+      expect(appended.sign, LedgerSign.debit);
+      expect(appended.offset, walletPageSize);
     });
   });
 }

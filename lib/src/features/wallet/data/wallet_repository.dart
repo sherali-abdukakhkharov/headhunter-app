@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/network/dio_provider.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/ledger_sign.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
@@ -46,14 +47,23 @@ class WalletRepository {
   }
 
   /// `GET /wallet/transactions` — the append-only ledger, newest first.
+  ///
+  /// [sign] narrows to money in or money out **on the server**. Filtering a
+  /// page the client already holds answers a different question — "the spends
+  /// among these twenty" — which looks like a complete answer and is not.
   Future<List<WalletTransaction>> transactions({
     int limit = walletPageSize,
     int offset = 0,
+    LedgerSign? sign,
   }) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         '/wallet/transactions',
-        queryParameters: {'limit': limit, 'offset': offset},
+        queryParameters: {
+          'limit': limit,
+          'offset': offset,
+          'sign': ?sign?.wire,
+        },
       );
 
       final items = response.data?['items'] as List? ?? const [];
@@ -198,17 +208,26 @@ class LedgerPage {
 
 /// The append-only Coin ledger (§6.6, BR-24), newest first.
 ///
-/// A notifier rather than a family so "show more" *appends* instead of
-/// replacing: an employer checking what a Coin went on reads downwards, and a
-/// page that swapped itself out would lose the entry they were looking at.
+/// A notifier so "show more" *appends* instead of replacing: an employer
+/// checking what a Coin went on reads downwards, and a page that swapped itself
+/// out would lose the entry they were looking at.
+///
+/// **A family over [sign]**, so a filter is a different request rather than a
+/// different view of the same one. Filtering what has already been loaded
+/// answers "the spends among these twenty", which looks complete and is not —
+/// and it makes "show more" page the wrong list. Each filter keeps its own
+/// pagination, which is what an employer reading downwards through their spends
+/// actually wants.
 ///
 /// Nothing here adds anything up. Each entry carries the balance the server
 /// recorded after it, so the list is a record rather than a calculation.
 @riverpod
 class WalletLedger extends _$WalletLedger {
   @override
-  Future<LedgerPage> build() async {
-    final entries = await ref.watch(walletRepositoryProvider).transactions();
+  Future<LedgerPage> build(LedgerSign? sign) async {
+    final entries = await ref
+        .watch(walletRepositoryProvider)
+        .transactions(sign: sign);
 
     return LedgerPage(
       entries: entries,
@@ -229,7 +248,7 @@ class WalletLedger extends _$WalletLedger {
     try {
       final next = await ref
           .read(walletRepositoryProvider)
-          .transactions(offset: page.entries.length);
+          .transactions(offset: page.entries.length, sign: sign);
 
       state = AsyncData(
         LedgerPage(

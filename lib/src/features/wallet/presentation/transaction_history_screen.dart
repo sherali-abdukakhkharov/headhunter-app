@@ -5,6 +5,7 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/ledger_sign.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
 import 'package:jobbridge_app/src/features/wallet/presentation/transaction_detail_screen.dart';
 import 'package:jobbridge_app/src/features/wallet/presentation/wallet_transaction_row.dart';
@@ -16,19 +17,16 @@ Future<void> showTransactionHistory(BuildContext context) =>
       MaterialPageRoute(builder: (_) => const TransactionHistoryScreen()),
     );
 
-/// Which entries a filter admits.
+/// Which slice of the ledger a chip asks the server for.
 enum _Filter {
-  all,
-  /// Coins arriving: the registration bonus, a top-up, a credit adjustment.
-  incoming,
-  /// Coins leaving: an unlock, a debit adjustment.
-  outgoing;
+  all(null),
+  incoming(LedgerSign.credit),
+  outgoing(LedgerSign.debit);
 
-  bool admits(WalletTransaction e) => switch (this) {
-    _Filter.all => true,
-    _Filter.incoming => e.isCredit,
-    _Filter.outgoing => !e.isCredit,
-  };
+  const _Filter(this.sign);
+
+  /// Null for "everything", which is the absence of the query parameter.
+  final LedgerSign? sign;
 }
 
 /// The whole ledger, filtered and grouped by month (§06, E-52).
@@ -42,14 +40,13 @@ enum _Filter {
 /// whereas a list of kind codes would silently drop the new one from both
 /// filters.
 ///
-/// ## The filter is client-side, and that has a visible edge
+/// ## The filter is the server's, since 2026-08-28
 ///
-/// `GET /wallet/transactions` takes only `limit` and `offset`, so filtering
-/// happens over what has been loaded. Choosing "spent" on a first page of
-/// twenty shows the spends *in those twenty*, not all spends ever. That is why
-/// "show more" stays offered whenever the server may hold more, even when the
-/// filtered list looks short: the alternative is a list that looks complete and
-/// is not. Server-side filtering is recorded in TODO.md as a backend ask.
+/// It used to run over what had been loaded, so choosing "spent" on a first
+/// page of twenty showed the spends *in those twenty* — a list that looked
+/// complete and was not. `GET /wallet/transactions` takes `sign` now, and each
+/// its own provider instance with its own pagination, so "show more" pages the
+/// list on screen rather than the one underneath it.
 class TransactionHistoryScreen extends ConsumerStatefulWidget {
   const TransactionHistoryScreen({super.key});
 
@@ -65,12 +62,15 @@ class _TransactionHistoryScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final ledger = ref.watch(walletLedgerProvider);
+    final ledger = ref.watch(walletLedgerProvider(_filter.sign));
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.walletHistoryTitle)),
       body: SafeArea(
         child: RefreshIndicator(
+          // The family, not one instance: a pull-to-refresh is a statement
+          // about the ledger, and leaving the other filters holding a page
+          // from before it would show two answers to the same question.
           onRefresh: () async => ref.invalidate(walletLedgerProvider),
           child: switch (ledger) {
             AsyncValue(hasError: true, :final error?) => RefreshableFill(
@@ -113,7 +113,8 @@ class _Body extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
-    final shown = page.entries.where(filter.admits).toList();
+    // Already the slice that was asked for: the server filtered it.
+    final shown = page.entries;
 
     return ListView(
       padding: const EdgeInsets.all(HhSpace.gutter),
@@ -218,7 +219,7 @@ class _Body extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
 
     try {
-      await ref.read(walletLedgerProvider.notifier).loadMore();
+      await ref.read(walletLedgerProvider(filter.sign).notifier).loadMore();
     } on ApiException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     }

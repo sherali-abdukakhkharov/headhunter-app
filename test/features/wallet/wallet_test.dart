@@ -5,6 +5,7 @@ import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/wallet/data/wallet_repository.dart';
+import 'package:jobbridge_app/src/features/wallet/domain/ledger_sign.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/unlock.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet.dart';
 import 'package:jobbridge_app/src/features/wallet/domain/wallet_transaction.dart';
@@ -33,6 +34,7 @@ class _FakeWallet implements WalletRepository {
   Future<List<WalletTransaction>> transactions({
     int limit = walletPageSize,
     int offset = 0,
+    LedgerSign? sign,
   }) async {
     requestedOffsets.add(offset);
 

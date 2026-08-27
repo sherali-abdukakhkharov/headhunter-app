@@ -11,9 +11,9 @@ part of 'locale_controller.dart';
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the account's
-/// value wins on a device that has never been asked, and a choice made here wins
-/// and travels to the account. **Both halves exist as of 2026-08-28** — this
+/// so local storage is the source of truth pre-auth. After sign-in the
+/// account's value wins on a device that has never been asked, and a choice
+/// made here wins and travels. **Both halves exist as of 2026-08-28** — this
 /// class owns the local one and `LocaleSync` owns the server one, because
 /// `core/` must not import a feature's repository.
 ///
@@ -26,9 +26,9 @@ final localeControllerProvider = LocaleControllerProvider._();
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the account's
-/// value wins on a device that has never been asked, and a choice made here wins
-/// and travels to the account. **Both halves exist as of 2026-08-28** — this
+/// so local storage is the source of truth pre-auth. After sign-in the
+/// account's value wins on a device that has never been asked, and a choice
+/// made here wins and travels. **Both halves exist as of 2026-08-28** — this
 /// class owns the local one and `LocaleSync` owns the server one, because
 /// `core/` must not import a feature's repository.
 ///
@@ -39,9 +39,9 @@ final class LocaleControllerProvider
   /// The active interface language.
   ///
   /// Ownership follows §3.2: the language is selectable **before** registration,
-  /// so local storage is the source of truth pre-auth. After sign-in the account's
-  /// value wins on a device that has never been asked, and a choice made here wins
-  /// and travels to the account. **Both halves exist as of 2026-08-28** — this
+  /// so local storage is the source of truth pre-auth. After sign-in the
+  /// account's value wins on a device that has never been asked, and a choice
+  /// made here wins and travels. **Both halves exist as of 2026-08-28** — this
   /// class owns the local one and `LocaleSync` owns the server one, because
   /// `core/` must not import a feature's repository.
   ///
@@ -71,9 +71,9 @@ String _$localeControllerHash() => r'6168a54238eae4999949ac03d09c16cd763a054d';
 /// The active interface language.
 ///
 /// Ownership follows §3.2: the language is selectable **before** registration,
-/// so local storage is the source of truth pre-auth. After sign-in the account's
-/// value wins on a device that has never been asked, and a choice made here wins
-/// and travels to the account. **Both halves exist as of 2026-08-28** — this
+/// so local storage is the source of truth pre-auth. After sign-in the
+/// account's value wins on a device that has never been asked, and a choice
+/// made here wins and travels. **Both halves exist as of 2026-08-28** — this
 /// class owns the local one and `LocaleSync` owns the server one, because
 /// `core/` must not import a feature's repository.
 ///
