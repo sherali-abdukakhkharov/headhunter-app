@@ -17,6 +17,37 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.26.0+36 — 2026-08-28
+
+### Fixed
+
+- **"Request account deletion" now reaches the server.** It called a path the
+  API does not have and answered 404 in every release since it shipped, so the
+  request was never recorded. Found by a new check that reads every route this
+  app calls and compares it with the API's own controllers.
+- **The wallet's "topped up" and "spent" filters now ask the server.** They
+  filtered the page already loaded, so on a first page of twenty, "spent"
+  showed the spends *among those twenty* — a list that looks complete and is
+  not — and "show more" then paged the unfiltered ledger underneath it.
+
+### Added
+
+- **The interface language is changeable after sign-in.** It was selectable on
+  the sign-in screen and nowhere else, so anybody who picked wrong once had no
+  way back short of reinstalling. It is now stored on the account as well, so
+  it follows you to your other devices.
+- **Switching role, for an account that holds more than one**, from the account
+  screen rather than only the developer tools.
+
+### Internal
+
+- `test/core/network/wire_contract_test.dart` checks every path the repository
+  layer puts on the wire against the backend's route decorators, including
+  repositories that do not exist yet. It found the deletion bug on its first
+  run.
+- Transport-level tests for the account routes.
+- `roleLabel` is one function; there were three copies of the same switch.
+
 ## 1.25.0+35 — 2026-08-28
 
 ### Fixed
