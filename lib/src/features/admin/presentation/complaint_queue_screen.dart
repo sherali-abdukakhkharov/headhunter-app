@@ -180,6 +180,26 @@ class _ComplaintRow extends StatelessWidget {
             ),
           ),
 
+          const SizedBox(height: HhSpace.xs),
+          // What it is about (MT-017). Without this the whole card is a kind, a
+          // date and an accusation, so two reports about different vacancies
+          // are the same card twice and triage means opening each one.
+          //
+          // A name where the server resolved one, and a short reference where
+          // it could not — a complaint outlives its target, so "deleted" is an
+          // ordinary row rather than an error.
+          Text(
+            complaint.targetSummary ?? complaint.targetReference,
+            style: HhTypography.body.copyWith(
+              fontSize: 14.5,
+              color: complaint.targetSummary == null
+                  ? HhColors.inkSubtle
+                  : HhColors.brand900,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+
           const SizedBox(height: HhSpace.md),
           Row(
             children: [

@@ -50,6 +50,7 @@ class Complaint {
     required this.reason,
     required this.status,
     required this.createdAt,
+    this.targetSummary,
     this.resolution,
   });
 
@@ -57,6 +58,7 @@ class Complaint {
     id: json['id'] as String,
     targetType: ComplaintTarget.fromWire(json['targetType'] as String?),
     targetId: json['targetId'] as String,
+    targetSummary: json['targetSummary'] as String?,
     reporterUserId: json['reporterUserId'] as String,
     reason: json['reason'] as String,
     status: json['status'] as String,
@@ -70,9 +72,32 @@ class Complaint {
   final String id;
   final ComplaintTarget targetType;
 
-  /// The reported thing's id. Resolved to a small row by the detail route,
-  /// which is the only way to learn what it *is*.
+  /// The reported thing's id. The detail route resolves it to a small row;
+  /// this is what a short reference is built from when there is no name.
   final String targetId;
+
+  /// What the reported thing **is**, in one line (MT-017).
+  ///
+  /// A vacancy's title, a person's name, and for a message the **sender's**
+  /// name — not the body. That last one is the server's privacy decision and
+  /// worth knowing here: a queue is not the place to read twenty private
+  /// messages, and the review screen shows the message itself after a
+  /// deliberate open.
+  ///
+  /// Null when the target has been deleted, which a complaint is meant to
+  /// outlive. [targetReference] is what the card shows instead.
+  final String? targetSummary;
+
+  /// A short, stable stand-in for a target with no name.
+  ///
+  /// The first eight characters of the id. Enough to tell two rows apart and to
+  /// carry into a support conversation, without putting a 36-character uuid on
+  /// a card. Built here rather than sent by the server: it is a truncation of a
+  /// field that already travels, and a second field could disagree with the
+  /// first.
+  String get targetReference => targetId.length <= 8
+      ? targetId
+      : targetId.substring(0, 8);
 
   /// Who filed it, and **deliberately not shown**.
   ///

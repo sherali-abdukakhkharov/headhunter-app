@@ -17,6 +17,31 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.22.0+32 — 2026-08-27
+
+The complaint queue says what each report is about.
+
+### Added
+
+- **MT-017.** A row used to show the kind of thing reported, how long it had been
+  waiting and the reporter''s words — and nothing about *which* vacancy or *which*
+  person. Several reports looked identical, so working through the queue meant
+  opening each one to find out whether two of them were even about the same thing.
+- Each row now names the target: the vacancy''s title, the person''s name, or for
+  a reported message **the sender''s name**. Not the message itself — a queue is
+  not the place to read twenty private conversations, and the review screen still
+  shows the message once it is opened.
+- **A report about something since deleted still makes sense.** It falls back to
+  a short reference, because a complaint is meant to outlive what it is about.
+
+### Internal
+
+- Server half in `headhunter-backend@036ea77`, resolved by the same expression
+  the user list and audit log use, so one person reads the same everywhere.
+- The short reference is built here rather than sent: it is the id truncated, and
+  a second field could disagree with the first.
+- 1107 tests, up from 1103. Three mutations checked on this side, four on the
+  server.
 ## 1.21.0+31 — 2026-08-27
 
 No visible change. A file you attach and then remove no longer sits on the

@@ -110,12 +110,14 @@ Complaint _complaint({
   String id = 'cmp-1',
   String targetType = 'vacancy',
   String targetId = 'vac-1',
+  String? targetSummary,
   String reason = 'The description asks for a deposit before starting work',
   String createdAt = '2026-08-14T09:00:00+05:00',
 }) => Complaint.fromJson({
   'id': id,
   'targetType': targetType,
   'targetId': targetId,
+  'targetSummary': targetSummary,
   'reporterUserId': 'usr-reporter',
   'reason': reason,
   'status': 'open',
@@ -228,6 +230,72 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
   }
+
+  group('MT-017: a queue row says what it is about', () {
+    testWidgets('the card names the target', (tester) async {
+      // Before this the whole card was a kind, a date and an accusation, so two
+      // reports about different vacancies were the same card twice.
+      await pumpQueue(
+        tester,
+        pages: [
+          [_complaint(targetSummary: 'Payvandchi kerak')],
+        ],
+      );
+
+      expect(find.text('Payvandchi kerak'), findsOneWidget);
+    });
+
+    testWidgets('two reports about different things are different rows', (
+      tester,
+    ) async {
+      await pumpQueue(
+        tester,
+        pages: [
+          [
+            _complaint(targetSummary: 'Payvandchi kerak'),
+            _complaint(id: 'cmp-2', targetSummary: 'Haydovchi kerak'),
+          ],
+        ],
+      );
+
+      expect(find.text('Payvandchi kerak'), findsOneWidget);
+      expect(find.text('Haydovchi kerak'), findsOneWidget);
+    });
+
+    testWidgets('a deleted target falls back to a short reference', (
+      tester,
+    ) async {
+      // A complaint outlives what it is about, on purpose: a vacancy can be
+      // deleted while the report is still open. That row still has to draw, and
+      // eight characters is enough to tell it apart and to quote in support.
+      await pumpQueue(
+        tester,
+        pages: [
+          [_complaint(targetId: '3f9a1c22-0b7e-4c11-9a3d-77e5b1c9d004')],
+        ],
+      );
+
+      expect(find.text('3f9a1c22'), findsOneWidget);
+      // Never the whole uuid: 36 characters on a card is not identification.
+      expect(
+        find.text('3f9a1c22-0b7e-4c11-9a3d-77e5b1c9d004'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('an id shorter than the cut is shown whole', (tester) async {
+      // The fixture's own id is five characters, which is the point: truncating
+      // to eight has to be a no-op rather than a range error.
+      await pumpQueue(
+        tester,
+        pages: [
+          [_complaint()],
+        ],
+      );
+
+      expect(find.text('vac-1'), findsOneWidget);
+    });
+  });
 
   group('the target row is read in either spelling', () {
     test('snake_case and camelCase give the same values', () {
