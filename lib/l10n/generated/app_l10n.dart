@@ -1091,6 +1091,18 @@ abstract class AppL10n {
   /// **'Nothing uploaded yet'**
   String get attachmentNone;
 
+  /// A schema field's declared lower bound, checked on the field as it is typed. BR-05's worker count is the one the specification names, but the rule is general: every bounded field in the schema costs a round trip otherwise, and the server's refusal arrives in the page's error state rather than on the field.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter {min} or more.'**
+  String fieldAtLeast(String min);
+
+  /// The declared upper bound, same treatment. The server stays authoritative — this only saves the trip and puts the message where the value is.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter {max} or less.'**
+  String fieldAtMost(String max);
+
   /// Refused before sending. The server enforces the limit too, but bouncing it here saves uploading a file that cannot land.
   ///
   /// In en, this message translates to:

@@ -54,8 +54,7 @@ class AppL10nRu extends AppL10n {
   String get stateErrorTitle => 'Что-то пошло не так';
 
   @override
-  String get stateErrorBody =>
-      'Не удалось выполнить запрос. Попробуйте ещё раз.';
+  String get stateErrorBody => 'Не удалось выполнить запрос. Попробуйте ещё раз.';
 
   @override
   String get stateOfflineTitle => 'Нет подключения';
@@ -67,8 +66,7 @@ class AppL10nRu extends AppL10n {
   String get statePermissionDeniedTitle => 'Нужно разрешение';
 
   @override
-  String get statePermissionDeniedBody =>
-      'Разрешите доступ в настройках, чтобы продолжить.';
+  String get statePermissionDeniedBody => 'Разрешите доступ в настройках, чтобы продолжить.';
 
   @override
   String get sessionExpired => 'Сеанс истёк. Войдите снова.';
@@ -77,26 +75,22 @@ class AppL10nRu extends AppL10n {
   String get sessionUnreachableTitle => 'Не удаётся получить доступ к аккаунту';
 
   @override
-  String get sessionUnreachableBody =>
-      'Вы по-прежнему в аккаунте. Приложению нужно связаться с сервером, чтобы его показать.';
+  String get sessionUnreachableBody => 'Вы по-прежнему в аккаунте. Приложению нужно связаться с сервером, чтобы его показать.';
 
   @override
   String get sessionUnreachableSignOut => 'Войти с другим номером';
 
   @override
-  String get apiErrorOffline =>
-      'Нет подключения к интернету. Проверьте соединение и попробуйте снова.';
+  String get apiErrorOffline => 'Нет подключения к интернету. Проверьте соединение и попробуйте снова.';
 
   @override
-  String get apiErrorTimeout =>
-      'Сервер слишком долго не отвечает. Проверьте соединение и попробуйте снова.';
+  String get apiErrorTimeout => 'Сервер слишком долго не отвечает. Проверьте соединение и попробуйте снова.';
 
   @override
   String get apiErrorCancelled => 'Запрос отменён.';
 
   @override
-  String get apiErrorCertificate =>
-      'Это соединение небезопасно. Попробуйте другую сеть.';
+  String get apiErrorCertificate => 'Это соединение небезопасно. Попробуйте другую сеть.';
 
   @override
   String get apiErrorUnexpected => 'Что-то пошло не так. Попробуйте снова.';
@@ -117,8 +111,7 @@ class AppL10nRu extends AppL10n {
   String get apiErrorUnprocessable => 'Некоторые данные заполнены неверно.';
 
   @override
-  String get apiErrorTooManyRequests =>
-      'Слишком много попыток. Подождите немного и попробуйте снова.';
+  String get apiErrorTooManyRequests => 'Слишком много попыток. Подождите немного и попробуйте снова.';
 
   @override
   String get apiErrorServer => 'На сервере произошла ошибка. Попробуйте позже.';
@@ -175,8 +168,7 @@ class AppL10nRu extends AppL10n {
   String get blockedTitle => 'Аккаунт заблокирован';
 
   @override
-  String get blockedBody =>
-      'Администратор заблокировал этот аккаунт. Вы не сможете пользоваться приложением, пока блокировка не снята.';
+  String get blockedBody => 'Администратор заблокировал этот аккаунт. Вы не сможете пользоваться приложением, пока блокировка не снята.';
 
   @override
   String get profileCompleteness => 'Заполненность профиля';
@@ -204,12 +196,10 @@ class AppL10nRu extends AppL10n {
   String get profileSaved => 'Профиль сохранён';
 
   @override
-  String get profileSectionElsewhere =>
-      'У этого раздела свой редактор, он появится позже.';
+  String get profileSectionElsewhere => 'У этого раздела свой редактор, он появится позже.';
 
   @override
-  String get profileFieldNotEditableYet =>
-      'Это поле пока нельзя изменить в приложении.';
+  String get profileFieldNotEditableYet => 'Это поле пока нельзя изменить в приложении.';
 
   @override
   String get profileChooseParentFirst => 'Сначала заполните поле выше';
@@ -241,22 +231,19 @@ class AppL10nRu extends AppL10n {
   String get profileVisibilitySearchable => 'Виден в поиске';
 
   @override
-  String get profileVisibilitySearchableHint =>
-      'Работодатели могут найти вас в поиске кандидатов.';
+  String get profileVisibilitySearchableHint => 'Работодатели могут найти вас в поиске кандидатов.';
 
   @override
   String get profileVisibilityHidden => 'Скрыт из поиска';
 
   @override
-  String get profileVisibilityHiddenHint =>
-      'Вы по-прежнему можете смотреть вакансии и откликаться. Работодатели вас не найдут.';
+  String get profileVisibilityHiddenHint => 'Вы по-прежнему можете смотреть вакансии и откликаться. Работодатели вас не найдут.';
 
   @override
   String get profileVisibilityAfterApply => 'Виден после отклика';
 
   @override
-  String get profileVisibilityAfterApplyHint =>
-      'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
+  String get profileVisibilityAfterApplyHint => 'Профиль увидят только работодатели, на вакансию которых вы откликнулись.';
 
   @override
   String get feedRecommended => 'Рекомендуемые';
@@ -277,22 +264,16 @@ class AppL10nRu extends AppL10n {
   String get vacancyNegotiablePay => 'Оплата договорная';
 
   @override
-  String get vacancyReasonRestrictionChanged =>
-      'Изменено ограничение по возрасту или полу, поэтому вакансия снова проходит проверку.';
+  String get vacancyReasonRestrictionChanged => 'Изменено ограничение по возрасту или полу, поэтому вакансия снова проходит проверку.';
 
   @override
-  String get vacancyReasonAutoApproved =>
-      'Опубликовано без проверки: модератор был недоступен.';
+  String get vacancyReasonAutoApproved => 'Опубликовано без проверки: модератор был недоступен.';
 
   @override
   String vacancyPayRange(int from, int to) {
-    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
-      localeName,
-    );
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String fromString = fromNumberFormat.format(from);
-    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
-      localeName,
-    );
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String toString = toNumberFormat.format(to);
 
     return '$fromString – $toString сум';
@@ -300,8 +281,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String vacancyPayFrom(int amount) {
-    final intl.NumberFormat amountNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat amountNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String amountString = amountNumberFormat.format(amount);
 
     return 'От $amountString сум';
@@ -309,8 +289,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String vacancyPayUpTo(int amount) {
-    final intl.NumberFormat amountNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat amountNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String amountString = amountNumberFormat.format(amount);
 
     return 'До $amountString сум';
@@ -435,8 +414,7 @@ class AppL10nRu extends AppL10n {
   String get vacancyCloseTitle => 'Закрыть вакансию?';
 
   @override
-  String get vacancyCloseMessage =>
-      'Закрытие необратимо. Вакансия исчезнет из поиска и останется в истории.';
+  String get vacancyCloseMessage => 'Закрытие необратимо. Вакансия исчезнет из поиска и останется в истории.';
 
   @override
   String vacancyMissingForSubmit(int count) {
@@ -461,8 +439,7 @@ class AppL10nRu extends AppL10n {
   String get vacancyRestrictionTitle => 'Ограничения по возрасту и полу';
 
   @override
-  String get vacancyRestrictionWarning =>
-      'Ограничения по возрасту и полу требуют обоснования и всегда проходят проверку модератора.';
+  String get vacancyRestrictionWarning => 'Ограничения по возрасту и полу требуют обоснования и всегда проходят проверку модератора.';
 
   @override
   String get employerChooseType => 'Кто вы как работодатель?';
@@ -471,19 +448,16 @@ class AppL10nRu extends AppL10n {
   String get employerTypeCompany => 'Компания';
 
   @override
-  String get employerTypeCompanyHint =>
-      'Зарегистрированный бизнес, нанимающий от имени компании.';
+  String get employerTypeCompanyHint => 'Зарегистрированный бизнес, нанимающий от имени компании.';
 
   @override
   String get employerTypeIndividual => 'Частное лицо';
 
   @override
-  String get employerTypeIndividualHint =>
-      'Нанимаете для дома или частной работы.';
+  String get employerTypeIndividualHint => 'Нанимаете для дома или частной работы.';
 
   @override
-  String get employerTypeFixed =>
-      'Выбирается один раз и не может быть изменено.';
+  String get employerTypeFixed => 'Выбирается один раз и не может быть изменено.';
 
   @override
   String get employerDetails => 'Данные работодателя';
@@ -549,16 +523,13 @@ class AppL10nRu extends AppL10n {
   String get employerEvidenceOptional => 'Необязательно';
 
   @override
-  String get employerCannotPublish =>
-      'Заполните профиль и пройдите верификацию, чтобы публиковать вакансии и приглашать кандидатов.';
+  String get employerCannotPublish => 'Заполните профиль и пройдите верификацию, чтобы публиковать вакансии и приглашать кандидатов.';
 
   @override
-  String get employerCanPublish =>
-      'Вы можете публиковать вакансии и приглашать кандидатов.';
+  String get employerCanPublish => 'Вы можете публиковать вакансии и приглашать кандидатов.';
 
   @override
-  String get employerSaveFirst =>
-      'Сохраните данные перед отправкой на проверку.';
+  String get employerSaveFirst => 'Сохраните данные перед отправкой на проверку.';
 
   @override
   String get attachmentsTitle => 'Документы';
@@ -576,6 +547,16 @@ class AppL10nRu extends AppL10n {
 
   @override
   String get attachmentNone => 'Ничего не загружено';
+
+  @override
+  String fieldAtLeast(String min) {
+    return 'Введите $min или больше.';
+  }
+
+  @override
+  String fieldAtMost(String max) {
+    return 'Введите $max или меньше.';
+  }
 
   @override
   String attachmentTooLarge(String limit) {
@@ -720,8 +701,7 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get authAttemptsExhausted =>
-      'Запросите новый код, чтобы попробовать снова.';
+  String get authAttemptsExhausted => 'Запросите новый код, чтобы попробовать снова.';
 
   @override
   String get authVerifyCode => 'Подтвердить';
@@ -744,20 +724,16 @@ class AppL10nRu extends AppL10n {
   String get authTelegramSignIn => 'Войти через Telegram';
 
   @override
-  String get authTermsAgree =>
-      'Я принимаю Условия использования и Политику конфиденциальности';
+  String get authTermsAgree => 'Я принимаю Условия использования и Политику конфиденциальности';
 
   @override
-  String get authSignInFailed =>
-      'Не удалось войти через Telegram. Попробуйте ещё раз.';
+  String get authSignInFailed => 'Не удалось войти через Telegram. Попробуйте ещё раз.';
 
   @override
-  String get authSignInNoConnection =>
-      'Нет связи с Telegram. Проверьте интернет и попробуйте снова.';
+  String get authSignInNoConnection => 'Нет связи с Telegram. Проверьте интернет и попробуйте снова.';
 
   @override
-  String get authSignInUnavailable =>
-      'Вход через Telegram недоступен в этой сборке.';
+  String get authSignInUnavailable => 'Вход через Telegram недоступен в этой сборке.';
 
   @override
   String get vacancyApplicants => 'Отклики';
@@ -785,8 +761,7 @@ class AppL10nRu extends AppL10n {
   String get candidatePhoneHidden => 'Телефон недоступен';
 
   @override
-  String get candidatePhoneHiddenWhy =>
-      'Настройки приватности кандидата решают, когда работодатель его видит.';
+  String get candidatePhoneHiddenWhy => 'Настройки приватности кандидата решают, когда работодатель его видит.';
 
   @override
   String get candidateFilesHidden => 'Файлы недоступны';
@@ -923,8 +898,7 @@ class AppL10nRu extends AppL10n {
   String get filterPrimaryOnly => 'Только основная профессия';
 
   @override
-  String get filterPrimaryOnlyHint =>
-      'Учитывать основную профессию, а не все указанные';
+  String get filterPrimaryOnlyHint => 'Учитывать основную профессию, а не все указанные';
 
   @override
   String get filterOccupationLevels => 'Профессиональный уровень';
@@ -957,8 +931,7 @@ class AppL10nRu extends AppL10n {
   String get filterOccupationExperience => 'Лет в этой профессии, минимум';
 
   @override
-  String get filterOccupationExperienceNeedsOccupation =>
-      'Сначала выберите профессию';
+  String get filterOccupationExperienceNeedsOccupation => 'Сначала выберите профессию';
 
   @override
   String get filterLanguages => 'Языки';
@@ -1009,8 +982,7 @@ class AppL10nRu extends AppL10n {
   String get filterSalaryMax => 'Зарплата до';
 
   @override
-  String get filterSalaryMaxHint =>
-      'Кандидат, ожидающий больше, исключается. Договорные ожидания по-прежнему подходят.';
+  String get filterSalaryMaxHint => 'Кандидат, ожидающий больше, исключается. Договорные ожидания по-прежнему подходят.';
 
   @override
   String get filterAvailableBy => 'Готов приступить к';
@@ -1043,12 +1015,10 @@ class AppL10nRu extends AppL10n {
   String get filterJustification => 'Основание для ограничения';
 
   @override
-  String get filterRestrictionRequired =>
-      'Фильтр по возрасту или полу требует указания основания. Каждое использование фиксируется.';
+  String get filterRestrictionRequired => 'Фильтр по возрасту или полу требует указания основания. Каждое использование фиксируется.';
 
   @override
-  String get filterRestrictionExplain =>
-      'Только если этого действительно требует работа.';
+  String get filterRestrictionExplain => 'Только если этого действительно требует работа.';
 
   @override
   String get sortMatch => 'По совпадению';
@@ -1108,16 +1078,13 @@ class AppL10nRu extends AppL10n {
   String get candidatePhoneNotOnFile => 'У кандидата не указан номер телефона.';
 
   @override
-  String get candidateExposureNotVerified =>
-      'Контакты откроются после верификации компании.';
+  String get candidateExposureNotVerified => 'Контакты откроются после верификации компании.';
 
   @override
-  String get candidateExposureNoInteraction =>
-      'Контакты откроются, когда кандидат откликнется на вашу вакансию или примет приглашение.';
+  String get candidateExposureNoInteraction => 'Контакты откроются, когда кандидат откликнется на вашу вакансию или примет приглашение.';
 
   @override
-  String get candidateExposureHidden =>
-      'Кандидат скрыл профиль из поиска. Он по-прежнему видит ваши вакансии и может откликнуться.';
+  String get candidateExposureHidden => 'Кандидат скрыл профиль из поиска. Он по-прежнему видит ваши вакансии и может откликнуться.';
 
   @override
   String get searchSavedEmpty => 'Нет сохранённых кандидатов';
@@ -1147,8 +1114,7 @@ class AppL10nRu extends AppL10n {
   String get vacancyGoneTitle => 'Вакансия больше недоступна';
 
   @override
-  String get vacancyGoneBody =>
-      'Возможно, она закрыта, заполнена или истёк срок подачи.';
+  String get vacancyGoneBody => 'Возможно, она закрыта, заполнена или истёк срок подачи.';
 
   @override
   String get vacancyReportReason => 'Что не так с этой вакансией?';
@@ -1206,8 +1172,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String walletApproxUzs(int amount) {
-    final intl.NumberFormat amountNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat amountNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String amountString = amountNumberFormat.format(amount);
 
     return '≈ $amountString сум';
@@ -1215,8 +1180,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String walletUzs(int amount) {
-    final intl.NumberFormat amountNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat amountNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String amountString = amountNumberFormat.format(amount);
 
     return '$amountString сум';
@@ -1240,15 +1204,13 @@ class AppL10nRu extends AppL10n {
   String get walletTopUp => 'Пополнить';
 
   @override
-  String get walletTopUpUnavailable =>
-      'Пополнение пока недоступно. Оно появится вместе с поддержкой Payme и CLICK.';
+  String get walletTopUpUnavailable => 'Пополнение пока недоступно. Оно появится вместе с поддержкой Payme и CLICK.';
 
   @override
   String get walletActivity => 'Последние операции';
 
   @override
-  String get walletActivityEmpty =>
-      'В этом кошельке пока ничего не происходило. Здесь появляются и начисления, и списания, и ни одна запись никогда не удаляется.';
+  String get walletActivityEmpty => 'В этом кошельке пока ничего не происходило. Здесь появляются и начисления, и списания, и ни одна запись никогда не удаляется.';
 
   @override
   String walletBalanceAfter(int count) {
@@ -1326,8 +1288,7 @@ class AppL10nRu extends AppL10n {
   String get unlockConfirm => 'Подтвердить';
 
   @override
-  String get unlockWhatYouGet =>
-      'Станут доступны телефон, e-mail и резюме, и вы сможете начать переписку. Списывается один раз — вернуться к этому кандидату позже можно бесплатно.';
+  String get unlockWhatYouGet => 'Станут доступны телефон, e-mail и резюме, и вы сможете начать переписку. Списывается один раз — вернуться к этому кандидату позже можно бесплатно.';
 
   @override
   String get unlockDone => 'Контакты открыты';
@@ -1344,8 +1305,7 @@ class AppL10nRu extends AppL10n {
   String get unlockTopUpNeeded => 'Пополнить, чтобы открыть';
 
   @override
-  String get candidateExposureUnlockRequired =>
-      'Откройте контакты, чтобы связаться с кандидатом сейчас. Они также откроются бесплатно, если он откликнется на вашу вакансию или примет приглашение.';
+  String get candidateExposureUnlockRequired => 'Откройте контакты, чтобы связаться с кандидатом сейчас. Они также откроются бесплатно, если он откликнется на вашу вакансию или примет приглашение.';
 
   @override
   String get contactLockedTitle => 'Защищённые данные';
@@ -1383,11 +1343,9 @@ class AppL10nRu extends AppL10n {
 
   @override
   String walletValueAndPrice(int value, int price) {
-    final intl.NumberFormat valueNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat valueNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String valueString = valueNumberFormat.format(value);
-    final intl.NumberFormat priceNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat priceNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String priceString = priceNumberFormat.format(price);
 
     return '≈ $valueString сум · 1 Coin = $priceString сум';
@@ -1411,8 +1369,7 @@ class AppL10nRu extends AppL10n {
   String get walletHistoryOutgoing => 'Списания';
 
   @override
-  String get walletHistoryNoMatch =>
-      'Операций такого типа пока нет. Снимите фильтр, чтобы увидеть всё, что записано в кошельке.';
+  String get walletHistoryNoMatch => 'Операций такого типа пока нет. Снимите фильтр, чтобы увидеть всё, что записано в кошельке.';
 
   @override
   String get walletDetailTitle => 'Детали операции';
@@ -1442,12 +1399,10 @@ class AppL10nRu extends AppL10n {
   String get walletDetailSupportTitle => 'Что-то не так с этой записью?';
 
   @override
-  String get walletDetailSupport =>
-      'Обратитесь в поддержку и укажите номер выше. Ни одну запись в этой истории нельзя изменить или удалить, поэтому вы видите ровно то, что увидят они.';
+  String get walletDetailSupport => 'Обратитесь в поддержку и укажите номер выше. Ни одну запись в этой истории нельзя изменить или удалить, поэтому вы видите ровно то, что увидят они.';
 
   @override
-  String get walletCorrectionExplained =>
-      'Эта запись исправляет предыдущую. Исходная остаётся в истории — исправления добавляются, а не переписываются.';
+  String get walletCorrectionExplained => 'Эта запись исправляет предыдущую. Исходная остаётся в истории — исправления добавляются, а не переписываются.';
 
   @override
   String get navInvitations => 'Приглашения';
@@ -1474,8 +1429,7 @@ class AppL10nRu extends AppL10n {
   String get invitationRequestDetails => 'Задать вопрос';
 
   @override
-  String get invitationsInboxEmpty =>
-      'Здесь появятся работодатели, которые пригласят вас на вакансию.';
+  String get invitationsInboxEmpty => 'Здесь появятся работодатели, которые пригласят вас на вакансию.';
 
   @override
   String get invitationGeneral => 'Общее приглашение';
@@ -1497,13 +1451,9 @@ class AppL10nRu extends AppL10n {
 
   @override
   String invitationPayRange(int from, int to) {
-    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(
-      localeName,
-    );
+    final intl.NumberFormat fromNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String fromString = fromNumberFormat.format(from);
-    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(
-      localeName,
-    );
+    final intl.NumberFormat toNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String toString = toNumberFormat.format(to);
 
     return '$fromString – $toString сум';
@@ -1511,8 +1461,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String invitationPayFrom(int amount) {
-    final intl.NumberFormat amountNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat amountNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String amountString = amountNumberFormat.format(amount);
 
     return 'От $amountString сум';
@@ -1520,8 +1469,7 @@ class AppL10nRu extends AppL10n {
 
   @override
   String invitationPayUpTo(int amount) {
-    final intl.NumberFormat amountNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat amountNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String amountString = amountNumberFormat.format(amount);
 
     return 'До $amountString сум';
@@ -1531,29 +1479,25 @@ class AppL10nRu extends AppL10n {
   String get invitationAcceptTitle => 'Принять это приглашение?';
 
   @override
-  String get invitationAcceptDiscloses =>
-      'Если вы примете приглашение, работодатель увидит ваш номер телефона, адрес электронной почты и резюме. Отменить это нельзя.';
+  String get invitationAcceptDiscloses => 'Если вы примете приглашение, работодатель увидит ваш номер телефона, адрес электронной почты и резюме. Отменить это нельзя.';
 
   @override
   String get invitationDeclineTitle => 'Отклонить это приглашение?';
 
   @override
-  String get invitationDeclineFinal =>
-      'Ваши контактные данные останутся закрытыми. Отклонить можно только один раз, но работодатель может пригласить вас снова позже.';
+  String get invitationDeclineFinal => 'Ваши контактные данные останутся закрытыми. Отклонить можно только один раз, но работодатель может пригласить вас снова позже.';
 
   @override
   String get invitationRequestDetailsTitle => 'Задать вопрос работодателю';
 
   @override
-  String get invitationRequestDetailsBody =>
-      'Вы сможете принять или отклонить приглашение позже. До этого ваши контактные данные останутся закрытыми.';
+  String get invitationRequestDetailsBody => 'Вы сможете принять или отклонить приглашение позже. До этого ваши контактные данные останутся закрытыми.';
 
   @override
   String get invitationQuestionLabel => 'Ваш вопрос';
 
   @override
-  String get invitationQuestionHint =>
-      'Например: где именно находится работа и когда она начинается?';
+  String get invitationQuestionHint => 'Например: где именно находится работа и когда она начинается?';
 
   @override
   String get invitationNoteLabel => 'Сообщение (необязательно)';
@@ -1574,8 +1518,7 @@ class AppL10nRu extends AppL10n {
   String get invitationSend => 'Отправить';
 
   @override
-  String get invitationSendFree =>
-      'Отправка бесплатна. Контактные данные откроются только если кандидат примет приглашение.';
+  String get invitationSendFree => 'Отправка бесплатна. Контактные данные откроются только если кандидат примет приглашение.';
 
   @override
   String get invitationToVacancy => 'На вакансию';
@@ -1587,8 +1530,7 @@ class AppL10nRu extends AppL10n {
   String get invitationNoOpenVacancyTitle => 'Нет открытых вакансий';
 
   @override
-  String get invitationNoOpenVacancyBody =>
-      'Приглашение можно привязать только к активной вакансии. Общее приглашение на работу отправить всё равно можно.';
+  String get invitationNoOpenVacancyBody => 'Приглашение можно привязать только к активной вакансии. Общее приглашение на работу отправить всё равно можно.';
 
   @override
   String get invitationOccupation => 'Профессия';
@@ -1615,8 +1557,7 @@ class AppL10nRu extends AppL10n {
   String get invitationSchedule => 'График';
 
   @override
-  String get invitationScheduleHint =>
-      'Например: шесть дней в неделю, по утрам';
+  String get invitationScheduleHint => 'Например: шесть дней в неделю, по утрам';
 
   @override
   String get invitationMessageLabel => 'Сообщение (необязательно)';
@@ -1647,12 +1588,10 @@ class AppL10nRu extends AppL10n {
   String get invitationsSentTitle => 'Отправленные приглашения';
 
   @override
-  String get invitationsSentEmpty =>
-      'Здесь появятся кандидаты, которых вы пригласили.';
+  String get invitationsSentEmpty => 'Здесь появятся кандидаты, которых вы пригласили.';
 
   @override
-  String get invitationsSentNoMatch =>
-      'Приглашений с этим статусом нет. Снимите фильтр, чтобы увидеть все отправленные.';
+  String get invitationsSentNoMatch => 'Приглашений с этим статусом нет. Снимите фильтр, чтобы увидеть все отправленные.';
 
   @override
   String get invitationsSentForVacancy => 'Только эта вакансия';
@@ -1670,8 +1609,7 @@ class AppL10nRu extends AppL10n {
   String get invitationContactOpenTitle => 'Контакты открыты';
 
   @override
-  String get invitationContactOpenBody =>
-      'Кандидат принял приглашение — телефон, эл. почта и резюме доступны в профиле кандидата. Платное открытие не требуется.';
+  String get invitationContactOpenBody => 'Кандидат принял приглашение — телефон, эл. почта и резюме доступны в профиле кандидата. Платное открытие не требуется.';
 
   @override
   String get invitationOpenCandidate => 'Открыть кандидата';
@@ -1682,8 +1620,7 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get fileNoViewer =>
-      'На этом телефоне нет приложения, которое откроет этот файл.';
+  String get fileNoViewer => 'На этом телефоне нет приложения, которое откроет этот файл.';
 
   @override
   String get dashboardActiveVacancies => 'Активные вакансии';
@@ -1749,8 +1686,7 @@ class AppL10nRu extends AppL10n {
   String get accountDevices => 'Устройства с активным входом';
 
   @override
-  String get accountDevicesBody =>
-      'Если видите незнакомое устройство — завершите его сеанс.';
+  String get accountDevicesBody => 'Если видите незнакомое устройство — завершите его сеанс.';
 
   @override
   String get accountDeviceUnknown => 'Устройство без имени';
@@ -1770,15 +1706,13 @@ class AppL10nRu extends AppL10n {
   String get accountRevokeTitle => 'Завершить этот сеанс?';
 
   @override
-  String get accountRevokeBody =>
-      'На этом устройстве потребуется войти заново.';
+  String get accountRevokeBody => 'На этом устройстве потребуется войти заново.';
 
   @override
   String get accountRevokeCurrentTitle => 'Выйти на этом устройстве?';
 
   @override
-  String get accountRevokeCurrentBody =>
-      'Это устройство, которым вы пользуетесь. Сейчас вы выйдете из аккаунта.';
+  String get accountRevokeCurrentBody => 'Это устройство, которым вы пользуетесь. Сейчас вы выйдете из аккаунта.';
 
   @override
   String get accountRevokeAll => 'Завершить все сеансы';
@@ -1787,15 +1721,13 @@ class AppL10nRu extends AppL10n {
   String get accountRevokeAllTitle => 'Завершить все сеансы?';
 
   @override
-  String get accountRevokeAllBody =>
-      'Из аккаунта выйдут все устройства, включая это.';
+  String get accountRevokeAllBody => 'Из аккаунта выйдут все устройства, включая это.';
 
   @override
   String get accountDelete => 'Удаление аккаунта';
 
   @override
-  String get accountDeleteBody =>
-      'Ваш профиль, заявки и сообщения будут удалены. Отменить это нельзя.';
+  String get accountDeleteBody => 'Ваш профиль, заявки и сообщения будут удалены. Отменить это нельзя.';
 
   @override
   String get accountDeleteAction => 'Запросить удаление';
@@ -1804,15 +1736,13 @@ class AppL10nRu extends AppL10n {
   String get accountDeleteConfirmTitle => 'Запросить удаление аккаунта?';
 
   @override
-  String get accountDeleteConfirmBody =>
-      'Мы начнём удаление вашего аккаунта. Отменить это из приложения будет нельзя.';
+  String get accountDeleteConfirmBody => 'Мы начнём удаление вашего аккаунта. Отменить это из приложения будет нельзя.';
 
   @override
   String get accountDeleteRequestedTitle => 'Удаление запрошено';
 
   @override
-  String get accountDeleteRequestedBody =>
-      'Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка.';
+  String get accountDeleteRequestedBody => 'Ваш запрос зарегистрирован. Что будет дальше — расскажет поддержка.';
 
   @override
   String get filtersRegion => 'Область или район';
@@ -1830,8 +1760,7 @@ class AppL10nRu extends AppL10n {
   String get filtersSalaryFrom => 'Оплата от';
 
   @override
-  String get filtersSalaryNegotiableNote =>
-      'Вакансии с оплатой по договорённости тоже показываются.';
+  String get filtersSalaryNegotiableNote => 'Вакансии с оплатой по договорённости тоже показываются.';
 
   @override
   String get filtersSalaryTo => 'Оплата до';
@@ -1840,8 +1769,7 @@ class AppL10nRu extends AppL10n {
   String get filtersExperienceUpTo => 'Требуемый опыт, не более (лет)';
 
   @override
-  String get filtersExperienceAnyNote =>
-      'Вакансии без требования к опыту тоже показываются.';
+  String get filtersExperienceAnyNote => 'Вакансии без требования к опыту тоже показываются.';
 
   @override
   String get filtersLanguageRequired => 'Требуемый язык';
@@ -1855,8 +1783,7 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get feedFilteredEmpty =>
-      'Под эти фильтры вакансий нет. Попробуйте расширить их.';
+  String get feedFilteredEmpty => 'Под эти фильтры вакансий нет. Попробуйте расширить их.';
 
   @override
   String get feedSavedUnfiltered => 'Сохранённые вакансии не фильтруются.';
@@ -1868,12 +1795,10 @@ class AppL10nRu extends AppL10n {
   String get notesNewLabel => 'Новая заметка';
 
   @override
-  String get notesNewHint =>
-      'Просит 8м, возможно согласится на 6,5 — перезвонить в четверг';
+  String get notesNewHint => 'Просит 8м, возможно согласится на 6,5 — перезвонить в четверг';
 
   @override
-  String get applicantsNoneAtStage =>
-      'На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.';
+  String get applicantsNoneAtStage => 'На этом этапе никого нет. Снимите фильтр, чтобы увидеть всех.';
 
   @override
   String get shortlistTitle => 'Шорт-лист';
@@ -1885,32 +1810,26 @@ class AppL10nRu extends AppL10n {
   String get roleSelectionTitle => 'Как вы будете пользоваться JobBridge?';
 
   @override
-  String get roleSelectionSubtitle =>
-      'Выберите одно или оба — второе можно добавить позже, без второго аккаунта.';
+  String get roleSelectionSubtitle => 'Выберите одно или оба — второе можно добавить позже, без второго аккаунта.';
 
   @override
-  String get roleCandidateDescription =>
-      'Создайте профиль, который найдут работодатели, откликайтесь на вакансии и отвечайте на приглашения.';
+  String get roleCandidateDescription => 'Создайте профиль, который найдут работодатели, откликайтесь на вакансии и отвечайте на приглашения.';
 
   @override
-  String get roleEmployerDescription =>
-      'Публикуйте вакансии, ищите кандидатов и приглашайте тех, с кем хотите поговорить.';
+  String get roleEmployerDescription => 'Публикуйте вакансии, ищите кандидатов и приглашайте тех, с кем хотите поговорить.';
 
   @override
-  String get roleSelectionBoth =>
-      'С обеими ролями один аккаунт хранит два отдельных пространства: ваш личный профиль и профиль компании, переключение — в профиле.';
+  String get roleSelectionBoth => 'С обеими ролями один аккаунт хранит два отдельных пространства: ваш личный профиль и профиль компании, переключение — в профиле.';
 
   @override
-  String get chatListEmpty =>
-      'Переписка открывается после взаимодействия по вакансии — отклика или принятого приглашения.';
+  String get chatListEmpty => 'Переписка открывается после взаимодействия по вакансии — отклика или принятого приглашения.';
 
   @override
   String get chatParticipantUnknown => 'Участник';
 
   @override
   String chatUnreadCount(int count) {
-    final intl.NumberFormat countNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String countString = countNumberFormat.format(count);
 
     return '$countString';
@@ -1962,22 +1881,19 @@ class AppL10nRu extends AppL10n {
   String get chatReadOnlyTitle => 'Эта переписка стала историей';
 
   @override
-  String get chatReadOnlyBody =>
-      'Отклик или приглашение, с которого она началась, завершились, поэтому новые сообщения отправить нельзя. Всё написанное остаётся доступным для чтения.';
+  String get chatReadOnlyBody => 'Отклик или приглашение, с которого она началась, завершились, поэтому новые сообщения отправить нельзя. Всё написанное остаётся доступным для чтения.';
 
   @override
   String get chatBlockedTitle => 'Заблокировано';
 
   @override
-  String get chatBlockedBody =>
-      'Другая сторона заблокировала эту переписку. Пока блокировка действует, писать не может никто, а сообщения остаются доступными для чтения.';
+  String get chatBlockedBody => 'Другая сторона заблокировала эту переписку. Пока блокировка действует, писать не может никто, а сообщения остаются доступными для чтения.';
 
   @override
   String get chatBlockedByYouTitle => 'Вы заблокировали эту переписку';
 
   @override
-  String get chatBlockedByYouBody =>
-      'Пока блокировка действует, писать не может ни одна сторона — включая вас. Чтобы снова писать, снимите блокировку сверху экрана.';
+  String get chatBlockedByYouBody => 'Пока блокировка действует, писать не может ни одна сторона — включая вас. Чтобы снова писать, снимите блокировку сверху экрана.';
 
   @override
   String get chatUnblock => 'Разблокировать';
@@ -1992,8 +1908,7 @@ class AppL10nRu extends AppL10n {
   String get chatBlockTitle => 'Заблокировать эту переписку?';
 
   @override
-  String get chatBlockBody =>
-      'Она станет доступной только для чтения для вас обоих — вы тоже не сможете писать. Сообщения останутся доступными, и модератор сможет их просмотреть.';
+  String get chatBlockBody => 'Она станет доступной только для чтения для вас обоих — вы тоже не сможете писать. Сообщения останутся доступными, и модератор сможет их просмотреть.';
 
   @override
   String get chatBlockReasonLabel => 'Причина (необязательно)';
@@ -2005,8 +1920,7 @@ class AppL10nRu extends AppL10n {
   String get chatReportTitle => 'Пожаловаться на это сообщение';
 
   @override
-  String get chatReportBody =>
-      'Жалобу читает модератор и принимает решение. Блокировка переписки — отдельное действие, можно сделать и то и другое.';
+  String get chatReportBody => 'Жалобу читает модератор и принимает решение. Блокировка переписки — отдельное действие, можно сделать и то и другое.';
 
   @override
   String get chatReportReasonLabel => 'Что с ним не так';
@@ -2045,8 +1959,7 @@ class AppL10nRu extends AppL10n {
   String get chatThreadEmpty => 'Сообщений пока нет. Напишите первое.';
 
   @override
-  String get chatThreadEmptyClosed =>
-      'До закрытия этой переписки сообщений не было.';
+  String get chatThreadEmptyClosed => 'До закрытия этой переписки сообщений не было.';
 
   @override
   String get chatOpenAction => 'Отправить сообщение';
@@ -2076,8 +1989,7 @@ class AppL10nRu extends AppL10n {
   String get interviewTypeExternalLink => 'Видеосвязь';
 
   @override
-  String get interviewPhoneNote =>
-      'Работодатель позвонит на номер из вашего профиля.';
+  String get interviewPhoneNote => 'Работодатель позвонит на номер из вашего профиля.';
 
   @override
   String get interviewWhere => 'Где';
@@ -2095,8 +2007,7 @@ class AppL10nRu extends AppL10n {
   String get interviewPassed => 'Это время уже прошло.';
 
   @override
-  String get interviewCancelledNotice =>
-      'Работодатель отменил это собеседование.';
+  String get interviewCancelledNotice => 'Работодатель отменил это собеседование.';
 
   @override
   String get interviewConfirm => 'Подтвердить';
@@ -2108,22 +2019,19 @@ class AppL10nRu extends AppL10n {
   String get interviewConfirmTitle => 'Подтвердить это время?';
 
   @override
-  String get interviewConfirmBody =>
-      'Работодатель увидит, что время вам подходит. Если что-то изменится, вы всё равно сможете попросить другое время.';
+  String get interviewConfirmBody => 'Работодатель увидит, что время вам подходит. Если что-то изменится, вы всё равно сможете попросить другое время.';
 
   @override
   String get interviewRescheduleTitle => 'Попросить другое время';
 
   @override
-  String get interviewRescheduleBody =>
-      'Собеседование остаётся в силе, пока работодатель не назначит новое время, и он увидит то, что вы напишете ниже.';
+  String get interviewRescheduleBody => 'Собеседование остаётся в силе, пока работодатель не назначит новое время, и он увидит то, что вы напишете ниже.';
 
   @override
   String get interviewNoteLabel => 'Какое время вам подходит';
 
   @override
-  String get interviewNoteHint =>
-      'Любой день на этой неделе после обеда или утро пятницы';
+  String get interviewNoteHint => 'Любой день на этой неделе после обеда или утро пятницы';
 
   @override
   String get interviewReplyNoteLabel => 'Комментарий (необязательно)';
@@ -2150,15 +2058,13 @@ class AppL10nRu extends AppL10n {
   String get interviewRescheduleSave => 'Сохранить новое время';
 
   @override
-  String get interviewRescheduleResets =>
-      'Кандидата попросят подтвердить заново, даже при небольшом изменении — собеседование, перенесённое на другое время, не считается подтверждённым.';
+  String get interviewRescheduleResets => 'Кандидата попросят подтвердить заново, даже при небольшом изменении — собеседование, перенесённое на другое время, не считается подтверждённым.';
 
   @override
   String get interviewTypeLabel => 'Вид собеседования';
 
   @override
-  String get interviewWhereHint =>
-      'Амира Темура 12, 3-й этаж — на ресепшене спросите Дилнозу';
+  String get interviewWhereHint => 'Амира Темура 12, 3-й этаж — на ресепшене спросите Дилнозу';
 
   @override
   String get interviewLinkHint => 'https://meet.example.com/abc-defg-hij';
@@ -2188,16 +2094,13 @@ class AppL10nRu extends AppL10n {
   String get interviewCancelTitle => 'Отменить это собеседование?';
 
   @override
-  String get interviewCancelBody =>
-      'Это окончательно для обеих сторон — собеседование не вернуть, а новое время означает новое собеседование. Кандидат увидит, что оно отменено.';
+  String get interviewCancelBody => 'Это окончательно для обеих сторон — собеседование не вернуть, а новое время означает новое собеседование. Кандидат увидит, что оно отменено.';
 
   @override
-  String get interviewCancelReasonLabel =>
-      'Причина (необязательно, кандидат её увидит)';
+  String get interviewCancelReasonLabel => 'Причина (необязательно, кандидат её увидит)';
 
   @override
-  String get interviewCancelReasonHint =>
-      'Вакансия закрыта — спасибо за ваше время';
+  String get interviewCancelReasonHint => 'Вакансия закрыта — спасибо за ваше время';
 
   @override
   String get interviewCandidateReply => 'Что ответил кандидат';
@@ -2273,15 +2176,13 @@ class AppL10nRu extends AppL10n {
   String get adminVerificationTitle => 'Проверка работодателей';
 
   @override
-  String get adminVerificationFifo =>
-      'Сначала самые давние — заявка сверху ждёт дольше всех.';
+  String get adminVerificationFifo => 'Сначала самые давние — заявка сверху ждёт дольше всех.';
 
   @override
   String get adminVerificationEmpty => 'Никто не ожидает';
 
   @override
-  String get adminVerificationEmptyBody =>
-      'Заявки появятся здесь, когда работодатели пришлют документы.';
+  String get adminVerificationEmptyBody => 'Заявки появятся здесь, когда работодатели пришлют документы.';
 
   @override
   String get adminEmployerCompany => 'Организация';
@@ -2325,22 +2226,19 @@ class AppL10nRu extends AppL10n {
   String get adminVerifyTitle => 'Подтвердить этого работодателя?';
 
   @override
-  String get adminVerifyBody =>
-      'Это откроет им публикацию вакансий и приглашение кандидатов. Больше ничего в аккаунте не изменится.';
+  String get adminVerifyBody => 'Это откроет им публикацию вакансий и приглашение кандидатов. Больше ничего в аккаунте не изменится.';
 
   @override
   String get adminRequestChangesTitle => 'Вернуть на доработку?';
 
   @override
-  String get adminRequestChangesBody =>
-      'Профиль и файлы сохранятся — они смогут отправить заявку снова, исправив то, что вы укажете ниже.';
+  String get adminRequestChangesBody => 'Профиль и файлы сохранятся — они смогут отправить заявку снова, исправив то, что вы укажете ниже.';
 
   @override
   String get adminRejectTitle => 'Отклонить эту заявку?';
 
   @override
-  String get adminRejectBody =>
-      'Работодатель останется непроверенным и не сможет публиковать вакансии и приглашать. Ваша причина — всё, что он получит, поэтому напишите, что нужно исправить.';
+  String get adminRejectBody => 'Работодатель останется непроверенным и не сможет публиковать вакансии и приглашать. Ваша причина — всё, что он получит, поэтому напишите, что нужно исправить.';
 
   @override
   String get adminReasonLabel => 'Причина (работодатель прочитает её дословно)';
@@ -2355,8 +2253,7 @@ class AppL10nRu extends AppL10n {
   String get adminWalletsEmpty => 'Кошельков пока нет';
 
   @override
-  String get adminWalletsEmptyBody =>
-      'Кошелёк создаётся при первой регистрации работодателя.';
+  String get adminWalletsEmptyBody => 'Кошелёк создаётся при первой регистрации работодателя.';
 
   @override
   String get adminWalletUnnamed => 'Аккаунт удалён';
@@ -2388,15 +2285,13 @@ class AppL10nRu extends AppL10n {
   String get adminWalletGone => 'У этого аккаунта нет кошелька';
 
   @override
-  String get adminWalletGoneBody =>
-      'Кошелёк появляется только после регистрации работодателя.';
+  String get adminWalletGoneBody => 'Кошелёк появляется только после регистрации работодателя.';
 
   @override
   String get adminWalletLedger => 'История операций';
 
   @override
-  String get adminWalletImmutable =>
-      'Эту историю нельзя изменить или удалить. Исправление — это новая запись.';
+  String get adminWalletImmutable => 'Эту историю нельзя изменить или удалить. Исправление — это новая запись.';
 
   @override
   String get adminWalletNoTransactions => 'Операций ещё не было';
@@ -2414,12 +2309,10 @@ class AppL10nRu extends AppL10n {
   String get adminAdjustReason => 'Причина (записывается в журнал аудита)';
 
   @override
-  String get adminAdjustReasonHint =>
-      'Возврат за неудачное пополнение, заказ 4821';
+  String get adminAdjustReasonHint => 'Возврат за неудачное пополнение, заказ 4821';
 
   @override
-  String get adminAdjustNote =>
-      'Это добавит новую запись в реестр под вашим именем. Отменить её нельзя — исправление означает ещё одну корректировку.';
+  String get adminAdjustNote => 'Это добавит новую запись в реестр под вашим именем. Отменить её нельзя — исправление означает ещё одну корректировку.';
 
   @override
   String get adminAdjustSubmit => 'Скорректировать';
@@ -2436,19 +2329,16 @@ class AppL10nRu extends AppL10n {
   String get adminPaymentsPending => 'Поиск платёжных заказов пока недоступен';
 
   @override
-  String get adminPaymentsPendingBody =>
-      'На сервере пока нет административного доступа к платёжным заказам — он отвечает только работодателю, отправившему запрос. Пополнение тоже ещё не запущено.';
+  String get adminPaymentsPendingBody => 'На сервере пока нет административного доступа к платёжным заказам — он отвечает только работодателю, отправившему запрос. Пополнение тоже ещё не запущено.';
 
   @override
   String get adminPricingTitle => 'Цены и бонус за регистрацию';
 
   @override
-  String get adminPricingBody =>
-      'Они задаются на сервере. Изменение действует только на будущие операции и не переписывает уже записанное в реестре.';
+  String get adminPricingBody => 'Они задаются на сервере. Изменение действует только на будущие операции и не переписывает уже записанное в реестре.';
 
   @override
-  String get adminReasonHint =>
-      'Свидетельство о регистрации не читается — загрузите более чёткий скан';
+  String get adminReasonHint => 'Свидетельство о регистрации не читается — загрузите более чёткий скан';
 
   @override
   String get adminAlreadyDecided => 'Решение уже принято';
@@ -2469,8 +2359,7 @@ class AppL10nRu extends AppL10n {
   String get adminModerationEmpty => 'Нет вакансий на модерации';
 
   @override
-  String get adminModerationEmptyBody =>
-      'Вакансии появятся здесь, когда работодатели отправят их на публикацию.';
+  String get adminModerationEmptyBody => 'Вакансии появятся здесь, когда работодатели отправят их на публикацию.';
 
   @override
   String get adminRestrictionFlag => 'Ограничение по возрасту или полу';
@@ -2482,8 +2371,7 @@ class AppL10nRu extends AppL10n {
   String get adminVacancyGoneTitle => 'Эта вакансия больше не в очереди';
 
   @override
-  String get adminVacancyGoneBody =>
-      'Возможно, решение уже принято, или работодатель отозвал её.';
+  String get adminVacancyGoneBody => 'Возможно, решение уже принято, или работодатель отозвал её.';
 
   @override
   String get adminPublish => 'Опубликовать';
@@ -2495,19 +2383,16 @@ class AppL10nRu extends AppL10n {
   String get adminPublishTitle => 'Опубликовать эту вакансию?';
 
   @override
-  String get adminPublishBody =>
-      'Кандидаты увидят её сразу. Если есть ограничение по возрасту или полу, публикация одобряет и его — иначе такая вакансия не может быть опубликована вообще.';
+  String get adminPublishBody => 'Кандидаты увидят её сразу. Если есть ограничение по возрасту или полу, публикация одобряет и его — иначе такая вакансия не может быть опубликована вообще.';
 
   @override
   String get adminSendBackTitle => 'Вернуть эту вакансию?';
 
   @override
-  String get adminSendBackBody =>
-      'Работодатель сможет исправить её и отправить снова. Ваша причина — единственное указание, которое он получит, поэтому напишите, что нужно изменить.';
+  String get adminSendBackBody => 'Работодатель сможет исправить её и отправить снова. Ваша причина — единственное указание, которое он получит, поэтому напишите, что нужно изменить.';
 
   @override
-  String get adminRestrictionJudge =>
-      'Ограничение допустимо только там, где причина действительно его требует. Оценивайте причину, а не ограничение.';
+  String get adminRestrictionJudge => 'Ограничение допустимо только там, где причина действительно его требует. Оценивайте причину, а не ограничение.';
 
   @override
   String get adminRestrictionAge => 'Ограничение по возрасту';
@@ -2558,8 +2443,7 @@ class AppL10nRu extends AppL10n {
   String get adminComplaintKindUnknown => 'Неизвестный тип';
 
   @override
-  String get adminComplaintKindUnknownBody =>
-      'Эта версия приложения не может показать тип объекта. Обновите приложение, чтобы рассмотреть жалобу.';
+  String get adminComplaintKindUnknownBody => 'Эта версия приложения не может показать тип объекта. Обновите приложение, чтобы рассмотреть жалобу.';
 
   @override
   String get adminComplaintTitle => 'Жалоба';
@@ -2568,8 +2452,7 @@ class AppL10nRu extends AppL10n {
   String get adminComplaintGoneTitle => 'Жалоба не найдена';
 
   @override
-  String get adminComplaintGoneBody =>
-      'Её уже рассмотрели, либо её не существовало. Решать больше нечего.';
+  String get adminComplaintGoneBody => 'Её уже рассмотрели, либо её не существовало. Решать больше нечего.';
 
   @override
   String get adminComplaintReported => 'О чём сообщили';
@@ -2581,8 +2464,7 @@ class AppL10nRu extends AppL10n {
   String get adminComplaintTargetGone => 'Объект жалобы удалён';
 
   @override
-  String get adminComplaintTargetGoneBody =>
-      'Он был удалён после подачи жалобы. Жалоба сохранена, поэтому результат всё ещё можно зафиксировать.';
+  String get adminComplaintTargetGoneBody => 'Он был удалён после подачи жалобы. Жалоба сохранена, поэтому результат всё ещё можно зафиксировать.';
 
   @override
   String get adminComplaintEmployerAccount => 'Аккаунт работодателя';
@@ -2591,19 +2473,16 @@ class AppL10nRu extends AppL10n {
   String get adminComplaintRemedy => 'Сначала примите меру';
 
   @override
-  String get adminComplaintRemedyBody =>
-      'Отметка «удовлетворена» ничего не выполняет. Сначала примите меру здесь.';
+  String get adminComplaintRemedyBody => 'Отметка «удовлетворена» ничего не выполняет. Сначала примите меру здесь.';
 
   @override
-  String get adminComplaintNoRemedy =>
-      'Здесь принимать меру не к чему. Зафиксируйте результат ниже.';
+  String get adminComplaintNoRemedy => 'Здесь принимать меру не к чему. Зафиксируйте результат ниже.';
 
   @override
   String get adminComplaintOutcome => 'Зафиксируйте результат';
 
   @override
-  String get adminComplaintOutcomeBody =>
-      'Рассмотрение жалобы больше нигде не фиксируется, поэтому написанное вами — единственный её отчёт.';
+  String get adminComplaintOutcomeBody => 'Рассмотрение жалобы больше нигде не фиксируется, поэтому написанное вами — единственный её отчёт.';
 
   @override
   String get adminComplaintUphold => 'Удовлетворить';
@@ -2615,22 +2494,19 @@ class AppL10nRu extends AppL10n {
   String get adminComplaintUpholdTitle => 'Удовлетворить эту жалобу?';
 
   @override
-  String get adminComplaintUpholdBody =>
-      'Жалоба закроется как удовлетворённая. Если нужна мера, примите её до фиксации.';
+  String get adminComplaintUpholdBody => 'Жалоба закроется как удовлетворённая. Если нужна мера, примите её до фиксации.';
 
   @override
   String get adminComplaintDismissTitle => 'Отклонить эту жалобу?';
 
   @override
-  String get adminComplaintDismissBody =>
-      'Жалоба закроется без каких-либо мер. Укажите причину — это единственный отчёт о решении.';
+  String get adminComplaintDismissBody => 'Жалоба закроется без каких-либо мер. Укажите причину — это единственный отчёт о решении.';
 
   @override
   String get adminResolutionLabel => 'Решение (хранится в журнале аудита)';
 
   @override
-  String get adminResolutionHint =>
-      'Вакансия приостановлена, работодателя попросили убрать номер телефона из описания';
+  String get adminResolutionHint => 'Вакансия приостановлена, работодателя попросили убрать номер телефона из описания';
 
   @override
   String get adminPauseVacancy => 'Приостановить вакансию';
@@ -2642,15 +2518,13 @@ class AppL10nRu extends AppL10n {
   String get adminPauseVacancyTitle => 'Приостановить вакансию?';
 
   @override
-  String get adminPauseVacancyBody =>
-      'Она сразу уйдёт из ленты и может быть возобновлена после исправления работодателем.';
+  String get adminPauseVacancyBody => 'Она сразу уйдёт из ленты и может быть возобновлена после исправления работодателем.';
 
   @override
   String get adminCloseVacancyTitle => 'Снять вакансию?';
 
   @override
-  String get adminCloseVacancyBody =>
-      'Она уйдёт из ленты навсегда. Снятую вакансию нельзя открыть заново — если работодатель может исправить, приостановите её.';
+  String get adminCloseVacancyBody => 'Она уйдёт из ленты навсегда. Снятую вакансию нельзя открыть заново — если работодатель может исправить, приостановите её.';
 
   @override
   String get adminWarnUser => 'Предупредить';
@@ -2659,16 +2533,13 @@ class AppL10nRu extends AppL10n {
   String get adminWarnUserTitle => 'Отправить предупреждение?';
 
   @override
-  String get adminWarnUserBody =>
-      'Аккаунт не изменится. Предупреждение и его причина будут зафиксированы, а пользователь — уведомлён.';
+  String get adminWarnUserBody => 'Аккаунт не изменится. Предупреждение и его причина будут зафиксированы, а пользователь — уведомлён.';
 
   @override
-  String get adminWarnReasonLabel =>
-      'Предупреждение (пользователь прочитает дословно)';
+  String get adminWarnReasonLabel => 'Предупреждение (пользователь прочитает дословно)';
 
   @override
-  String get adminWarnReasonHint =>
-      'Указывать контактные данные в публичном описании вакансии нельзя — пожалуйста, уберите их';
+  String get adminWarnReasonHint => 'Указывать контактные данные в публичном описании вакансии нельзя — пожалуйста, уберите их';
 
   @override
   String get adminAccountStatusActive => 'Активен';
@@ -2698,8 +2569,7 @@ class AppL10nRu extends AppL10n {
   String get adminUserSearchName => 'Имя или название';
 
   @override
-  String get adminUserSearchNameHint =>
-      'Человек, компания или её юридическое название';
+  String get adminUserSearchNameHint => 'Человек, компания или её юридическое название';
 
   @override
   String get adminUserSearchNameTooShort => 'Не менее 2 символов.';
@@ -2726,8 +2596,7 @@ class AppL10nRu extends AppL10n {
   String get adminUserSearchDatesReversed => 'Эти даты не совпадут';
 
   @override
-  String get adminUserSearchDatesReversedBody =>
-      'Первая дата позже второй, поэтому между ними не окажется ни одного аккаунта.';
+  String get adminUserSearchDatesReversedBody => 'Первая дата позже второй, поэтому между ними не окажется ни одного аккаунта.';
 
   @override
   String get adminUserSearchRun => 'Найти';
@@ -2739,19 +2608,16 @@ class AppL10nRu extends AppL10n {
   String get adminUserSearchIdle => 'Найдите аккаунт';
 
   @override
-  String get adminUserSearchIdleBody =>
-      'Ищите по последним цифрам номера или по любому имени, под которым известен аккаунт: имени человека, публичному названию компании или её юридическому названию. Пока вы не спросите, ничего не читается.';
+  String get adminUserSearchIdleBody => 'Ищите по последним цифрам номера или по любому имени, под которым известен аккаунт: имени человека, публичному названию компании или её юридическому названию. Пока вы не спросите, ничего не читается.';
 
   @override
   String get adminUserSearchEmpty => 'Совпадений нет';
 
   @override
-  String get adminUserSearchEmptyBody =>
-      'По этим фильтрам ничего не найдено. Номер ищется по любой части, поэтому последние несколько цифр находят аккаунт, который полный номер, набранный иначе, не найдёт.';
+  String get adminUserSearchEmptyBody => 'По этим фильтрам ничего не найдено. Номер ищется по любой части, поэтому последние несколько цифр находят аккаунт, который полный номер, набранный иначе, не найдёт.';
 
   @override
-  String get adminUserSearchOrder =>
-      'Сначала самые новые регистрации. Более старый аккаунт находится ниже по списку, а не отсутствует — сузьте поиск, а не листайте до него.';
+  String get adminUserSearchOrder => 'Сначала самые новые регистрации. Более старый аккаунт находится ниже по списку, а не отсутствует — сузьте поиск, а не листайте до него.';
 
   @override
   String get adminUserNoName => 'Имя не указано';
@@ -2782,8 +2648,7 @@ class AppL10nRu extends AppL10n {
   String get adminUserGoneTitle => 'Этого аккаунта больше нет';
 
   @override
-  String get adminUserGoneBody =>
-      'Аккаунт не найден. Возможно, он был удалён уже после поиска, который его нашёл.';
+  String get adminUserGoneBody => 'Аккаунт не найден. Возможно, он был удалён уже после поиска, который его нашёл.';
 
   @override
   String get adminUserActions => 'Действия с аккаунтом';
@@ -2792,8 +2657,7 @@ class AppL10nRu extends AppL10n {
   String get adminUserNoActionsTitle => 'Отсюда ничего сделать нельзя';
 
   @override
-  String get adminUserNoActionsBody =>
-      'Этот аккаунт запросил удаление. Запрос обрабатывается своим процессом, а ограничение или блокировка отсюда перезапишут его.';
+  String get adminUserNoActionsBody => 'Этот аккаунт запросил удаление. Запрос обрабатывается своим процессом, а ограничение или блокировка отсюда перезапишут его.';
 
   @override
   String get adminUserRestrict => 'Ограничить';
@@ -2811,15 +2675,13 @@ class AppL10nRu extends AppL10n {
   String get adminUserRestrictTitle => 'Ограничить этот аккаунт?';
 
   @override
-  String get adminUserRestrictBody =>
-      'Аккаунт остаётся у них, войти они смогут, но любое действие, что-либо изменяющее, будет отклонено до снятия ограничения. Вашу причину они увидят.';
+  String get adminUserRestrictBody => 'Аккаунт остаётся у них, войти они смогут, но любое действие, что-либо изменяющее, будет отклонено до снятия ограничения. Вашу причину они увидят.';
 
   @override
   String get adminUserBlockTitle => 'Заблокировать этот аккаунт?';
 
   @override
-  String get adminUserBlockBody =>
-      'Им остаётся только уведомление с объяснением причины. Отменить это может лишь администратор.';
+  String get adminUserBlockBody => 'Им остаётся только уведомление с объяснением причины. Отменить это может лишь администратор.';
 
   @override
   String get adminUserUnblockTitle => 'Разблокировать этот аккаунт?';
@@ -2834,15 +2696,13 @@ class AppL10nRu extends AppL10n {
   String get adminUserRestrictUntilLabel => 'Дата окончания';
 
   @override
-  String get adminUserRestrictUntilCaption =>
-      'Ограничение снимается в начале этого дня по ташкентскому времени. Оставьте поле пустым — оно будет действовать, пока его не снимет администратор.';
+  String get adminUserRestrictUntilCaption => 'Ограничение снимается в начале этого дня по ташкентскому времени. Оставьте поле пустым — оно будет действовать, пока его не снимет администратор.';
 
   @override
   String get adminUserStatusReasonLabel => 'Причина (её прочитают дословно)';
 
   @override
-  String get adminUserStatusReasonHint =>
-      'Повторная публикация вакансий, требующих денег от кандидатов';
+  String get adminUserStatusReasonHint => 'Повторная публикация вакансий, требующих денег от кандидатов';
 
   @override
   String adminUserRestrictedUntil(String date) {
@@ -2850,8 +2710,7 @@ class AppL10nRu extends AppL10n {
   }
 
   @override
-  String get adminUserRestrictedIndefinitely =>
-      'Ограничен до снятия администратором';
+  String get adminUserRestrictedIndefinitely => 'Ограничен до снятия администратором';
 
   @override
   String get adminUserHistory => 'История аккаунта';
@@ -2883,19 +2742,16 @@ class AppL10nRu extends AppL10n {
   String get adminAuditTitle => 'Журнал аудита';
 
   @override
-  String get adminAuditNote =>
-      'Сначала новые. Ничего здесь нельзя изменить или удалить.';
+  String get adminAuditNote => 'Сначала новые. Ничего здесь нельзя изменить или удалить.';
 
   @override
   String get adminAuditEmpty => 'Пока ничего не записано';
 
   @override
-  String get adminAuditEmptyBody =>
-      'Запись появляется здесь, когда администратор что-то решает, проверяет, модерирует или применяет санкцию.';
+  String get adminAuditEmptyBody => 'Запись появляется здесь, когда администратор что-то решает, проверяет, модерирует или применяет санкцию.';
 
   @override
-  String get adminAuditEmptyFilteredBody =>
-      'По этому ничего не записано. Остальной журнал — ниже.';
+  String get adminAuditEmptyFilteredBody => 'По этому ничего не записано. Остальной журнал — ниже.';
 
   @override
   String get adminAuditFilteredByActor => 'Только этот администратор';
@@ -2931,8 +2787,7 @@ class AppL10nRu extends AppL10n {
   String get adminAuditTargetUnknown => 'Другое';
 
   @override
-  String get adminAuditVerificationDecided =>
-      'Решение по проверке работодателя';
+  String get adminAuditVerificationDecided => 'Решение по проверке работодателя';
 
   @override
   String get adminAuditVacancyModerated => 'Вакансия проверена';
@@ -3015,12 +2870,10 @@ class AppL10nRu extends AppL10n {
   String get candidateHomeProfileIncomplete => 'Завершите профиль';
 
   @override
-  String get candidateHomeProfileBody =>
-      'Чем полнее профиль, тем больше вакансий ему соответствует.';
+  String get candidateHomeProfileBody => 'Чем полнее профиль, тем больше вакансий ему соответствует.';
 
   @override
-  String get candidateHomeProfileHidden =>
-      'Работодатели пока не могут вас найти — чтобы профиль появился в поиске, он должен быть заполнен.';
+  String get candidateHomeProfileHidden => 'Работодатели пока не могут вас найти — чтобы профиль появился в поиске, он должен быть заполнен.';
 
   @override
   String get candidateHomeRecommended => 'Рекомендуем вам';
@@ -3032,8 +2885,7 @@ class AppL10nRu extends AppL10n {
   String get candidateHomeNoRecommendations => 'Пока нет рекомендаций';
 
   @override
-  String get candidateHomeNoRecommendationsBody =>
-      'Рекомендации подбираются по вашим профессиям, местоположению и предпочтениям. А пока посмотрите недавно опубликованные вакансии.';
+  String get candidateHomeNoRecommendationsBody => 'Рекомендации подбираются по вашим профессиям, местоположению и предпочтениям. А пока посмотрите недавно опубликованные вакансии.';
 
   @override
   String get candidateHomeBrowseAll => 'Смотреть новые вакансии';
@@ -3042,8 +2894,7 @@ class AppL10nRu extends AppL10n {
   String get invitationAwaitingYou => 'Ждёт вашего ответа';
 
   @override
-  String get employerTypeFirst =>
-      'Выберите выше, кто нанимает. От этого зависит, какие данные потребуются.';
+  String get employerTypeFirst => 'Выберите выше, кто нанимает. От этого зависит, какие данные потребуются.';
 
   @override
   String get employerRequired => 'Обязательно';
@@ -3068,8 +2919,7 @@ class AppL10nRu extends AppL10n {
   String get adminDictionariesTitle => 'Справочники';
 
   @override
-  String get adminDictionariesBody =>
-      'Всё, что предлагают списки выбора. Ничего не удаляется — элемент уходит из списков и остаётся читаемым в записях, где он использовался.';
+  String get adminDictionariesBody => 'Всё, что предлагают списки выбора. Ничего не удаляется — элемент уходит из списков и остаётся читаемым в записях, где он использовался.';
 
   @override
   String adminDictionaryActiveCount(int count) {
@@ -3103,15 +2953,13 @@ class AppL10nRu extends AppL10n {
   String get adminDictionaryCodeHint => 'welder';
 
   @override
-  String get adminDictionaryCodeNote =>
-      'Никому не показывается. Названия можно менять на любом языке, а это — нет.';
+  String get adminDictionaryCodeNote => 'Никому не показывается. Названия можно менять на любом языке, а это — нет.';
 
   @override
   String get adminDictionaryLabels => 'Названия';
 
   @override
-  String get adminDictionaryLabelsNote =>
-      'Прежде чем элемент можно использовать, нужны все четыре. Меньше — это черновик, который в списки не попадёт.';
+  String get adminDictionaryLabelsNote => 'Прежде чем элемент можно использовать, нужны все четыре. Меньше — это черновик, который в списки не попадёт.';
 
   @override
   String adminDictionaryDraftNote(int count) {
@@ -3133,8 +2981,7 @@ class AppL10nRu extends AppL10n {
   String get adminDictionaryMerged => 'Объединён';
 
   @override
-  String get adminDictionaryMergedBody =>
-      'Он указывает на элемент, в который был объединён, поэтому всё, что его использовало, по-прежнему читается. Делать с ним больше нечего.';
+  String get adminDictionaryMergedBody => 'Он указывает на элемент, в который был объединён, поэтому всё, что его использовало, по-прежнему читается. Делать с ним больше нечего.';
 
   @override
   String get adminDictionaryActivate => 'Ввести в использование';
@@ -3143,15 +2990,13 @@ class AppL10nRu extends AppL10n {
   String get adminDictionaryRetire => 'Вывести из использования';
 
   @override
-  String get adminDictionaryLabelsMissing =>
-      'Пока у него нет названия на всех четырёх языках, использовать его нельзя.';
+  String get adminDictionaryLabelsMissing => 'Пока у него нет названия на всех четырёх языках, использовать его нельзя.';
 
   @override
   String get adminDictionaryMerge => 'Объединить дубликат';
 
   @override
-  String get adminDictionaryMergeBody =>
-      'Уходит именно этот элемент. Он выводится из использования и указывает на выбранный вами, поэтому всё, что его использовало, по-прежнему читается.';
+  String get adminDictionaryMergeBody => 'Уходит именно этот элемент. Он выводится из использования и указывает на выбранный вами, поэтому всё, что его использовало, по-прежнему читается.';
 
   @override
   String get adminDictionaryMergeInto => 'Оставить вместо него';
@@ -3163,15 +3008,13 @@ class AppL10nRu extends AppL10n {
   String get adminDictionaryEmpty => 'Пока пусто';
 
   @override
-  String get adminDictionaryEmptyBody =>
-      'Добавьте первый элемент — он появится в списках выбора, как только у него будут все четыре названия.';
+  String get adminDictionaryEmptyBody => 'Добавьте первый элемент — он появится в списках выбора, как только у него будут все четыре названия.';
 
   @override
   String get adminDictionaryNoMatch => 'Совпадений нет';
 
   @override
-  String get adminDictionaryNoMatchBody =>
-      'Поиск смотрит на названия и коды. Выведенный из использования элемент тоже есть в этом списке.';
+  String get adminDictionaryNoMatchBody => 'Поиск смотрит на названия и коды. Выведенный из использования элемент тоже есть в этом списке.';
 
   @override
   String get dictTypeOccupation => 'Профессии';
@@ -3256,26 +3099,22 @@ class AppL10nRu extends AppL10n {
   String get notificationsEmpty => 'Пока ничего';
 
   @override
-  String get notificationsEmptyBody =>
-      'Здесь появляются ответы на ваши отклики, приглашения, сообщения и собеседования.';
+  String get notificationsEmptyBody => 'Здесь появляются ответы на ваши отклики, приглашения, сообщения и собеседования.';
 
   @override
   String get notificationsNoUnread => 'Непрочитанных нет';
 
   @override
-  String get notificationsNoUnreadBody =>
-      'Всё здесь прочитано. Чтобы посмотреть назад, переключитесь на «Все».';
+  String get notificationsNoUnreadBody => 'Всё здесь прочитано. Чтобы посмотреть назад, переключитесь на «Все».';
 
   @override
   String get notificationsSettings => 'О чём вас уведомлять';
 
   @override
-  String get notificationsSettingsBody =>
-      'Если выключить категорию, она вообще перестанет записываться — пропущенные здесь потом не найдутся.';
+  String get notificationsSettingsBody => 'Если выключить категорию, она вообще перестанет записываться — пропущенные здесь потом не найдутся.';
 
   @override
-  String get notificationsAlwaysOn =>
-      'Уведомления о безопасности и аккаунте приходят всегда';
+  String get notificationsAlwaysOn => 'Уведомления о безопасности и аккаунте приходят всегда';
 
   @override
   String get notificationsApplications => 'Отклики';
@@ -3299,6 +3138,5 @@ class AppL10nRu extends AppL10n {
   String get pushChannelName => 'Уведомления';
 
   @override
-  String get pushChannelDescription =>
-      'Ответы на ваши отклики, приглашения, сообщения и собеседования.';
+  String get pushChannelDescription => 'Ответы на ваши отклики, приглашения, сообщения и собеседования.';
 }

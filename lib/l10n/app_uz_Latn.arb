@@ -131,6 +131,8 @@
   "attachmentReplace": "Almashtirish",
   "attachmentUploading": "Yuklanmoqda… {percent}%",
   "attachmentNone": "Hech narsa yuklanmagan",
+  "fieldAtLeast": "{min} yoki undan ko‘p kiriting.",
+  "fieldAtMost": "{max} yoki undan kam kiriting.",
   "attachmentTooLarge": "Fayl {limit} MB dan katta.",
   "attachmentWrongType": "{types} formatidagi faylni tanlang.",
   "attachmentDeleteTitle": "Fayl o'chirilsinmi?",

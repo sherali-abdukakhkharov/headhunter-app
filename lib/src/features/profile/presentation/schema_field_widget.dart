@@ -140,11 +140,45 @@ class SchemaFieldWidget extends StatelessWidget {
     onChanged: (text) => onChanged(text.trim().isEmpty ? null : text),
   );
 
+  /// The schema's own bounds, checked as the value is typed (BR-05).
+  ///
+  /// `validation.min` and `.max` were declared and never applied, so a worker
+  /// count of 0 - the one BR-05 names - cost a round trip and came back in the
+  /// page's error state rather than on the field. The rule is general: every
+  /// bounded field in the schema had the same problem.
+  ///
+  /// **The server stays authoritative.** This saves the trip and puts the
+  /// message where the value is; it does not decide anything the server would
+  /// not have decided.
+  String? _boundsError(AppL10n l10n) {
+    final number = switch (value) {
+      final num n => n,
+      _ => null,
+    };
+    if (number == null) return null;
+
+    final validation = field.validation;
+    final min = validation?.min;
+    final max = validation?.max;
+
+    if (min != null && number < min) return l10n.fieldAtLeast(_plain(min));
+    if (max != null && number > max) return l10n.fieldAtMost(_plain(max));
+
+    return null;
+  }
+
+  /// `1` rather than `1.0`: the bound is declared as a double because one
+  /// schema type covers int and decimal, and a whole number reads as one.
+  static String _plain(double bound) =>
+      bound == bound.roundToDouble() ? bound.toInt().toString() : '$bound';
+
   Widget _number(BuildContext context, {required bool decimal}) => HhTextField(
     label: _labelWithRequired(AppL10n.of(context)),
     controller: _controllerFor(value?.toString() ?? ''),
     enabled: enabled,
-    errorText: errorText,
+    // The server's refusal wins when there is one: it may know something the
+    // declaration does not.
+    errorText: errorText ?? _boundsError(AppL10n.of(context)),
     keyboardType: TextInputType.numberWithOptions(decimal: decimal),
     inputFormatters: [
       FilteringTextInputFormatter.allow(

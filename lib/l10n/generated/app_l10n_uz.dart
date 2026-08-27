@@ -578,6 +578,16 @@ class AppL10nUz extends AppL10n {
   String get attachmentNone => 'Hech narsa yuklanmagan';
 
   @override
+  String fieldAtLeast(String min) {
+    return '$min yoki undan ko‘p kiriting.';
+  }
+
+  @override
+  String fieldAtMost(String max) {
+    return '$max yoki undan kam kiriting.';
+  }
+
+  @override
   String attachmentTooLarge(String limit) {
     return 'Fayl $limit MB dan katta.';
   }
@@ -3838,6 +3848,16 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get attachmentNone => 'Ҳеч нарса юкланмаган';
 
   @override
+  String fieldAtLeast(String min) {
+    return '$min ёки ундан кўп киритинг.';
+  }
+
+  @override
+  String fieldAtMost(String max) {
+    return '$max ёки ундан кам киритинг.';
+  }
+
+  @override
   String attachmentTooLarge(String limit) {
     return 'Файл $limit МБ дан катта.';
   }
@@ -7087,6 +7107,16 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get attachmentNone => 'Hech narsa yuklanmagan';
+
+  @override
+  String fieldAtLeast(String min) {
+    return '$min yoki undan ko‘p kiriting.';
+  }
+
+  @override
+  String fieldAtMost(String max) {
+    return '$max yoki undan kam kiriting.';
+  }
 
   @override
   String attachmentTooLarge(String limit) {

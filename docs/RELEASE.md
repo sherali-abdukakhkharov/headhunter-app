@@ -24,10 +24,11 @@ release. The download link never changes, so the README needs no edit per releas
 https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/jobbridge.apk
 ```
 
-The asset was called `headhunter.apk` up to and including **v1.1.0**. Later
-releases attach both names — the same bytes — so links shared before the
-JobBridge rename keep resolving; the alias goes away once nothing points at it,
-and TODO.md carries that removal.
+The asset was called `headhunter.apk` up to and including **v1.1.0**, and the
+rename kept both names — the same bytes — so links shared before it kept
+resolving. **Dropped in v1.24.0**, after twenty-two releases had carried both:
+its own condition was that one release carry both, and a link nobody updated in
+twenty-two is one nobody is following. Only `jobbridge.apk` is attached now.
 
 ```powershell
 git tag v1.0.1
@@ -209,7 +210,6 @@ Build and stage it under the exact name the permanent link expects:
 flutter build apk --release --flavor production --dart-define=FLAVOR=production
 New-Item -ItemType Directory -Force dist | Out-Null
 Copy-Item build\app\outputs\flutter-apk\app-production-release.apk dist\jobbridge.apk -Force
-Copy-Item dist\jobbridge.apk dist\headhunter.apk -Force
 ```
 
 Confirm it carries the **release** key before uploading — see the next section.
@@ -223,10 +223,9 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
-Then **Releases → Draft a new release**, pick that tag, and attach both files.
-The names must be exact: the permanent URL is
-`latest/download/jobbridge.apk`, and `headhunter.apk` is the pre-1.1.0 alias
-kept so older links resolve. A different name breaks whichever link uses it.
+Then **Releases → Draft a new release**, pick that tag, and attach the file.
+The name must be exact — the permanent URL is `latest/download/jobbridge.apk`,
+and a different name breaks it.
 
 `dist/` is gitignored: a 60 MB binary belongs in a release attachment, never in
 git history, where it cannot be removed without a rewrite.

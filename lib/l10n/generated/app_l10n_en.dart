@@ -576,6 +576,16 @@ class AppL10nEn extends AppL10n {
   String get attachmentNone => 'Nothing uploaded yet';
 
   @override
+  String fieldAtLeast(String min) {
+    return 'Enter $min or more.';
+  }
+
+  @override
+  String fieldAtMost(String max) {
+    return 'Enter $max or less.';
+  }
+
+  @override
   String attachmentTooLarge(String limit) {
     return 'That file is larger than $limit MB.';
   }

@@ -17,6 +17,36 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.24.0+34 — 2026-08-28
+
+### Fixed
+
+- **A number outside the range a field allows is refused as you type it**,
+  instead of after a round trip to the server. BR-05''s "at least one opening" is
+  the rule the specification names; every other bounded field had the same gap,
+  and the refusal used to arrive under a heading reading "Something went wrong",
+  which is a claim about the app rather than about what you are still filling in.
+
+### Changed
+
+- **Dictionaries are fetched once at sign-in** rather than one at a time as each
+  picker asks. The first form a candidate opens needs six of them, and six cold
+  requests in sequence is the difference between a form that appears and one
+  that assembles itself while you watch.
+
+### Internal
+
+- **The release check now verifies the build number moved**, not just the
+  version name. v1.1.1 reused v1.1.0''s number, and Android refuses to install an
+  APK whose build number did not increase — so that release could not upgrade
+  anyone, and testers kept reporting bugs that were already fixed. The check was
+  left to a reviewer on the grounds that fetching tags was not worth it; it is
+  twenty seconds against a release nobody can install. Exercised against this
+  repository before shipping.
+- **The `headhunter.apk` alias is gone.** Its own condition was that one release
+  carry both names; twenty-two did, and every link this repository owns says
+  `jobbridge.apk`. A `headhunter.apk` URL now 404s.
+- 1124 tests, up from 1117.
 ## 1.23.0+33 — 2026-08-27
 
 Two long-standing gaps in the design system, and one of them was a bug in

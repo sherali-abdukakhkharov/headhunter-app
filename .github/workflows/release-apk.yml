@@ -5,13 +5,11 @@
 #   https://github.com/<owner>/<repo>/releases/latest/download/jobbridge.apk
 # GitHub resolves `latest` server-side, so README needs no edit per release.
 #
-# `headhunter.apk` is uploaded beside it as a byte-identical alias, because that
-# was the asset name until 1.1.0 and `latest/download/headhunter.apk` is already
-# in circulation - in this repo's own README, in docs/RELEASE.md and in whatever
-# chat it was pasted into. Renaming the asset alone would turn every one of
-# those links into a 404 against the *newest* release, which reads as the build
-# being broken rather than as the file having moved. The alias is temporary and
-# TODO.md carries the removal.
+# `headhunter.apk` was uploaded beside it as a byte-identical alias from the 1.1.0
+# rename until 2026-08-28, because that URL was already in circulation. Twenty-two
+# releases have carried both names and every link this repository owns now says
+# `jobbridge.apk`, so the alias has done its job. A link nobody has updated in
+# twenty-two releases is one nobody is following.
 #
 # Trigger: push a version tag.
 #   git tag v1.0.1 && git push origin v1.0.1
@@ -46,7 +44,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Full history and tags: the version guard below compares this build number
+      # against the previous tag's, which a shallow checkout cannot see.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # The version in pubspec.yaml is what the device reports - Gradle derives
       # versionName and versionCode from it - so a tag on its own is not a
@@ -60,9 +62,17 @@ jobs:
       # anything. This can: it is the first step, so a mismatch costs twenty
       # seconds and no published artifact.
       #
-      # Only the versionName is compared. The build number is checked for having
-      # moved by the reviewer, not here - the workflow has no cheap way to know
-      # the last released one without deepening the checkout to fetch tags.
+      # **Both halves are checked** (2026-08-28). The versionName has to equal the
+      # tag, and the build number has to be higher than the last released one -
+      # which is the half that was left to a reviewer, on the grounds that fetching
+      # tags was not worth it. v1.1.1 is the counter-example: it reused v1.1.0's
+      # build number, and Android refuses to install an APK whose versionCode did
+      # not move, so the tester keeps looking at the old app and reports bugs that
+      # were fixed. `fetch-depth: 0` above is what makes the comparison possible.
+      #
+      # A first release, or a tag whose predecessor has no pubspec, skips the
+      # comparison rather than failing: there is nothing to compare against, and a
+      # guard that blocks the first release of a repository is a guard nobody keeps.
       - name: Check the tag matches pubspec.yaml
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -73,6 +83,25 @@ jobs:
           echo "tag=$tag  pubspec=$version  (versionName=$name, versionCode=$build)"
           if [ "$tag" != "$name" ]; then
             echo "::error::Tag $GITHUB_REF_NAME would publish an APK reporting $name (build $build). Bump pubspec.yaml in the same commit as the tag, add a CHANGELOG.md entry, and tag again - see CHANGELOG.md."
+            exit 1
+          fi
+
+          previous=$(git tag --list "v*" --sort=-v:refname | grep -v "^$GITHUB_REF_NAME$" | head -1)
+          if [ -z "$previous" ]; then
+            echo "No earlier tag: nothing to compare the build number against."
+            exit 0
+          fi
+
+          previous_version=$(git show "$previous:pubspec.yaml" 2>/dev/null | grep -m1 "^version:" | sed "s/^version:[[:space:]]*//")
+          if [ -z "$previous_version" ]; then
+            echo "::warning::$previous has no readable pubspec.yaml; build number not compared."
+            exit 0
+          fi
+
+          previous_build=${previous_version#*+}
+          echo "previous=$previous ($previous_version), build $previous_build -> $build"
+          if [ "$build" -le "$previous_build" ]; then
+            echo "::error::Build number $build is not higher than $previous's ($previous_build). Android refuses to install an APK whose versionCode did not move, so this release could not upgrade anyone - it would install as nothing, or the tester would keep reporting bugs that are already fixed. Bump the number after the + in pubspec.yaml."
             exit 1
           fi
 
@@ -182,7 +211,7 @@ jobs:
           mkdir -p dist
           cp build/app/outputs/flutter-apk/app-production-release.apk \
              dist/jobbridge.apk
-          cp dist/jobbridge.apk dist/headhunter.apk
+
           echo "size=$(du -h dist/jobbridge.apk | cut -f1)" >> "$GITHUB_OUTPUT"
           echo "sha256=$(sha256sum dist/jobbridge.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
@@ -200,9 +229,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/jobbridge.apk
-            dist/headhunter.apk
+          files: dist/jobbridge.apk
           generate_release_notes: true
           body: |
             ### Download
@@ -213,6 +240,3 @@ jobs:
 
             `SHA-256: ${{ steps.artifact.outputs.sha256 }}`
 
-            <sub>`headhunter.apk` is the same file under the pre-1.1.0 name, kept
-            so links shared earlier keep working. It will be dropped once those
-            are updated — use `jobbridge.apk`.</sub>

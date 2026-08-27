@@ -28,10 +28,10 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
-Up to and including **v1.1.0** the asset was called `headhunter.apk`. Releases
-after the rename carry both names — the same bytes — so a link shared earlier
-keeps working; the alias will be dropped once nothing points at it. Prefer
-`jobbridge.apk`.
+Up to and including **v1.1.0** the asset was called `headhunter.apk`, and the
+rename kept both names until **v1.23.0** so links shared before it would still
+resolve. Twenty-two releases carried both; from v1.24.0 there is only
+`jobbridge.apk`. A `headhunter.apk` link now 404s — use the one above.
 
 **Installing over an older build.** The application id changed with the rename
 (`com.headhunter.app` → `com.jobbridge.app`), so Android treats the new APK as a

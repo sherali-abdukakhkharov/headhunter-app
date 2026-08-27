@@ -550,8 +550,12 @@ working destinations rather than dead ends.
       `LeveledFieldEditor`, built as M3's `dictionary_leveled` field. It reuses
       the picker sheet via `pickDictionaryItem` rather than growing a second
       searchable list, so retired items and the empty state behave identically
-- [ ] Warm-up call site — `warmDictionaries` exists but nothing invokes it yet;
-      it wants to run once after sign-in
+- [x] **Warm-up call site, 2026-08-28.** `warmDictionaries` is called from
+      `JobBridgeApp` when the session *becomes* active — `ref.listen`, not
+      `watch`, so an unrelated session change does not re-run it.
+      The composition root rather than `SessionController`, which is `core/`
+      and has no business reaching into a feature, and rather than a shell,
+      which rebuilds
 - [x] Widget test for the pickers — 17 cases in
       `test/features/dictionaries/dictionary_picker_test.dart` covering BR-13
       (label shown, id bound), §10.3 (retired and merged not offered but still
@@ -689,8 +693,14 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
 - [x] `missingForSubmit` shown as a count **before** the refusal, turning one
       422-per-field into a checklist. Verified on device: submitting an empty
       draft outlined all eight required fields with their messages
-- [ ] Worker count `>= 1` (BR-05) — the server enforces it; the schema's
-      `validation.min` is not yet applied client-side, so it costs a round trip
+- [x] **Worker count `>= 1` (BR-05), 2026-08-28** — and the fix is general.
+      `validation.min` and `.max` were parsed off the schema and never
+      applied, so every bounded field cost a round trip and the refusal came
+      back in the page's error state — whose heading says "Something went
+      wrong", a claim about the system rather than about what somebody is
+      still typing (MT-013). Checked on the field now, with the *server*
+      still authoritative: its own refusal wins when there is one, because it
+      may know something the declaration does not
 - [ ] Seasonal/agricultural flow (UAT-10) — needs a seasonal category to walk
 - [x] **Employer dashboard (§6.2, E-07/E-08), 2026-08-20.** The Home tab was a
       placeholder; it is now the dashboard, and five of §6.2's seven widgets are
@@ -2281,15 +2291,11 @@ remaining item is a screen.
       design document: a vector adaptive launcher icon, the legacy round/square
       mipmaps, and a navy platform launch window. The one part still unverified
       is API 24/25, which is tracked in M7 above
-- [ ] **Drop the `headhunter.apk` release alias.** The asset was renamed to
-      `jobbridge.apk` on 2026-08-20 and the old name is uploaded beside it,
-      byte-identical, because `latest/download/headhunter.apk` was already in
-      the README, in RELEASE.md and in whatever chat it had been pasted into —
-      renaming alone would have turned every one of those into a 404 against
-      the *newest* release, which reads as a broken build rather than a moved
-      file. Both names ship until the links that matter are updated; then delete
-      the `cp` and the second `files:` entry in `release-apk.yml`. **Not before
-      one release has carried both**, or the alias buys nothing
+- [x] **Dropped the `headhunter.apk` release alias, 2026-08-28.** Its own
+      condition was "not before one release has carried both"; twenty-two
+      have, and every link this repository owns now says `jobbridge.apk`. A
+      link nobody has updated in twenty-two releases is one nobody is
+      following
 - [x] **A tag that disagrees with `pubspec.yaml` now fails the release run,
       2026-08-20.** v1.1.1 was tagged without the version bump and published an
       APK reporting **1.1.0+3** — the third time in four releases (v1.0.1 and
@@ -2300,11 +2306,17 @@ remaining item is a screen.
       mismatch costs twenty seconds and publishes nothing. **1.1.2+4 is staged
       in `pubspec.yaml` and `CHANGELOG.md` for exactly this reason**: 1.1.1
       reuses build number 3, so a phone holding 1.1.0 refuses it as an upgrade
-- [ ] **Also check the build number moved**, which the guard deliberately does
-      not. It would need `fetch-depth: 0` and a `git show <prev-tag>:pubspec.yaml`
-      to know the last released number, and the failure it would catch —
-      bumping the name but not the build — has not happened yet. Worth adding
-      the day it does
+- [x] **The build number is checked too, 2026-08-28.** This said it was worth
+      adding "the day it does" happen — and it already had: v1.1.1 reused
+      v1.1.0's number, which is why a phone would not take it as an upgrade at
+      all. `fetch-depth: 0` plus `git show <prev-tag>:pubspec.yaml`, which is
+      exactly the cost that was being avoided; twenty seconds against a
+      release nobody can install.
+      A first release, or a predecessor with no readable pubspec, skips the
+      comparison rather than failing: a guard that blocks the first release of
+      a repository is a guard nobody keeps. Exercised against this repository
+      before shipping — a correct bump passes, a repeated number fails, a
+      backwards one fails, a name mismatch fails
 - [ ] Walk **all 24** UAT scenarios and keep the evidence — the 2026-08-10
       revision added UAT-16 – UAT-24. UAT-20 – UAT-23 need the providers' test
       environments, so book those *before* the acceptance window, not inside it

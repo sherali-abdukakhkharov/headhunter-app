@@ -715,6 +715,24 @@
   "@attachmentNone": {
     "description": "Empty state of one file slot."
   },
+  "fieldAtLeast": "Enter {min} or more.",
+  "@fieldAtLeast": {
+    "description": "A schema field's declared lower bound, checked on the field as it is typed. BR-05's worker count is the one the specification names, but the rule is general: every bounded field in the schema costs a round trip otherwise, and the server's refusal arrives in the page's error state rather than on the field.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldAtMost": "Enter {max} or less.",
+  "@fieldAtMost": {
+    "description": "The declared upper bound, same treatment. The server stays authoritative — this only saves the trip and puts the message where the value is.",
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
   "attachmentTooLarge": "That file is larger than {limit} MB.",
   "@attachmentTooLarge": {
     "description": "Refused before sending. The server enforces the limit too, but bouncing it here saves uploading a file that cannot land.",

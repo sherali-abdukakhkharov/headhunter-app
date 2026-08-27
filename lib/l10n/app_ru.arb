@@ -131,6 +131,8 @@
   "attachmentReplace": "Заменить",
   "attachmentUploading": "Загрузка… {percent}%",
   "attachmentNone": "Ничего не загружено",
+  "fieldAtLeast": "Введите {min} или больше.",
+  "fieldAtMost": "Введите {max} или меньше.",
   "attachmentTooLarge": "Файл больше {limit} МБ.",
   "attachmentWrongType": "Выберите файл в формате {types}.",
   "attachmentDeleteTitle": "Удалить файл?",

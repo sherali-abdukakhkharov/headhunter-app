@@ -131,6 +131,8 @@
   "attachmentReplace": "Алмаштириш",
   "attachmentUploading": "Юкланмоқда… {percent}%",
   "attachmentNone": "Ҳеч нарса юкланмаган",
+  "fieldAtLeast": "{min} ёки ундан кўп киритинг.",
+  "fieldAtMost": "{max} ёки ундан кам киритинг.",
   "attachmentTooLarge": "Файл {limit} МБ дан катта.",
   "attachmentWrongType": "{types} форматидаги файлни танланг.",
   "attachmentDeleteTitle": "Файл ўчирилсинми?",

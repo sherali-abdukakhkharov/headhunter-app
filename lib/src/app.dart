@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
+import 'package:jobbridge_app/src/core/auth/session_controller.dart';
+import 'package:jobbridge_app/src/core/auth/session_state.dart';
 import 'package:jobbridge_app/src/core/config/app_config.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/app_router.dart';
+import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
+import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_type.dart';
 import 'package:jobbridge_app/src/features/notifications/presentation/push_host.dart';
 
 /// Root widget: wires the router and theme together.
@@ -26,6 +30,25 @@ class JobBridgeApp extends ConsumerWidget {
     // assignment, and a language change has to reach it before the first
     // request made afterwards. See ApiException.installLocalizations.
     ApiException.installLocalizations(locale);
+
+    // Prefetch the dictionaries once a session exists (§3.3). The first form a
+    // candidate opens needs six of them at once, and six cold round trips in
+    // sequence is the difference between a form that appears and one that
+    // assembles itself while the user watches.
+    //
+    // Here rather than in `SessionController`, which is `core/` and has no
+    // business reaching into a feature, and rather than in a shell, which
+    // rebuilds. This is the composition root, which is where cross-feature
+    // wiring belongs.
+    //
+    // `listen`, not `watch`: warming is a side effect of *becoming* signed in,
+    // and watching would re-run it on every unrelated session change. Failures
+    // are swallowed inside the provider — a prefetch that fails costs a
+    // lazy fetch later, not a screen.
+    ref.listen(sessionControllerProvider, (previous, next) {
+      if (previous is SessionActive || next is! SessionActive) return;
+      ref.read(warmDictionariesProvider(DictionaryType.all).future).ignore();
+    });
 
     return MaterialApp.router(
       // From the flavor, so the Android task switcher names the build the same
