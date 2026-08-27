@@ -17,6 +17,50 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.25.0+35 — 2026-08-28
+
+### Fixed
+
+- **The employer verification card now has somewhere to put the document it
+  asks for.** It has listed the required documents since it shipped, with
+  "Required" beside the registration certificate, and there was no control that
+  uploaded one — the submission went out with an empty list and the server
+  explained the refusal. Each row is now an upload slot with progress, cancel,
+  the reason a failure gives, and retry without re-picking the file. Reported
+  from a device.
+- **A failure to read the uploaded documents now says so.** It used to fall
+  back to an empty list, which draws "nothing uploaded yet" against a document
+  that is uploaded and blocks the submission for a reason that is not true.
+
+### Added
+
+- **The Coin price, the unlock cost and the registration bonus are editable
+  from the admin section** (§10.5), one tap from the wallets list. A change
+  applies to future transactions only and never rewrites the ledger — that was
+  already true, and is now stated where the change is made. The environment
+  still holds the defaults, so "restore default" reverts rather than freezing
+  today's number.
+
+### Changed
+
+- **Submitting for verification is refused, with the reason named, until every
+  required document is there** — instead of being refused by the server after
+  the button was pressed.
+- **Only the documents this verification asked for are attached to it.** An
+  account can hold other files; attaching one would put a document in front of
+  an administrator that nobody asked for.
+
+### Internal
+
+- `/files` answers with the purpose **code** as well as its id. It took a code
+  and returned only an id, so nothing could tell which document it had just
+  uploaded without resolving the dictionary.
+- The accepted extensions and the size cap now travel on the verification
+  state, so the picker's filter is the deployment's rather than a copy in Dart.
+  An older API that does not send them means "do not filter locally" rather
+  than a card that cannot draw.
+- `Attachment` moved to `shared/domain`: two features read it now.
+
 ## 1.24.0+34 — 2026-08-28
 
 ### Fixed
