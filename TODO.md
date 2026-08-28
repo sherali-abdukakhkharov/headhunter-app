@@ -934,8 +934,13 @@ schema-driven editor. Walked on an emulator against the live API 2026-08-07.
       state says "nothing here" rather than "you have saved nobody": a
       candidate who hides their profile leaves the list without having been
       un-saved
-- [~] Invitations + response tracking (UAT-07); general invitations.
-      **The candidate half shipped 2026-08-19**; the employer half is next.
+- [x] **Invitations + response tracking (UAT-07), both halves.** The
+      candidate half shipped 2026-08-19; **the employer half is built too and
+      this checkbox was stale** — verified against the code on 2026-08-28.
+      `ComposeInvitationScreen` opens from the candidate detail,
+      `SentInvitationsScreen` from the vacancy applicants list and from
+      candidate search, and `InvitationsInboxScreen` is the candidate's tab.
+      The reasoning below is still the reason sending is free, so it stays.
       The 2026-08-10 re-scope said this could not finish before M12, and M12
       landing showed the blocker was narrower than recorded: **the server does
       not require an unlock to send an invitation.** `invitations.service.ts`
@@ -1267,10 +1272,11 @@ don't. What changed is what a card leads to.
 - [x] ~~Locked state on the candidate profile~~ — **built 2026-08-19** under
       M12. The label carries the server's price rather than §7.3's literal
       "2 Coins", since §10.5 can change it without a store release
-- [ ] UAT-03's wording changed too: the CV is protected "until the employer has
-      Candidate Unlock access", not merely until an interaction exists. Nothing
-      to build on the candidate side; it changes what the *employer* side must
-      show
+- [x] **UAT-03's wording — the employer side follows it, and this checkbox
+      was stale** (verified 2026-08-28). The CV is released on
+      `exposureReason == 'candidate_unlock'` and on nothing else; an
+      application or an invitation is no longer enough on its own. The
+      candidate side needed no change, which is what the original entry said.
 - [x] ~~**Download a candidate's files.**~~ — **done 2026-08-20**, and the item
       above ("Candidate attachments open, with no plugin") is the record of how:
       `AttachmentOpener` plus thirty lines of the app's own Kotlin, no new
@@ -1850,7 +1856,13 @@ this opens. Deep links moved to M8.
       app, so new apps start with none), download the regenerated file — one
       download covers all three — and replace it. No new Firebase project, no
       server-side change, no signing-key change. *Blocks nothing until M9 opens.*
-- [ ] Preferences; security/account categories not offered as disableable
+- [x] **Notification preferences, and this checkbox was stale** — verified
+      2026-08-28. `showNotificationPreferences` opens from the notifications
+      screen and drives `GET`/`PUT /notifications/preferences`. It says before
+      a switch is thrown that a disabled category stores **nothing at all**, so
+      what is missed is missed rather than hidden. Security and account
+      notifications are not offered as disableable, which was the other half of
+      this entry.
 
 ## M10 - Admin module *(complete 2026-08-25)*
 
