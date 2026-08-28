@@ -501,6 +501,82 @@ no cost if the client wants notification history earlier.
 
 ## Traps already paid for
 
+### 2026-08-28 - A `ref.read` of an auto-disposing provider is only valid until the next await
+The 1.29.0 audit found this twice in one build, in code written weeks apart, and
+neither instance had a symptom a person could point at.
+
+`ref.read(someProvider)` on an `@riverpod` (auto-disposing) provider **creates
+it and immediately schedules its disposal**, because nothing listened. The
+object it handed back is still in your hand; its `Ref` is not. So any method on
+that object which spans an await runs its second half on a dead `Ref`, and
+Riverpod throws *"Cannot use the Ref of xProvider after it has been disposed"*.
+
+- `LocaleSync.select` writes the language locally, awaits that, then pushes it
+  to the account. The push never happened — for as long as the feature had
+  existed. `reconcile` failed the same way, so a clean sign-in never adopted the
+  account's language either (MT-025).
+- `warmDictionaries` awaits seventeen dictionary providers in a loop. It was
+  collected during the first one and the other sixteen threw. Its own
+  `try/catch` per type turned that into seventeen log lines and no failure
+  (MT-028).
+
+**Both were caught and logged, which is why neither was found from here.** A
+caught exception that changes what the app does is not a handled exception, and
+a suite that pumps a screen and asserts what it renders cannot see it — the
+screen renders correctly in both cases.
+
+Two shapes of fix, and which one depends on what the provider *is*:
+
+- The object is stateless and long-lived — `@Riverpod(keepAlive: true)`.
+  `LocaleSync` is `const` and read from four call sites, so the whole cost is
+  one instance.
+- The work is a one-shot with a real end — take a `ref.keepAlive()` link at the
+  top and `link.close()` in a `finally`. The warm-up does this: it holds itself
+  and the seventeen providers it watches open for the duration, and lets all of
+  them go the moment the cache is warm. **Never make a one-shot keepAlive** — it
+  would then hold everything it watched for the process's life, and a completed
+  future means it never runs again.
+
+**The test that catches it has to open the window deliberately.** Reading and
+using the provider in one expression passes either way; the disposal happens
+during the await, and only a *real* event-loop turn (`Future.delayed(Duration
+.zero)`) gives the collector a chance — a microtask-only await does not. So the
+reproduction is: read, `await` a turn, then use. See
+`test/features/account/locale_sync_test.dart` and
+`test/features/dictionaries/dictionary_warmup_test.dart`.
+
+### 2026-08-28 - `(location, activeRole)` cannot say which of the two just changed
+`switchRoleAndGo` has always carried a long comment explaining that a role
+switch must state its destination, because the redirect chain's deep-link rule
+reads the *location* and would otherwise re-activate the role that owns it. The
+comment ended "one rule, no ambiguity". It was half right: the location is
+authoritative and the switch does state its destination — **but not at the same
+instant**.
+
+Between `switchRole` changing the state and `context.go` running, the location
+still names the role being left. The state change fires the router's
+`refreshListenable`, the redirect runs in that window, and the deep-link rule
+reads the old location and schedules a switch *back*. Two
+`POST /auth/active-role` calls then race and the access token ends up naming
+whichever answered last, so the new shell's first request 403s. Admin opened
+saying *"This action requires admin."* to an account that holds admin, and
+worked on Retry (MT-027).
+
+**A flag is unavoidable and the old comment was right to dislike it.** What made
+it acceptable is scoping: `beginRoleSwitch`/`endRoleSwitch` bracket exactly the
+window in which the two are allowed to disagree, in one function's `try/finally`,
+and the redirect suppresses only the deep-link arm while it is open. The
+alternatives were worse — navigating first mounts the new shell before the token
+rotates, and reordering alone leaves the same window.
+
+Also reordered while here: `switchRole` publishes to the server **before** it
+publishes the state, which is the 2026-08-25 entry below applied to the second
+of its two callers. `selectRoles` learned it in 1.11.0; `switchRole` kept the
+opposite order with a comment arguing that blocking a *tab* change on the
+network would be wrong — and a role switch is not a tab change. Nobody waits
+longer for it either: `switchRoleAndGo` already awaited the whole method before
+navigating, so the round trip was always on the path.
+
 ### 2026-08-25 - Publishing session state *is* navigation, so everything the shell needs must be true first
 `selectRoles` did three things in this order: publish the granted roles,
 persist the active role, rotate the access token. The first of those is what
