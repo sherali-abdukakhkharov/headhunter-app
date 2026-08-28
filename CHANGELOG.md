@@ -17,6 +17,26 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.27.0+37 — 2026-08-28
+
+### Added
+
+- **Empty screens have a drawing instead of a grey rectangle**, and there are
+  three of them because they say different things: a list that has never had
+  anything in it fills up when you *do* something, while a list your filters
+  just emptied is fixed by *widening* them. Telling the two apart matters —
+  the wrong picture sends you to wait for something that is already there.
+
+### Internal
+
+- **The APK is published under its version as well.** Every release now
+  carries `jobbridge-<version>.apk` beside `jobbridge.apk`; the files are
+  identical, but four downloads in a row no longer become
+  `jobbridge (1).apk` upward with nothing to tell them apart. The stable
+  link keeps working.
+- `HhSpotArt` in the design system, built the way the icons are — path data
+  in Dart, no asset files. Drawings from the designer replace four constants.
+
 ## 1.26.0+36 — 2026-08-28
 
 ### Fixed
