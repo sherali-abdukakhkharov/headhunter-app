@@ -73,12 +73,25 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
             color: HhColors.brand900,
             borderRadius: HhRadius.cardAll,
           ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              HhBrandMark(width: 72, ground: HhBrandGround.navy),
-              HhBrandLockup(ground: HhBrandGround.navy),
-            ],
+          // `Wrap`, not `Row`: at 320dp the mark and the lockup do not fit on
+          // one line, and a squeezed specimen is the wrong picture of the
+          // thing this page exists to show.
+          //
+          // `SizedBox(width: double.infinity)` around it because a `Wrap`
+          // given loose constraints shrink-wraps, leaving `alignment` no free
+          // space to distribute — the trap MEMORY.md records twice.
+          child: const SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceEvenly,
+              spacing: HhSpace.md,
+              runSpacing: HhSpace.md,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                HhBrandMark(width: 72, ground: HhBrandGround.navy),
+                HhBrandLockup(ground: HhBrandGround.navy),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: HhSpace.sm),
@@ -86,12 +99,15 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         // Light: mono navy. Turquoise on white is misuse, so there is no
         // specimen of it here and no way to write one.
         const HhCard(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              HhBrandMark(width: 72),
-              HhBrandLockup(),
-            ],
+          child: SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceEvenly,
+              spacing: HhSpace.md,
+              runSpacing: HhSpace.md,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [HhBrandMark(width: 72), HhBrandLockup()],
+            ),
           ),
         ),
         const SizedBox(height: HhSpace.sm),
@@ -717,7 +733,12 @@ class _Section extends StatelessWidget {
     padding: const EdgeInsets.only(top: HhSpace.sectionGap, bottom: HhSpace.md),
     child: Row(
       children: [
-        Text(title.toUpperCase(), style: HhTypography.overline),
+        // `Flexible`, so a long heading wraps to a second line instead of
+        // overflowing the row at a large font scale. Wrapping rather than
+        // ellipsising: a truncated section heading is worse than a tall one.
+        Flexible(
+          child: Text(title.toUpperCase(), style: HhTypography.overline),
+        ),
         const SizedBox(width: HhSpace.md),
         const Expanded(child: Divider()),
       ],
