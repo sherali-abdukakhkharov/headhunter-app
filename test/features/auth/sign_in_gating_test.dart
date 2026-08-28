@@ -77,6 +77,11 @@ void main() {
 
   group('phone entry', () {
     Future<void> pumpPhone(WidgetTester tester) async {
+      // A language has been chosen on this install, so onboarding opens on
+      // the phone step. The language page is first-run only — see the screen
+      // doc — and these cases are about the field, not about getting to it.
+      SharedPreferences.setMockInitialValues({'locale.tag': 'en'});
+
       sizeDevice(tester);
       await tester.pumpWidget(
         ProviderScope(

@@ -79,6 +79,18 @@ Four rules the components encode:
 
 - **One control size for everyone** — every control is 52px with a persistent
   label. There is no dense/simple mode; only the *fields* differ by work category.
+  **One documented exception: `HhTextField.composer`** (2026-08-28), which drops
+  the drawn label and starts at 52 rather than 52 × 1.6. The rule is about
+  *forms* — a screen of stacked fields, filled once, where a label that vanishes
+  on focus loses the reader — and a chat composer is one input in an action bar
+  used over and over. It lives in the design system precisely so it stays the
+  only one; a screen that hand-rolls a `Container` here is how the dense mode
+  arrives by the back door.
+- **The bottom bar's labels stop scaling at 1.3×.** Everything else honours the
+  text scale. Chrome that grows without limit takes the screen the content was
+  going to use, and at 200% none of the five labels fits its tab anyway. The
+  `Semantics` label is the whole string at every scale — the clamp is about
+  pixels, not about what is announced.
 - **Status is never colour alone** — always `HhBadge` (icon + word), for vacancy,
   application, verification, invitation and complaint state alike.
 - **One elevation level.** `HhElevation.card` or `HhElevation.sheet`, nothing else.

@@ -57,6 +57,25 @@ photograph to put in it.
 Verified fixed and to be kept pinned: MT-001 through MT-005, MT-007 through
 MT-024.
 
+### The audit's design recommendations
+
+Findings are numbered; the designer feedback is not, so it is tracked here.
+**All six P1s shipped in 1.31.0.**
+
+| Priority | Screen | State |
+|---|---|---|
+| P0 | Messages | **Done 1.30.0** — safe-area inset and a page heading, applied above the state switch so no arm can be the one that forgets (MT-026) |
+| P1 | First-run auth | **Done 1.31.0** — language is its own step, shown only on an install that has never chosen one; a returning signed-out user lands on the phone field with the language one control away |
+| P1 | Notification permission | **Done 1.31.0** — the app explains what it would send, in its own four languages, and asks Android only on a yes. Android asks once, so the old placement (straight after the OTP, sometimes before a role was chosen) was spending that one question on a dialog nobody had a reason to accept |
+| P1 | OTP | **Done 1.31.0** — autofocus, numeric keyboard, `AutofillHints.oneTimeCode` inside an `AutofillGroup`, and auto-submit at full length. A given code is sent automatically once; Confirm stays for a deliberate retry |
+| P1 | Chat | **Done 1.31.0** — `HhTextField.composer`: no drawn label, one line growing to four. Send lost its word and became a circle, which took the input from 148pt to 224 on a 360pt screen |
+| P1 | Profile / Account | **Partly done 1.31.0.** The settings entry is a header action on both profile screens, present in the loading and error states too. **Not done: splitting the long profile into clearer sections** — that is an information-architecture change and needs the designer to say what the sections are, not a guess |
+| P1 | Bottom navigation | **Done 1.31.0**, by a third route: the label *scale* is clamped at 1.3 (Flutter's own number for `NavigationBar`) rather than hiding four of the five labels. Bar height at 200% went from 95pt to 77. The audit's own option is declined in the docstring, with the reason |
+| P2 | Vacancy detail | **Done 1.30.0** — the hero crop applies only when there is a photograph; without one the band keeps the card's compact height |
+| P2 | Admin navigation | **Partly done 1.31.0.** The soft hyphen moved: `Foydalan\u00ADuvchilar` split the syllable `la-nuv`, and it breaks after `nuv` now. **Not done: renaming it to `Hisoblar`** — that changes what the tab claims to hold, which is the client's word to choose |
+| P2 | Admin pricing | Open — shorten the app-bar title to `Narxlar` and put the full heading in the body |
+| P2 | Coin terminology | **Done 1.30.0** — and the ARB suite now refuses any term the English leaves in English, which found a fourth instance the audit had not |
+
 ## Blocked on someone else
 
 - [x] ~~**`GOOGLE_SERVICES_JSON_BASE64` repository secret**~~ — **added by the

@@ -33,6 +33,29 @@ import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_sc
 /// decides the `x-lang` header, so server errors on the very next call come
 /// back in the language chosen here.
 ///
+/// ## Two steps, and only the first time
+///
+/// Language and authentication are two decisions and §4.1 sequences them, but
+/// this screen used to present them as one long form: four full-width radio
+/// rows and a logo *above* the thing the user came to do. On a Pixel that
+/// pushed the phone field into the lower half; at the design's own QA case —
+/// 320pt, 200% text — the first viewport held the logo, the four languages and
+/// the "Sign in" heading, and the field was entirely off screen (1.29.0 audit,
+/// P1).
+///
+/// So the language step comes first **and only on an install that has never
+/// chosen one**. [LocaleController.hasLocalChoice] is exactly that question,
+/// and it is already load-bearing for who wins at sign-in, so this adds no new
+/// state. A returning signed-out user goes straight to the phone field and
+/// changes language through the control in the corner — which is the audit's
+/// own recommendation, and the reason it is: an extra page every time is
+/// permanent friction bought for a decision most people make once.
+///
+/// **Continue commits the preselection.** The radio starts on the device's
+/// language, so somebody who agrees with it presses Continue and never touches
+/// a row — and that has to *store* something, or this page returns at the next
+/// launch. Accepting a default you were shown four alternatives to is a choice.
+///
 /// This screen navigates exactly once — forward to code entry, carrying the
 /// phone number and the send response. It never navigates into a shell; the
 /// session change does that, which is the rule the whole redirect chain
@@ -52,6 +75,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _termsAccepted = false;
 
   bool _sending = false;
+
+  /// Whether the language step is still owed, or null while that is being read
+  /// from preferences.
+  ///
+  /// Null renders a spinner rather than guessing. Guessing *false* would flash
+  /// the phone form at a first-run user before replacing it; guessing *true*
+  /// would show a language page to somebody who has already chosen — and the
+  /// read is one local key, so the spinner is a frame or two.
+  bool? _needsLanguage;
 
   /// **The server's** failure, already localized. Null when there is nothing to
   /// report.
@@ -77,6 +109,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // alone and two digits were enough to make an impossible action look
     // available — which is the first half of MT-013.
     _phoneController.addListener(_onPhoneChanged);
+
+    unawaited(_resolveLanguageStep());
+  }
+
+  Future<void> _resolveLanguageStep() async {
+    final chosen = await ref
+        .read(localeControllerProvider.notifier)
+        .hasLocalChoice();
+
+    if (mounted) setState(() => _needsLanguage = !chosen);
+  }
+
+  /// Accepts whatever the language step is showing and moves on.
+  ///
+  /// Writes even when no row was tapped: see the class doc — the preselection
+  /// is a choice once it has been offered alongside the other three.
+  Future<void> _acceptLanguage() async {
+    await ref.read(localeSyncProvider).select(ref.read(activeLocaleProvider));
+
+    if (mounted) setState(() => _needsLanguage = false);
   }
 
   @override
@@ -148,6 +200,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // something (MT-013).
     final canSend = _phone.isValid && _termsAccepted && !_sending;
 
+    if (_needsLanguage case null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (_needsLanguage!) {
+      return _LanguageStep(active: activeLocale, onContinue: _acceptLanguage);
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -155,7 +215,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: HhSpace.xxl),
+              // The language stays reachable, as one control in the corner
+              // rather than four rows above the field. §3.2 requires it to be
+              // changeable before registration; it does not require it to be
+              // the first thing on the page.
+              Align(
+                alignment: Alignment.centerRight,
+                child: _LanguageChip(active: activeLocale),
+              ),
+
               // The stacked lockup, not the app title as text: this is the
               // first thing anybody sees, and a logotype is what belongs
               // there. The mark also carries the product's one idea — two
@@ -165,26 +233,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
               const SizedBox(height: HhSpace.xl),
 
-              Text(l10n.settingsLanguage, style: HhTypography.subtitle),
-              const SizedBox(height: HhSpace.md),
-              for (final option in AppLocale.values)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: HhSpace.sm),
-                  child: HhRadioRow<AppLocale>(
-                    // nativeName, never a translated language name: a picker
-                    // rendering every option in the *current* language is
-                    // unusable to the one person who needs it - someone who
-                    // cannot read the current language.
-                    label: option.nativeName,
-                    value: option,
-                    groupValue: activeLocale,
-                    onChanged: (_) => ref
-                        .read(localeSyncProvider)
-                        .select(option),
-                  ),
-                ),
-
-              const SizedBox(height: HhSpace.sectionGap),
               Text(l10n.authSignInTitle, style: HhTypography.subtitle),
               const SizedBox(height: HhSpace.md),
 
@@ -254,6 +302,125 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   onPressed: () => context.go(Routes.developerTools),
                 ),
               ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// First run only: pick a language, then continue.
+///
+/// Four native names and one action. The names are never translated — a picker
+/// rendering every option in the *current* language is unusable to the one
+/// person who needs it, somebody who cannot read the current language.
+class _LanguageStep extends ConsumerWidget {
+  const _LanguageStep({required this.active, required this.onContinue});
+
+  final AppLocale active;
+  final Future<void> Function() onContinue;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(HhSpace.gutter),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: HhSpace.xxl),
+              const Center(
+                child: HhBrandLockup(axis: HhBrandLockupAxis.stacked),
+              ),
+              const SizedBox(height: HhSpace.xl),
+
+              Text(l10n.settingsLanguage, style: HhTypography.subtitle),
+              const SizedBox(height: HhSpace.md),
+
+              for (final option in AppLocale.values)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: HhSpace.sm),
+                  child: HhRadioRow<AppLocale>(
+                    label: option.nativeName,
+                    value: option,
+                    groupValue: active,
+                    // Applied immediately, so the button underneath is already
+                    // in the chosen language when it is read.
+                    onChanged: (_) =>
+                        ref.read(localeSyncProvider).select(option),
+                  ),
+                ),
+
+              const SizedBox(height: HhSpace.lg),
+              HhButton(label: l10n.commonNext, onPressed: onContinue),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The language, on the phone step: one control naming the current choice.
+///
+/// A globe and the language's own name, because the label has to be readable
+/// by somebody who cannot read the rest of the screen — the same rule the rows
+/// on the first step follow.
+class _LanguageChip extends ConsumerWidget {
+  const _LanguageChip({required this.active});
+
+  final AppLocale active;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => HhButton.text(
+    label: active.nativeName,
+    iconPath: HhIconPath.globe,
+    onPressed: () => showHhSheet<void>(
+      context,
+      builder: (_) => const _LanguageSheet(),
+    ),
+  );
+}
+
+class _LanguageSheet extends ConsumerWidget {
+  const _LanguageSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final active = ref.watch(activeLocaleProvider);
+
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: HhColors.white,
+        borderRadius: HhRadius.sheetTop,
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(HhSpace.gutter),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.settingsLanguage, style: HhTypography.subtitle),
+              const SizedBox(height: HhSpace.md),
+              for (final option in AppLocale.values)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: HhSpace.sm),
+                  child: HhRadioRow<AppLocale>(
+                    label: option.nativeName,
+                    value: option,
+                    groupValue: active,
+                    onChanged: (_) async {
+                      await ref.read(localeSyncProvider).select(option);
+                      if (context.mounted) Navigator.of(context).pop();
+                    },
+                  ),
+                ),
             ],
           ),
         ),

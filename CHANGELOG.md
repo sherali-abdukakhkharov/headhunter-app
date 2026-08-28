@@ -17,6 +17,59 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.31.0+41 — 2026-08-28
+
+The six design recommendations the 1.29.0 audit marked P1.
+
+### Changed
+
+- **Sign-in asks for a language first, and only on a new install.** The two
+  decisions §4.1 sequences were presented as one long form: a logo, four
+  full-width language rows, and only then the phone field. On a small screen
+  at large text the field was off the first viewport entirely. Language is now
+  its own step, shown when this install has never chosen one; anybody signing
+  in again lands on the field, with the language one control away in the
+  corner.
+
+- **The code screen fills itself in.** The field takes focus on arrival with
+  the number pad already up, offers the code from the SMS through Android’s
+  own autofill, and sends as soon as it holds a full one — so a code that
+  arrives while you are looking at the screen is a sign-in with no taps at
+  all. Resend and Confirm are untouched, and a code is only ever sent
+  automatically once.
+
+- **Android’s notification permission is no longer the first thing a new user
+  sees.** It used to open the instant a code was verified — sometimes before a
+  role had been chosen — with no explanation and in the phone’s language
+  rather than the one just picked. Android asks **once**, so a refusal given
+  then was permanent. The app now explains what it would send, in its own four
+  languages, and asks the system only if the answer is yes. "Not now" costs
+  nothing.
+
+- **The account settings are at the top of both profile screens.** Language,
+  sessions, the role switch, sign-out and account deletion sat under the whole
+  editable profile — five or six swipes to reach the things you want when
+  something has gone wrong. They are a header action now, present while the
+  profile is still loading and when it failed to load at all.
+
+- **The message composer is a composer again**, not a form field: one line
+  high, growing to four as you write, with attach on the left and a send
+  button on the right. It was a labelled four-line box that took a third of a
+  conversation, and the send button’s word left the input 148pt wide on a
+  360pt screen.
+
+- **The bottom bar stops growing at 130% text.** At 200% its five labels cost
+  about a quarter of a small screen and every one of them broke mid-word.
+  Screen readers are unaffected — they never rendered the label to begin with
+  and still announce it in full.
+
+### Fixed
+
+- Two Uzbek and three Russian navigation labels wrapped at the wrong point.
+  `Foydalanuvchilar` split as `Foydalan-uvchilar`, which cuts a syllable in
+  half; it breaks after `nuv` now, and the Russian labels that had no break
+  hint at all have one.
+
 ## 1.30.0+40 — 2026-08-28
 
 The 1.29.0 QA audit, minus the one finding that is a product decision.
