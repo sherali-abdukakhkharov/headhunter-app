@@ -17,6 +17,20 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.29.0+39 — 2026-08-28
+
+### Added
+
+- **Vacancy cards carry a band naming the kind of work**, and the vacancy
+  page opens with a taller crop of the same one. It is the fastest thing to
+  read while scrolling a list, and it was missing: the band existed in the
+  design system and appeared on no screen at all.
+
+  There are no photographs yet, so each band shows its category tint, icon
+  and name — the state the design intended until pictures arrive, not a
+  placeholder. A vacancy whose category this version does not recognise
+  shows no band rather than the wrong one.
+
 ## 1.28.0+38 — 2026-08-28
 
 ### Fixed
