@@ -58,6 +58,8 @@ class InvitationsInboxScreen extends ConsumerWidget {
       AsyncData(:final value) when value.isEmpty => HhEmptyState(
         title: l10n.stateEmptyTitle,
         message: l10n.invitationsInboxEmpty,
+        // The default neutral drawing, deliberately: nothing a candidate does
+        // fills this list — an employer has to write first.
       ),
       AsyncData(:final value) => RefreshIndicator(
         onRefresh: () async => ref.invalidate(receivedInvitationsProvider),

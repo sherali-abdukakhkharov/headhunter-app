@@ -54,6 +54,7 @@ class SavedCandidatesScreen extends ConsumerWidget {
               child: HhEmptyState(
                 title: l10n.stateEmptyTitle,
                 message: l10n.searchSavedEmpty,
+            art: HhSpotArt.first,
               ),
             ),
             AsyncData(:final value) => ListView.builder(

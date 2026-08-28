@@ -119,6 +119,7 @@ class _Log extends ConsumerWidget {
             message: query.isEmpty
                 ? l10n.adminAuditEmptyBody
                 : l10n.adminAuditEmptyFilteredBody,
+            art: query.isEmpty ? HhSpotArt.neutral : HhSpotArt.filter,
           )
         else ...[
           // Said once, at the top, and it is not decoration: an audit log that

@@ -124,6 +124,7 @@ class _Applications extends ConsumerWidget {
       AsyncData(:final value) when value.isEmpty => HhEmptyState(
         title: l10n.stateEmptyTitle,
         message: l10n.applicationsEmpty,
+        art: HhSpotArt.first,
       ),
       AsyncData(:final value) => ListView.builder(
         padding: const EdgeInsets.all(HhSpace.gutter),

@@ -35,5 +35,6 @@ export 'hh_brand.dart';
 export 'hh_colors.dart';
 export 'hh_icons.dart';
 export 'hh_metrics.dart';
+export 'hh_spot_art.dart';
 export 'hh_theme.dart';
 export 'hh_typography.dart';

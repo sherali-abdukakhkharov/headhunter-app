@@ -56,6 +56,7 @@ class ConversationsScreen extends ConsumerWidget {
         child: HhEmptyState(
           title: l10n.stateEmptyTitle,
           message: l10n.chatListEmpty,
+          art: HhSpotArt.first,
         ),
       ),
       AsyncData(:final value) => RefreshIndicator(

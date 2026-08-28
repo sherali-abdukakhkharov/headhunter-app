@@ -239,8 +239,33 @@ emulator against the design document, with 18 tests pinning the rules.
       category, subject inside the middle 60% vertically so one file survives
       both the 4.15:1 card crop and the 2.6:1 hero crop. Stock, art-directed by
       the designer. The tint fallback ships until then.
-- [ ] **Three empty-state illustrations** - two-colour line work, navy +
-      turquoise; the designer produces these
+
+      **Deliberately not substituted in-house on 2026-08-28**, when the empty
+      states were. Two reasons: the fallback here is a *designed* state rather
+      than a placeholder — tint plus glyph plus name, and the design's stated
+      position is that a generic band is worse than none — and what is missing
+      is photographs of real workplaces, which line art does not stand in for.
+      Five two-colour band illustrations are buildable if the client would
+      rather have those than photography, but that is their call to make and
+      not one to slip in.
+- [x] **Four empty-state illustrations, drawn in-house 2026-08-28.**
+      `HhSpotArt`: `first` (a list that has never had anything — fills up by
+      *acting*), `filter` (a list the filters just emptied — fixed by
+      *undoing*), `neutral` (the fallback, which says nothing about why), and
+      `success` for the confirmation screens.
+
+      **The distinction between the first two is the point, and it is content
+      rather than decoration**: one drawing for both would tell somebody who
+      has just set four filters to go and wait for employers to publish. Which
+      is also why `neutral` is the default — guessing wrong is worse than
+      saying nothing.
+
+      Path data in Dart like `HhIcon`, so there are no asset files to keep in
+      sync, and every call site passes an `HhSpotArt` rather than an asset —
+      drawings from a designer replace four constants and nothing else.
+      Checked by rendering them, not by reading the path strings: the first
+      version had the add badge crossing the document's outline, which no
+      assertion would have caught
 - [ ] **App icon and launch screen** - spec is agreed (navy ground, mark at 56%,
       Android adaptive at the 66% keyline, inverted plate on the launch screen)
       but the mark itself is placeholder-grade and **blocked on the client logo**

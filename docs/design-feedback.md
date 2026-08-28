@@ -42,7 +42,19 @@ height. It never collapses — card geometry must not change between the two cas
 or a mixed list loses its rhythm — so dropping the photographs in changes nothing
 structural.
 
-### B. Three empty-state illustrations
+### ~~B. Three empty-state illustrations~~ — **drawn in-house 2026-08-28**
+
+`HhSpotArt` in the design system: `first`, `filter`, `neutral`, plus `success`
+for §C. Same construction as `HhIcon` — path data in Dart, no asset files — at
+110 × 80 in navy and turquoise, stroke 2.4.
+
+They are here because the alternative was shipping the sand rectangle
+indefinitely, **not** because the brief is withdrawn. If drawn versions arrive
+they replace four path constants and nothing else: every call site passes an
+`HhSpotArt`, never an asset.
+
+The brief below stands as the specification they were drawn to.
+
 
 Two-colour line work, **navy `#0B2545` + turquoise `#12B0BE`**, transparent
 background, SVG. Drawn to fit **110 × 80** — that is the reserved box, and the
@@ -58,9 +70,10 @@ The distinction between the first two is the point: one is fixed by acting, the
 other by undoing, and a single drawing for both would tell somebody with four
 filters set to go and wait for employers to publish.
 
-**Today:** a plain sand-coloured rounded rectangle occupies the box.
+**Until 2026-08-28:** a plain sand-coloured rounded rectangle occupied the box.
 
-### C. The success illustration (`proto-success-art`)
+### ~~C. The success illustration (`proto-success-art`)~~ — **drawn 2026-08-28**, see §B
+
 
 Same treatment as B, same 110 × 80. One drawing, for the confirmation screens.
 

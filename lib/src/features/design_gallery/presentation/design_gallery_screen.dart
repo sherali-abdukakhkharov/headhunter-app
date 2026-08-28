@@ -546,6 +546,32 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
               'keyin ariza topshirasiz.',
           actionLabel: "Vakansiyalarni ko'rish",
           onAction: () {},
+          art: HhSpotArt.first,
+        ),
+        const SizedBox(height: HhSpace.md),
+
+        // The three side by side, because the *distinction* is the thing to
+        // review: one list fills up by acting and the other by undoing, and a
+        // reviewer can only tell whether the drawings say that by seeing them
+        // together.
+        const _StateLabel('03a · Empty — the three drawings'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            for (final art in HhSpotArt.values)
+              Column(
+                children: [
+                  HhSpotIllustration(art, width: 84, height: 61),
+                  const SizedBox(height: 4),
+                  Text(
+                    art.name,
+                    style: HhTypography.caption.copyWith(
+                      color: HhColors.inkMuted,
+                    ),
+                  ),
+                ],
+              ),
+          ],
         ),
         const SizedBox(height: HhSpace.md),
         const _StateLabel('04 · Offline'),

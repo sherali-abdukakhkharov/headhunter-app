@@ -233,6 +233,7 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
       return HhEmptyState(
         title: l10n.stateEmptyTitle,
         message: l10n.searchNoResults,
+        art: HhSpotArt.filter,
       );
     }
 

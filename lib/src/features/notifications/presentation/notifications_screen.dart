@@ -179,6 +179,9 @@ class _List extends ConsumerWidget {
           message: unreadOnly
               ? l10n.notificationsNoUnreadBody
               : l10n.notificationsEmptyBody,
+          // "No unread" is a filter that matched nothing; an empty centre is a
+          // list that has never had anything in it.
+          art: unreadOnly ? HhSpotArt.filter : HhSpotArt.neutral,
         ),
       );
     }

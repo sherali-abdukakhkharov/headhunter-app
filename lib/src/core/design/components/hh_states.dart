@@ -4,6 +4,7 @@ import 'package:jobbridge_app/src/core/design/components/hh_button.dart';
 import 'package:jobbridge_app/src/core/design/hh_colors.dart';
 import 'package:jobbridge_app/src/core/design/hh_icons.dart';
 import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
+import 'package:jobbridge_app/src/core/design/hh_spot_art.dart';
 import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
 /// The UI states the design treats as **deliverables, not implementation
@@ -236,6 +237,7 @@ class HhEmptyState extends StatelessWidget {
     super.key,
     this.actionLabel,
     this.onAction,
+    this.art = HhSpotArt.neutral,
     this.illustration,
   });
 
@@ -243,6 +245,18 @@ class HhEmptyState extends StatelessWidget {
   final String message;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// Which drawing the state carries.
+  ///
+  /// **Worth setting.** [HhSpotArt.first] and [HhSpotArt.filter] are two
+  /// different messages — one list fills up by acting, the other by undoing —
+  /// and the default is the neutral one precisely because guessing wrong is
+  /// worse than saying nothing. Where a screen already knows whether a filter
+  /// is set, it knows which of the two this is.
+  final HhSpotArt art;
+
+  /// An arbitrary widget instead of [art], for the gallery and for anything
+  /// that is not one of the four drawings.
   final Widget? illustration;
 
   @override
@@ -258,14 +272,7 @@ class HhEmptyState extends StatelessWidget {
         SizedBox(
           width: 110,
           height: 80,
-          child:
-              illustration ??
-              const DecoratedBox(
-                decoration: BoxDecoration(
-                  color: HhColors.sand50,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
+          child: illustration ?? HhSpotIllustration(art),
         ),
         const SizedBox(height: HhSpace.md),
         Text(

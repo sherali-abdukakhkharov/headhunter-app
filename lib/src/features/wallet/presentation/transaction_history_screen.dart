@@ -147,6 +147,9 @@ class _Body extends ConsumerWidget {
             onAction: filter == _Filter.all
                 ? null
                 : () => onFilter(_Filter.all),
+            art: filter == _Filter.all
+                ? HhSpotArt.first
+                : HhSpotArt.filter,
           )
         else
           ..._grouped(context, shown),
