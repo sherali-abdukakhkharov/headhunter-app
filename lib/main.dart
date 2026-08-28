@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/src/app.dart';
+import 'package:jobbridge_app/src/core/logging/crash_handlers.dart';
 
 void main() {
+  // Before `runApp`, so an error thrown while the first frame is being built
+  // is caught by this rather than by the default handler that says nothing in
+  // a release build.
+  installCrashHandlers();
+
   runApp(
     ProviderScope(
       // Riverpod 3 retries failing providers automatically with exponential

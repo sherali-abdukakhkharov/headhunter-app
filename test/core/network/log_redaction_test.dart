@@ -109,6 +109,40 @@ void main() {
     );
   });
 
+  group('the third spelling: a structured log field', () {
+    // `AppLog` writes `phone=+998901234567` — an equals sign, no quotes at
+    // all. The rules matched on `:` alone, so the first structured line
+    // carrying a phone number printed it in full. Same shape as the Map-vs-JSON
+    // miss this file already records: a pattern written against the spellings
+    // that existed at the time, and a new one arriving later.
+    test('masks a phone written with an equals sign', () {
+      expect(
+        redactSensitive('[info] auth.otp_sent phone=+998901234567'),
+        '[info] auth.otp_sent phone=***67',
+      );
+    });
+
+    test('redacts a token written with an equals sign', () {
+      expect(
+        redactSensitive('accessToken=eyJhbGciOi.secret'),
+        'accessToken=<redacted>',
+      );
+    });
+
+    test('redacts a code written with an equals sign', () {
+      expect(redactSensitive('code=123456'), 'code=<redacted>');
+    });
+
+    test('still leaves the error key alone', () {
+      // `code` is also the backend's error-key field, and that one is the most
+      // useful thing in the log when a call fails.
+      expect(
+        redactSensitive('code=auth.otp_invalid'),
+        'code=auth.otp_invalid',
+      );
+    });
+  });
+
   test('handles several secrets in one line', () {
     const line =
         'headers: authorization: Bearer abc.def\n'

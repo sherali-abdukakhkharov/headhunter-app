@@ -2391,7 +2391,26 @@ remaining item is a screen.
       `auth`, `chat`, `health`, `notifications`, `evidence` and now `account`
       have them, and they check what a sweep cannot: query parameters,
       multipart field names, bodies
-- [ ] Small-screen and large-font-scale pass over every screen
+- [x] **Small-screen and large-font pass, 2026-08-28 — as a test, not a walk.**
+      `test/core/design/small_screen_test.dart` pumps the design gallery at
+      **320 × 568** and text scale **2.0**, once in Russian, and fails on the
+      overflow Flutter reports. Done by hand it would be redone for every screen
+      that lands after it, which means done once and then decayed.
+
+      `FlutterError.onError` rather than `takeException`: an overflow is
+      *reported* and does not throw, so the pump completes and the test passes
+      with the stripes painted.
+
+      **It found three, all in the gallery itself** — which is the good news,
+      because the components pass at 320dp and 2.0 in both English and Russian.
+      Two brand-specimen rows overflowed by 51 and 49 at 320dp (they wrap now;
+      a squeezed lockup is the wrong picture of the thing the page exists to
+      show) and the section heading by 23 at 2.0 (`Flexible`, so it wraps
+      rather than truncating).
+
+      **Screens are not covered**, only components: a screen assembled from
+      parts that each fit can still overflow. That belongs in the screens' own
+      tests
 - [x] **`HhMetaChip` shrinks its label, 2026-08-27.** `Flexible` plus an
       ellipsis, which is what `HhRemovableChip` already did — the meta chip
       never got the same treatment because everything using it until §10.4 was
@@ -2399,8 +2418,50 @@ remaining item is a screen.
       fitted**. §10.4's workaround of making dated facts captions can come
       back out whenever somebody is next in there
 - [ ] Cached primary screens open without blocking; loading states complete
-- [~] Offline state explicit; retry safe; no duplicate writes — **the cold start is done** (`SessionUnreachable`, 2026-08-25). What is left is the same treatment inside the shell: a screen whose fetch fails offline still shows the generic error state rather than saying the connection is the problem, though `ApiException.kind` now makes that a rendering choice rather than a guess
-- [ ] Crash reporting + structured logging, no sensitive data
+- [x] **Offline state explicit, inside the shell too, 2026-08-28.** The cold
+      start has said so since 2026-08-25 (`SessionUnreachable`); every screen
+      inside it put "Something went wrong" over a dead connection, which is a
+      claim about the system and points at the app instead of at the one thing
+      the reader can fix.
+
+      `failureTitle` keyed on `ApiFailureKind.isConnection`, at 42 call sites.
+      Only the heading needed it — `ApiException` already carries a localized
+      sentence about the connection for these kinds, because the server was
+      never reached and could not send one.
+
+      **A timeout counts and a certificate failure does not.** A timeout is one
+      situation with one remedy from the reader's side; "no connection" on a
+      captive portal is a lie about a network that is plainly working.
+
+      Two screens were throwing the kind away by storing `e.message` — sign-in
+      among them, which is where it costs most
+- [~] **Structured logging and the crash handlers, 2026-08-28. The reporter
+      itself is a decision, not code.**
+
+      `AppLog` writes one greppable record per event rather than a sentence,
+      and `installCrashHandlers` routes both kinds of failure that reached
+      nobody: a framework error, which a release build hands to a handler that
+      says nothing, and an uncaught asynchronous error, which went to the
+      platform and vanished. The previous handler still runs — returning without
+      calling it would delete the red screen in debug, the loudest signal there
+      is, to add a log line.
+
+      `PlatformDispatcher.onError` rather than `runZonedGuarded`: no zone, so
+      no binding-initialized-in-the-wrong-zone trap.
+
+      **The redactor did not know the new spelling.** `AppLog` writes
+      `phone=+998…` with an equals sign; every rule matched on `:` alone, so the
+      first structured line carrying a phone printed it in full. Caught by a
+      test that asserted the mask. Third spelling this file has been taught, and
+      the doc comment now says so.
+
+      **What is left is the sink**, and it is deliberately empty: a crash
+      reporter sends stack traces and device details off the device, which is a
+      privacy-policy question (§4.2 names an approved policy) and not one to
+      answer by adding a package. It is also the half that cannot be verified
+      here — the Gradle plugin a reporter needs is unbuildable in this
+      environment, and a broken one breaks every release. `LogSink` is the seam:
+      implement it, install it in `main.dart`, nothing else changes
 - [x] **Android release signing config** — `android/upload-keystore.jks` (RSA
       2048, valid to 2053, gitignored) read via `android/key.properties`; falls
       back to debug signing with a loud warning when absent, so a fresh clone

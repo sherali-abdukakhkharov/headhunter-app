@@ -14,7 +14,7 @@
 /// redactor that has to be remembered at each call site is one that will be
 /// forgotten at the next.
 ///
-/// ## Two spellings, and missing the second one is the easy mistake
+/// ## Three spellings, and each one was missed in turn
 ///
 /// A **response** body is logged as raw JSON: `{"accessToken":"eyJ..."}`. A
 /// **request** body is logged as a Dart `Map`, so it comes out unquoted:
@@ -23,6 +23,13 @@
 /// through — which is exactly what happened here before a real log was read.
 /// Every rule below therefore treats the quotes as optional on both the key and
 /// the value.
+///
+/// The **third** arrived with structured logging on 2026-08-28: `AppLog` writes
+/// `phone=+998901234567`, with an equals sign and no quotes at all. The rules
+/// matched on `:` alone, so the first structured log line written carrying a
+/// phone number printed it in full — caught by a test that asserted the mask
+/// rather than by reading the output, which is the only reason it was caught at
+/// all. The separator is `[:=]` everywhere now.
 ///
 /// **Not a security boundary.** Logging is already off in release builds and in
 /// the production flavor (`AppConfig.isNetworkLoggingEnabled`). This is defence
@@ -47,7 +54,7 @@ final _bearer = RegExp(r'(Bearer\s+)[\w\-.~+/=]+', caseSensitive: false);
 
 /// Token material, in a body going either direction.
 final _tokenValue = RegExp(
-  r'(?<prefix>"?(?:accessToken|refreshToken|idToken)"?\s*:\s*"?)'
+  r'(?<prefix>"?(?:accessToken|refreshToken|idToken)"?\s*[:=]\s*"?)'
   r'[^",}\s]+',
   caseSensitive: false,
 );
@@ -59,14 +66,14 @@ final _tokenValue = RegExp(
 /// that one is not a secret — it is the single most useful thing in the log
 /// when a call fails. The lookbehind keeps `statusCode` out of it.
 final _otpCode = RegExp(
-  r'(?<prefix>"?(?<![A-Za-z])(?:devCode|code)"?\s*:\s*"?)\d{4,8}(?!\d)',
+  r'(?<prefix>"?(?<![A-Za-z])(?:devCode|code)"?\s*[:=]\s*"?)\d{4,8}(?!\d)',
   caseSensitive: false,
 );
 
 /// Phone numbers, masked rather than removed: the last two digits are enough to
 /// tell two test accounts apart, and it matches how the backend logs them.
 final _phone = RegExp(
-  r'(?<prefix>"?phone"?\s*:\s*"?)(?<value>\+?[\d\s\-()]{3,})',
+  r'(?<prefix>"?phone"?\s*[:=]\s*"?)(?<value>\+?[\d\s\-()]{3,})',
   caseSensitive: false,
 );
 
