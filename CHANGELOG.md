@@ -17,6 +17,35 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.32.0+42 — 2026-08-28
+
+### Changed
+
+- **The candidate profile is a list of parts, not one long form.** It was a
+  single scroll — a completeness card, eight to ten sections, the file slots
+  and the visibility switch, twenty-six fields and two growing lists — four
+  to six screens before anybody started typing. It now opens on one row per
+  part, each saying what is still missing in it, and each opening its own
+  short page.
+
+  **Every page saves only its own fields**, so leaving one half-finished no
+  longer blocks the next. A row with unsaved work says so.
+
+  The rows are the ones the server sends, in the order it sends them. They
+  are deliberately not gathered under invented headings: which parts a
+  profile has depends on the kind of work, and an administrator can add one
+  at any time — a grouping decided in the app would be wrong the first time
+  that happened.
+
+- The missing-field chips on the completeness card now open the page holding
+  the field instead of scrolling to it.
+
+### Fixed
+
+- A screen heading with an action beside it gave the action half the row,
+  whatever it held — so the button sat in the middle of the header and a
+  two-word title wrapped next to space nothing was using.
+
 ## 1.31.0+41 — 2026-08-28
 
 The six design recommendations the 1.29.0 audit marked P1.

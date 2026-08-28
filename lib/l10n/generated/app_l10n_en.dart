@@ -239,6 +239,23 @@ class AppL10nEn extends AppL10n {
   String get profileVisibilityTitle => 'Who can find you';
 
   @override
+  String profileSectionRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fields left',
+      one: '$count field left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSectionUnsaved => 'Unsaved';
+
+  @override
+  String get profileSectionGone => 'This part is not in your form.';
+
+  @override
   String get profileVisibilitySearchable => 'Visible in search';
 
   @override

@@ -42,30 +42,46 @@ class HhScreenHeader extends StatelessWidget {
       HhSpace.gutter,
       HhSpace.md,
     ),
-    child: Row(
-      // The action stays level with the *first* line of a title that wraps,
-      // which is where a reader's eye is.
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: HhTypography.title,
-            // Two lines rather than one: at 200% a title of two words needs
-            // them, and truncating the name of the screen is worse than a
-            // taller header.
-            maxLines: 2,
+    // The width is needed to bound the action — see below — and a Row cannot
+    // ask for its own.
+    child: LayoutBuilder(
+      builder: (context, constraints) => Row(
+        // The action stays level with the *first* line of a title that wraps,
+        // which is where a reader's eye is.
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: HhTypography.title,
+              // Two lines rather than one: at 200% a title of two words needs
+              // them, and truncating the name of the screen is worse than a
+              // taller header.
+              maxLines: 2,
+            ),
           ),
-        ),
-        if (action case final action?) ...[
-          const SizedBox(width: HhSpace.sm),
-          // `Flexible`, not a bare child: a Row lays its inflexible children
-          // out at their full intrinsic width *first*, so a long action pushes
-          // the title's `Expanded` to zero and then overflows anyway. Keep the
-          // action short — this is the backstop, not the plan.
-          Flexible(child: action),
+          if (action case final action?) ...[
+            const SizedBox(width: HhSpace.sm),
+            // **Bounded, not flexed.** A `Flexible` action shares the row by
+            // flex factor, so it claimed half of it whatever it contained: the
+            // button drew at its natural width inside that half and sat in the
+            // middle of the header, while a two-word title wrapped beside it
+            // for want of the space the action was not using.
+            //
+            // Left unbounded instead, a Row lays an inflexible child out at its
+            // full intrinsic width first, and a long label overflows — which is
+            // how "Account and security" overflowed by 9pt here.
+            //
+            // So: natural width, capped at half the row. Under the cap the
+            // title gets everything else and the action sits hard right; over
+            // it, `HhButton.text` wraps its own label inside the cap.
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: constraints.maxWidth / 2),
+              child: action,
+            ),
+          ],
         ],
-      ],
+      ),
     ),
   );
 }

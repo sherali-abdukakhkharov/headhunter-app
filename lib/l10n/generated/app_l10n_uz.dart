@@ -240,6 +240,22 @@ class AppL10nUz extends AppL10n {
   String get profileVisibilityTitle => 'Sizni kim topa oladi';
 
   @override
+  String profileSectionRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta maydon qoldi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSectionUnsaved => 'Saqlanmagan';
+
+  @override
+  String get profileSectionGone => 'Bu qism sizning shaklingizda yo‘q.';
+
+  @override
   String get profileVisibilitySearchable => 'Qidiruvda ko\'rinadi';
 
   @override
@@ -3617,6 +3633,22 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get profileVisibilityTitle => 'Сизни ким топа олади';
 
   @override
+  String profileSectionRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count та майдон қолди',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSectionUnsaved => 'Сақланмаган';
+
+  @override
+  String get profileSectionGone => 'Бу қисм сизнинг шаклингизда йўқ.';
+
+  @override
   String get profileVisibilitySearchable => 'Қидирувда кўринади';
 
   @override
@@ -6980,6 +7012,22 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get profileVisibilityTitle => 'Sizni kim topa oladi';
+
+  @override
+  String profileSectionRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ta maydon qoldi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSectionUnsaved => 'Saqlanmagan';
+
+  @override
+  String get profileSectionGone => 'Bu qism sizning shaklingizda yo‘q.';
 
   @override
   String get profileVisibilitySearchable => 'Qidiruvda ko\'rinadi';

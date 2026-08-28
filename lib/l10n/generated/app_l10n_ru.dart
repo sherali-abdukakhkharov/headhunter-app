@@ -238,6 +238,25 @@ class AppL10nRu extends AppL10n {
   String get profileVisibilityTitle => 'Кто может вас найти';
 
   @override
+  String profileSectionRemaining(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'осталось $count поля',
+      many: 'осталось $count полей',
+      few: 'осталось $count поля',
+      one: 'осталось $count поле',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get profileSectionUnsaved => 'Не сохранено';
+
+  @override
+  String get profileSectionGone => 'Этого раздела нет в вашей анкете.';
+
+  @override
   String get profileVisibilitySearchable => 'Виден в поиске';
 
   @override

@@ -41,6 +41,7 @@ import 'package:jobbridge_app/src/features/health/presentation/health_screen.dar
 import 'package:jobbridge_app/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:jobbridge_app/src/features/onboarding/presentation/role_selection_screen.dart';
 import 'package:jobbridge_app/src/features/profile/presentation/candidate_profile_screen.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/profile_section_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/blocked_account_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/role_shell.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/session_offline_screen.dart';
@@ -219,6 +220,33 @@ StatefulShellRoute _shellFor(AppRole role) => StatefulShellRoute.indexedStack(
                     conversationId: state.pathParameters['id']!,
                   ),
                 ),
+
+              // §5's profile is a hub of sections rather than one long form,
+              // and each section is a page inside this tab — so the shell's nav
+              // bar stays and the back gesture returns to the hub.
+              //
+              // The two literal paths come **first**: go_router matches
+              // sub-routes in declaration order, and `:section` would swallow
+              // them.
+              if (tab.path == Routes.candidateProfile) ...[
+                GoRoute(
+                  path: 'files',
+                  name: 'candidateProfileFiles',
+                  builder: (context, state) => const ProfileFilesScreen(),
+                ),
+                GoRoute(
+                  path: 'visibility',
+                  name: 'candidateProfileVisibility',
+                  builder: (context, state) => const ProfileVisibilityScreen(),
+                ),
+                GoRoute(
+                  path: ':section',
+                  name: 'candidateProfileSection',
+                  builder: (context, state) => ProfileSectionScreen(
+                    sectionCode: state.pathParameters['section']!,
+                  ),
+                ),
+              ],
 
               // Nested inside the tab, so the vacancy editor keeps the shell's
               // nav bar and the system back gesture returns to the list rather

@@ -515,6 +515,24 @@ abstract class AppL10n {
   /// **'Who can find you'**
   String get profileVisibilityTitle;
 
+  /// Subtitle on a profile hub row: how many of that section's fields the server still counts as missing. What is left rather than what is there — a count of everything tells a finished user nothing and an unfinished one nothing they can act on.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} field left} other{{count} fields left}}'**
+  String profileSectionRemaining(int count);
+
+  /// Badge on a profile hub row holding an edit that has not been saved. Each section saves only its own fields, so leaving one half-finished is a thing a user can do without noticing.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved'**
+  String get profileSectionUnsaved;
+
+  /// Shown when a profile section page is opened for a schema code the current form does not carry — a stale deep link, or a work category whose schema drops that section. Not an error: which sections exist is the server's answer and it can change.
+  ///
+  /// In en, this message translates to:
+  /// **'This part is not in your form.'**
+  String get profileSectionGone;
+
   /// visibility=searchable. Note this is the setting, not the effect - BR-02 still requires a complete profile.
   ///
   /// In en, this message translates to:

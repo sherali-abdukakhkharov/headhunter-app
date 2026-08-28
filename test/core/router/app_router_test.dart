@@ -25,6 +25,7 @@ import 'package:jobbridge_app/src/features/auth/domain/otp_challenge.dart';
 import 'package:jobbridge_app/src/features/auth/domain/uz_phone.dart';
 import 'package:jobbridge_app/src/features/auth/presentation/otp_verification_screen.dart';
 import 'package:jobbridge_app/src/features/discovery/data/discovery_repository.dart';
+import 'package:jobbridge_app/src/features/profile/presentation/profile_section_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/session_offline_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/shell_placeholder_screen.dart';
 import 'package:jobbridge_app/src/features/shell/presentation/splash_screen.dart';
@@ -587,6 +588,69 @@ void main() {
         ),
       );
       expect(result.location, Routes.candidateHome);
+    });
+  });
+
+  group('the candidate profile is a hub with pages under it', () {
+    testWidgets('a section is a route inside the profile tab', (tester) async {
+      // Inside the tab, not beside it: the shell's nav bar stays and the system
+      // back gesture returns to the hub rather than leaving the branch.
+      final result = await settle(
+        tester,
+        const SessionActive(
+          roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
+        ),
+        initialLocation: Routes.candidateProfileSection('personal'),
+      );
+
+      expect(result.location, '/candidate/profile/personal');
+      expect(find.byType(HhBottomNav), findsOneWidget);
+
+      await _unmountTree(tester);
+    });
+
+    testWidgets('and so are the two that are not schema sections', (
+      tester,
+    ) async {
+      // `files` and `visibility` are literal paths declared **before** the
+      // `:section` parameter, because go_router matches sub-routes in
+      // declaration order and the parameter would otherwise swallow them.
+      for (final path in [
+        Routes.candidateProfileFiles,
+        Routes.candidateProfileVisibility,
+      ]) {
+        final result = await settle(
+          tester,
+          const SessionActive(
+            roles: {AppRole.candidate},
+            activeRole: AppRole.candidate,
+          ),
+          initialLocation: path,
+        );
+
+        expect(result.location, path, reason: path);
+      }
+
+      await _unmountTree(tester);
+    });
+
+    testWidgets('a section code builds the section screen, not the hub', (
+      tester,
+    ) async {
+      final result = await settle(
+        tester,
+        const SessionActive(
+          roles: {AppRole.candidate},
+          activeRole: AppRole.candidate,
+        ),
+        initialLocation: Routes.candidateProfileSection('anything'),
+      );
+
+      expect(result.location, '/candidate/profile/anything');
+      expect(find.byType(ProfileSectionScreen), findsOneWidget);
+
+      await _unmountTree(tester);
     });
   });
 

@@ -1,18 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
+import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/account/presentation/account_entry_row.dart';
 import 'package:jobbridge_app/src/features/profile/data/profile_controller.dart';
 import 'package:jobbridge_app/src/features/profile/domain/candidate_profile.dart';
 import 'package:jobbridge_app/src/features/profile/domain/field_schema.dart';
-import 'package:jobbridge_app/src/features/profile/presentation/attachments_section.dart';
 import 'package:jobbridge_app/src/features/profile/presentation/history_section.dart';
 import 'package:jobbridge_app/src/features/profile/presentation/schema_field_widget.dart';
-import 'package:jobbridge_app/src/features/profile/presentation/visibility_section.dart';
 
 /// The candidate profile (§5), rendered from the server's field schema.
 ///
@@ -81,131 +79,195 @@ class CandidateProfileScreen extends ConsumerWidget {
   }
 }
 
-class _Form extends ConsumerStatefulWidget {
+/// The hub: what is left to do, then one row per part of the profile.
+///
+/// **Not a form.** It was one — a completeness card, eight to ten schema
+/// sections, the attachment slots and the visibility switch on a single scroll,
+/// twenty-six fields plus two repeating lists — and the 1.29.0 audit called it
+/// monolithic. Length was the smaller half of that: on a page where everything
+/// looks alike, *what is still missing* is invisible, and the rows carry it
+/// here instead.
+///
+/// The rows are the schema's sections **in the schema's order**, and they are
+/// deliberately not grouped under invented headings. Which sections exist
+/// depends on the work category and an administrator can add one at runtime
+/// (§5.2, §10.3), so a client-side table saying which group a section belongs
+/// to would be wrong the first time one is added — and the new section would
+/// land in whatever bucket the code called "other". The server's order already
+/// reads as a sequence; it is the server's to change.
+class _Form extends ConsumerWidget {
   const _Form({required this.state});
 
   final ProfileEditorState state;
 
+  /// Opens the page holding [code], for the completeness card's chips.
+  ///
+  /// This used to scroll: every field was mounted on one eager
+  /// `SingleChildScrollView` — a lazy list would not have worked, because a
+  /// field below the fold has no context to scroll to — and the chip called
+  /// `ensureVisible`. Now it navigates, which is both simpler and better: a
+  /// chip that opens the page containing the field leaves the user somewhere
+  /// they can see the whole of, rather than part-way down a form.
+  ///
+  /// A code the schema does not place stays silent, exactly as the scroll did.
+  /// A field can be missing *and* unrenderable — an unknown `kind` is skipped
+  /// by design — and turning a server-side field addition into a dead end is
+  /// better than turning it into a crash.
+  void _openFieldSection(BuildContext context, String code) {
+    for (final section in state.schema.sections) {
+      if (section.fields.any((f) => f.code == code)) {
+        context.go(Routes.candidateProfileSection(section.code));
+
+        return;
+      }
+    }
+  }
+
   @override
-  ConsumerState<_Form> createState() => _FormState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final missing = {for (final f in state.profile.missingFields) f.code};
 
-class _FormState extends ConsumerState<_Form> {
-  /// One key per field code, so a missing-field chip can scroll to the widget
-  /// that fixes it.
-  ///
-  /// Held in state and reused across rebuilds: a key rebuilt each frame points
-  /// at a context that has just been discarded, and `ensureVisible` then either
-  /// throws or scrolls nowhere.
-  final _fieldKeys = <String, GlobalKey>{};
+    return ListView(
+      padding: const EdgeInsets.all(HhSpace.gutter),
+      children: [
+        _Completeness(
+          state: state,
+          onFix: (code) => _openFieldSection(context, code),
+        ),
+        const SizedBox(height: HhSpace.sectionGap),
 
-  GlobalKey _keyFor(String code) =>
-      _fieldKeys.putIfAbsent(code, GlobalKey.new);
+        for (final section in state.schema.sections)
+          Padding(
+            padding: const EdgeInsets.only(bottom: HhSpace.sm),
+            child: _SectionRow(
+              label: section.label,
+              // What is left, not what is there: a row that says "5 fields"
+              // tells a finished user something they do not need and an
+              // unfinished one nothing they can act on.
+              note: _remaining(section, missing, l10n),
+              unsaved: state.isDirtyIn({
+                for (final f in section.fields) f.code,
+              }),
+              onTap: () =>
+                  context.go(Routes.candidateProfileSection(section.code)),
+            ),
+          ),
 
-  /// Scrolls the named field into view.
-  ///
-  /// Silently does nothing when the code has no widget mounted — a field can be
-  /// missing *and* unrenderable, because an unknown `kind` is skipped by
-  /// design. Throwing here would turn a server-side field addition into a crash
-  /// on the completeness card.
-  ///
-  /// **This is why the form is a `SingleChildScrollView`, not a `ListView`.**
-  /// A lazy list only mounts children near the viewport, so every field below
-  /// the fold has a null `currentContext` and this method quietly did nothing —
-  /// which is every field the user actually needs to be taken to. Found by
-  /// tapping a chip on a device; the silent branch made it look like a dead
-  /// button rather than a bug.
-  void _revealField(String code) {
-    final target = _fieldKeys[code]?.currentContext;
-    if (target == null) return;
+        const SizedBox(height: HhSpace.md),
 
-    unawaited(
-      Scrollable.ensureVisible(
-        target,
-        duration: HhDuration.normal,
-        // A little above centre, so the field is not tucked under the app bar
-        // or hidden behind the save bar.
-        alignment: 0.2,
-      ),
+        // Files are declared by the schema's own block, outside the field union
+        // entirely (§4.5), and visibility is its own endpoint (§5.3). Both are
+        // parts of the profile and neither is a section, so they sit below the
+        // schema's rows rather than among them.
+        Padding(
+          padding: const EdgeInsets.only(bottom: HhSpace.sm),
+          child: _SectionRow(
+            label: l10n.attachmentsTitle,
+            onTap: () => context.go(Routes.candidateProfileFiles),
+          ),
+        ),
+        _SectionRow(
+          label: l10n.profileVisibilityTitle,
+          note: state.profile.visibility == 'searchable'
+              ? l10n.profileVisibilitySearchable
+              : l10n.profileVisibilityHidden,
+          onTap: () => context.go(Routes.candidateProfileVisibility),
+        ),
+      ],
     );
   }
+
+  /// "n left", or null when this section is answered.
+  ///
+  /// Counted from the server's own `missingFields` rather than from the values
+  /// on screen: completeness is §5.3's computation and the client re-deriving
+  /// it would be a second implementation of the rule that decides who is
+  /// searchable.
+  String? _remaining(
+    SchemaSection section,
+    Set<String> missing,
+    AppL10n l10n,
+  ) {
+    final count = section.fields.where((f) => missing.contains(f.code)).length;
+
+    return count == 0 ? null : l10n.profileSectionRemaining(count);
+  }
+}
+
+/// One row of the hub: what it is, what is left in it, and a chevron.
+class _SectionRow extends StatelessWidget {
+  const _SectionRow({
+    required this.label,
+    required this.onTap,
+    this.note,
+    this.unsaved = false,
+  });
+
+  final String label;
+
+  /// What is still owed here, or the current setting. Null when there is
+  /// nothing to say — which is itself the signal that this part is done.
+  final String? note;
+
+  /// Whether this section holds an edit that has not been saved.
+  ///
+  /// Each page saves only its own fields, so leaving one half-finished is a
+  /// thing a user can now do without noticing. The row says so.
+  final bool unsaved;
+
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final state = widget.state;
 
-    return Column(
-      children: [
-        Expanded(
-          // Eager, not lazy — see _revealField. The field set is bounded by the
-          // category's schema (tens of fields, all cheap), so building them all
-          // costs little and is what makes every one of them a valid scroll
-          // target.
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(HhSpace.gutter),
+    return HhCard(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _Completeness(state: state, onFix: _revealField),
-                const SizedBox(height: HhSpace.sectionGap),
-
-                for (final section in state.schema.sections) ...[
-                  _Section(section: section, state: state, keyFor: _keyFor),
-                  const SizedBox(height: HhSpace.sectionGap),
+                Text(
+                  label,
+                  style: HhTypography.body.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (note case final note?) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    note,
+                    style: HhTypography.caption.copyWith(
+                      color: HhColors.inkMuted,
+                    ),
+                  ),
                 ],
-
-                // Files are declared by the schema's own block, outside the
-                // field union entirely (§4.5).
-                AttachmentsSection(slots: state.schema.attachments),
-                const SizedBox(height: HhSpace.sectionGap),
-
-                // Not a schema field, and deliberately outside the save bar's
-                // dirty set - see VisibilitySection.
-                VisibilitySection(current: state.profile.visibility),
-                const SizedBox(height: HhSpace.sectionGap),
-
-                // Room for the save bar, which floats over the list.
-                const SizedBox(height: HhSpace.xxl),
+                if (unsaved) ...[
+                  const SizedBox(height: HhSpace.xs),
+                  // A badge, not a coloured dot: the design's rule is that a
+                  // state is an icon **and** a word, and "there is something
+                  // unsaved in here" is exactly the state a colour alone would
+                  // fail to convey.
+                  HhBadge(
+                    label: l10n.profileSectionUnsaved,
+                    tone: HhTone.warning,
+                    iconPath: HhIconPath.edit,
+                  ),
+                ],
               ],
             ),
           ),
-        ),
-
-        if (state.isDirty)
-          _SaveBar(
-            saving: state.isSaving,
-            onSave: () async {
-              // Both resolved before the await. The widget can be rebuilt or
-              // disposed while the write is in flight, and reaching for
-              // `context` afterwards is the classic way that becomes a crash
-              // only on a slow connection.
-              final messenger = ScaffoldMessenger.of(context);
-              final savedMessage = l10n.profileSaved;
-
-              try {
-                final ok = await ref
-                    .read(profileEditorProvider.notifier)
-                    .save();
-                if (ok) {
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: HhToast(message: savedMessage),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.zero,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              } on ApiException catch (e) {
-                // Field-level rejections are already attached to their fields
-                // by the controller; this is the summary read first.
-                messenger.showSnackBar(SnackBar(content: Text(e.message)));
-              }
-            },
+          const SizedBox(width: HhSpace.sm),
+          const HhIcon(
+            HhIconPath.chevronRight,
+            size: 18,
+            color: HhColors.inkDisabled,
           ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -312,28 +374,27 @@ class _Completeness extends StatelessWidget {
       '${d.day.toString().padLeft(2, '0')}';
 }
 
-class _Section extends ConsumerWidget {
-  const _Section({
+/// One schema section's fields, with no chrome of its own.
+///
+/// Public because the section *pages* render it — see
+/// `profile_section_screen.dart`. It draws no heading: the page it sits on
+/// already names itself, and two titles for one thing is how a hub and its
+/// pages start disagreeing.
+class ProfileSectionFields extends ConsumerWidget {
+  const ProfileSectionFields({
     required this.section,
     required this.state,
-    required this.keyFor,
+    super.key,
   });
 
   final SchemaSection section;
   final ProfileEditorState state;
-
-  /// The stable key for a field code, so the completeness card can scroll
-  /// to it.
-  final GlobalKey Function(String code) keyFor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(section.label, style: HhTypography.subtitle),
-        const SizedBox(height: HhSpace.md),
-
         if (!section.isEngine)
           // A bespoke section owns its own sub-resource and its own editor
           // (work history, education), so it is handed to one rather than run
@@ -342,7 +403,6 @@ class _Section extends ConsumerWidget {
         else
           for (final field in section.renderableFields)
             Padding(
-              key: keyFor(field.code),
               padding: const EdgeInsets.only(bottom: HhSpace.lg),
               child: SchemaFieldWidget(
                 field: field,
@@ -375,8 +435,13 @@ class _Section extends ConsumerWidget {
   }
 }
 
-class _SaveBar extends StatelessWidget {
-  const _SaveBar({required this.saving, required this.onSave});
+/// The floating Save, shared by every section page.
+class ProfileSaveBar extends StatelessWidget {
+  const ProfileSaveBar({
+    required this.saving,
+    required this.onSave,
+    super.key,
+  });
 
   final bool saving;
   final VoidCallback onSave;

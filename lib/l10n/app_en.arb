@@ -283,6 +283,23 @@
     "description": "Accessibility label on a missing-field chip that scrolls to the field it names."
   },
   "profileVisibilityTitle": "Who can find you",
+  "profileSectionRemaining": "{count, plural, one{{count} field left} other{{count} fields left}}",
+  "@profileSectionRemaining": {
+    "description": "Subtitle on a profile hub row: how many of that section's fields the server still counts as missing. What is left rather than what is there — a count of everything tells a finished user nothing and an unfinished one nothing they can act on.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profileSectionUnsaved": "Unsaved",
+  "profileSectionGone": "This part is not in your form.",
+  "@profileSectionGone": {
+    "description": "Shown when a profile section page is opened for a schema code the current form does not carry — a stale deep link, or a work category whose schema drops that section. Not an error: which sections exist is the server's answer and it can change."
+  },
+  "@profileSectionUnsaved": {
+    "description": "Badge on a profile hub row holding an edit that has not been saved. Each section saves only its own fields, so leaving one half-finished is a thing a user can do without noticing."
+  },
   "@profileVisibilityTitle": {
     "description": "Heading of the search-visibility control (UAT-12, §5.5). Its own section because it is not a schema field."
   },

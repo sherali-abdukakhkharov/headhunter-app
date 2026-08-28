@@ -65,6 +65,29 @@ abstract final class Routes {
   static const candidateMessages = '/candidate/messages';
   static const candidateProfile = '/candidate/profile';
 
+  /// One schema section of the candidate profile, by its **schema code**.
+  ///
+  /// A path parameter rather than one route per section, because the section
+  /// list is the server's: §5.2 makes the form depend on the work category, and
+  /// §10.3 lets an administrator add a category at runtime. A route table
+  /// naming today's ten sections would be a second copy of the schema, wrong
+  /// the first time one is added.
+  ///
+  /// A code the schema does not carry lands on the hub rather than on an empty
+  /// page — see `ProfileSectionScreen`.
+  static String candidateProfileSection(String code) =>
+      '$candidateProfile/$code';
+
+  /// The attachment slots (§4.5) and the visibility switch (BR-02), which are
+  /// pages beside the schema's sections without being schema sections.
+  ///
+  /// **Literal paths, registered before the `:section` parameter**, so they
+  /// win the match. That does mean a schema section code of `files` or
+  /// `visibility` would be unreachable; neither exists, and the collision is
+  /// cheaper than a second parameter to disambiguate.
+  static const candidateProfileFiles = '$candidateProfile/files';
+  static const candidateProfileVisibility = '$candidateProfile/visibility';
+
   /// Which of §5.5's three feeds the vacancies tab is showing.
   ///
   /// In the **location** rather than in the screen's state, and the reason is

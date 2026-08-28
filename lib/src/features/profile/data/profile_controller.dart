@@ -36,6 +36,21 @@ class ProfileEditorState {
 
   bool get isDirty => edits.isNotEmpty;
 
+  /// The pending edits whose field codes are in [codes].
+  ///
+  /// The profile is edited one section at a time (each has its own page and its
+  /// own save bar), and `PATCH /candidates/me/profile` has always been partial
+  /// by field code — so a section saves exactly what it holds and leaves
+  /// another section's half-finished answer alone.
+  Map<String, Object?> editsIn(Set<String> codes) => {
+    for (final entry in edits.entries)
+      if (codes.contains(entry.key)) entry.key: entry.value,
+  };
+
+  /// Whether anything in [codes] is waiting to be saved.
+  bool isDirtyIn(Set<String> codes) =>
+      edits.keys.any(codes.contains);
+
   /// The value a widget should show: the pending edit if there is one, and
   /// otherwise what the server last said.
   ///
@@ -125,25 +140,44 @@ class ProfileEditor extends _$ProfileEditor {
   /// what the screen then shows.
   ///
   /// Returns true when the write landed.
-  Future<bool> save() async {
+  /// Writes the pending edits, or only those whose codes are in [only].
+  ///
+  /// **[only] is how one section saves without carrying another one's work.**
+  /// The endpoint is partial by field code already — that is why
+  /// [ProfileEditorState.edits] is kept apart from the profile — so scoping
+  /// the write is a matter of sending
+  /// a subset and clearing the same subset. Anything outside it stays pending
+  /// and is still on its own page when the user gets there.
+  ///
+  /// Null saves everything, which is what a single-form screen wants and what
+  /// the employer profile still is.
+  Future<bool> save({Set<String>? only}) async {
     final current = state.value;
-    if (current == null || !current.isDirty || current.isSaving) return false;
+    if (current == null || current.isSaving) return false;
+
+    final sending = only == null ? current.edits : current.editsIn(only);
+    if (sending.isEmpty) return false;
 
     state = AsyncData(current.copyWith(isSaving: true, fieldErrors: const {}));
 
     try {
       final saved = await ref
           .read(profileRepositoryProvider)
-          .patchProfile(current.edits);
+          .patchProfile(sending);
 
       final categoryChanged = saved.category != current.profile.category;
 
       state = AsyncData(
         current.copyWith(
           profile: saved,
-          // Cleared only on success. Keeping them after a failure is what lets
-          // the user fix one field and retry without retyping the rest.
-          edits: const {},
+          // Cleared only on success, and only what was **sent**. Keeping the
+          // rest after a failure is what lets the user fix one field and retry
+          // without retyping; keeping the unsent rest on success is what makes
+          // a per-section save mean what it says.
+          edits: {
+            for (final entry in current.edits.entries)
+              if (!sending.containsKey(entry.key)) entry.key: entry.value,
+          },
           isSaving: false,
         ),
       );
