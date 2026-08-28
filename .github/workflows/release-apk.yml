@@ -89,7 +89,24 @@ jobs:
             exit 1
           fi
 
-          previous=$(git tag --list "v*" --sort=-v:refname | grep -v "^$GITHUB_REF_NAME$" | head -1)
+          # **The greatest tag strictly below this one**, not the greatest tag
+          # that is not this one. Those differ whenever a later tag already
+          # exists, and the difference is not theoretical: v1.25.0 and v1.26.0
+          # were pushed together on 2026-08-28, so v1.25.0's run compared its
+          # build 35 against v1.26.0's 36, called the number backwards, and
+          # refused to build a release that was perfectly correct.
+          #
+          # Re-running an older tag's build hits the same thing, which is worse
+          # - re-run is the button somebody presses when a build failed for an
+          # unrelated reason, and it would fail again for a reason that is not
+          # about the tag being re-run.
+          #
+          # Ascending sort, and print whatever came immediately before the
+          # current tag. If the current tag is not in the list at all nothing
+          # is printed, which lands on the "no earlier tag" branch below rather
+          # than silently comparing against the newest.
+          previous=$(git tag --list "v*" --sort=v:refname \
+            | awk -v cur="$GITHUB_REF_NAME" '$0 == cur { print prev; exit } { prev = $0 }')
           if [ -z "$previous" ]; then
             echo "No earlier tag: nothing to compare the build number against."
             exit 0
