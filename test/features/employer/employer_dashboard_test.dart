@@ -40,6 +40,7 @@ void main() {
     Map<String, ApplicationCounts> counts = const {},
     Map<String, Map<String, int>> invitations = const {},
     List<CandidateCard> saved = const [],
+    void Function()? onSavedRequested,
     String verification = 'verified',
     ApiException? vacanciesError,
     EmployerProfile? employer,
@@ -64,7 +65,11 @@ void main() {
             (ref) async =>
                 vacanciesError != null ? throw vacanciesError : vacancies,
           ),
-          savedCandidatesProvider.overrideWith((ref) async => saved),
+          savedCandidatesProvider.overrideWith((ref) async {
+            onSavedRequested?.call();
+
+            return saved;
+          }),
           verificationProvider.overrideWith(
             () => _FakeVerification(verification),
           ),
@@ -503,6 +508,78 @@ void main() {
       expect(cta.hitTestable(), findsOneWidget);
     });
   });
+
+  group('MT-029: the dashboard asks for nothing it may not have', () {
+    /// A complete profile whose verification has not come back yet — a state
+    /// an account sits in for days, and a valid one.
+    EmployerProfile underReview() =>
+        _employer(verificationStatus: 'under_review', canPublish: false);
+
+    testWidgets('an employer under review never asks for saved candidates', (
+      tester,
+    ) async {
+      var asked = false;
+      await pump(
+        tester,
+        verification: 'under_review',
+        employer: underReview(),
+        saved: [_card()],
+        onSavedRequested: () => asked = true,
+      );
+
+      // Every `/candidate-search` route sits behind `assertVerified` (§7,
+      // BR-03), so this one answers 403 for the whole wait. The row is optional
+      // and the failure was swallowed, so the screen looked correct while every
+      // load made one request that could not have succeeded.
+      expect(asked, isFalse);
+    });
+
+    testWidgets('and shows no saved row it could not have filled', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        verification: 'under_review',
+        employer: underReview(),
+        saved: [_card()],
+      );
+
+      expect(find.textContaining('saved candidate'), findsNothing);
+    });
+
+    testWidgets('a verified employer still gets the row', (tester) async {
+      // The other half, so the fix cannot be "stop asking": an employer the
+      // server would answer must still be asked.
+      var asked = false;
+      await pump(
+        tester,
+        saved: [_card()],
+        onSavedRequested: () => asked = true,
+      );
+      // One frame more than the other cases need. The request is now made
+      // *after* the profile answers, so the row is a frame behind it — which
+      // is the whole point: it is no longer fired blind.
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(asked, isTrue);
+      expect(find.textContaining('saved candidate'), findsOneWidget);
+    });
+
+    testWidgets('an employer with no profile at all asks for nothing', (
+      tester,
+    ) async {
+      var asked = false;
+      await pump(
+        tester,
+        hasProfile: false,
+        verification: 'not_submitted',
+        saved: [_card()],
+        onSavedRequested: () => asked = true,
+      );
+
+      expect(asked, isFalse);
+    });
+  });
 }
 
 CandidateCard _card() => CandidateCard.fromJson(const {
@@ -551,15 +628,22 @@ class _FakeEditor extends EmployerEditor {
       );
 }
 
-EmployerProfile _employer({bool complete = true, int percent = 100}) =>
-    EmployerProfile.fromJson({
-      'type': 'company',
-      'legalName': 'Uzum Technologies',
-      'verificationStatus': 'verified',
-      'completenessPercent': percent,
-      'isComplete': complete,
-      'canPublish': complete,
-      'missingFields': const <dynamic>[],
-    });
+EmployerProfile _employer({
+  bool complete = true,
+  int percent = 100,
+  String verificationStatus = 'verified',
+  bool? canPublish,
+}) => EmployerProfile.fromJson({
+  'type': 'company',
+  'legalName': 'Uzum Technologies',
+  'verificationStatus': verificationStatus,
+  'completenessPercent': percent,
+  'isComplete': complete,
+  // BR-03's two conditions, ANDed **on the server**. Settable apart from
+  // `isComplete` here because that is the state MT-029 is about: a complete
+  // profile whose verification has not come back yet.
+  'canPublish': canPublish ?? complete,
+  'missingFields': const <dynamic>[],
+});
 
 void _ignoreIndex(int _) {}

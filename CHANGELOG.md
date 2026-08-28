@@ -17,6 +17,68 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.30.0+40 — 2026-08-28
+
+The 1.29.0 QA audit, minus the one finding that is a product decision.
+
+### Fixed
+
+- **A language change is stored on the account again, and a clean sign-in
+  restores it.** Both halves of §3.2 had stopped working and neither said so:
+  the screen translated, the account kept its old value, and a fresh device
+  opened in the phone’s language. The object doing the syncing was read out of
+  an auto-disposing provider and used across an await nobody held it open
+  through, so its second half ran on a dead reference and was caught, logged
+  and dropped. The Account screen’s promise — "it follows you to your other
+  devices" — was false for as long as the sentence has existed (MT-025).
+
+- **Switching role no longer opens the new shell on the old role’s token.**
+  Admin arrived saying *"This action requires admin."* to somebody who holds
+  admin, and worked on Retry. A switch was two things racing: the role changed
+  first, the router read a location that still named the role being left, and
+  the rule that lets a deep link activate a role started a switch straight
+  back — two token rotations, in an order nobody controlled. The token now
+  rotates before the role is published, and the transition is bracketed so the
+  deep-link rule leaves it alone until the destination has been stated
+  (MT-027).
+
+- **The Messages list starts below the status bar, and says what it is.** It
+  was the one tab in all three shells with no page of its own — no safe area
+  and no heading — so the first conversation was drawn under the clock. The
+  wrapper is applied once, above the empty, error, loading and populated
+  states, because that is the difference between fixing this and fixing three
+  quarters of it (MT-026).
+
+- **The dictionary prefetch finishes.** Signing in warms seventeen
+  dictionaries so the first form does not open on six cold round trips; it was
+  collected at its first await — nothing listens to a prefetch — and the other
+  sixteen failed one line at a time in the log. It holds itself open now and
+  lets go when it is done (MT-028).
+
+- **An employer awaiting verification stops asking for candidates it may not
+  see.** Every candidate-search route is behind the same server gate as
+  publishing, so the dashboard was making one guaranteed 403 per load for an
+  optional row, and swallowing it. The gate is now the server’s own
+  `canPublish` rather than a second copy of BR-03 (MT-029).
+
+- **`Coin` is `Coin` in all four interface variants.** The admin pricing
+  screen translated it — *tanga*, *танга*, *монета* — while the wallet has
+  always left it alone, so one administrator screen disagreed with the next
+  about what the thing is called. The ARB suite now refuses any term the
+  English keeps in English, and it found a fourth instance nobody had
+  reported.
+
+### Changed
+
+- **A vacancy’s category band uses the tall crop only when there is a
+  photograph.** 1.29.0 gave the detail page the full 2.6 : 1 hero, which with
+  no picture is a large pale block across the top of the first screen for the
+  sake of one word — the designer said so of that build. Without an image it
+  keeps the card’s compact height; the crop follows the picture, so wiring the
+  five masters in restores the hero without anybody remembering that it
+  should. The card’s own height does not change either way, which is the rule
+  that protects a mixed list’s rhythm.
+
 ## 1.29.0+39 — 2026-08-28
 
 ### Added

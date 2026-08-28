@@ -315,6 +315,10 @@ class _VacancyFeedCardState extends ConsumerState<VacancyFeedCard> {
                   HhCategoryBand(
                     category: category,
                     categoryLabel: workCategoryLabel(category, l10n),
+                    // The card's height is fixed either way: a list whose rows
+                    // changed height with image coverage is the one thing the
+                    // design says would be worse than no band at all.
+                    image: categoryPhotograph(category),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(

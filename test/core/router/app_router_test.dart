@@ -473,6 +473,74 @@ void main() {
       );
     });
 
+    testWidgets('a switch in flight is not undone by the location', (
+      tester,
+    ) async {
+      // MT-027. Between the role changing and `context.go` stating where it is
+      // going, the location still names the role being *left* — and the
+      // deep-link rule read it and scheduled a switch straight back. Two
+      // `/auth/active-role` calls then raced, the access token ended up naming
+      // whichever answered last, and Admin opened saying "This action requires
+      // admin." until the user pressed Retry.
+      //
+      // `switchRoleAndGo` brackets the transition for exactly this reason, and
+      // this asserts the bracket does its job: **one** switch, not two.
+      final result = await settle(
+        tester,
+        const SessionActive(
+          roles: {AppRole.candidate, AppRole.employer},
+          activeRole: AppRole.candidate,
+        ),
+      );
+      expect(result.location, Routes.candidateHome);
+      result.controller.switched.clear();
+
+      // Exactly what `switchRoleAndGo` performs, in its order.
+      expect(result.controller.beginRoleSwitch(AppRole.employer), isTrue);
+      await result.controller.switchRole(AppRole.employer);
+      await _pumpRoute(tester);
+
+      expect(
+        result.controller.switched,
+        [AppRole.employer],
+        reason: 'the redirect must not add a switch back to candidate',
+      );
+
+      result.router.go(Routes.homeFor(AppRole.employer));
+      await _pumpRoute(tester);
+      result.controller.endRoleSwitch();
+      await _pumpRoute(tester);
+
+      expect(locationOf(result.router), Routes.employerHome);
+      expect(result.controller.switched, [AppRole.employer]);
+
+      await _unmountTree(tester);
+    });
+
+    testWidgets('and a real deep link still activates its role', (
+      tester,
+    ) async {
+      // The other half of the same rule, so the fix above cannot be "turn the
+      // deep-link rule off". With no switch in flight a link into a granted
+      // role must still activate it.
+      final result = await settle(
+        tester,
+        const SessionActive(
+          roles: {AppRole.candidate, AppRole.employer},
+          activeRole: AppRole.candidate,
+        ),
+      );
+      result.controller.switched.clear();
+      expect(result.controller.switchingTo, isNull);
+
+      result.router.go(Routes.employerCandidates);
+      await _pumpRoute(tester);
+
+      expect(result.controller.switched, [AppRole.employer]);
+
+      await _unmountTree(tester);
+    });
+
     testWidgets('switching role and navigating moves shells', (tester) async {
       // The supported pairing, exactly as `switchRoleAndGo` performs it: set
       // the state, then state the destination.

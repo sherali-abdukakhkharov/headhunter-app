@@ -34,6 +34,21 @@ part 'locale_sync.g.dart';
 /// [LocaleController.hasLocalChoice] is what tells the two apart, and it can
 /// only do so because the stored key is written by `select` alone.
 ///
+/// ## Why it is kept alive
+///
+/// **It hands out an object holding a `Ref`, and every method it has outlives
+/// an await.** [select] writes the choice locally, waits for that, and only
+/// then pushes it. Nothing watches this provider, so an auto-disposing one is
+/// collected during exactly that wait and the push runs on a dead `Ref`.
+///
+/// That shipped. Changing the language translated the screen and stored
+/// nothing on the account, and a clean sign-in opened in the phone’s language
+/// rather than the account’s because [reconcile] failed the same way — both
+/// with *"Cannot use the Ref of localeSyncProvider after it has been
+/// disposed"* in the log, and neither with anything on screen (MT-025).
+///
+/// The object is `const` and stateless, so keeping it costs one instance.
+///
 /// ## A failed push costs the sync, never the choice
 ///
 /// The local write happens first and is not rolled back. The language the user
@@ -89,5 +104,5 @@ class LocaleSync {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 LocaleSync localeSync(Ref ref) => LocaleSync(ref);

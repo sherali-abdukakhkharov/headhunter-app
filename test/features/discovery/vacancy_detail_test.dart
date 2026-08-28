@@ -36,6 +36,9 @@ void main() {
     String? endsOn,
     String? applicationStatus,
     bool isSaved = false,
+    // The **wire** value, not the design systems word for the same thing:
+    // `service` is what `HhWorkCategory` calls it and no server sends it.
+    String category = 'service_operations',
   }) => VacancyDetail.fromJson({
     'item': {
       'id': 'vac-1',
@@ -43,7 +46,7 @@ void main() {
       'salaryIsNegotiable': false,
       'salaryFrom': 4000000,
       'workerCount': 20,
-      'category': 'service',
+      'category': category,
       'isSaved': isSaved,
       'employer': const {'name': 'Uniconsoft', 'isVerified': true},
       'applicationStatus': ?applicationStatus,
@@ -97,7 +100,12 @@ void main() {
           vacancyDetailProvider('vac-1').overrideWith(
             (ref) => error != null ? throw error : subject!,
           ),
-          vacancyFieldSchemaProvider('service').overrideWith(
+          // Keyed on the category the subject actually carries, which is a
+          // **wire** value — the same string the screen looks the schema up
+          // with.
+          vacancyFieldSchemaProvider(
+            subject?.item.category ?? 'service_operations',
+          ).overrideWith(
             (ref) => withSchema
                 ? schema
                 : throw Exception('schema unavailable'),
@@ -382,6 +390,43 @@ void main() {
       await pump(tester, subject: detail(applicationStatus: 'withdrawn'));
 
       expect(find.text('Apply'), findsOneWidget);
+    });
+  });
+
+  group('§2.1: the band on the detail', () {
+    testWidgets('names the category', (tester) async {
+      await pump(tester, subject: detail());
+
+      final band = tester.widget<HhCategoryBand>(find.byType(HhCategoryBand));
+      expect(band.category, HhWorkCategory.service);
+      expect(band.categoryLabel, 'Service and operations');
+    });
+
+    testWidgets('keeps the compact crop while there is no photograph', (
+      tester,
+    ) async {
+      await pump(tester, subject: detail());
+
+      final band = tester.widget<HhCategoryBand>(find.byType(HhCategoryBand));
+
+      // The hero crop is 2.6:1 and exists to hold a picture. Spent on flat
+      // tint it is a large pale block across the top of the first screen, for
+      // one word — which is what the 1.29.0 audit's designer note said. The
+      // rule that fixes the *card's* height across both cases is about list
+      // rhythm, and a detail page has one band and no rhythm to protect.
+      expect(band.image, isNull);
+      expect(band.height, HhCategoryBand.cardHeight);
+    });
+
+    testWidgets('draws no band for a category this build does not know', (
+      tester,
+    ) async {
+      await pump(tester, subject: detail(category: 'promotional_2027'));
+
+      // A band is a claim about what kind of work this is, and a wrong one is
+      // worse than none.
+      expect(find.byType(HhCategoryBand), findsNothing);
+      expect(find.text('Call-centre operator'), findsOneWidget);
     });
   });
 }

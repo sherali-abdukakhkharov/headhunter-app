@@ -28,11 +28,39 @@ import 'package:jobbridge_app/src/core/router/routes.dart';
 ///
 /// Found on a device: the switcher appeared to do nothing, and both the widget
 /// tests and `flutter analyze` were green.
+///
+/// ## The window between the two, and why it needs a flag after all
+///
+/// The paragraphs above end with "one rule, no ambiguity" and that was half
+/// right. The location is authoritative and the switch states its destination —
+/// but not at the same instant. Between the moment the role changes and the
+/// moment `context.go` runs, the location still names the role being *left*, so
+/// the deep-link rule reads it and starts a switch back. Both switches then
+/// publish to `/auth/active-role` and the access token ends up naming whichever
+/// answered last: Admin opened on the employer's token and said *"This action
+/// requires admin."* until the user pressed Retry (MT-027).
+///
+/// So the transition is bracketed. [SessionController.beginRoleSwitch] opens
+/// the window and the redirect chain leaves the deep-link rule alone while it
+/// is open; the `finally` closes it once the destination has been stated and
+/// the two agree again. It is the mode bit the paragraph above hoped to avoid —
+/// but it is scoped to one function's `try`, it names the window it covers, and
+/// the alternative was a race that reached a device.
 Future<void> switchRoleAndGo(
   BuildContext context,
   WidgetRef ref,
   AppRole role,
 ) async {
-  await ref.read(sessionControllerProvider.notifier).switchRole(role);
-  if (context.mounted) context.go(Routes.homeFor(role));
+  final controller = ref.read(sessionControllerProvider.notifier);
+
+  // A second tap while the first switch is still in flight. Dropping out is
+  // right: the first one is already going where this one wanted to go.
+  if (!controller.beginRoleSwitch(role)) return;
+
+  try {
+    await controller.switchRole(role);
+    if (context.mounted) context.go(Routes.homeFor(role));
+  } finally {
+    controller.endRoleSwitch();
+  }
 }

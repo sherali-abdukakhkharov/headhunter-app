@@ -160,14 +160,36 @@ String labelKey(Iterable<String> ids) => (List.of(ids)..sort()).join(',');
 ///
 /// Failures are deliberately not propagated — this is a prefetch, and each
 /// picker still resolves its own type on demand.
+///
+/// ## It holds itself open, and that is the whole of it working
+///
+/// **Nothing listens to a prefetch.** The caller starts it and drops the
+/// future, so an auto-disposing provider is collected at the first `await`
+/// and every `ref.watch` after that throws on a dead `Ref` — caught by the
+/// loop below, logged once per type, and otherwise invisible. That is what
+/// shipped: seventeen disposal lines at every clean sign-in and not one
+/// dictionary warmed, so the first form still paid for six cold round trips
+/// (MT-028).
+///
+/// [Ref.keepAlive] holds it open for the duration and the link is closed at
+/// the end, so the provider and the seventeen it watched are collectable
+/// again the moment the warm-up finishes. **The cache is the product here,**
+/// not the provider: `dictionary` writes what it fetches to disk, so the
+/// value survives the collection that follows.
 @riverpod
 Future<void> warmDictionaries(Ref ref, List<String> types) async {
-  for (final type in types) {
-    try {
-      await ref.watch(dictionaryProvider(type).future);
-    } on Object catch (error) {
-      debugPrint('[dictionary] warm-up skipped $type: $error');
+  final link = ref.keepAlive();
+
+  try {
+    for (final type in types) {
+      try {
+        await ref.watch(dictionaryProvider(type).future);
+      } on Object catch (error) {
+        debugPrint('[dictionary] warm-up skipped $type: $error');
+      }
     }
+  } finally {
+    link.close();
   }
 }
 

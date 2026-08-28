@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,22 +14,37 @@ import 'chat_fake.dart';
 
 /// §9.1's Messages tab.
 void main() {
+  /// Mounts the screen the way the router does: as the whole page.
+  ///
+  /// **Not wrapped in a `Scaffold` here**, and that is deliberate. It used to
+  /// be, which supplied the chrome the screen itself was missing and hid
+  /// MT-026 — a suite that builds the thing under test into a better tree than
+  /// production gives it tests the tree.
   Future<FakeChat> pump(
     WidgetTester tester, {
-    required List<Conversation> threads,
+    List<Conversation> threads = const [],
     Size size = const Size(1080, 2400),
     double scale = 1,
+    double topInset = 0,
+    Exception? failure,
+    bool loading = false,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
-    final fake = FakeChat(threads: threads);
+    final fake = FakeChat(threads: threads)..listError = failure;
 
     await tester.pumpWidget(
       ProviderScope(
         retry: (retryCount, error) => null,
-        overrides: [chatRepositoryProvider.overrideWith((ref) => fake)],
+        overrides: [
+          chatRepositoryProvider.overrideWith((ref) => fake),
+          if (loading)
+            conversationsProvider.overrideWith(
+              (ref) => Completer<List<Conversation>>().future,
+            ),
+        ],
         child: MaterialApp(
           theme: HhTheme.light,
           locale: const Locale('en'),
@@ -36,12 +53,11 @@ void main() {
           builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(
               textScaler: TextScaler.linear(scale),
+              padding: EdgeInsets.only(top: topInset),
             ),
             child: child!,
           ),
-          home: const Scaffold(
-            body: ConversationsScreen(basePath: Routes.employerMessages),
-          ),
+          home: const ConversationsScreen(basePath: Routes.employerMessages),
         ),
       ),
     );
@@ -212,5 +228,72 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+  });
+
+  group('MT-026: the tab has chrome of its own, in every state', () {
+    // A status bar's worth. Content under it cannot be read and cannot be
+    // tapped reliably, and this screen put the first conversation at y=0 — the
+    // counterpart's name sharing pixels with the clock.
+    const statusBar = 48.0;
+
+    /// Every state must clear the inset, not just the one somebody looked at.
+    void expectHeadingBelowTheStatusBar(WidgetTester tester) {
+      expect(find.text('Messages'), findsOneWidget);
+      expect(
+        tester.getRect(find.text('Messages')).top,
+        greaterThanOrEqualTo(statusBar),
+      );
+    }
+
+    testWidgets('a populated list', (tester) async {
+      await pump(
+        tester,
+        threads: [conversationFixture()],
+        topInset: statusBar,
+      );
+
+      expectHeadingBelowTheStatusBar(tester);
+      // And the list starts under the heading rather than beside it.
+      expect(
+        tester.getRect(find.byType(HhCard).first).top,
+        greaterThan(tester.getRect(find.text('Messages')).bottom),
+      );
+    });
+
+    testWidgets('the empty state', (tester) async {
+      await pump(tester, topInset: statusBar);
+
+      expectHeadingBelowTheStatusBar(tester);
+      expect(find.byType(HhEmptyState), findsOneWidget);
+    });
+
+    testWidgets('the error state', (tester) async {
+      await pump(
+        tester,
+        topInset: statusBar,
+        failure: Exception('no network'),
+      );
+
+      expectHeadingBelowTheStatusBar(tester);
+      expect(find.byType(HhErrorState), findsOneWidget);
+    });
+
+    testWidgets('and while it is still loading', (tester) async {
+      await pump(tester, topInset: statusBar, loading: true);
+
+      // The heading is not inside the state switch, so the screen is named
+      // before it has anything to name.
+      expectHeadingBelowTheStatusBar(tester);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets('the heading is the tab’s own word', (tester) async {
+      // `navMessages`, so the nav bar and the page cannot drift apart, and so
+      // this works in all four interface variants without a fifth string.
+      await pump(tester, threads: [conversationFixture()]);
+
+      final context = tester.element(find.byType(ConversationsScreen));
+      expect(find.text(AppL10n.of(context).navMessages), findsOneWidget);
+    });
   });
 }

@@ -416,13 +416,26 @@ String? _redirect(Ref ref, GoRouterState state) {
       if (target == null) return fallback;
       if (!session.can(target)) return fallback;
 
+      final controller = ref.read(sessionControllerProvider.notifier);
+
+      // **An explicit switch is in flight, so this disagreement is the expected
+      // one and not a deep link.** `(location, session)` cannot tell the two
+      // apart on its own - that is stated at length in `switchRoleAndGo` - and
+      // for the length of a switch the location still names the role being
+      // left.
+      // Acting on it here scheduled a switch straight back, raced the token
+      // rotation, and opened the new shell with the loser's token (MT-027).
+      //
+      // The window closes when the destination is stated, which is the next
+      // thing `switchRoleAndGo` does; this pass converges then.
+      if (controller.switchingTo != null) return null;
+
       if (session.activeRole != target) {
         // Deep link into a granted role that is not the active one. Recorded
         // *after* this redirect returns, because mutating provider state inside
         // a redirect re-enters the router mid-navigation. The write fires the
         // refreshListenable, the chain runs once more, and this time
         // activeRole == target, so it converges in one extra pass.
-        final controller = ref.read(sessionControllerProvider.notifier);
         unawaited(Future.microtask(() => controller.switchRole(target)));
       }
       return null;

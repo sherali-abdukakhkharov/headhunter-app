@@ -497,7 +497,27 @@ class _Attention extends ConsumerWidget {
   ];
 
   /// §6.2's "candidates to review": shortlisted or recently saved.
+  ///
+  /// **Asked for only once the server would answer it.** Every
+  /// `/candidate-search` route is behind `assertVerified` (§7, BR-03), so an
+  /// employer whose company is still under review gets 403 from this one — and
+  /// under review is a *valid* state an account sits in for days, not an error.
+  /// The row is optional and the failure was swallowed, so the dashboard looked
+  /// right while making one request per load that could not have succeeded
+  /// (MT-029).
+  ///
+  /// The gate is `canPublish`, which is BR-03's two conditions ANDed **on the
+  /// server** — the same computation `assertVerified` performs, read rather
+  /// than re-implemented. A client that ANDed `isComplete` and the verification
+  /// status itself would be a second copy of the rule, free to drift.
   List<Widget> _saved(BuildContext context, WidgetRef ref, AppL10n l10n) {
+    final canSearch = switch (ref.watch(employerEditorProvider)) {
+      AsyncData(value: EmployerEditorState(profile: final profile?)) =>
+        profile.canPublish,
+      _ => false,
+    };
+    if (!canSearch) return const [];
+
     final saved = ref.watch(savedCandidatesProvider);
 
     return switch (saved) {

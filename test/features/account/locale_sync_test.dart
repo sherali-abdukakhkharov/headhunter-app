@@ -158,4 +158,56 @@ void main() {
     // down over a preference.
     expect(c.read(activeLocaleProvider), before);
   });
+
+  group('MT-025: it outlives the awaits its own methods make', () {
+    /// The turn in which an auto-disposing provider nothing listens to is
+    /// collected.
+    ///
+    /// Every method here spans one: [LocaleSync.select] writes locally, waits
+    /// for that, and only then pushes; [LocaleSync.reconcile] is launched from
+    /// a session listener and dropped. Both used to run their second half on a
+    /// dead `Ref` — logging *"Cannot use the Ref of localeSyncProvider after it
+    /// has been disposed"* and changing nothing on screen, so the language
+    /// switched and never reached the account, and a clean sign-in opened in
+    /// the phone's language rather than the account's.
+    Future<void> collectionTurn() => Future<void>.delayed(Duration.zero);
+
+    test('a choice still reaches the account after that turn', () async {
+      final account = _FakeAccount();
+      final c = await _container(account: account);
+
+      final sync = c.read(localeSyncProvider);
+      await collectionTurn();
+
+      await sync.select(AppLocale.ru);
+
+      expect(c.read(activeLocaleProvider), AppLocale.ru);
+      // The half that went missing. The screen translated either way, which is
+      // why nobody saw it: what was lost was the *other* device.
+      expect(account.pushed, ['ru']);
+    });
+
+    test('sign-in still restores the account language after it', () async {
+      final account = _FakeAccount(stored: 'uz-Latn');
+      final c = await _container(account: account);
+
+      final sync = c.read(localeSyncProvider);
+      await collectionTurn();
+
+      await sync.reconcile();
+
+      expect(c.read(activeLocaleProvider), AppLocale.uzLatn);
+    });
+
+    test('the provider hands out the same instance across it', () async {
+      final c = await _container(account: _FakeAccount());
+
+      final first = c.read(localeSyncProvider);
+      await collectionTurn();
+
+      // The mechanism itself, stated once so a future `@riverpod` on this
+      // provider fails here rather than in the two behavioural cases above.
+      expect(identical(first, c.read(localeSyncProvider)), isTrue);
+    });
+  });
 }

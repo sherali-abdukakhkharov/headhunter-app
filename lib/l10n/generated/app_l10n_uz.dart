@@ -2462,7 +2462,7 @@ class AppL10nUz extends AppL10n {
   String get adminPricingEdit => 'Narxlarni o\'zgartirish';
 
   @override
-  String get adminPricingCoinPrice => 'Bitta tanga narxi';
+  String get adminPricingCoinPrice => 'Bitta Coin narxi';
 
   @override
   String get adminPricingUnlockCost => 'Nomzod kontaktini ochish';
@@ -2475,7 +2475,7 @@ class AppL10nUz extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
+      other: '$count Coin',
     );
     return '$_temp0';
   }
@@ -5817,7 +5817,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get adminPricingEdit => 'Нархларни ўзгартириш';
 
   @override
-  String get adminPricingCoinPrice => 'Битта танга нархи';
+  String get adminPricingCoinPrice => 'Битта Coin нархи';
 
   @override
   String get adminPricingUnlockCost => 'Номзод контактини очиш';
@@ -5830,7 +5830,7 @@ class AppL10nUzCyrl extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count танга',
+      other: '$count Coin',
     );
     return '$_temp0';
   }
@@ -9172,7 +9172,7 @@ class AppL10nUzLatn extends AppL10nUz {
   String get adminPricingEdit => 'Narxlarni o\'zgartirish';
 
   @override
-  String get adminPricingCoinPrice => 'Bitta tanga narxi';
+  String get adminPricingCoinPrice => 'Bitta Coin narxi';
 
   @override
   String get adminPricingUnlockCost => 'Nomzod kontaktini ochish';
@@ -9185,7 +9185,7 @@ class AppL10nUzLatn extends AppL10nUz {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tanga',
+      other: '$count Coin',
     );
     return '$_temp0';
   }

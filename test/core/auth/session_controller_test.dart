@@ -589,4 +589,115 @@ void main() {
       expect(repo.events, ['roles']);
     });
   });
+
+  group('MT-027: a role switch is one transition, not two racing ones', () {
+    /// A restored session holding two roles and acting as the first, which is
+    /// the account the switcher exists for.
+    Future<ProviderContainer> holdingBoth() async {
+      tokens.refreshToken = 'refresh-1';
+      repo = _FakeAuthRepository(
+        onRefresh: () => _session(
+          roles: const ['employer', 'admin'],
+          activeRole: 'employer',
+        ),
+      );
+
+      final container = containerWith();
+      final state = await settled(container);
+
+      expect((state as SessionActive).activeRole, AppRole.employer);
+
+      // The restore is not part of any claim below.
+      repo.events.clear();
+
+      return container;
+    }
+
+    test('the token names the new role before the state does', () async {
+      final container = await holdingBoth();
+
+      container.listen<SessionState>(sessionControllerProvider, (_, next) {
+        if (next is SessionActive && next.activeRole == AppRole.admin) {
+          repo.events.add('state');
+        }
+      });
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .switchRole(AppRole.admin);
+
+      // `state` last, for the same reason as MT-021 one group above:
+      // role-scoped endpoints read the role from the **token**, so a state
+      // published first opens a window in which the account acts as admin and
+      // the token still says employer. The audit caught it as *"This action
+      // requires admin."* on the dashboard of somebody who holds admin.
+      expect(repo.events, ['active-role:admin', 'state']);
+      expect(tokens.accessToken, 'access-naming-admin');
+    });
+
+    test('the state that lands is re-read, not the one taken before', () async {
+      final container = await holdingBoth();
+      final controller = container.read(sessionControllerProvider.notifier);
+
+      await controller.switchRole(AppRole.admin);
+
+      final state = container.read(sessionControllerProvider) as SessionActive;
+      expect(state.activeRole, AppRole.admin);
+      expect(state.roles, {AppRole.employer, AppRole.admin});
+    });
+
+    test('the window outlives the switch, and closes on demand', () async {
+      final container = await holdingBoth();
+      final controller = container.read(sessionControllerProvider.notifier);
+
+      expect(controller.switchingTo, isNull);
+      expect(controller.beginRoleSwitch(AppRole.admin), isTrue);
+
+      final pending = controller.switchRole(AppRole.admin);
+      expect(controller.switchingTo, AppRole.admin);
+
+      await pending;
+
+      // **Still open.** The destination has not been stated yet — that is the
+      // `context.go` `switchRoleAndGo` runs next — so the location still names
+      // employer and the deep-link rule would still read it. Closing the window
+      // here is exactly the gap MT-027 fell through.
+      expect(controller.switchingTo, AppRole.admin);
+
+      controller.endRoleSwitch();
+      expect(controller.switchingTo, isNull);
+    });
+
+    test('a second tap does not start a second switch', () async {
+      final container = await holdingBoth();
+      final controller = container.read(sessionControllerProvider.notifier);
+
+      expect(controller.beginRoleSwitch(AppRole.admin), isTrue);
+      expect(
+        controller.beginRoleSwitch(AppRole.admin),
+        isFalse,
+        reason: 'the first is already going where the second wanted to go',
+      );
+
+      controller.endRoleSwitch();
+      expect(controller.beginRoleSwitch(AppRole.candidate), isTrue);
+    });
+
+    test('a failed rotation still switches, and says so in the log', () async {
+      final container = await holdingBoth();
+      repo.activeRoleFailure = const ApiException('offline');
+
+      await container
+          .read(sessionControllerProvider.notifier)
+          .switchRole(AppRole.admin);
+
+      // The switch is what the user asked for and the failure costs the token,
+      // not the intent. Offline the round trip could not have succeeded anyway,
+      // and the first request that needs the rotated token answers 403 with a
+      // message that says which role it wanted.
+      final state = container.read(sessionControllerProvider) as SessionActive;
+      expect(state.activeRole, AppRole.admin);
+      expect(repo.events, ['active-role:admin']);
+    });
+  });
 }

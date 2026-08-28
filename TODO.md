@@ -8,44 +8,50 @@ decision or on the backend.
 
 ---
 
-## The 1.17.0 QA audit (2026-08-27)
+## The 1.29.0 QA audit (2026-08-28)
 
-A full regression audit of the **1.17.0** APK against the deployed DEV API,
+A full regression audit of the **1.29.0** APK against the deployed DEV API,
 delivered as [mobile-test-audit.md](mobile-test-audit.md). It replaces the
-1.11.0 audit of 2026-08-25.
+1.17.0 audit of 2026-08-27.
 
-**Seven findings open: 1 Critical, 2 High, 4 Medium.** Verdict **NO-GO for
-production**. Seven of the previous eleven are verified fixed — MT-009, MT-012,
-MT-013, MT-014, MT-016, MT-020 and MT-021 — and MT-015 is confirmed partially
-fixed. Three findings are new: MT-022, MT-023 and MT-024.
+**Seven findings: 0 Critical, 4 High, 3 Medium.** Verdict **NO-GO for
+production**. Six of the previous seven are verified fixed — MT-003, MT-015,
+MT-017, MT-022, MT-023 and MT-024 — and only MT-006 carries over. Six findings
+are new: MT-025 through MT-030.
 
 Findings are `MT-nnn` and each carries evidence, a root cause and acceptance
 criteria — read those before starting a fix rather than working from this table.
 
-**MT-016 closed without a change**, which is worth recording: it could not be
-reproduced from here and the geometry was pinned in a test instead. The audit
-found it fixed. Pinning the property and waiting was the right call.
-
-**One thing this audit settled that nothing here could.** The tested API image
-pre-dated 1.17's chat route, and rebuilding backend `80905b7` plus running the
-idempotent seed made attachment upload work. So **the APK, that commit and the
-`message_attachment` dictionary row are one deployment unit** — which is the
-first time a client release has had a server prerequisite, and it belongs in the
-release checklist rather than in somebody's memory.
+**Three of the six new findings are one mistake made three times.** MT-025 and
+MT-028 are the same Riverpod lifecycle error — an object read out of an
+auto-disposing provider, used across an await that nobody is holding it open
+through — and MT-027 is the same *shape* of bug in a different currency: an
+operation whose two halves are not one transaction. None of the three throws
+anything a user sees; all three log and carry on wrong. **A caught exception
+that changes what the app does is not a handled exception**, and the log line
+is the only evidence, which is why a device pass found all three and the suite
+found none.
 
 | ID | Sev | State |
 |---|---|---|
-| MT-003 | Critical | **Closed 2026-08-27, code and deployment.** `headhunter-backend@ad93231` refuses the boot in production with either review flag off; `@63b86c8` is the deploy. The running container reports `NODE_ENV=production` with both flags true, and a moderation smoke test runs on every commit. **What the deploy found is larger than the finding was:** the container had been on `NODE_ENV=development` the whole time while three documents said production, so no refusal was being applied and `OTP_STATIC_CODE=666666` was live on the public host for a week — a value published in `.env.example`, which is in git. Cleared. Rebuilding also picked up `80905b7`, so the deployed image finally carries §9.1's attachment route |
-| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. The audit repeats the product ask: make top-up availability a **server capability** rather than a promise the app makes and then withdraws after the tap |
-| MT-022 | High | **Fixed 1.18.0** — a fresh install on an existing multi-role account entered a shell whose token named no role. `effectiveRole` invented one when the router asked; the server had never been told. Now `_adopt` resolves it deterministically and **publishes it before the state moves**, and the router has a named backstop state rather than a comment asserting the case cannot happen |
-| MT-015 | Medium | **Fixed 1.20.0**, and this time by the pattern rather than by the instances. 1.11.5 fixed the three controls the report named; the audit came back with four more doing exactly the same thing — `HhCheckboxRow`, `HhRadioRow`, `HhSwitchRow` and `HhFilterChip` all wrapped a `Text` of their own label in a `Semantics(label:)`. Every shared component that carries a label is now in one test, so the next one to be added joins it. A `description` became a **hint**, announced after name and role instead of merging into the name |
-| MT-017 | Medium | **Fixed 1.22.0** and `headhunter-backend@036ea77`. `targetSummary` on the complaint DTO names what a report is about, resolved by the same `DISPLAY_NAME` expression the user list and the audit log use — a vacancy's title, a person's name, and for a message the **sender's** name rather than the body, which is the privacy decision: a queue is not the place to read twenty private messages, and the review screen shows the message after a deliberate open. A deleted target answers null and the card falls back to the first eight characters of the id. **No `targetRef` field**, deliberately: a short reference is `targetId` truncated, so it is formatting and belongs on the client rather than being a second field that can disagree with the first |
-| MT-023 | Medium | **Fixed 1.21.0** and `headhunter-backend@5725f00`. The cost of 1.17's own feature: a chat upload created a `stored_files` row immediately, "remove the attachment" only forgot it locally, and the row stayed live referencing nothing. BR-14 now carries `unsent_message_attachments` — **7 days from upload**, swept with the five existing transient subjects and previewed by `/admin/retention/due`. Three properties, each tested: a linked file is never a candidate (the `NOT EXISTS` is in the same statement as the write), the sweep never names a user, and it is idempotent. **No client UI changed** — "expires in seven days" needs none; what changed is the documentation, which had said the row simply lives on |
-| MT-024 | Medium | **Fixed 1.20.0. 1.19.0 claimed this and was wrong** — that fix silenced the two diagnostics in `test/analysis_options.yaml` and was verified on three runs that happened not to have loaded the plugin, which proved only that the *options file* no longer complained. The next run that did load it reported all 32 again. riverpod_lint is now **not enabled at all**: it ran on about one invocation in four, every finding it ever produced here was a false positive in `test/`, and a suppression for a plugin diagnostic cannot be verified because the plugin state cannot be forced. Six consecutive runs clean, none of them slow — the 55–95s runs *were* the plugin |
+| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. **The audit now offers a second acceptance route**: remove Top up from the release scope and mark Coin purchase pre-release, rather than shipping a control that explains it does not work. That is a product decision, not a code one, and it is [in the blocked list](#blocked-on-someone-else) |
+| MT-025 | High | **Fixed 1.30.0.** `localeSync` was auto-disposing and every method on it spans an await: `select` writes locally, waits, then pushes; `reconcile` is launched from a session listener and dropped. Both ran their second half on a dead `Ref`. So a language change translated the screen and stored nothing on the account, and a clean sign-in opened in the phone's language rather than the account's — both silent, with only *"Cannot use the Ref … after it has been disposed"* in the log. Kept alive, and three tests pin the window |
+| MT-026 | High | **Fixed 1.30.0.** The Messages tab returned its four states bare — no `Scaffold`, no `SafeArea`, no heading — while every other tab in all three shells is a `Scaffold` whose body is a `SafeArea`. The first conversation began at `y=0`, under the status bar. The wrapper now sits *outside* the state switch, which is what stops three of four arms being fixed and the fourth forgotten; the suite had been building the screen into a `Scaffold` of its own, which is what hid it |
+| MT-027 | High | **Fixed 1.30.0.** A role switch was two things that raced: the state changed, the router's refresh fired while the location still named the old shell, the deep-link rule read that location and scheduled a switch *back*, and the two `/auth/active-role` calls rotated the access token in an order nobody controlled. Admin opened on the employer's token and answered 403 until Retry. The token now rotates **before** the role is published, and `switchRoleAndGo` brackets the transition so the deep-link rule leaves it alone until the destination is stated |
+| MT-028 | Medium | **Fixed 1.30.0.** Same lifecycle error as MT-025, in the sign-in dictionary prefetch: nothing listens to a prefetch, so it was collected at its first `await` and the remaining sixteen types threw on a dead `Ref` — caught per type, logged seventeen times, and invisible otherwise. It holds itself open with `Ref.keepAlive` now and closes the link when it finishes, so the seventeen providers are collectable again the moment the cache is warm |
+| MT-029 | Medium | **Fixed 1.30.0.** Employer Home watched `savedCandidatesProvider` regardless of verification, and every `/candidate-search` route sits behind `assertVerified` — so an employer awaiting a decision made one guaranteed 403 per dashboard load, for an optional row whose failure was swallowed. Gated on `canPublish`, which is BR-03's two conditions ANDed **on the server**: the same computation the guard performs, read rather than re-implemented |
+| MT-030 | Medium | **Fixed `headhunter-backend`.** Three unused imports left by the pricing work — `AUDIT_ACTIONS`, `ConfigService`, `AppEnv`. The backend has no CI, so `pnpm lint:check` is a gate only when somebody runs it |
 
-Verified fixed by 1.17.0 and to be kept pinned: MT-001, MT-002, MT-004, MT-005,
-MT-007, MT-008, MT-009, MT-010, MT-011, MT-012, MT-013, MT-014, MT-016, MT-018,
-MT-019, MT-020, MT-021.
+Two things the audit reported that were **fixed in the same pass without being
+findings**: the admin pricing screen translated `Coin` as *tanga* / *танга* /
+*монета* while the wallet keeps it untranslated in all four variants (the ARB
+parity suite now refuses any term the English leaves in English, and it found a
+fourth instance the audit had not), and §2.1's detail hero spent 2.6 : 1 of the
+first screen on flat tint — the hero crop now applies only when there is a
+photograph to put in it.
+
+Verified fixed and to be kept pinned: MT-001 through MT-005, MT-007 through
+MT-024.
 
 ## Blocked on someone else
 
@@ -117,6 +123,18 @@ MT-019, MT-020, MT-021.
       environments (§12.6). Nothing in M13 can be finished without them, and
       UAT-22 — the duplicated callback — has to be demonstrated rather than
       argued. *Blocks M13.*
+- [?] **Does 1.x ship with Top up at all?** (MT-006, 2026-08-28). The audit
+      accepts either answer and the choice is the owner's, because it changes
+      what the release promises rather than how it is built:
+      **(a)** deliver §6.7 — which needs the credentials above, so it is not
+      available today; or **(b)** take Top up out of the release scope and mark
+      Coin purchase pre-release, so an employer with two Coins left is not sent
+      down a path that ends in an explanation.
+      Today the control is live and answers *"Top-up is not available yet."*
+      after the tap, which is the one option nobody chose. Whichever way this
+      goes, the availability belongs in the **wallet response** rather than in a
+      constant — a price change must not be a store release (§6.6, §12.3.1) and
+      neither should the arrival of a payment provider.
 - [?] **Storefront billing decision** (§12.7, BR-23) — whether Coin purchases
       ship through Payme/CLICK or must go through Apple IAP / Google Play
       Billing. The ledger stays provider-agnostic either way, which is what

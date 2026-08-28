@@ -631,6 +631,22 @@ final class ResolvedLabelsFamily extends $Family
 ///
 /// Failures are deliberately not propagated — this is a prefetch, and each
 /// picker still resolves its own type on demand.
+///
+/// ## It holds itself open, and that is the whole of it working
+///
+/// **Nothing listens to a prefetch.** The caller starts it and drops the
+/// future, so an auto-disposing provider is collected at the first `await`
+/// and every `ref.watch` after that throws on a dead `Ref` — caught by the
+/// loop below, logged once per type, and otherwise invisible. That is what
+/// shipped: seventeen disposal lines at every clean sign-in and not one
+/// dictionary warmed, so the first form still paid for six cold round trips
+/// (MT-028).
+///
+/// [Ref.keepAlive] holds it open for the duration and the link is closed at
+/// the end, so the provider and the seventeen it watched are collectable
+/// again the moment the warm-up finishes. **The cache is the product here,**
+/// not the provider: `dictionary` writes what it fetches to disk, so the
+/// value survives the collection that follows.
 
 @ProviderFor(warmDictionaries)
 final warmDictionariesProvider = WarmDictionariesFamily._();
@@ -644,6 +660,22 @@ final warmDictionariesProvider = WarmDictionariesFamily._();
 ///
 /// Failures are deliberately not propagated — this is a prefetch, and each
 /// picker still resolves its own type on demand.
+///
+/// ## It holds itself open, and that is the whole of it working
+///
+/// **Nothing listens to a prefetch.** The caller starts it and drops the
+/// future, so an auto-disposing provider is collected at the first `await`
+/// and every `ref.watch` after that throws on a dead `Ref` — caught by the
+/// loop below, logged once per type, and otherwise invisible. That is what
+/// shipped: seventeen disposal lines at every clean sign-in and not one
+/// dictionary warmed, so the first form still paid for six cold round trips
+/// (MT-028).
+///
+/// [Ref.keepAlive] holds it open for the duration and the link is closed at
+/// the end, so the provider and the seventeen it watched are collectable
+/// again the moment the warm-up finishes. **The cache is the product here,**
+/// not the provider: `dictionary` writes what it fetches to disk, so the
+/// value survives the collection that follows.
 
 final class WarmDictionariesProvider
     extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
@@ -657,6 +689,22 @@ final class WarmDictionariesProvider
   ///
   /// Failures are deliberately not propagated — this is a prefetch, and each
   /// picker still resolves its own type on demand.
+  ///
+  /// ## It holds itself open, and that is the whole of it working
+  ///
+  /// **Nothing listens to a prefetch.** The caller starts it and drops the
+  /// future, so an auto-disposing provider is collected at the first `await`
+  /// and every `ref.watch` after that throws on a dead `Ref` — caught by the
+  /// loop below, logged once per type, and otherwise invisible. That is what
+  /// shipped: seventeen disposal lines at every clean sign-in and not one
+  /// dictionary warmed, so the first form still paid for six cold round trips
+  /// (MT-028).
+  ///
+  /// [Ref.keepAlive] holds it open for the duration and the link is closed at
+  /// the end, so the provider and the seventeen it watched are collectable
+  /// again the moment the warm-up finishes. **The cache is the product here,**
+  /// not the provider: `dictionary` writes what it fetches to disk, so the
+  /// value survives the collection that follows.
   WarmDictionariesProvider._({
     required WarmDictionariesFamily super.from,
     required List<String> super.argument,
@@ -700,7 +748,7 @@ final class WarmDictionariesProvider
   }
 }
 
-String _$warmDictionariesHash() => r'82f121e5828db9ea471fe8a77046a316450632f5';
+String _$warmDictionariesHash() => r'9db53247c21020ae42ba9ce52bb39e2b80f4f650';
 
 /// Warms every dictionary this app version knows about.
 ///
@@ -711,6 +759,22 @@ String _$warmDictionariesHash() => r'82f121e5828db9ea471fe8a77046a316450632f5';
 ///
 /// Failures are deliberately not propagated — this is a prefetch, and each
 /// picker still resolves its own type on demand.
+///
+/// ## It holds itself open, and that is the whole of it working
+///
+/// **Nothing listens to a prefetch.** The caller starts it and drops the
+/// future, so an auto-disposing provider is collected at the first `await`
+/// and every `ref.watch` after that throws on a dead `Ref` — caught by the
+/// loop below, logged once per type, and otherwise invisible. That is what
+/// shipped: seventeen disposal lines at every clean sign-in and not one
+/// dictionary warmed, so the first form still paid for six cold round trips
+/// (MT-028).
+///
+/// [Ref.keepAlive] holds it open for the duration and the link is closed at
+/// the end, so the provider and the seventeen it watched are collectable
+/// again the moment the warm-up finishes. **The cache is the product here,**
+/// not the provider: `dictionary` writes what it fetches to disk, so the
+/// value survives the collection that follows.
 
 final class WarmDictionariesFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<void>, List<String>> {
@@ -732,6 +796,22 @@ final class WarmDictionariesFamily extends $Family
   ///
   /// Failures are deliberately not propagated — this is a prefetch, and each
   /// picker still resolves its own type on demand.
+  ///
+  /// ## It holds itself open, and that is the whole of it working
+  ///
+  /// **Nothing listens to a prefetch.** The caller starts it and drops the
+  /// future, so an auto-disposing provider is collected at the first `await`
+  /// and every `ref.watch` after that throws on a dead `Ref` — caught by the
+  /// loop below, logged once per type, and otherwise invisible. That is what
+  /// shipped: seventeen disposal lines at every clean sign-in and not one
+  /// dictionary warmed, so the first form still paid for six cold round trips
+  /// (MT-028).
+  ///
+  /// [Ref.keepAlive] holds it open for the duration and the link is closed at
+  /// the end, so the provider and the seventeen it watched are collectable
+  /// again the moment the warm-up finishes. **The cache is the product here,**
+  /// not the provider: `dictionary` writes what it fetches to disk, so the
+  /// value survives the collection that follows.
 
   WarmDictionariesProvider call(List<String> types) =>
       WarmDictionariesProvider._(argument: types, from: this);

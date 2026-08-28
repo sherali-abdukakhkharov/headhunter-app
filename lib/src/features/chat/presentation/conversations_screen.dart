@@ -20,6 +20,19 @@ import 'package:jobbridge_app/src/shared/format/wall_clock.dart';
 /// screen to hold an opinion about which side it is on, which is the one thing
 /// §9.1's gate already answers better than the client can.
 ///
+/// ## It is a screen, not a body
+///
+/// **This returned its states bare** — no `Scaffold`, no `SafeArea`, no
+/// heading — while every other tab in all three shells is a `Scaffold` whose
+/// body is a `SafeArea`. So the first conversation started at `y=0`, under
+/// the status bar, with the counterpart’s name colliding with the clock and
+/// nothing naming the screen (MT-026). The inset is not decoration: content
+/// under the system bar is content that cannot be read or reliably tapped.
+///
+/// The wrapper is outside the state switch on purpose. Putting it inside
+/// would fix the populated arm and leave the empty, error and loading ones —
+/// which is how three of the four came to be wrong at once.
+///
 /// ## The thread is a child of whichever tab rendered this
 ///
 /// [basePath] comes from the route that built the screen, so `context.go` walks
@@ -39,6 +52,37 @@ class ConversationsScreen extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final threads = ref.watch(conversationsProvider);
 
+    return Scaffold(
+      body: SafeArea(
+        // Stretch, so the heading is left-aligned like every other screen's:
+        // a Column centres its children by default, and a centred title here
+        // would be the only one in the app.
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                HhSpace.gutter,
+                HhSpace.gutter,
+                HhSpace.gutter,
+                HhSpace.md,
+              ),
+              child: Text(l10n.navMessages, style: HhTypography.title),
+            ),
+            Expanded(child: _body(ref, l10n, threads)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The four states, with no chrome of their own: the heading and the inset
+  /// are applied once, above, so none of them can be the one that forgets.
+  Widget _body(
+    WidgetRef ref,
+    AppL10n l10n,
+    AsyncValue<List<Conversation>> threads,
+  ) {
     return switch (threads) {
       // Error first, before any loading arm: retry is disabled app-wide, so a
       // failure is terminal and a spinner over it would never end.
@@ -62,7 +106,12 @@ class ConversationsScreen extends ConsumerWidget {
       AsyncData(:final value) => RefreshIndicator(
         onRefresh: () async => ref.invalidate(conversationsProvider),
         child: ListView.builder(
-          padding: const EdgeInsets.all(HhSpace.gutter),
+          padding: const EdgeInsets.fromLTRB(
+            HhSpace.gutter,
+            0,
+            HhSpace.gutter,
+            HhSpace.gutter,
+          ),
           itemCount: value.length,
           itemBuilder: (context, index) => Padding(
             padding: const EdgeInsets.only(bottom: HhSpace.sm),

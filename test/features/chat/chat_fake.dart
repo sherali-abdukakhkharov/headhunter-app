@@ -19,6 +19,9 @@ class FakeChat implements ChatRepository {
 
   List<Conversation> threads;
 
+  /// Set to make the list fail, for the screen's error arm.
+  Exception? listError;
+
   /// The first page the thread returns. Named `page` rather than `messages` so
   /// it cannot be confused with the route of the same name.
   List<ChatMessage> page;
@@ -69,7 +72,12 @@ class FakeChat implements ChatRepository {
   }
 
   @override
-  Future<List<Conversation>> list() async => threads;
+  Future<List<Conversation>> list() async {
+    final error = listError;
+    if (error != null) throw error;
+
+    return threads;
+  }
 
   @override
   Future<Conversation> byId(String id) async =>

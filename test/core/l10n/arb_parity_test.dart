@@ -106,4 +106,42 @@ void main() {
       expect(readArb(entry.key)['@@locale'], entry.value, reason: entry.key);
     }
   });
+
+  /// §2.4 forbids translating user-entered content, and a product's own name is
+  /// the same rule one step up: **`Coin` is what the thing is called**, in
+  /// every interface variant, the way `so'm` is not rendered as "sum".
+  ///
+  /// The wallet has always kept it — "10 Coin" in Russian and both Uzbek
+  /// scripts — and the admin pricing screen did not, so an administrator
+  /// setting the price of a Coin read *tanga* on one screen and *Coin* on the
+  /// next. Keyed off the English rather than a blocklist of translations, so a
+  /// fifth spelling nobody thought of fails here too.
+  test('a term the English keeps in English stays in every variant', () {
+    const terms = ['Coin', 'JobBridge'];
+
+    final template = readArb('app_en.arb');
+
+    for (final file in files.where((f) => f != 'app_en.arb')) {
+      final arb = readArb(file);
+
+      for (final key in messageKeys(template)) {
+        final english = template[key];
+        if (english is! String) continue;
+
+        for (final term in terms) {
+          if (!english.contains(term)) continue;
+
+          expect(
+            arb[key],
+            contains(term),
+            reason:
+                '$file:$key drops "$term". It is the product\'s own word and '
+                'the rest of the app leaves it untranslated, so translating it '
+                'here makes two screens disagree about what the thing is '
+                'called.',
+          );
+        }
+      }
+    }
+  });
 }

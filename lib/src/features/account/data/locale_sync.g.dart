@@ -21,7 +21,7 @@ final class LocaleSyncProvider
         argument: null,
         retry: null,
         name: r'localeSyncProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,4 +48,4 @@ final class LocaleSyncProvider
   }
 }
 
-String _$localeSyncHash() => r'e8132ca5747faa0bd51ca5a882778dcebc6587db';
+String _$localeSyncHash() => r'0ae85ba82750ed5bc84094b345e9b27508b862c0';

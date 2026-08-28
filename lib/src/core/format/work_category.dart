@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 
@@ -39,3 +40,18 @@ String workCategoryLabel(HhWorkCategory category, AppL10n l10n) =>
       HhWorkCategory.seasonal => l10n.workCategorySeasonal,
       HhWorkCategory.temporary => l10n.workCategoryTemporary,
     };
+
+/// The photograph for a category, or null while there is none.
+///
+/// §2.1 gives each of the five its own band and the design refuses a generic
+/// one, so the absent case falls back to the category's tint, glyph and name —
+/// the state the design intended, not a placeholder.
+///
+/// The masters are one 3:2 file each (1620×1080) with the subject inside the
+/// middle 60% vertically, so the same file survives both crops: the card's
+/// 4.15:1 and the detail's 2.6:1.
+///
+/// **This is the only place that changes when they arrive.** Both screens ask
+/// here, and the detail's crop height follows the answer — so wiring the assets
+/// in restores the hero crop without anybody having to remember that it should.
+Widget? categoryPhotograph(HhWorkCategory category) => null;

@@ -2448,7 +2448,7 @@ class AppL10nRu extends AppL10n {
   String get adminAdjustAction => 'Скорректировать баланс';
 
   @override
-  String get adminAdjustAmount => 'Коины (минус — списание)';
+  String get adminAdjustAmount => 'Coin (минус — списание)';
 
   @override
   String get adminAdjustAmountHint => '5 или -3';
@@ -2493,7 +2493,7 @@ class AppL10nRu extends AppL10n {
   String get adminPricingEdit => 'Изменить цены';
 
   @override
-  String get adminPricingCoinPrice => 'Цена одной монеты';
+  String get adminPricingCoinPrice => 'Цена одного Coin';
 
   @override
   String get adminPricingUnlockCost => 'Открытие контактов';
@@ -2506,10 +2506,10 @@ class AppL10nRu extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count монеты',
-      many: '$count монет',
-      few: '$count монеты',
-      one: '$count монета',
+      other: '$count Coin',
+      many: '$count Coin',
+      few: '$count Coin',
+      one: '$count Coin',
     );
     return '$_temp0';
   }

@@ -65,6 +65,22 @@ class SessionController extends _$SessionController {
   /// with a Riverpod error, which is a bad afternoon to debug.
   var _disposed = false;
 
+  /// The destination of an explicit role switch that has not landed yet, or
+  /// null when none is running.
+  ///
+  /// **A role switch is the one moment when the location and the active role
+  /// are allowed to disagree**, and the disagreement lasts from the tap until
+  /// `context.go` states the destination. The router's deep-link rule reads the
+  /// location; for that window it would read the *old* role's path and start a
+  /// second switch straight back. See [beginRoleSwitch].
+  AppRole? _switchingTo;
+
+  /// The destination of a role switch in flight, for the redirect chain.
+  ///
+  /// Deliberately not part of [SessionState]: nothing renders it, and a field
+  /// on a sealed state is a field every consumer has to learn to ignore.
+  AppRole? get switchingTo => _switchingTo;
+
   @override
   SessionState build() {
     ref.onDispose(() => _disposed = true);
@@ -256,6 +272,24 @@ class SessionController extends _$SessionController {
     unawaited(ref.read(pushRegistrationProvider.notifier).register());
   }
 
+  /// Opens the window in which the location may disagree with the active role,
+  /// and answers whether this caller owns the transition.
+  ///
+  /// Called by `switchRoleAndGo` alone, and paired with [endRoleSwitch] in a
+  /// `finally`. Returns false when a switch is already running - a second tap
+  /// on the switcher - so the caller can drop out rather than start a second
+  /// one.
+  bool beginRoleSwitch(AppRole role) {
+    if (_switchingTo != null) return false;
+
+    _switchingTo = role;
+
+    return true;
+  }
+
+  /// Closes that window. Safe to call when none is open.
+  void endRoleSwitch() => _switchingTo = null;
+
   /// Switches the active role (§2.3).
   ///
   /// **State only - this does not navigate, and calling it alone is a bug.**
@@ -270,17 +304,39 @@ class SessionController extends _$SessionController {
   /// A role the account does not hold is ignored rather than asserted: the
   /// caller may be a deep link, and a link to a revoked role is a thing that
   /// happens in normal use, not a programming error.
+  ///
+  /// ## The token rotates before the role is published, and that ordering is
+  /// MT-027's fix
+  ///
+  /// Role-scoped endpoints read the role from the **token**, so a state that
+  /// names a role the token does not is a state in which every request 403s.
+  /// This used to publish the state first and rotate three awaits later, and
+  /// the two effects compounded: the state change fired the router's refresh
+  /// while the location was still the old shell's, the deep-link rule read that
+  /// location and scheduled a switch *back*, and the two `/auth/active-role`
+  /// calls raced. The switcher then opened Admin with the employer's token and
+  /// said *"This action requires admin."* until Retry.
+  ///
+  /// Nobody waits longer for it. `switchRoleAndGo` already awaited this whole
+  /// method before navigating, so the round trip was always on the path - it
+  /// simply used to happen after the shell had moved.
   Future<void> switchRole(AppRole role) async {
     final current = state;
     if (current is! SessionActive || !current.can(role)) return;
     if (current.activeRole == role) return;
 
-    _set(current.copyWith(activeRole: role));
+    await _publishActiveRole(role);
 
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setString(_activeRoleKey, role.wire);
 
-    await _publishActiveRole(role);
+    // Re-read rather than reuse `current`: two awaits have passed, and a
+    // session that expired or lost the grant in between must not be resurrected
+    // by a copy taken before either happened.
+    final latest = state;
+    if (latest is! SessionActive || !latest.can(role)) return;
+
+    _set(latest.copyWith(activeRole: role));
   }
 
   /// Tells the server which role is being acted as, and stores the access token
@@ -295,11 +351,11 @@ class SessionController extends _$SessionController {
   /// Returns the failure rather than throwing, because its two callers want
   /// opposite things from one.
   ///
-  /// **A switch ignores it**, deliberately: the local switch has already
-  /// happened and the shell has already moved, so a failure leaves the token
-  /// naming the previous role and the next call that needs it gets a 403 whose
-  /// message says so. Blocking a tab change on a network round trip would make
-  /// changing tabs fail offline.
+  /// **A switch ignores it**, deliberately: the switch is what the user asked
+  /// for and a failure here costs the token, not the intent. The role still
+  /// changes, the shell still moves, and the first request that needs the
+  /// rotated token gets a 403 whose message says so - which is the honest
+  /// outcome offline, where the round trip could not have succeeded anyway.
   ///
   /// **Adopting a session cannot ignore it** (MT-022). There is no previous
   /// role to fall back to there, so entering a shell would enter one whose
