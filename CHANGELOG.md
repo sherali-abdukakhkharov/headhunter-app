@@ -17,6 +17,34 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.28.0+38 — 2026-08-28
+
+### Fixed
+
+- **A failed request on a bad connection now says so.** Every screen showed
+  "Something went wrong", which blames the app for something the app did not
+  do — and points away from the one thing you can actually fix. The sign-in
+  screen is where this mattered most.
+
+### Changed
+
+- **Lists open showing the shape of what is coming** instead of a spinner in
+  the middle of the screen. Content no longer jumps into place when it
+  arrives.
+
+### Internal
+
+- **Uncaught errors are recorded instead of vanishing.** A crash in a release
+  build used to leave nothing behind but "it broke"; there is now one
+  structured line per failure. Sending them anywhere is a separate decision —
+  the seam is there and empty.
+- **The log redactor learned a third spelling.** Structured logging writes
+  `phone=+998…` with an equals sign, and every rule matched on a colon, so
+  the first such line printed a phone number in full. Caught by a test.
+- The small-screen and large-font pass is a test now, at 320×568 and text
+  scale 2.0, in Russian as well as English. It found three overflows in the
+  design gallery; the components themselves passed.
+
 ## 1.27.0+37 — 2026-08-28
 
 ### Added
