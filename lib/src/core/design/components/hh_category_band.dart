@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:jobbridge_app/src/core/design/hh_category_art.dart';
 import 'package:jobbridge_app/src/core/design/hh_colors.dart';
 import 'package:jobbridge_app/src/core/design/hh_icons.dart';
 import 'package:jobbridge_app/src/core/design/hh_typography.dart';
@@ -24,15 +25,23 @@ enum HhWorkCategory {
 
 /// The category band at the top of a vacancy card or detail hero.
 ///
-/// **The band always renders.** When there is no photograph it keeps its full
-/// height and fills with the category tint plus the category glyph and name.
-/// Omitting it is the one behaviour the design calls out as breaking list
-/// rhythm: card geometry must not change between the two cases, so a list with
-/// mixed image coverage still scans as one rhythm.
+/// **The band always renders**, and since 2026-08-29 it always has a picture:
+/// [HhCategoryArt] draws one scene per category, and [image] overrides it if a
+/// photograph is ever supplied. Omitting the band is the one behaviour the
+/// design calls out as breaking list rhythm — card geometry must not change
+/// between the two cases, so a list with mixed coverage still scans as one
+/// rhythm.
 ///
-/// Photography is supplied as one 3:2 master per category (1620×1080) with the
-/// subject inside the middle 60% vertically, so the same file survives both the
-/// card crop (4.15:1) and the detail hero crop (2.6:1).
+/// **The name is drawn over the picture**, bottom left, on a scrim. It used to
+/// appear only in the tinted fallback, which meant it would have vanished the
+/// moment artwork arrived — and the category is the one thing on a vacancy card
+/// that nothing else says. The scrim is there so the label survives a
+/// photograph as well as it survives a drawing.
+///
+/// Photography, if it ever comes, is one 3:2 master per category (1620×1080).
+/// **The brief's "subject inside the middle 60%" is right for the hero crop
+/// (2.6:1) and wrong for the card (4.15:1)**, which from a 3:2 master keeps
+/// only 36% — that has to be fixed in the brief before anything is shot.
 class HhCategoryBand extends StatelessWidget {
   const HhCategoryBand({
     required this.category,
@@ -59,48 +68,54 @@ class HhCategoryBand extends StatelessWidget {
 
   final double height;
 
+  /// The label's inset from the band's own edges, not the artwork's: the two
+  /// crops show different parts of the drawing, and a label positioned inside
+  /// the SVG would move with the crop.
+  static const _labelInset = 10.0;
+
   @override
   Widget build(BuildContext context) => SizedBox(
     height: height,
     width: double.infinity,
-    child: image ?? _Fallback(category: category, label: categoryLabel),
-  );
-}
-
-class _Fallback extends StatelessWidget {
-  const _Fallback({required this.category, required this.label});
-
-  final HhWorkCategory category;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => ColoredBox(
-    color: HhColors.brand50,
-    child: Center(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          HhIcon(
-            category.iconPath,
-            size: 20,
-            color: HhColors.brand400,
-            strokeWidth: 1.9,
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              label,
-              style: HhTypography.caption.copyWith(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: HhColors.brand400,
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        image ?? HhCategoryArtwork(HhCategoryArt.of(category)),
+        Positioned(
+          left: _labelInset,
+          right: _labelInset,
+          bottom: 8,
+          // The pill hugs its text; the `right` above only stops a long name
+          // running off the band.
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                // Not fully opaque: the label belongs to the picture rather
+                // than sitting on top of it as a separate object.
+                color: Color(0xE6FFFFFF),
+                borderRadius: BorderRadius.all(Radius.circular(6)),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
+                child: Text(
+                  categoryLabel,
+                  style: HhTypography.caption.copyWith(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: HhColors.brand900,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }

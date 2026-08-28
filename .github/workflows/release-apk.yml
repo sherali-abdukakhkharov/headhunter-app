@@ -221,6 +221,34 @@ jobs:
             --dart-define=FLAVOR=production \
             ${API_URL:+--dart-define=API_BASE_URL=$API_URL}
 
+      # A second APK, for the Telegram channel and nothing else.
+      #
+      # **A bot may send at most 50 MB.** The universal APK is about 65 — three
+      # ABIs of the Flutter engine plus Firebase — so the file the release
+      # publishes cannot go down that pipe at all. This one carries arm64 only,
+      # which is every Android phone sold since roughly 2017, and lands around
+      # 40.
+      #
+      # `--target-platform`, **not** `--split-per-abi`: the split flag makes
+      # Flutter's Gradle plugin rewrite versionCode as `abi * 1000 + code`, so
+      # the arm64 file would report 4042 where the release reports 42 — and a
+      # tester who took one could then not install the other, because Android
+      # refuses a downgrade. One target platform is one output and no rewrite,
+      # so both APKs report the same version and a tester can move between them.
+      - name: Build the arm64 APK for Telegram
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          API_URL: ${{ steps.api.outputs.url }}
+        run: |
+          flutter build apk --release \
+            --flavor production \
+            --target-platform android-arm64 \
+            --dart-define=FLAVOR=production \
+            ${API_URL:+--dart-define=API_BASE_URL=$API_URL}
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-production-release.apk \
+            dist/telegram.apk
+
       # **Two names, and they are not an alias for each other.**
       #
       # `jobbridge-<version>.apk` is what a person downloads. A phone's Downloads
@@ -286,4 +314,86 @@ jobs:
             Android only. Enable "install from unknown sources" if your phone asks.
 
             `SHA-256: ${{ steps.artifact.outputs.sha256 }}`
+
+      # Delivers the build the way a phone delivers one: the file itself, with
+      # what changed written under it, in the language the person reading it
+      # speaks.
+      #
+      # **Never fails the release.** A missing secret, an oversized file, a
+      # Telegram outage — none of them are a reason to mark a build red that
+      # has already published a working APK. Every branch here ends in a
+      # notice, and `continue-on-error` covers whatever is left.
+      - name: Send the build to Telegram
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ -z "$BOT_TOKEN" ] || [ -z "$CHAT_ID" ]; then
+            echo "::notice::TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not set; skipping the Telegram delivery. See docs/RELEASE.md."
+            exit 0
+          fi
+
+          version=${TAG#v}
+          url="https://github.com/$REPO/releases/tag/$TAG"
+
+          # The section for this version out of the Uzbek notes. Bounded by the
+          # next '## ' heading, so a file that grows does not send its history.
+          notes=""
+          if [ -f RELEASE_NOTES.uz.md ]; then
+            notes=$(awk -v v="## $version" '
+              $0 == v { inside = 1; next }
+              inside && /^## / { exit }
+              inside { print }
+            ' RELEASE_NOTES.uz.md \
+              | sed -e '/^[[:space:]]*$/d' -e 's/\*\*//g')
+          fi
+
+          if [ -z "$notes" ]; then
+            echo "::warning::RELEASE_NOTES.uz.md has no '## $version' section; sending the version alone."
+            notes="Yangi versiya."
+          fi
+
+          # Telegram caps a caption at 1024 characters and refuses the whole
+          # request over it rather than trimming, so the trim happens here.
+          # Built with printf rather than a multi-line literal: inside a YAML
+          # block every continuation line would carry its own indentation into
+          # the message.
+          caption=$(printf '%s\n\n%s' "JobBridge $version" "$notes")
+          if [ ${#caption} -gt 950 ]; then
+            caption=$(printf '%s…\n\n%s' "$(printf '%s' "$caption" | head -c 900)" "$url")
+          fi
+
+          api="https://api.telegram.org/bot$BOT_TOKEN"
+          apk=dist/telegram.apk
+          size=$(stat -c%s "$apk" 2>/dev/null || echo 0)
+          echo "arm64 APK: $size bytes"
+
+          # 50 MB, the Bot API's own document limit. Over it the upload is
+          # refused, so the notice goes out as a message with a link instead of
+          # silently not arriving.
+          if [ "$size" -gt 0 ] && [ "$size" -le 50000000 ]; then
+            curl -sS -X POST "$api/sendDocument" \
+              -F "chat_id=$CHAT_ID" \
+              -F "document=@$apk;filename=jobbridge-$version-arm64.apk" \
+              -F "caption=$caption" \
+              -o response.json -w '%{http_code}\n'
+          else
+            echo "::warning::The arm64 APK is $size bytes, over the Bot API's 50 MB limit; sending a link instead."
+            curl -sS -X POST "$api/sendMessage" \
+              -F "chat_id=$CHAT_ID" \
+              -F "text=$(printf '%s\n\n%s' "$caption" "$url")" \
+              -o response.json -w '%{http_code}\n'
+          fi
+
+          # The token is in the URL, so nothing from this step is echoed
+          # verbatim; `ok` is all that is needed to tell success from failure.
+          if grep -q '"ok":true' response.json; then
+            echo "Delivered to Telegram."
+          else
+            echo "::warning::Telegram refused the delivery: $(grep -o '\"description\":\"[^\"]*\"' response.json || echo 'no description')"
+          fi
 

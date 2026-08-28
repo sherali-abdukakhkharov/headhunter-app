@@ -200,6 +200,53 @@ try { & ./gradlew.bat signingReport } finally { Pop-Location }
 
 ---
 
+## Telegram delivery
+
+Every tagged release also arrives in a Telegram chat as a file, with what
+changed written under it in Uzbek — the way a phone delivers a store update.
+
+**Two repository secrets, and the release does not depend on them.** Without
+them the step writes a notice and the build stays green; nothing else changes.
+
+| Secret | What it is |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | From [@BotFather](https://t.me/BotFather): `/newbot`, then the token it prints. Treat it as a password — anyone holding it can post as the bot. |
+| `TELEGRAM_CHAT_ID` | The chat to post into. Add the bot to the group, send one message there, then open `https://api.telegram.org/bot<TOKEN>/getUpdates` and read `message.chat.id`. A group id is negative, e.g. `-1001234567890`. |
+
+Settings → Secrets and variables → Actions → New repository secret.
+
+### The file that is sent is not the file on the release page
+
+**A bot may send at most 50 MB and the release APK is about 65**, so the
+workflow builds a second one with `--target-platform android-arm64` — one ABI
+instead of three, about 40 MB, and every Android phone sold since roughly 2017.
+It is named `jobbridge-<version>-arm64.apk` rather than borrowing the release
+asset's name, because it is a different binary with a different SHA-256 and one
+filename must not stand for two.
+
+Both report the **same version and build number**. That is why the flag is
+`--target-platform` and not `--split-per-abi`: the split flag makes Flutter
+rewrite `versionCode` as `abi * 1000 + code`, and a tester who took the
+Telegram build could then not install the GitHub one, because Android refuses a
+downgrade.
+
+If the arm64 build ever crosses 50 MB the step sends a message with a link
+instead of the file, and says so in the log.
+
+### Where the Uzbek text comes from
+
+[RELEASE_NOTES.uz.md](../RELEASE_NOTES.uz.md), the `## <version>` section
+matching the tag. It is not a translation of `CHANGELOG.md`: that one is for
+whoever maintains the code, this one is for whoever installs the app.
+
+Keep a section to three bullets. Telegram caps a caption at 1024 characters and
+refuses the whole request rather than trimming, so the workflow trims at 900 and
+appends the release link — a section that needs trimming has already stopped
+being a release note.
+
+A tag with no section still releases; the caption is then the version alone, and
+the log carries a warning.
+
 ## Releasing by hand, when Actions cannot run
 
 A locked GitHub account, a billing block, or a spending limit disables Actions —

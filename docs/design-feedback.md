@@ -17,7 +17,24 @@ Everything below ships *today* with a documented fallback, so none of it blocks 
 release — it is the difference between a product that works and one that looks
 finished.
 
-### A. Five category photographs — the largest single gap
+### ~~A. Five category photographs~~ — **drawn in-house 2026-08-29**
+
+`HhCategoryArt` in the design system: five scenes as path data, no asset files,
+on the same `brand50` ground the tinted band used. The owner chose drawings
+over photographs on 2026-08-29, and the reason is not only the wait:
+
+**five photographs repeat across every card in a feed.** Twenty vacancies
+showing the same five pictures read as a template; the same five *patterns* read
+as category markers, which is what a band is for. A drawing can be a repeating
+motif and a photograph cannot.
+
+If photographs are ever commissioned the brief below stands — **with one number
+corrected.** It says the subject must sit inside the middle 60 % vertically.
+That is right for the detail hero (2.6 : 1) and wrong for the card (4.15 : 1),
+which from a 3 : 2 master keeps only **36 %**. Shot to the 60 % figure, every
+subject would lose its head on the feed.
+
+### A. Five category photographs — the original brief
 
 One 3:2 master per work category, **1620 × 1080**, JPEG or PNG.
 

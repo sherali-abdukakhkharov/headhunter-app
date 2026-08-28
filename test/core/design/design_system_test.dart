@@ -642,7 +642,7 @@ void main() {
       );
     });
 
-    testWidgets('the no-photograph fallback names the category', (
+    testWidgets('it draws a category scene when no photograph is given', (
       tester,
     ) async {
       await pump(
@@ -653,13 +653,83 @@ void main() {
         ),
       );
 
-      // Glyph plus word, exactly as with a status badge.
+      final art = tester.widget<HhCategoryArtwork>(
+        find.byType(HhCategoryArtwork),
+      );
+      expect(art.art, HhCategoryArt.seasonal);
+    });
+
+    testWidgets('and names the category over it', (tester) async {
+      await pump(
+        tester,
+        const HhCategoryBand(
+          category: HhWorkCategory.seasonal,
+          categoryLabel: 'Mavsumiy',
+        ),
+      );
+
+      // The name used to live in the tinted fallback, which meant it would
+      // have disappeared the moment artwork arrived — and the category is the
+      // one thing on a vacancy card that nothing else says.
       expect(find.text('Mavsumiy'), findsOneWidget);
-      expect(find.byType(HhIcon), findsOneWidget);
+    });
+
+    testWidgets('a photograph replaces the drawing, not the name', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        const HhCategoryBand(
+          category: HhWorkCategory.seasonal,
+          categoryLabel: 'Mavsumiy',
+          image: ColoredBox(color: Color(0xFF00FF00)),
+        ),
+      );
+
+      expect(find.byType(HhCategoryArtwork), findsNothing);
+      // The scrim behind the label is there so this survives a photograph as
+      // well as it survives a drawing.
+      expect(find.text('Mavsumiy'), findsOneWidget);
     });
 
     test('there is one category per specification work category', () {
       expect(HhWorkCategory.values.length, 5);
+    });
+
+    test('and one drawing per category', () {
+      // `HhCategoryArt.of` is an exhaustive switch, so this cannot drift — but
+      // a drawing that was left empty would still compile.
+      for (final category in HhWorkCategory.values) {
+        expect(
+          HhCategoryArt.of(category).shapes,
+          isNotEmpty,
+          reason: '$category',
+        );
+      }
+    });
+
+    test('every drawing keeps to the palette and the one accent', () {
+      const accent = '#12B0BE';
+
+      for (final art in HhCategoryArt.values) {
+        final fills = art.shapes.map((s) => s.$1).toList();
+
+        expect(
+          fills.where((f) => f == accent),
+          hasLength(1),
+          reason: 'exactly one turquoise element carries the meaning in $art',
+        );
+        expect(
+          fills.toSet().difference({
+            accent,
+            '#5C8DC9',
+            '#16569D',
+            '#0B2545',
+          }),
+          isEmpty,
+          reason: '$art uses a colour that is not a token',
+        );
+      }
     });
   });
 

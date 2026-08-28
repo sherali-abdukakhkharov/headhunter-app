@@ -402,20 +402,19 @@ void main() {
       expect(band.categoryLabel, 'Service and operations');
     });
 
-    testWidgets('keeps the compact crop while there is no photograph', (
+    testWidgets('takes the hero crop, because there is a picture in it', (
       tester,
     ) async {
       await pump(tester, subject: detail());
 
       final band = tester.widget<HhCategoryBand>(find.byType(HhCategoryBand));
 
-      // The hero crop is 2.6:1 and exists to hold a picture. Spent on flat
-      // tint it is a large pale block across the top of the first screen, for
-      // one word — which is what the 1.29.0 audit's designer note said. The
-      // rule that fixes the *card's* height across both cases is about list
-      // rhythm, and a detail page has one band and no rhythm to protect.
-      expect(band.image, isNull);
-      expect(band.height, HhCategoryBand.cardHeight);
+      // It was the card's compact height for one release: a hero of flat tint
+      // is a large pale block across the first screen, which is what the
+      // 1.29.0 audit's designer note said. The band carries a drawing now, so
+      // the crop the design asks for is the crop it gets.
+      expect(band.height, HhCategoryBand.heroHeight);
+      expect(find.byType(HhCategoryArtwork), findsOneWidget);
     });
 
     testWidgets('draws no band for a category this build does not know', (

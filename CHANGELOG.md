@@ -17,6 +17,44 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.33.0+43 — 2026-08-29
+
+### Added
+
+- **The five category bands are drawn.** Each kind of work in §2.1 now has
+  its own scene at the top of a vacancy card and across the head of the
+  vacancy page — a skyline, a row of awnings, a works and a crane, furrows
+  running to a sun, a week of shifts. They share one construction: a horizon
+  at the same height in all five, a motif repeating along it, and exactly
+  one turquoise element carrying the meaning.
+
+  **Drawn rather than photographed, and not only because the photographs
+  never came.** Five images repeat across every card in a feed: twenty
+  vacancies showing the same five photographs read as a template, where the
+  same five patterns read as category markers. There are no files — the
+  scenes are path data, like the icons — so the APK does not grow.
+
+  The category is **named over the picture** now. It used to appear only in
+  the tinted placeholder, which meant it would have vanished the moment any
+  artwork arrived, and the category is the one thing on a vacancy card that
+  nothing else says.
+
+- **Every tagged release is delivered to Telegram**, as a file with what
+  changed written under it in Uzbek — the way a phone delivers a store
+  update. Two repository secrets switch it on and the release does not
+  depend on them; see [docs/RELEASE.md](docs/RELEASE.md).
+
+  The file sent is an **arm64-only** build, because a bot may send at most
+  50 MB and the release APK is about 65. It reports the same version and
+  build number as the one on the release page, and carries `-arm64` in its
+  name because it is a different binary.
+
+### Changed
+
+- The vacancy page takes the full hero crop again. It was reduced to the
+  card height in 1.30.0 because a hero of flat tint is a large pale block
+  across the first screen; there is a picture in it now.
+
 ## 1.32.0+42 — 2026-08-28
 
 ### Changed

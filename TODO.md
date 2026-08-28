@@ -142,6 +142,14 @@ Findings are numbered; the designer feedback is not, so it is tracked here.
       What is left is the **mark itself**, which is placeholder-grade until the
       client supplies a logo; that is in the design-system list below and in
       `docs/design-feedback.md` ROUND 6.
+- [x] ~~**Five category photographs**~~ — **drawn in-house 2026-08-29**, on
+      the owner's decision. `HhCategoryArt`: five scenes as path data, no asset
+      files, one turquoise element each. Photography was not merely late — five
+      images repeating across a feed read as a template, where five patterns
+      read as category markers. The brief in
+      [docs/design-feedback.md](docs/design-feedback.md) §A stands if
+      photographs are ever wanted, with its "middle 60 %" corrected to 36 % for
+      the card crop.
 - [?] **Payme and CLICK merchant credentials** for the providers' *test*
       environments (§12.6). Nothing in M13 can be finished without them, and
       UAT-22 — the duplicated callback — has to be demonstrated rather than

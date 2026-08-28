@@ -130,32 +130,24 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
         // one element that carries over, so the screen reads as the card
         // opening rather than as a different page.
         //
-        // **The hero crop is for a photograph.** 2.6:1 of flat tint is a lot
-        // of the first screen to spend on one word, which is what the designer
-        // said of 1.29.0; with no picture the band keeps the card's compact
-        // height instead. There is no list rhythm to protect here — a detail
-        // page shows exactly one band — so the rule that fixes the *card's*
-        // geometry across both cases does not reach this call.
+        // The hero crop, 2.6:1 against the card's 4.15:1.
+        //
+        // It was the card's compact height for one release, because a hero of
+        // flat tint is a large pale block across the first screen — the
+        // designer's note on 1.29.0. The band carries a drawing now, so the
+        // crop the design asks for is the crop it gets.
         //
         // Rounded on its own rather than clipped by a card, because it is not
         // in one: this is the top of the page.
         if (category case final category?) ...[
-          Builder(
-            builder: (context) {
-              final photograph = categoryPhotograph(category);
-
-              return ClipRRect(
-                borderRadius: HhRadius.cardAll,
-                child: HhCategoryBand(
-                  category: category,
-                  categoryLabel: workCategoryLabel(category, l10n),
-                  image: photograph,
-                  height: photograph == null
-                      ? HhCategoryBand.cardHeight
-                      : HhCategoryBand.heroHeight,
-                ),
-              );
-            },
+          ClipRRect(
+            borderRadius: HhRadius.cardAll,
+            child: HhCategoryBand(
+              category: category,
+              categoryLabel: workCategoryLabel(category, l10n),
+              image: categoryPhotograph(category),
+              height: HhCategoryBand.heroHeight,
+            ),
           ),
           const SizedBox(height: HhSpace.md),
         ],
