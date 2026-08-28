@@ -46,7 +46,7 @@ class AdminPricingScreen extends ConsumerWidget {
         AsyncValue(hasError: true, :final error?) => Padding(
           padding: const EdgeInsets.all(HhSpace.gutter),
           child: HhErrorState(
-            title: l10n.stateErrorTitle,
+            title: failureTitle(error, l10n),
             message: error is ApiException
                 ? error.message
                 : l10n.stateErrorBody,

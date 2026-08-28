@@ -28,8 +28,38 @@ enum ApiFailureKind {
   server,
 
   /// Something else went wrong in the transport.
-  unknown,
+  unknown;
+
+  /// Whether this is the connection rather than the product.
+  ///
+  /// **Timeout counts.** From the server's side the two are different events;
+  /// from the reader's side they are one situation with one remedy — check the
+  /// connection and try again — and a heading that said "something went wrong"
+  /// for a timeout would be blaming the app for a train tunnel.
+  ///
+  /// A certificate failure is deliberately **not** here even though captive
+  /// portals cause most of them: "no connection" would be a lie on a network
+  /// that is plainly working, and the honest answer is the generic one.
+  bool get isConnection =>
+      this == ApiFailureKind.offline || this == ApiFailureKind.timeout;
 }
+
+/// The heading a failure should carry.
+///
+/// Every screen in this app rendered `stateErrorTitle` — "Something went
+/// wrong" — over every failure, including the ones where nothing had. That is a
+/// claim about the system, and for a reader on a bad connection it is both
+/// wrong and unhelpful: it points at the app instead of at the thing they can
+/// fix. §12.4 asks for the offline state to be explicit, and the cold start
+/// already is; this is the same treatment inside the shell.
+///
+/// The *message* needed nothing: `ApiException` already carries a localized
+/// sentence about the connection for these kinds, because the server was never
+/// reached and could not send one. Only the heading contradicted it.
+String failureTitle(Object? error, AppL10n l10n) =>
+    error is ApiException && error.kind.isConnection
+    ? l10n.stateOfflineTitle
+    : l10n.stateErrorTitle;
 
 /// A network or server failure, already translated into something the UI can
 /// show a user.

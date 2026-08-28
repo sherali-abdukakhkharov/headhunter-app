@@ -50,7 +50,7 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
 
   CandidateCount? _count;
   List<CandidateCard>? _results;
-  String? _error;
+  ApiException? _error;
   bool _busy = false;
   bool _hasMore = false;
 
@@ -208,8 +208,8 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
       return Padding(
         padding: const EdgeInsets.all(HhSpace.gutter),
         child: HhErrorState(
-          title: l10n.stateErrorTitle,
-          message: message,
+          title: failureTitle(message, l10n),
+          message: message.message,
           retryLabel: l10n.commonRetry,
           onRetry: () => _run(config),
         ),
@@ -310,7 +310,7 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
       setState(() {
         _count = null;
         _shown = null;
-        _error = e.message;
+        _error = e;
       });
     }
   }
@@ -339,7 +339,7 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
 
       await _refreshCount(config);
     } on ApiException catch (e) {
-      if (mounted) setState(() => _error = e.message);
+      if (mounted) setState(() => _error = e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

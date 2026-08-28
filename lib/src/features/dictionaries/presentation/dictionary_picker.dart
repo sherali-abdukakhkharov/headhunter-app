@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/dictionaries/data/dictionary_providers.dart';
 import 'package:jobbridge_app/src/features/dictionaries/domain/dictionary_item.dart';
 
@@ -428,9 +429,12 @@ class _PickerSheetState extends ConsumerState<_PickerSheet> {
                   // provider in AsyncLoading that merely *carries* an error, so
                   // matching loading first shows a spinner over a failure.
                   AsyncValue(hasError: true, :final error?) => HhErrorState(
-                    title: l10n.stateErrorTitle,
-                    message: error is Exception
-                        ? l10n.stateErrorBody
+                    title: failureTitle(error, l10n),
+                    // Both arms of this used to be `stateErrorBody`, so the
+                    // server's own sentence never reached the screen no matter
+                    // what it said.
+                    message: error is ApiException
+                        ? error.message
                         : l10n.stateErrorBody,
                     retryLabel: l10n.commonRetry,
                     onRetry: () => ref.invalidate(

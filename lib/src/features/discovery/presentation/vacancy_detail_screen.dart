@@ -91,7 +91,7 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
                     onAction: () => Navigator.of(context).pop(),
                   )
                 : HhErrorState(
-                    title: l10n.stateErrorTitle,
+                    title: failureTitle(error, l10n),
                     message: error is ApiException
                         ? error.message
                         : l10n.stateErrorBody,

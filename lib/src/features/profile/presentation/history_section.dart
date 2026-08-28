@@ -129,7 +129,7 @@ class HistoryList<T> extends StatelessWidget {
       // a failure is terminal, and matching loading first would spin forever
       // over it.
       AsyncValue(hasError: true, :final error?) => HhErrorState(
-        title: l10n.stateErrorTitle,
+        title: failureTitle(error, l10n),
         message: error is ApiException ? error.message : l10n.stateErrorBody,
         retryLabel: l10n.commonRetry,
         onRetry: onRetry,

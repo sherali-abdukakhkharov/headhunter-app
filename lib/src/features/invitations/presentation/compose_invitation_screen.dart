@@ -453,7 +453,7 @@ class _VacancyChoice extends ConsumerWidget {
 
     return switch (vacancies) {
       AsyncValue(hasError: true, :final error?) => HhErrorState(
-        title: l10n.stateErrorTitle,
+        title: failureTitle(error, l10n),
         message: error is ApiException ? error.message : l10n.stateErrorBody,
         retryLabel: l10n.commonRetry,
         onRetry: () => ref.invalidate(myVacanciesProvider),

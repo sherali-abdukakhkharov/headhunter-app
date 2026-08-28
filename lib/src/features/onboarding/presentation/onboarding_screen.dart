@@ -61,7 +61,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   /// "Something went wrong" heading blames the system for what the person is
   /// still in the middle of typing (MT-013). Incompleteness is [_phoneError],
   /// which renders on the field itself.
-  String? _error;
+  /// The failure itself, not its sentence.
+  ///
+  /// Holding only `e.message` threw away `kind`, and this is the screen where
+  /// that costs most: somebody signing in with no connection was told
+  /// "something went wrong", which points at the app instead of at the one
+  /// thing they can fix.
+  ApiException? _error;
 
   @override
   void initState() {
@@ -127,7 +133,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // `x-lang`. A 429 lands here and is expected traffic rather than a
       // failure - it is how §4.2's resend delay and the per-phone rate limit
       // are enforced, and the server's message says how long to wait.
-      if (mounted) setState(() => _error = e.message);
+      if (mounted) setState(() => _error = e);
     } finally {
       if (mounted) setState(() => _sending = false);
     }
@@ -184,8 +190,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
               if (_error case final message?) ...[
                 HhErrorState(
-                  title: l10n.stateErrorTitle,
-                  message: message,
+                  title: failureTitle(message, l10n),
+                  message: message.message,
                   retryLabel: l10n.commonRetry,
                   onRetry: canSend ? _sendCode : null,
                 ),

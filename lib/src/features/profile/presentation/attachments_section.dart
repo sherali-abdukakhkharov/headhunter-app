@@ -40,7 +40,7 @@ class AttachmentsSection extends ConsumerWidget {
           // hasError first: with retry disabled a failure is terminal, and
           // matching loading first spins over it forever.
           AsyncValue(hasError: true, :final error?) => HhErrorState(
-            title: l10n.stateErrorTitle,
+            title: failureTitle(error, l10n),
             message: error is ApiException
                 ? error.message
                 : l10n.stateErrorBody,

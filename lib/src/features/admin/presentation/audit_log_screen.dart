@@ -67,7 +67,7 @@ class AuditLogScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(HhSpace.gutter),
             children: [
               HhErrorState(
-                title: l10n.stateErrorTitle,
+                title: failureTitle(error, l10n),
                 message: error is ApiException
                     ? error.message
                     : l10n.stateErrorBody,

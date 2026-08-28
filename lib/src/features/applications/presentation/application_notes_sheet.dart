@@ -78,7 +78,7 @@ class _ApplicationNotesSheetState
               // Error before any loading arm: retry is off app-wide, so a
               // failure is terminal.
               AsyncValue(hasError: true, :final error?) => HhErrorState(
-                title: l10n.stateErrorTitle,
+                title: failureTitle(error, l10n),
                 message: error is ApiException
                     ? error.message
                     : l10n.stateErrorBody,
