@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/format/vacancy_pay.dart';
+import 'package:jobbridge_app/src/core/format/work_category.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
@@ -194,17 +195,11 @@ class _VacancyFeedCardState extends ConsumerState<VacancyFeedCard> {
     final l10n = AppL10n.of(context);
     final card = widget.card;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: HhSpace.sm),
-      child: HhCard(
-        // The whole card opens the vacancy (§5.6). The two buttons below sit
-        // inside it and swallow their own taps, so Apply and Save keep working
-        // without a stray navigation behind them.
-        onTap: () =>
-            showVacancyDetail(context, id: card.id, feed: widget.feed),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    final category = workCategoryFromWire(card.category);
+
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
             Text(
               card.title ?? l10n.vacancyUntitled,
               style: HhTypography.body.copyWith(fontWeight: FontWeight.w500),
@@ -285,9 +280,52 @@ class _VacancyFeedCardState extends ConsumerState<VacancyFeedCard> {
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+      ],
+    );
+
+    // The whole card opens the vacancy (§5.6). The two buttons inside it
+    // swallow their own taps, so Apply and Save keep working without a stray
+    // navigation behind them.
+    void open() =>
+        showVacancyDetail(context, id: card.id, feed: widget.feed);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: HhSpace.sm),
+      // **§2.1's band is the fastest signal on a scanned list**, which is why
+      // the design draws five and refuses a generic one. A vacancy whose
+      // category this build does not know therefore gets **no band** rather
+      // than a wrong one: the band is a claim about what kind of work this is.
+      //
+      // There is no photograph yet, so it fills with the category tint, glyph
+      // and name. That is the designed fallback rather than a placeholder —
+      // the band keeps its height either way, so a list with mixed coverage
+      // still scans as one rhythm.
+      child: category == null
+          ? HhCard(onTap: open, child: content)
+          : HhCard(
+              onTap: open,
+              // Full-bleed to the card's edges, so the card does the clipping
+              // and the padding moves inside — the composition
+              // `HhVacancyCard` already uses.
+              clipBehavior: Clip.antiAlias,
+              padding: EdgeInsets.zero,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HhCategoryBand(
+                    category: category,
+                    categoryLabel: workCategoryLabel(category, l10n),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 14,
+                    ),
+                    child: content,
+                  ),
+                ],
+              ),
+            ),
     );
   }
 

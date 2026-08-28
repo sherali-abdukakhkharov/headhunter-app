@@ -930,6 +930,21 @@ class AppL10nUz extends AppL10n {
   String get filterOccupationLevels => 'Kasbiy daraja';
 
   @override
+  String get workCategoryProfessional => 'Kasbiy lavozimlar';
+
+  @override
+  String get workCategoryService => 'Xizmat va operatsiyalar';
+
+  @override
+  String get workCategoryPhysical => 'Jismoniy va sanoat ishlari';
+
+  @override
+  String get workCategorySeasonal => 'Mavsumiy va qishloq xo\'jaligi ishlari';
+
+  @override
+  String get workCategoryTemporary => 'Vaqtinchalik va smenali ish';
+
+  @override
   String get filterCurrentOccupations => 'Hozirgi yoki oxirgi lavozim';
 
   @override
@@ -4275,6 +4290,21 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get filterOccupationLevels => 'Касбий даража';
 
   @override
+  String get workCategoryProfessional => 'Касбий лавозимлар';
+
+  @override
+  String get workCategoryService => 'Хизмат ва операциялар';
+
+  @override
+  String get workCategoryPhysical => 'Жисмоний ва саноат ишлари';
+
+  @override
+  String get workCategorySeasonal => 'Мавсумий ва қишлоқ хўжалиги ишлари';
+
+  @override
+  String get workCategoryTemporary => 'Вақтинчалик ва сменали иш';
+
+  @override
   String get filterCurrentOccupations => 'Ҳозирги ёки охирги лавозим';
 
   @override
@@ -7608,6 +7638,21 @@ class AppL10nUzLatn extends AppL10nUz {
 
   @override
   String get filterOccupationLevels => 'Kasbiy daraja';
+
+  @override
+  String get workCategoryProfessional => 'Kasbiy lavozimlar';
+
+  @override
+  String get workCategoryService => 'Xizmat va operatsiyalar';
+
+  @override
+  String get workCategoryPhysical => 'Jismoniy va sanoat ishlari';
+
+  @override
+  String get workCategorySeasonal => 'Mavsumiy va qishloq xo\'jaligi ishlari';
+
+  @override
+  String get workCategoryTemporary => 'Vaqtinchalik va smenali ish';
 
   @override
   String get filterCurrentOccupations => 'Hozirgi yoki oxirgi lavozim';

@@ -1198,6 +1198,14 @@
     "description": "Explains what the switch changes."
   },
   "filterOccupationLevels": "Professional level",
+  "workCategoryProfessional": "Professional roles",
+  "@workCategoryProfessional": {
+    "description": "§2.1's five categories, in the specification's own words. A database enum on the wire, not a dictionary - there is no work_category dictionary to read and there is not meant to be, because a category without a band, a glyph and a form schema is one the product cannot render."
+  },
+  "workCategoryService": "Service and operations",
+  "workCategoryPhysical": "Physical and industrial work",
+  "workCategorySeasonal": "Seasonal and agricultural work",
+  "workCategoryTemporary": "Temporary and shift work",
   "@filterOccupationLevels": {
     "description": "§7.1’s \"professional level where applicable\"."
   },

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/format/vacancy_pay.dart';
+import 'package:jobbridge_app/src/core/format/work_category.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/features/applications/data/application_repository.dart';
 import 'package:jobbridge_app/src/features/applications/presentation/applications_screen.dart';
@@ -120,9 +121,31 @@ class _VacancyDetailScreenState extends ConsumerState<VacancyDetailScreen> {
   Widget _body(AppL10n l10n, VacancyDetail detail) {
     final card = detail.item;
 
+    final category = workCategoryFromWire(card.category);
+
     return ListView(
       padding: const EdgeInsets.all(HhSpace.gutter),
       children: [
+        // The hero crop of the same band the card carries — taller here (2.6:1
+        // against the card's 4.15:1), which is the ratio the design gives the
+        // detail. Arriving from the feed, it is the one element that carries
+        // over, so the screen reads as the card opening rather than as a
+        // different page.
+        //
+        // Rounded on its own rather than clipped by a card, because it is not
+        // in one: this is the top of the page.
+        if (category case final category?) ...[
+          ClipRRect(
+            borderRadius: HhRadius.cardAll,
+            child: HhCategoryBand(
+              category: category,
+              categoryLabel: workCategoryLabel(category, l10n),
+              height: HhCategoryBand.heroHeight,
+            ),
+          ),
+          const SizedBox(height: HhSpace.md),
+        ],
+
         Text(card.title ?? l10n.vacancyUntitled, style: HhTypography.title),
 
         if (card.employer.name case final name? when name.isNotEmpty) ...[

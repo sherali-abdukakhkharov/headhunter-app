@@ -937,6 +937,21 @@ class AppL10nEn extends AppL10n {
   String get filterOccupationLevels => 'Professional level';
 
   @override
+  String get workCategoryProfessional => 'Professional roles';
+
+  @override
+  String get workCategoryService => 'Service and operations';
+
+  @override
+  String get workCategoryPhysical => 'Physical and industrial work';
+
+  @override
+  String get workCategorySeasonal => 'Seasonal and agricultural work';
+
+  @override
+  String get workCategoryTemporary => 'Temporary and shift work';
+
+  @override
   String get filterCurrentOccupations => 'Current or last role';
 
   @override

@@ -240,6 +240,16 @@ emulator against the design document, with 18 tests pinning the rules.
       both the 4.15:1 card crop and the 2.6:1 hero crop. Stock, art-directed by
       the designer. The tint fallback ships until then.
 
+
+      **The band itself is now on the feed and the detail, 2026-08-28.** It was
+      in the design system and on **no screen**: HhVacancyCard, which
+      composes it, was only ever used by the gallery, and the real feed built a
+      plain card of text. So photographs would have had nowhere to go, and the
+      element the design calls the fastest signal on a scanned list was missing
+      entirely. The tint fallback now renders where the photograph will.
+
+      A category this build does not recognise draws **no band** rather than a
+      wrong one - a band is a claim about what kind of work a vacancy is.
       **Deliberately not substituted in-house on 2026-08-28**, when the empty
       states were. Two reasons: the fallback here is a *designed* state rather
       than a placeholder — tint plus glyph plus name, and the design's stated

@@ -1697,6 +1697,36 @@ abstract class AppL10n {
   /// **'Professional level'**
   String get filterOccupationLevels;
 
+  /// §2.1's five categories, in the specification's own words. A database enum on the wire, not a dictionary - there is no work_category dictionary to read and there is not meant to be, because a category without a band, a glyph and a form schema is one the product cannot render.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional roles'**
+  String get workCategoryProfessional;
+
+  /// No description provided for @workCategoryService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service and operations'**
+  String get workCategoryService;
+
+  /// No description provided for @workCategoryPhysical.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical and industrial work'**
+  String get workCategoryPhysical;
+
+  /// No description provided for @workCategorySeasonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal and agricultural work'**
+  String get workCategorySeasonal;
+
+  /// No description provided for @workCategoryTemporary.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary and shift work'**
+  String get workCategoryTemporary;
+
   /// §7.1: the occupation of the candidate’s current job.
   ///
   /// In en, this message translates to:

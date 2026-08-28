@@ -944,6 +944,21 @@ class AppL10nRu extends AppL10n {
   String get filterOccupationLevels => 'Профессиональный уровень';
 
   @override
+  String get workCategoryProfessional => 'Профессиональные роли';
+
+  @override
+  String get workCategoryService => 'Сервис и операции';
+
+  @override
+  String get workCategoryPhysical => 'Физический и промышленный труд';
+
+  @override
+  String get workCategorySeasonal => 'Сезонные и сельхозработы';
+
+  @override
+  String get workCategoryTemporary => 'Временная и сменная работа';
+
+  @override
   String get filterCurrentOccupations => 'Текущая или последняя должность';
 
   @override
