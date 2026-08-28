@@ -17,6 +17,37 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.34.0+44 — 2026-08-29
+
+### Fixed
+
+- **1.33.0 published the wrong APK and this replaces it.** Both builds in
+  the release workflow write the same Gradle output path, and the arm64 one
+  ran before the universal build was staged — so `jobbridge-1.33.0.apk` and
+  `jobbridge.apk` are 23 MB of arm64 wearing the universal name. They
+  install on a modern phone and on nothing else, including the x86_64
+  emulator the QA audit runs. **Do not use 1.33.0.**
+
+  The comment warning about exactly this was written in the same commit as
+  the bug: the steps were in the wrong order when the tag was pushed, and
+  the reorder landed a few minutes later. A comment is not a guard.
+
+### Changed
+
+- **The Telegram delivery moved to the server.** It was a workflow step
+  needing the bot token as a GitHub secret; the backend already holds a bot
+  — the file store *is* the Telegram Bot API — so it polls for new releases
+  and posts them instead. No second bot, no new credential, and the token
+  stays where it is: it is the handle on the chat holding every CV and
+  verification document a user has uploaded, which is not something to copy
+  into CI so a release notice can be posted.
+
+  This workflow now publishes two more assets for it to fetch: the arm64
+  APK, and the Uzbek release note as `notes-uz.txt`.
+
+  Switching it on is one value in the backend environment, and it is not a
+  secret — see [docs/RELEASE.md](docs/RELEASE.md).
+
 ## 1.33.0+43 — 2026-08-29
 
 ### Added

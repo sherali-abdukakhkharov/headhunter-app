@@ -202,50 +202,74 @@ try { & ./gradlew.bat signingReport } finally { Pop-Location }
 
 ## Telegram delivery
 
-Every tagged release also arrives in a Telegram chat as a file, with what
-changed written under it in Uzbek — the way a phone delivers a store update.
+Every release arrives in a Telegram chat as a file, with what changed written
+under it in Uzbek — the way a phone delivers a store update.
 
-**Two repository secrets, and the release does not depend on them.** Without
-them the step writes a notice and the build stays green; nothing else changes.
+**The backend does the sending, not this workflow.** It already holds a bot: the
+file store is the Telegram Bot API (`headhunter-backend`,
+`src/infra/files/telegram-file.client.ts`), and reusing it means no second bot
+and no new credential. It also means the token stays where it is — that token is
+the handle on the chat holding every CV and verification document a user has
+uploaded, and putting it into GitHub Actions secrets so a release notice could
+be posted would widen its blast radius for no good reason.
 
-| Secret | What it is |
+So the direction is reversed: this workflow publishes the assets, and
+`ReleaseNotifierService` on the server polls for them. No credential travels in
+either direction — GitHub is read without a token and Telegram is written with
+one that never leaves the server.
+
+### What this workflow has to publish
+
+| Asset | Why |
 |---|---|
-| `TELEGRAM_BOT_TOKEN` | From [@BotFather](https://t.me/BotFather): `/newbot`, then the token it prints. Treat it as a password — anyone holding it can post as the bot. |
-| `TELEGRAM_CHAT_ID` | The chat to post into. Add the bot to the group, send one message there, then open `https://api.telegram.org/bot<TOKEN>/getUpdates` and read `message.chat.id`. A group id is negative, e.g. `-1001234567890`. |
+| `jobbridge-<version>-arm64.apk` | **A bot may send at most 50 MB** and the universal APK is about 65 — three ABIs of the Flutter engine plus Firebase. This one is arm64 only, about 23 MB, and runs on every Android phone sold since roughly 2017. |
+| `notes-uz.txt` | The Uzbek section of [RELEASE_NOTES.uz.md](../RELEASE_NOTES.uz.md) for this version, extracted here — the file lives in this repository, and a parser on the server would break the first time it was reformatted. |
 
-Settings → Secrets and variables → Actions → New repository secret.
+Both are ordinary release assets, because the poster fetches them over plain
+HTTPS with no credential.
 
-### The file that is sent is not the file on the release page
+### Two orderings that are load bearing
 
-**A bot may send at most 50 MB and the release APK is about 65**, so the
-workflow builds a second one with `--target-platform android-arm64` — one ABI
-instead of three, about 40 MB, and every Android phone sold since roughly 2017.
-It is named `jobbridge-<version>-arm64.apk` rather than borrowing the release
-asset's name, because it is a different binary with a different SHA-256 and one
-filename must not stand for two.
+**The arm64 build runs *after* the universal one is staged.** Both write
+`build/app/outputs/flutter-apk/app-production-release.apk`, so building arm64
+first leaves the release publishing a one-ABI file under the universal name.
+That happened in **v1.33.0**: its `jobbridge.apk` is 23 MB of arm64 and will not
+install on an x86_64 emulator, which is what the QA audit runs on.
 
-Both report the **same version and build number**. That is why the flag is
-`--target-platform` and not `--split-per-abi`: the split flag makes Flutter
-rewrite `versionCode` as `abi * 1000 + code`, and a tester who took the
-Telegram build could then not install the GitHub one, because Android refuses a
-downgrade.
+**`--target-platform`, not `--split-per-abi`.** The split flag makes Flutter's
+Gradle plugin rewrite `versionCode` as `abi * 1000 + code`, so the arm64 file
+would report 4043 where the universal one reports 43 — and a tester who took one
+could then not install the other, because Android refuses a downgrade.
 
-If the arm64 build ever crosses 50 MB the step sends a message with a link
-instead of the file, and says so in the log.
+### Turning it on
 
-### Where the Uzbek text comes from
+One value, in the backend's environment, and it is **not a secret**: a chat id
+names a destination and grants nothing.
 
-[RELEASE_NOTES.uz.md](../RELEASE_NOTES.uz.md), the `## <version>` section
-matching the tag. It is not a translation of `CHANGELOG.md`: that one is for
-whoever maintains the code, this one is for whoever installs the app.
+```
+RELEASE_CHAT_ID=-1001234567890
+```
 
-Keep a section to three bullets. Telegram caps a caption at 1024 characters and
-refuses the whole request rather than trimming, so the workflow trims at 900 and
-appends the release link — a section that needs trimming has already stopped
-being a release note.
+Add the bot to the chat, send one message there, then read `message.chat.id`
+from `https://api.telegram.org/bot<TOKEN>/getUpdates`. A group id is negative.
 
-A tag with no section still releases; the caption is then the version alone, and
-the log carries a warning.
+**Not the storage chat.** That one holds users' documents; release notices do
+not belong in it and nobody should be reading one to find the other.
+
+Unset, the service logs one line at boot and does nothing — which is what a
+developer machine and every test database should do.
+
+### Writing the note
+
+One `## <version>` section in [RELEASE_NOTES.uz.md](../RELEASE_NOTES.uz.md), at
+most three bullets. It is not a translation of `CHANGELOG.md`: that one is for
+whoever maintains the code, this one for whoever installs the app.
+
+Telegram caps a caption at 1024 characters and refuses the whole request rather
+than trimming, so the server trims and appends the release link — a section that
+needs trimming has already stopped being a release note.
+
+A tag with no section still releases; the caption is then the version alone.
 
 ## Releasing by hand, when Actions cannot run
 

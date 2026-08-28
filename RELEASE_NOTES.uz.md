@@ -21,6 +21,13 @@ uning **auditoriyasi boshqa**: uni o'quvchi kod yozmaydi, ilovani o'rnatadi.
 
 ---
 
+## 1.34.0
+
+- **1.33.0 ni o‘rnatmang** — undagi APK xato yig‘ilgan va hamma telefonga
+  tushmaydi. Bu versiya o‘shani almashtiradi.
+- Vakansiya kartochkalaridagi kategoriya rasmlari (1.33.0 dan) shu yerda.
+- Yangi versiya endi Telegramga o‘zi keladi.
+
 ## 1.33.0
 
 - **Vakansiya kartochkalarida endi rasm bor.** Beshta ish toifasining har biri
