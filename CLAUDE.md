@@ -175,13 +175,23 @@ device. See `test/core/design/semantics_test.dart`.
   2026-08-20 and real numbers are signing in through it — confirmed by the owner
   on 2026-08-26. `OTP_STATIC_CODE` and `OTP_ECHO_IN_RESPONSE` are both cleared,
   `NODE_ENV=production` is set, and the env schema *refuses* both at boot rather
-  than trusting an `.env` file to stay correct. So there is no fixed code any
-  more, and no `devCode` in a send response: **a test account needs a phone that
-  can receive a message**, and the emulator flow needs one too. About 160 UZS a
-  login, which is a real reason not to loop a resend in a test.
+  than trusting an `.env` file to stay correct. So there is no instance-wide fixed
+  code and no `devCode` in a send response, and a login costs about 160 UZS —
+  a real reason not to loop a resend in a test.
   This paragraph said the opposite until 2026-08-26 — see
   `headhunter-backend/docs/SMS_PROVIDER.md` for what was actually done, including
   the outage that connecting the provider caused.
+- **But a test account no longer needs a SIM** (2026-08-29). Ten seeded accounts —
+  six candidates covering all five categories, three employers and an administrator —
+  sign in with a **fixed code published in
+  `headhunter-backend/docs/TEST_ACCOUNTS.md`**, and no SMS is sent for them. Type
+  the nine digits from that table into the ordinary phone field; the code screen,
+  the TTL, the attempt limit and the one shared `auth.otp_invalid` all behave
+  exactly as they do for anybody else, because only *which* code is issued changes.
+  The numbers are all `+998 01 …`, a range Uzbekistan's numbering plan cannot
+  allocate to a person, which is what makes publishing their codes safe. This
+  paragraph previously said a test account needs a phone that can receive a
+  message; that was true for three days.
 - **Idempotency keys are persisted, not regenerated per attempt** (§12.4, BR-07).
 - **User-entered content is never translated** (§2.4).
 
