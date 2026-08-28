@@ -1761,6 +1761,9 @@ class AppL10nEn extends AppL10n {
   String get accountTitle => 'Account and security';
 
   @override
+  String get accountEntryShort => 'Account';
+
+  @override
   String get accountDevices => 'Signed-in devices';
 
   @override
@@ -3342,6 +3345,19 @@ class AppL10nEn extends AppL10n {
   @override
   String get notificationsSettingsBody =>
       'Switching a category off stops it being recorded at all — you will not find the missed ones here later.';
+
+  @override
+  String get notificationsPrimerTitle => 'Turn on notifications?';
+
+  @override
+  String get notificationsPrimerBody =>
+      'We will tell you when an employer replies, when an invitation or an interview arrives, and when the status of an application changes. Nothing else.';
+
+  @override
+  String get notificationsPrimerEnable => 'Turn on';
+
+  @override
+  String get notificationsPrimerLater => 'Not now';
 
   @override
   String get notificationsAlwaysOn =>

@@ -66,20 +66,20 @@ class PushRegistration extends _$PushRegistration {
   /// because a token that rotated while the app was closed is not announced.
   /// The route is idempotent, so repeating it costs one request.
   ///
-  /// **Registration does not depend on the permission answer.** Notifications
-  /// may be turned on later in system settings, and a user who does that
-  /// should not have to sign out and back in for push to start working. The
-  /// permission is asked for because it decides whether a banner is *shown*;
-  /// it does not decide whether the device is addressable.
+  /// **Registration does not depend on the permission answer**, and since
+  /// 2026-08-28 it does not ask for one either. Notifications may be turned on
+  /// later in system settings, and a user who does that should not have to sign
+  /// out and back in for push to start working: the permission decides whether
+  /// a banner is *shown*, not whether the device is addressable.
+  ///
+  /// This used to open with `requestPermission()`, which put Android's dialog
+  /// on screen the instant a code was verified — before a new user had chosen a
+  /// role, with no rationale and in the phone's language rather than the one
+  /// they had just picked. Android asks **once**, so that "no" was permanent.
+  /// [requestDisplayPermission] is now called by the in-app explanation
+  /// instead — see `notification_primer.dart`.
   Future<void> register() async {
     final messaging = ref.read(pushMessagingProvider);
-
-    // Asked here rather than at first launch: this is the point where somebody
-    // has committed to the product, so the dialog has a reason a user can see.
-    // Android shows it once and answers from the stored decision afterwards,
-    // so repeating this at every launch is not a repeated prompt.
-    await messaging.requestPermission();
-    if (_disposed) return;
 
     final token = await messaging.token();
     if (_disposed || token == null) return;
@@ -97,6 +97,15 @@ class PushRegistration extends _$PushRegistration {
       debugPrint('[push] device not registered: ${e.message}');
     }
   }
+
+  /// Asks the platform whether a banner may be shown, and answers what it
+  /// said.
+  ///
+  /// Separated from [register] so the question is asked by whatever has just
+  /// explained it. Calling it when permission is already granted is harmless —
+  /// Android answers from the stored decision without showing anything.
+  Future<bool> requestDisplayPermission() =>
+      ref.read(pushMessagingProvider).requestPermission();
 
   /// Stops push to this device, at the user's request.
   ///

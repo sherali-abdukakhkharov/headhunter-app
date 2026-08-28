@@ -36,7 +36,31 @@ class CandidateProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: switch (editor) {
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+      // Above the switch, so the screen has a name and a way to its account
+      // settings while it is still loading and if it fails. A header inside the
+      // `AsyncData` arm would be a header that disappears exactly when the user
+      // most needs the way out.
+            HhScreenHeader(
+              title: l10n.navProfile,
+              action: const AccountEntryAction(),
+            ),
+            Expanded(child: _body(context, ref, l10n, editor)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _body(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+    AsyncValue<ProfileEditorState> editor,
+  ) {
+    return switch (editor) {
           // hasError first: Riverpod's retry leaves a failing provider in an
           // AsyncLoading that merely carries the error, so matching loading
           // first shows a spinner over a failure forever.
@@ -51,11 +75,9 @@ class CandidateProfileScreen extends ConsumerWidget {
               onRetry: () => ref.invalidate(profileEditorProvider),
             ),
           ),
-          AsyncData(:final value) => _Form(state: value),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
-      ),
-    );
+      AsyncData(:final value) => _Form(state: value),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }
 
@@ -141,11 +163,6 @@ class _FormState extends ConsumerState<_Form> {
                 // Not a schema field, and deliberately outside the save bar's
                 // dirty set - see VisibilitySection.
                 VisibilitySection(current: state.profile.visibility),
-                const SizedBox(height: HhSpace.sectionGap),
-
-                // Sessions, sign-out and BR-14. Last, because it is the one
-                // thing here that is not about the profile.
-                const AccountEntryRow(),
                 const SizedBox(height: HhSpace.sectionGap),
 
                 // Room for the save bar, which floats over the list.

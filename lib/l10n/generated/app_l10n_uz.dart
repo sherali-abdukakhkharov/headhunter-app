@@ -1755,6 +1755,9 @@ class AppL10nUz extends AppL10n {
   String get accountTitle => 'Hisob va xavfsizlik';
 
   @override
+  String get accountEntryShort => 'Hisob';
+
+  @override
   String get accountDevices => 'Kirgan qurilmalar';
 
   @override
@@ -3336,6 +3339,19 @@ class AppL10nUz extends AppL10n {
   @override
   String get notificationsSettingsBody =>
       'Turkumni o‘chirish uni umuman yozib olinmasligiga olib keladi — o‘tkazib yuborilganlarini keyin bu yerdan topa olmaysiz.';
+
+  @override
+  String get notificationsPrimerTitle => 'Bildirishnomalar yoqilsinmi?';
+
+  @override
+  String get notificationsPrimerBody =>
+      'Ish beruvchi javob berganda, taklif yoki suhbat kelganda va arizangiz holati o‘zgarganda xabar beramiz. Boshqa hech narsa yubormaymiz.';
+
+  @override
+  String get notificationsPrimerEnable => 'Yoqish';
+
+  @override
+  String get notificationsPrimerLater => 'Hozir emas';
 
   @override
   String get notificationsAlwaysOn =>
@@ -5114,6 +5130,9 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get accountTitle => 'Ҳисоб ва хавфсизлик';
 
   @override
+  String get accountEntryShort => 'Ҳисоб';
+
+  @override
   String get accountDevices => 'Кирган қурилмалар';
 
   @override
@@ -6683,6 +6702,19 @@ class AppL10nUzCyrl extends AppL10nUz {
   @override
   String get notificationsSettingsBody =>
       'Туркумни ўчириш уни умуман ёзиб олинмаслигига олиб келади — ўтказиб юборилганларини кейин бу ердан топа олмайсиз.';
+
+  @override
+  String get notificationsPrimerTitle => 'Билдиришномалар ёқилсинми?';
+
+  @override
+  String get notificationsPrimerBody =>
+      'Иш берувчи жавоб берганда, таклиф ёки суҳбат келганда ва аризангиз ҳолати ўзгарганда хабар берамиз. Бошқа ҳеч нарса юбормаймиз.';
+
+  @override
+  String get notificationsPrimerEnable => 'Ёқиш';
+
+  @override
+  String get notificationsPrimerLater => 'Ҳозир эмас';
 
   @override
   String get notificationsAlwaysOn =>
@@ -8465,6 +8497,9 @@ class AppL10nUzLatn extends AppL10nUz {
   String get accountTitle => 'Hisob va xavfsizlik';
 
   @override
+  String get accountEntryShort => 'Hisob';
+
+  @override
   String get accountDevices => 'Kirgan qurilmalar';
 
   @override
@@ -10046,6 +10081,19 @@ class AppL10nUzLatn extends AppL10nUz {
   @override
   String get notificationsSettingsBody =>
       'Turkumni o‘chirish uni umuman yozib olinmasligiga olib keladi — o‘tkazib yuborilganlarini keyin bu yerdan topa olmaysiz.';
+
+  @override
+  String get notificationsPrimerTitle => 'Bildirishnomalar yoqilsinmi?';
+
+  @override
+  String get notificationsPrimerBody =>
+      'Ish beruvchi javob berganda, taklif yoki suhbat kelganda va arizangiz holati o‘zgarganda xabar beramiz. Boshqa hech narsa yubormaymiz.';
+
+  @override
+  String get notificationsPrimerEnable => 'Yoqish';
+
+  @override
+  String get notificationsPrimerLater => 'Hozir emas';
 
   @override
   String get notificationsAlwaysOn =>

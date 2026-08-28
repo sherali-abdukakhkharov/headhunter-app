@@ -35,7 +35,31 @@ class EmployerProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: switch (editor) {
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+      // Above the switch, so the screen has a name and a way to its account
+      // settings while it is still loading and if it fails. A header inside the
+      // `AsyncData` arm would be a header that disappears exactly when the user
+      // most needs the way out.
+            HhScreenHeader(
+              title: l10n.navCompany,
+              action: const AccountEntryAction(),
+            ),
+            Expanded(child: _body(context, ref, l10n, editor)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _body(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+    AsyncValue<EmployerEditorState> editor,
+  ) {
+    return switch (editor) {
           // hasError first: retry is disabled app-wide, so a failure is
           // terminal and matching loading first spins over it forever.
           AsyncValue(hasError: true, :final error?) => Padding(
@@ -49,11 +73,9 @@ class EmployerProfileScreen extends ConsumerWidget {
               onRetry: () => ref.invalidate(employerEditorProvider),
             ),
           ),
-          AsyncData(:final value) => _Form(state: value),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
-      ),
-    );
+      AsyncData(:final value) => _Form(state: value),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }
 

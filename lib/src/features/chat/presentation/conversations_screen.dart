@@ -60,15 +60,7 @@ class ConversationsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                HhSpace.gutter,
-                HhSpace.gutter,
-                HhSpace.gutter,
-                HhSpace.md,
-              ),
-              child: Text(l10n.navMessages, style: HhTypography.title),
-            ),
+            HhScreenHeader(title: l10n.navMessages),
             Expanded(child: _body(ref, l10n, threads)),
           ],
         ),

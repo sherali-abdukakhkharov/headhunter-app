@@ -1775,6 +1775,9 @@ class AppL10nRu extends AppL10n {
   String get accountTitle => 'Аккаунт и безопасность';
 
   @override
+  String get accountEntryShort => 'Аккаунт';
+
+  @override
   String get accountDevices => 'Устройства с активным входом';
 
   @override
@@ -3375,6 +3378,19 @@ class AppL10nRu extends AppL10n {
   @override
   String get notificationsSettingsBody =>
       'Если выключить категорию, она вообще перестанет записываться — пропущенные здесь потом не найдутся.';
+
+  @override
+  String get notificationsPrimerTitle => 'Включить уведомления?';
+
+  @override
+  String get notificationsPrimerBody =>
+      'Сообщим, когда работодатель ответит, когда придёт приглашение или собеседование и когда изменится статус отклика. Больше ничего.';
+
+  @override
+  String get notificationsPrimerEnable => 'Включить';
+
+  @override
+  String get notificationsPrimerLater => 'Не сейчас';
 
   @override
   String get notificationsAlwaysOn =>

@@ -517,8 +517,32 @@ void main() {
       // Permission decides whether a banner is *shown*. Somebody who turns
       // notifications on later in system settings must not have to sign out
       // and back in for push to start working.
-      expect(messaging.permissionRequests, 1);
       expect(repository.registered, hasLength(1));
+    });
+
+    test('and asks for no permission on the way', () async {
+      messaging.registrationToken = 'fcm-token-1';
+      final container = containerWith();
+
+      await container.read(pushRegistrationProvider.notifier).register();
+
+      // The dialog used to open here, which put it on screen the instant a
+      // code was verified — before a new user had even chosen a role, with no
+      // rationale and in the phone's language rather than the one they had
+      // just picked. Android asks **once**, so that refusal was permanent.
+      // The in-app explanation asks now; see `notification_primer.dart`.
+      expect(messaging.permissionRequests, 0);
+    });
+
+    test('and asks only when something has explained why', () async {
+      final container = containerWith();
+
+      final granted = await container
+          .read(pushRegistrationProvider.notifier)
+          .requestDisplayPermission();
+
+      expect(messaging.permissionRequests, 1);
+      expect(granted, isTrue);
     });
 
     test('a device that cannot produce a token registers nothing', () async {

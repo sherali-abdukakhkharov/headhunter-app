@@ -110,7 +110,7 @@ final class PushRegistrationProvider
   }
 }
 
-String _$pushRegistrationHash() => r'adef400b8b72e5eec9560792892e6733e33ce28d';
+String _$pushRegistrationHash() => r'7b04a6fbd0e0d56aff1a5627f75f9f824858faaa';
 
 /// Which device token the server currently knows about, or null.
 ///

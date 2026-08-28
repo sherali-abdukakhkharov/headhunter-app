@@ -124,7 +124,13 @@ void main() {
   setUp(() {
     // The real controller reads preferences on some paths; an in-memory store
     // keeps that from touching the platform channel.
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({
+      // This install has already been asked about notifications. Without it
+      // every shell here opens the primer sheet over the nav bar, and taps
+      // land on the barrier — which is the sheet working, not the router
+      // failing. See `notification_primer.dart`.
+      'notifications.primer_seen': true,
+    });
   });
 
   /// Pumps the app with [session] and navigates to [initialLocation], returning

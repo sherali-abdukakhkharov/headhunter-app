@@ -3053,6 +3053,12 @@ abstract class AppL10n {
   /// **'Account and security'**
   String get accountTitle;
 
+  /// The header action on the two profile screens, and only there. One word, because it shares a row with the screen's own title — "Account and security" is the destination's name and does not fit beside one.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountEntryShort;
+
   /// Section 4.2's session list.
   ///
   /// In en, this message translates to:
@@ -5788,6 +5794,30 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Switching a category off stops it being recorded at all — you will not find the missed ones here later.'**
   String get notificationsSettingsBody;
+
+  /// Heading of the in-app sheet that precedes Android's own permission dialog (§9.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications?'**
+  String get notificationsPrimerTitle;
+
+  /// Why a notification is worth allowing, in terms of §9.2's own events. Named events rather than "stay up to date": the value of a notification is which one. The last sentence is a promise about volume and is the reason people say yes.
+  ///
+  /// In en, this message translates to:
+  /// **'We will tell you when an employer replies, when an invitation or an interview arrives, and when the status of an application changes. Nothing else.'**
+  String get notificationsPrimerBody;
+
+  /// Opens the platform permission dialog. Deliberately not "Allow" — that is the OS dialog's word, and this button does not itself grant anything.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get notificationsPrimerEnable;
+
+  /// Declines for now. Android asks once, so this is the answer that keeps the question answerable later from the notification settings sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notificationsPrimerLater;
 
   /// §9.2 keeps `account` on. The row is shown greyed out rather than omitted: a user who cannot find a switch assumes it is off.
   ///

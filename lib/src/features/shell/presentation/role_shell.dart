@@ -7,6 +7,7 @@ import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
+import 'package:jobbridge_app/src/features/notifications/presentation/notification_primer.dart';
 
 /// The navigation shell for one role.
 ///
@@ -15,7 +16,7 @@ import 'package:jobbridge_app/src/core/router/shell_tabs.dart';
 /// architectures, and §2.3 lets a user switch between them at runtime. A shared
 /// shell leaks navigation state across the switch - you land on the employer's
 /// "Vacancies" tab showing the stack you left behind in the candidate's.
-class RoleShell extends ConsumerWidget {
+class RoleShell extends ConsumerStatefulWidget {
   const RoleShell({
     required this.role,
     required this.navigationShell,
@@ -29,15 +30,45 @@ class RoleShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RoleShell> createState() => _RoleShellState();
+}
+
+class _RoleShellState extends ConsumerState<RoleShell> {
+  @override
+  void initState() {
+    super.initState();
+
+    // §9.2's permission, asked **after** onboarding rather than inside it.
+    //
+    // Here rather than at sign-in because this is the first moment the user is
+    // somewhere: a role is chosen, a shell is on screen, and the sheet can name
+    // what a notification would be about. The audit found the OS dialog opening
+    // straight after the OTP, sometimes before a role had been picked at all.
+    //
+    // A post-frame callback because a route cannot be pushed while the tree
+    // that would host it is still being built.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _offerNotifications());
+  }
+
+  Future<void> _offerNotifications() async {
+    // Read, not watched: this asks once per install, and a rebuild is not a
+    // reason to ask again.
+    final seen = await ref.read(notificationPrimerProvider.future);
+    if (seen || !mounted) return;
+
+    await showNotificationPrimer(context, ref);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final tabs = ShellTabs.forRole(role);
+    final tabs = ShellTabs.forRole(widget.role);
 
     return Scaffold(
       // No backgroundColor override: HhTheme.light already sets
       // scaffoldBackgroundColor from the design's tokens, and restating it here
       // is how a screen ends up one shade off the rest of the app.
-      body: navigationShell,
+      body: widget.navigationShell,
       // Dev-only way back to the tools, and it belongs on the shell rather than
       // on a screen for two reasons: every tab inherits it, and the placeholder
       // screens that would otherwise host it are deleted milestone by
@@ -63,13 +94,13 @@ class RoleShell extends ConsumerWidget {
           for (final tab in tabs)
             HhNavItem(iconPath: tab.iconPath, label: tab.label(l10n)),
         ],
-        currentIndex: navigationShell.currentIndex,
+        currentIndex: widget.navigationShell.currentIndex,
         // initialLocation: true when the tab is re-tapped, which pops that
         // branch back to its root. The platform-standard gesture for "get me
         // out of wherever I drilled to", and users try it before they try Back.
-        onSelected: (index) => navigationShell.goBranch(
+        onSelected: (index) => widget.navigationShell.goBranch(
           index,
-          initialLocation: index == navigationShell.currentIndex,
+          initialLocation: index == widget.navigationShell.currentIndex,
         ),
       ),
     );
