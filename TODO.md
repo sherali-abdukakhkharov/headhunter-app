@@ -2417,7 +2417,31 @@ remaining item is a screen.
       one word, and **Russian would have shipped it broken while English
       fitted**. §10.4's workaround of making dated facts captions can come
       back out whenever somebody is next in there
-- [ ] Cached primary screens open without blocking; loading states complete
+- [~] **Loading states are complete, 2026-08-28. The cache is two thirds
+      there, and the last third is a product decision.**
+
+      **Loading states.** The three card skeletons existed from the start and
+      **no screen used one** — every list opened on a centred spinner. Eight
+      list screens now open on `HhSkeletonList`: applications, vacancy
+      applicants, candidate search, saved candidates, the shortlist, the
+      employer's vacancies, and both invitation lists. A spinner says
+      "something is happening" where a skeleton says *what* is coming, and it
+      is centred where the list is not, so the first frame of content jumps the
+      whole screen.
+
+      **Opening without blocking, within a session:** already true and not by
+      accident — the shells are `StatefulShellRoute.indexedStack`, so a tab's
+      widgets stay mounted, the providers stay watched, and switching tabs
+      refetches nothing.
+
+      **Across a restart:** the dictionaries persist to `SharedPreferences`
+      (`DictionaryCache`), which is the expensive part — one schema-driven form
+      needs six of them.
+
+      **What is left is list data across a restart**, and it is deliberately not
+      done: showing yesterday's vacancy feed as though it were current is a
+      worse failure than a skeleton, and how stale is acceptable is a product
+      answer rather than a technical one. Ask before building it
 - [x] **Offline state explicit, inside the shell too, 2026-08-28.** The cold
       start has said so since 2026-08-25 (`SessionUnreachable`); every screen
       inside it put "Something went wrong" over a dead connection, which is a

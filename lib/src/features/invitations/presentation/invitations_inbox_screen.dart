@@ -70,7 +70,7 @@ class InvitationsInboxScreen extends ConsumerWidget {
               _InvitationCard(invitation: value[index]),
         ),
       ),
-      _ => const Center(child: CircularProgressIndicator()),
+      _ => const HhSkeletonList(item: HhApplicationCardSkeleton()),
     };
   }
 }

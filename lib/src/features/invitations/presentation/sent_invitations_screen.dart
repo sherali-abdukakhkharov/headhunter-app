@@ -167,7 +167,7 @@ class _SentInvitationsScreenState extends ConsumerState<SentInvitationsScreen> {
                       showVacancy: widget.vacancyId == null,
                     ),
                   ),
-                  _ => const Center(child: CircularProgressIndicator()),
+                  _ => const HhSkeletonList(item: HhApplicationCardSkeleton()),
                 },
               ),
             ),

@@ -110,7 +110,7 @@ class _VacancyApplicantsScreenState
                     status: _status,
                   ),
                 ),
-                _ => const Center(child: CircularProgressIndicator()),
+                _ => const HhSkeletonList(item: HhApplicationCardSkeleton()),
               },
             ),
           ],

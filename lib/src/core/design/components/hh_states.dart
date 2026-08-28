@@ -198,6 +198,45 @@ class HhApplicationCardSkeleton extends StatelessWidget {
 
 /// **State 02 — loading more.** Footer spinner for pagination. Keeps the
 /// already loaded rows visible, which a full-screen loader would not.
+/// A first page of skeletons, in place of a spinner.
+///
+/// ## Why a list screen must not show a spinner
+///
+/// The three card skeletons existed from the start and **no screen used one** —
+/// every list opened on a centred `CircularProgressIndicator`. Two things are
+/// wrong with that, and neither is aesthetic:
+///
+/// - a spinner says "something is happening" where a skeleton says *what* is
+///   coming, which is the difference between waiting and waiting for a list;
+/// - the spinner is centred and the list is not, so the first frame of content
+///   jumps the whole screen. A skeleton page occupies the space the rows will.
+///
+/// The count is four because that is roughly a phone screen: fewer leaves a
+/// gap that fills with a jolt, more paints rows nobody sees.
+class HhSkeletonList extends StatelessWidget {
+  const HhSkeletonList({required this.item, super.key, this.count = 4});
+
+  /// One row. The skeletons are `const` and stateless, so one instance
+  /// repeated is the same thing as [count] of them.
+  final Widget item;
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) => ListView.builder(
+    padding: const EdgeInsets.all(HhSpace.gutter),
+    itemCount: count,
+    // Not scrollable: there is nothing under it to reach, and a list that
+    // bounces while it is still loading reads as content that is already
+    // there.
+    physics: const NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) => Padding(
+      padding: EdgeInsets.only(bottom: index == count - 1 ? 0 : HhSpace.md),
+      child: item,
+    ),
+  );
+}
+
 class HhLoadingMore extends StatelessWidget {
   const HhLoadingMore({required this.label, super.key});
 

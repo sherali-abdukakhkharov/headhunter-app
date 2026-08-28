@@ -88,7 +88,7 @@ class VacancyShortlistScreen extends ConsumerWidget {
                 showMatch: false,
               ),
             ),
-            _ => const Center(child: CircularProgressIndicator()),
+            _ => const HhSkeletonList(item: HhCandidateCardSkeleton()),
           },
         ),
       ),

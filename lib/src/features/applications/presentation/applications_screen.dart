@@ -131,7 +131,7 @@ class _Applications extends ConsumerWidget {
         itemCount: value.length,
         itemBuilder: (context, index) => _Row(application: value[index]),
       ),
-      _ => const Center(child: CircularProgressIndicator()),
+      _ => const HhSkeletonList(item: HhApplicationCardSkeleton()),
     };
   }
 }

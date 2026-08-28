@@ -39,7 +39,7 @@ class VacancyListScreen extends ConsumerWidget {
             ),
           ),
           AsyncData(:final value) => _List(vacancies: value),
-          _ => const Center(child: CircularProgressIndicator()),
+          _ => const HhSkeletonList(item: HhVacancyCardSkeleton()),
         },
       ),
     );

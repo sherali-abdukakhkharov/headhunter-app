@@ -96,7 +96,7 @@ class _CandidateSearchScreenState extends ConsumerState<CandidateSearchScreen> {
             ),
           ),
           AsyncData(:final value) => _loaded(l10n, value),
-          _ => const Center(child: CircularProgressIndicator()),
+          _ => const HhSkeletonList(item: HhCandidateCardSkeleton()),
         },
       ),
     );
