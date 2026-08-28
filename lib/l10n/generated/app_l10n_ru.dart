@@ -166,10 +166,10 @@ class AppL10nRu extends AppL10n {
   String get navComplaints => 'Жалобы';
 
   @override
-  String get navUsers => 'Пользователи';
+  String get navUsers => 'Пользо­ватели';
 
   @override
-  String get navDictionaries => 'Справочники';
+  String get navDictionaries => 'Справоч­ники';
 
   @override
   String get blockedTitle => 'Аккаунт заблокирован';
@@ -1479,7 +1479,7 @@ class AppL10nRu extends AppL10n {
       'Эта запись исправляет предыдущую. Исходная остаётся в истории — исправления добавляются, а не переписываются.';
 
   @override
-  String get navInvitations => 'Приглашения';
+  String get navInvitations => 'Пригла­шения';
 
   @override
   String get invitationSent => 'Отправлено';

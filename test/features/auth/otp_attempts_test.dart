@@ -127,10 +127,14 @@ void main() {
     return (session: session, auth: auth);
   }
 
+  /// One attempt.
+  ///
+  /// **Entering a complete code is what sends it.** The field submits itself
+  /// the moment it is full, which is what makes an autofilled SMS a zero-tap
+  /// sign-in; this used to enter the code *and* tap Confirm, which is now two
+  /// attempts on one code and made every count in this group double.
   Future<void> guess(WidgetTester tester, String code) async {
     await tester.enterText(find.byType(HhTextField).first, code);
-    await tester.pump();
-    await tester.tap(find.widgetWithText(HhButton, en.authVerifyCode));
     await tester.pumpAndSettle();
   }
 
@@ -271,6 +275,102 @@ void main() {
       // Attempt one of a fresh five, so nothing is said yet.
       expect(find.text(en.authAttemptsLeft(4)), findsNothing);
       expect(find.text(en.authAttemptsLeft(1)), findsNothing);
+    });
+  });
+
+  group('the code sends itself, so an SMS is a zero-tap sign-in', () {
+    testWidgets('the field has focus on arrival', (tester) async {
+      await pump(tester);
+
+      // The only thing on the screen to do. Without this the user arrives at a
+      // one-field page and has to tap it before the number pad appears — a step
+      // between reading a code and entering it (1.29.0 audit, P1).
+      final field = tester.widget<HhTextField>(find.byType(HhTextField).first);
+      expect(field.autofocus, isTrue);
+      expect(field.keyboardType, TextInputType.number);
+    });
+
+    testWidgets('it declares itself a one-time code to the platform', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      final field = tester.widget<HhTextField>(find.byType(HhTextField).first);
+      expect(field.autofillHints, [AutofillHints.oneTimeCode]);
+      // The hint is only acted on inside a group.
+      expect(
+        find.ancestor(
+          of: find.byType(HhTextField).first,
+          matching: find.byType(AutofillGroup),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a complete code is sent without a tap', (tester) async {
+      final harness = await pump(tester);
+
+      await tester.enterText(find.byType(HhTextField).first, '123456');
+      await tester.pumpAndSettle();
+
+      expect(harness.session.attempts, 1);
+    });
+
+    testWidgets('a short code is not', (tester) async {
+      final harness = await pump(tester);
+
+      await tester.enterText(find.byType(HhTextField).first, '12345');
+      await tester.pumpAndSettle();
+
+      expect(harness.session.attempts, 0);
+    });
+
+    testWidgets('and it does not send the same refused code twice', (
+      tester,
+    ) async {
+      // The refusal leaves those digits in the box. A listener that fired again
+      // on the next rebuild would spend the whole attempt budget by itself,
+      // which is a worse failure than the tap it replaced.
+      final harness = await pump(tester);
+
+      await tester.enterText(find.byType(HhTextField).first, '123456');
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
+
+      expect(harness.session.attempts, 1);
+    });
+
+    testWidgets('Confirm still works for a deliberate retry', (tester) async {
+      // Automatic once, manual afterwards: a code refused by a *timeout* is one
+      // the user is entitled to send again unchanged, and the button is what
+      // says so. Removing it would make the retry impossible.
+      final harness = await pump(tester);
+
+      await tester.enterText(find.byType(HhTextField).first, '123456');
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(HhButton, en.authVerifyCode));
+      await tester.pumpAndSettle();
+
+      expect(harness.session.attempts, 2);
+    });
+
+    testWidgets('a resent challenge may repeat the digits', (tester) async {
+      // A new code can legitimately come out to the same six digits, and it
+      // deserves the same automatic send as the first one did.
+      final harness = await pump(tester);
+
+      await tester.enterText(find.byType(HhTextField).first, '123456');
+      await tester.pumpAndSettle();
+      expect(harness.session.attempts, 1);
+
+      await tester.tap(find.widgetWithText(HhButton, en.authResendCode));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(HhTextField).first, '123456');
+      await tester.pumpAndSettle();
+
+      expect(harness.session.attempts, 2);
     });
   });
 }

@@ -524,6 +524,8 @@ class _ComposerState extends ConsumerState<_Composer> {
             const SizedBox(height: HhSpace.sm),
           ],
           Row(
+            // `end`, so the attachment and send controls stay level with the
+            // *last* line of a message that has grown to four.
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               // The name is on the icon, not on the tooltip: a tooltip is
@@ -544,11 +546,14 @@ class _ComposerState extends ConsumerState<_Composer> {
                 ),
               ),
               Expanded(
-                child: HhTextField(
+                // The composer variant, not the ordinary field: a persistent
+                // label and a multiline box that starts at 83pt make this
+                // read as a form, which is what the 1.29.0 audit called it.
+                // `label` is still carried and is still the accessible name.
+                child: HhTextField.composer(
                   label: l10n.chatComposerLabel,
                   controller: _body,
                   hintText: l10n.chatComposerHint,
-                  maxLines: 4,
                   // The server's own ceiling (§9.1), so the field stops where
                   // the API would have refused rather than after it.
                   maxLength: 4000,
@@ -556,12 +561,8 @@ class _ComposerState extends ConsumerState<_Composer> {
                 ),
               ),
               const SizedBox(width: HhSpace.sm),
-              HhButton(
-                label: l10n.chatSend,
-                iconPath: HhIconPath.send,
-                expand: false,
-                compact: true,
-                loading: _busy,
+              _SendButton(
+                busy: _busy,
                 onPressed: canSend ? _send : null,
               ),
             ],
@@ -675,5 +676,73 @@ class _ComposerState extends ConsumerState<_Composer> {
         });
       }
     }
+  }
+}
+
+/// Send, as a circle rather than a labelled button.
+///
+/// **The label was costing the message more than it was worth.** With
+/// `Yuborish` on the button and an attach control on the left, the input
+/// between them measured 148pt of a 360pt screen — a stub you cannot read a
+/// sentence in. Icon-only gives it back about a hundred points, which is the
+/// difference between seeing what you wrote and scrolling it.
+///
+/// It is icon-only and **named**: `semanticLabel` is the accessible name, the
+/// same rule the attach control on the other side of the row follows. An
+/// icon-only control without one announces as "button" (MT-015).
+///
+/// Filled rather than outlined, because it is the primary action of the screen
+/// and the neutral affordance beside it is not.
+class _SendButton extends StatelessWidget {
+  const _SendButton({required this.busy, required this.onPressed});
+
+  final bool busy;
+  final VoidCallback? onPressed;
+
+  /// 48, which is the platform minimum tap target and fits the 52 row.
+  static const _size = 48.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final enabled = onPressed != null && !busy;
+
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: l10n.chatSend,
+      excludeSemantics: true,
+      onTap: enabled ? onPressed : null,
+      child: Material(
+        color: enabled ? HhColors.brand600 : HhColors.fill,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: enabled ? onPressed : null,
+          child: SizedBox(
+            width: _size,
+            height: _size,
+            child: Center(
+              child: busy
+                  // Same footprint as the glyph, so the row does not twitch
+                  // when a message is in flight.
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: HhColors.inkMuted,
+                      ),
+                    )
+                  : HhIcon(
+                      HhIconPath.send,
+                      size: 20,
+                      color: enabled ? HhColors.white : HhColors.inkDisabled,
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
@@ -72,10 +73,23 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  final send = find.widgetWithText(HhButton, 'Send');
+  // By its accessible name: Send is a circle with a glyph now, because the
+  // word was costing the message about a hundred points of a 360pt row. The
+  // name is what an icon-only control must still have (MT-015), so finding it
+  // this way also asserts it has one.
+  // A getter, not a field: `find.bySemanticsLabel` reads the semantics
+  // binding, which does not exist yet while `main` is still being evaluated.
+  Finder send() => find.bySemanticsLabel('Send');
 
+  /// Whether Send would do anything.
+  ///
+  /// Read as the *tap action*: the control publishes one only while it is
+  /// enabled, so this is the same question the button asks itself, and it is
+  /// also what a screen reader would find.
   bool enabled(WidgetTester tester) =>
-      tester.widget<HhButton>(send).onPressed != null;
+      tester.getSemantics(send()).getSemanticsData().hasAction(
+        SemanticsAction.tap,
+      );
 
   group('picking a file uploads it', () {
     testWidgets('and the composer says it is ready to send', (tester) async {
@@ -132,7 +146,7 @@ void main() {
       final fake = await pump(tester);
       await attach(tester);
 
-      await tester.tap(send);
+      await tester.tap(send());
       await tester.pumpAndSettle();
 
       // Null rather than '': an empty string would be a blank line above the
@@ -145,7 +159,7 @@ void main() {
 
       await tester.enterText(find.byType(TextField), 'The offer, attached.');
       await attach(tester);
-      await tester.tap(send);
+      await tester.tap(send());
       await tester.pumpAndSettle();
 
       expect(fake.sent, [('conv-1', 'The offer, attached.', 'file-1')]);
@@ -155,7 +169,7 @@ void main() {
       await pump(tester);
       await attach(tester);
 
-      await tester.tap(send);
+      await tester.tap(send());
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Ready to send'), findsNothing);
@@ -234,7 +248,7 @@ void main() {
       );
       await attach(tester);
 
-      await tester.tap(send);
+      await tester.tap(send());
       await tester.pumpAndSettle();
 
       expect(fake.sent, [('conv-1', null, 'file-1')]);

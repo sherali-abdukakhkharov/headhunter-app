@@ -497,6 +497,83 @@ void main() {
         reason: 'tab labels wrap to two lines rather than truncate',
       );
     });
+
+    /// The bar is chrome, and chrome that grows without limit takes the screen
+    /// the content was going to use. At 200% the five labels cost about a
+    /// quarter of a 568pt screen and none of them fitted its tab, so every one
+    /// broke mid-word — a usability failure with no `RenderFlex` overflow to
+    /// report it (1.29.0 audit, P1).
+    group('the labels stop scaling before the bar eats the screen', () {
+      Future<double> barHeight(WidgetTester tester, double scale) async {
+        tester.view.physicalSize = const Size(960, 1704);
+        tester.view.devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: HhTheme.light,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            ),
+            home: Scaffold(
+              bottomNavigationBar: HhBottomNav(
+                items: HhNavSets.admin(
+                  dashboard: 'Panel',
+                  queue: 'Navbat',
+                  complaints: 'Shikoyatlar',
+                  users: 'Фойдаланувчилар',
+                  dictionaries: "Lug'atlar",
+                ),
+                currentIndex: 0,
+                onSelected: (_) {},
+              ),
+            ),
+          ),
+        );
+
+        return tester.getSize(find.byType(HhBottomNav)).height;
+      }
+
+      testWidgets('the default scale still lands on the design box', (
+        tester,
+      ) async {
+        expect(await barHeight(tester, 1), HhBottomNav.height);
+      });
+
+      testWidgets('it grows below the clamp', (tester) async {
+        // The design's own rule — "only labels scale, and the bar grows with
+        // them" — still holds where growing is affordable.
+        expect(await barHeight(tester, 1.2), greaterThan(HhBottomNav.height));
+      });
+
+      testWidgets('and stops growing above it', (tester) async {
+        final atClamp = await barHeight(tester, HhBottomNav.maxLabelScale);
+        final atDouble = await barHeight(tester, 2);
+
+        expect(atDouble, atClamp);
+        // A number rather than only a relation: the failure being pinned is
+        // "the bar took a quarter of the screen", and a bar that stopped
+        // growing at 200pt would satisfy the equality above.
+        expect(atDouble, lessThan(90));
+      });
+
+      testWidgets('the announcement is not clamped with the pixels', (
+        tester,
+      ) async {
+        await barHeight(tester, 2);
+
+        // The clamp is a drawing decision. A screen reader never rendered this
+        // text, so its name must be the whole string at any scale.
+        final node = tester.getSemantics(
+          find.byType(HhBottomNav).hitTestable(),
+        );
+        expect(node, isNotNull);
+        expect(find.bySemanticsLabel('Фойдаланувчилар'), findsOneWidget);
+      });
+    });
   });
 
   testWidgets('the step indicator actually paints its progress bar', (

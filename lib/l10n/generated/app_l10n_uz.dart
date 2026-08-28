@@ -171,7 +171,7 @@ class AppL10nUz extends AppL10n {
   String get navComplaints => 'Shikoyatlar';
 
   @override
-  String get navUsers => 'Foydalan­uvchilar';
+  String get navUsers => 'Foydalanuv­chilar';
 
   @override
   String get navDictionaries => 'Lug\'atlar';
@@ -3532,7 +3532,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get navComplaints => 'Шикоятлар';
 
   @override
-  String get navUsers => 'Фойдалан­увчилар';
+  String get navUsers => 'Фойдаланув­чилар';
 
   @override
   String get navDictionaries => 'Луғатлар';
@@ -6881,7 +6881,7 @@ class AppL10nUzLatn extends AppL10nUz {
   String get navComplaints => 'Shikoyatlar';
 
   @override
-  String get navUsers => 'Foydalan­uvchilar';
+  String get navUsers => 'Foydalanuv­chilar';
 
   @override
   String get navDictionaries => 'Lug\'atlar';

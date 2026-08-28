@@ -204,13 +204,13 @@ void main() {
         page: [messageFixture(id: 'a')],
       );
 
-      await tester.tap(find.text('Send'));
+      await tester.tap(find.bySemanticsLabel('Send'));
       await tester.pump();
       expect(fake.sent, isEmpty);
 
       await tester.enterText(find.byType(TextField), 'Salom');
       await tester.pump();
-      await tester.tap(find.text('Send'));
+      await tester.tap(find.bySemanticsLabel('Send'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -230,7 +230,7 @@ void main() {
 
       await tester.enterText(find.byType(TextField), 'Uzoq xabar');
       await tester.pump();
-      await tester.tap(find.text('Send'));
+      await tester.tap(find.bySemanticsLabel('Send'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -249,7 +249,7 @@ void main() {
 
       await tester.enterText(find.byType(TextField), 'Ikkinchi');
       await tester.pump();
-      await tester.tap(find.text('Send'));
+      await tester.tap(find.bySemanticsLabel('Send'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -277,7 +277,7 @@ void main() {
 
       await tester.enterText(find.byType(TextField), 'Birinchi');
       await tester.pump();
-      await tester.tap(find.text('Send'));
+      await tester.tap(find.bySemanticsLabel('Send'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -357,5 +357,76 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+  });
+
+  group('the composer is an action bar, not a form', () {
+    testWidgets('it is built to grow from one line, not to start at four', (
+      tester,
+    ) async {
+      await pump(tester, conversation: conversationFixture());
+
+      final field = tester.widget<HhTextField>(find.byType(HhTextField));
+
+      // **A `TextField` with `maxLines: 4` and no `minLines` is a fixed
+      // four-line box**, which is Flutter's rule and is what made this a
+      // textarea. The pair below is the whole difference, and it is the part a
+      // font cannot distort — see the height case underneath.
+      expect(field.minLines, 1);
+      expect(field.maxLines, 4);
+      expect(field.showLabel, isFalse);
+    });
+
+    testWidgets('and it is not the form box', (tester) async {
+      await pump(tester, conversation: conversationFixture());
+
+      // The painted box, not the widget: `HhTextField` is a Column whose
+      // height its parent stretches, and the claim is about the control.
+      final box = tester.getSize(find.byType(AnimatedContainer));
+
+      // A bound rather than 52 exactly, and the reason is the test font:
+      // `FlutterTest` draws every glyph one em wide, so the placeholder wraps
+      // here at a width where Golos would not. What the bound still catches is
+      // the regression that matters — going back to the ordinary field, whose
+      // multiline minimum is 52 * 1.6 *before* its persistent label.
+      expect(box.height, lessThan(HhSize.control * 1.6));
+    });
+
+    testWidgets('and it still has a name', (tester) async {
+      await pump(tester, conversation: conversationFixture());
+
+      final l10n = lookupAppL10n(const Locale('en'));
+
+      // The label stopped being *drawn*; it did not stop existing. A field
+      // whose only name is its hint is one MT-015 would have filed.
+      // A TextField merges its hint into its name, so the match is on the
+      // label being *present* rather than on it being the whole string.
+      expect(
+        find.bySemanticsLabel(RegExp(l10n.chatComposerLabel)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('it grows with the message, up to four lines', (tester) async {
+      await pump(tester, conversation: conversationFixture());
+
+      final oneLine = tester.getSize(find.byType(AnimatedContainer)).height;
+
+      await tester.enterText(
+        find.byType(HhTextField),
+        List.filled(12, 'Assalomu alaykum').join(' '),
+      );
+      await tester.pumpAndSettle();
+
+      final grown = tester.getSize(find.byType(AnimatedContainer)).height;
+
+      expect(grown, greaterThan(oneLine));
+      // Four lines and no further: past that the composer would start eating
+      // the conversation it belongs to.
+      expect(grown, lessThan(HhSize.control * 3));
+      expect(
+        tester.widget<HhTextField>(find.byType(HhTextField)).maxLines,
+        4,
+      );
+    });
   });
 }

@@ -46,13 +46,65 @@ class HhTextField extends StatefulWidget {
     this.focusNode,
     this.readOnly = false,
     this.onTap,
-  }) : assert(
+    this.autofocus = false,
+    this.autofillHints,
+    this.minLines,
+  }) : showLabel = true,
+       assert(
          onTrailingTap == null || trailingSemanticLabel != null,
          'A tappable trailing icon needs a trailingSemanticLabel. An '
          'icon-only control with no name is one a screen-reader user cannot '
          'identify at all — MT-015 found every picker chevron in the app in '
          'exactly that state, and an assert is what stops the next one.',
        );
+
+  /// A chat composer: **no visible label, and 52 tall until it needs more.**
+  ///
+  /// The design's "every control is 52px with a persistent label" is a rule
+  /// about **forms** — a screen of stacked fields, filled once, where a label
+  /// that disappears on focus is how somebody loses track of what they are
+  /// answering. A composer is not one of those. It is a single input in an
+  /// action bar, used over and over, and what it is for is said by the entire
+  /// screen above it. The persistent label plus the taller multiline box put
+  /// the ordinary version at about 103pt before the send button, and the
+  /// 1.29.0 audit's designer note called it "a multi-field form" occupying too
+  /// much of a conversation.
+  ///
+  /// So this variant exists, it is **named**, and it is the only exception —
+  /// putting it in the design system rather than letting a screen hand-roll a
+  /// `Container` is what stops it becoming the dense mode the design refuses.
+  ///
+  /// [label] is still required and still carried: it becomes the field's
+  /// accessible name instead of a `Text` above it, so nothing is lost to a
+  /// screen reader.
+  const HhTextField.composer({
+    required this.label,
+    super.key,
+    this.controller,
+    this.hintText,
+    this.enabled = true,
+    this.maxLines = 4,
+    this.maxLength,
+    this.onChanged,
+    this.onSubmitted,
+    this.focusNode,
+    this.keyboardType = TextInputType.multiline,
+    this.textInputAction,
+    this.inputFormatters,
+    this.autofocus = false,
+    this.autofillHints,
+  }) : minLines = 1,
+       showLabel = false,
+       errorText = null,
+       disabledHint = null,
+       prefix = null,
+       unit = null,
+       trailingIconPath = null,
+       onTrailingTap = null,
+       trailingSemanticLabel = null,
+       obscureText = false,
+       readOnly = false,
+       onTap = null;
 
   /// Persistent label shown above the box.
   final String label;
@@ -116,6 +168,36 @@ class HhTextField extends StatefulWidget {
   final bool readOnly;
   final VoidCallback? onTap;
 
+  /// Takes focus on first build, which also opens the keyboard [keyboardType]
+  /// asks for.
+  ///
+  /// For a screen whose *only* job is one field — the OTP code — this is the
+  /// difference between arriving ready to type and arriving needing a tap.
+  /// Never set it on a screen with several fields: the one that grabs focus
+  /// decides where the user starts, and the answer is rarely the first field.
+  final bool autofocus;
+
+  /// Platform autofill categories, e.g. `[AutofillHints.oneTimeCode]`.
+  ///
+  /// On Android this is what puts the code from an SMS above the keyboard.
+  /// A field that declares a hint should sit inside an `AutofillGroup`.
+  final List<String>? autofillHints;
+
+  /// Lines the box is drawn at before it has content to fill them.
+  ///
+  /// **A `TextField` with `maxLines: 4` and no `minLines` is a fixed four-line
+  /// box**, not one that grows into four — that is Flutter's rule, and it is
+  /// why every multiline field here has always been drawn at its full height.
+  /// For a form that is right: the box is the affordance that says how much
+  /// there is room for. For the composer it is not, so it passes 1 and grows a
+  /// line at a time.
+  final int? minLines;
+
+  /// Whether the persistent label is drawn above the box.
+  ///
+  /// True for every field but the composer — see [HhTextField.composer].
+  final bool showLabel;
+
   @override
   State<HhTextField> createState() => _HhTextFieldState();
 }
@@ -174,17 +256,25 @@ class _HhTextFieldState extends State<HhTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: HhTypography.label.copyWith(
-            color: _labelColour,
+        if (widget.showLabel) ...[
+          Text(
+            widget.label,
+            style: HhTypography.label.copyWith(
+              color: _labelColour,
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
+          const SizedBox(height: 6),
+        ],
         AnimatedContainer(
           duration: HhDuration.fast,
           constraints: BoxConstraints(
-            minHeight: multiline ? HhSize.control * 1.6 : HhSize.control,
+            // The taller multiline box is a *form* affordance: it says "there
+            // is room to write here" on a screen you are filling in. A composer
+            // says that by being a composer, so it starts at the standard 52
+            // and grows a line at a time up to `maxLines`.
+            minHeight: multiline && widget.showLabel
+                ? HhSize.control * 1.6
+                : HhSize.control,
           ),
           decoration: BoxDecoration(
             color: _fill,
@@ -315,13 +405,26 @@ class _HhTextFieldState extends State<HhTextField> {
     );
   }
 
-  Widget _field() => TextField(
+  Widget _field() {
+    final field = _bareField();
+
+    // With no `Text` above it the box would announce as its hint, or as
+    // nothing. The label did not stop existing — it stopped being drawn.
+    return widget.showLabel
+        ? field
+        : Semantics(label: widget.label, child: field);
+  }
+
+  Widget _bareField() => TextField(
     controller: widget.controller,
     focusNode: _node,
+    autofocus: widget.autofocus,
+    autofillHints: widget.autofillHints,
     keyboardType: widget.keyboardType,
     textInputAction: widget.textInputAction,
     inputFormatters: widget.inputFormatters,
     obscureText: widget.obscureText,
+    minLines: widget.minLines,
     maxLines: widget.maxLines,
     maxLength: widget.maxLength,
     onChanged: widget.onChanged,

@@ -14,10 +14,14 @@ A full regression audit of the **1.29.0** APK against the deployed DEV API,
 delivered as [mobile-test-audit.md](mobile-test-audit.md). It replaces the
 1.17.0 audit of 2026-08-27.
 
-**Seven findings: 0 Critical, 4 High, 3 Medium.** Verdict **NO-GO for
-production**. Six of the previous seven are verified fixed — MT-003, MT-015,
-MT-017, MT-022, MT-023 and MT-024 — and only MT-006 carries over. Six findings
-are new: MT-025 through MT-030.
+**Seven findings: 0 Critical, 4 High, 3 Medium — all closed.** Six of the
+previous seven were verified fixed by this audit (MT-003, MT-015, MT-017,
+MT-022, MT-023, MT-024) and only MT-006 carried over. The six new ones,
+MT-025 through MT-030, were fixed in 1.30.0 and `headhunter-backend@7372331`;
+MT-006 was **answered rather than fixed** — see its row.
+
+The audit's verdict was NO-GO on 1.29.0. 1.30.0 is what it asked for, minus the
+device pass and the payment UATs, which are the auditor's to run.
 
 Findings are `MT-nnn` and each carries evidence, a root cause and acceptance
 criteria — read those before starting a fix rather than working from this table.
@@ -34,7 +38,7 @@ found none.
 
 | ID | Sev | State |
 |---|---|---|
-| MT-006 | High | Open — M13, blocked on client-supplied merchant credentials, not on code. **The audit now offers a second acceptance route**: remove Top up from the release scope and mark Coin purchase pre-release, rather than shipping a control that explains it does not work. That is a product decision, not a code one, and it is [in the blocked list](#blocked-on-someone-else) |
+| MT-006 | High | **Answered 2026-08-28, and the answer is "no change".** Still blocked on client-supplied merchant credentials, not on code. The audit offered a second route — take Top up out of the release — and the owner declined it: the control tells an employer that top-up arrives with Payme and CLICK, which is true and is what they asked. Recorded in [CLAUDE.md](CLAUDE.md) so it stops being re-filed; a *behaviour* change here would still be a finding |
 | MT-025 | High | **Fixed 1.30.0.** `localeSync` was auto-disposing and every method on it spans an await: `select` writes locally, waits, then pushes; `reconcile` is launched from a session listener and dropped. Both ran their second half on a dead `Ref`. So a language change translated the screen and stored nothing on the account, and a clean sign-in opened in the phone's language rather than the account's — both silent, with only *"Cannot use the Ref … after it has been disposed"* in the log. Kept alive, and three tests pin the window |
 | MT-026 | High | **Fixed 1.30.0.** The Messages tab returned its four states bare — no `Scaffold`, no `SafeArea`, no heading — while every other tab in all three shells is a `Scaffold` whose body is a `SafeArea`. The first conversation began at `y=0`, under the status bar. The wrapper now sits *outside* the state switch, which is what stops three of four arms being fixed and the fourth forgotten; the suite had been building the screen into a `Scaffold` of its own, which is what hid it |
 | MT-027 | High | **Fixed 1.30.0.** A role switch was two things that raced: the state changed, the router's refresh fired while the location still named the old shell, the deep-link rule read that location and scheduled a switch *back*, and the two `/auth/active-role` calls rotated the access token in an order nobody controlled. Admin opened on the employer's token and answered 403 until Retry. The token now rotates **before** the role is published, and `switchRoleAndGo` brackets the transition so the deep-link rule leaves it alone until the destination is stated |
@@ -123,18 +127,21 @@ MT-024.
       environments (§12.6). Nothing in M13 can be finished without them, and
       UAT-22 — the duplicated callback — has to be demonstrated rather than
       argued. *Blocks M13.*
-- [?] **Does 1.x ship with Top up at all?** (MT-006, 2026-08-28). The audit
-      accepts either answer and the choice is the owner's, because it changes
-      what the release promises rather than how it is built:
-      **(a)** deliver §6.7 — which needs the credentials above, so it is not
-      available today; or **(b)** take Top up out of the release scope and mark
-      Coin purchase pre-release, so an employer with two Coins left is not sent
-      down a path that ends in an explanation.
-      Today the control is live and answers *"Top-up is not available yet."*
-      after the tap, which is the one option nobody chose. Whichever way this
-      goes, the availability belongs in the **wallet response** rather than in a
-      constant — a price change must not be a store release (§6.6, §12.3.1) and
-      neither should the arrival of a payment provider.
+- [x] ~~**Does 1.x ship with Top up at all?**~~ (MT-006) — **answered by the
+      owner 2026-08-28: it stays exactly as it is until the keys arrive.** The
+      audit offered two routes, deliver §6.7 or take Top up out of the release;
+      the third state it called "the one nobody chose" is the chosen one. A
+      control that tells an employer *"Top-up is not available yet. It arrives
+      with Payme and CLICK support."* answers a question they were right to
+      ask, and hiding it would answer nothing.
+      **This is written into [CLAUDE.md](CLAUDE.md) so a QA pass reads it before
+      filing MT-006 a fifth time.** What would still be a finding is the control
+      doing something *else*: failing silently, charging anything, or claiming a
+      balance moved.
+      When the credentials land, availability belongs in the **wallet response**
+      rather than in a Dart constant — the arrival of a payment provider must
+      not be a store release, for the same reason a price change is not
+      (§6.6, §12.3.1).
 - [?] **Storefront billing decision** (§12.7, BR-23) — whether Coin purchases
       ship through Payme/CLICK or must go through Apple IAP / Google Play
       Billing. The ledger stays provider-agnostic either way, which is what

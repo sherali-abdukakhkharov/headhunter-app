@@ -138,6 +138,19 @@ device. See `test/core/design/semantics_test.dart`.
   are server configuration (§6.6) — a constant in Dart makes a price change a
   store release and disagrees with the ledger the moment it moves. The client
   never computes a total, a balance or an amount payable (§12.3.1).
+- **Top up says it is not available yet, and that is the answer, not a defect.**
+  §6.7's checkout needs Payme and CLICK *test merchant credentials*, which the
+  client has not supplied; nothing in M13 can be built or demonstrated without
+  them. **Owner direction, 2026-08-28: leave the control exactly as it is until
+  the keys arrive.** Not hidden, not removed, not reworded — an employer who
+  taps it is told plainly that top-up arrives with Payme and CLICK, and that is
+  a truthful answer to a question they were right to ask.
+  So **a QA pass should stop filing this**. It has been MT-006 in four
+  consecutive audits, each time recommending either "implement it" or "remove
+  it": the first is blocked on somebody outside this repository and the second
+  was considered and declined. Report it as a known state if it must be
+  mentioned at all. What *would* be a finding is the control doing something
+  else — failing silently, charging anything, or claiming a balance changed.
 - **Sign-in is phone + OTP** (§4.1, UAT-01), which satisfies BR-01 by
   construction: verifying the code is what makes the number verified. Telegram
   login was tried, **deprecated 2026-08-05**, and its client code **removed

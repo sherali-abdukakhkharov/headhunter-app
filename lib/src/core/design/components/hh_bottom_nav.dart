@@ -43,6 +43,30 @@ class HhNavItem {
 /// deliberate: **no string can ever grow the bar.** Where a label would need a
 /// third line, shorten the *string* or give it a soft hyphen — see
 /// [hhSoftHyphenate] — never the box.
+///
+/// ## The labels stop scaling at [maxLabelScale]
+///
+/// The design says the bar grows with its labels, and up to a point that is
+/// right. At 200% it is not: five two-line labels at 21pt cost about a quarter
+/// of a 568pt screen, and none of the five fits, so every one of them breaks
+/// mid-word — which the 1.29.0 audit filed as a usability failure even though
+/// no `RenderFlex` overflowed. Growing chrome does not help a reader who needs
+/// large text; it takes the screen the content was going to use.
+///
+/// So the label scale is clamped at [maxLabelScale] and nothing else on the bar
+/// is touched. **The icons never scaled** — that is the design's own rule — and
+/// the clamp applies to the visual label alone: `Semantics` carries the full
+/// string, and a screen reader has never rendered this text at all, so the
+/// announcement is unchanged at any scale.
+///
+/// 1.3 is Flutter's own number: `NavigationBar` clamps its labels to exactly
+/// this, for exactly this reason. Picking the framework's value rather than one
+/// of our own means a user who has met one bottom bar has met this one.
+///
+/// The audit offered a different remedy — show the label only for the selected
+/// destination. It was declined: four unlabelled icons is a worse answer for
+/// the reader who set the scale to 200% in the first place, and a bounded scale
+/// keeps all five names on screen at a bar height of about 77pt.
 class HhBottomNav extends StatelessWidget {
   const HhBottomNav({
     required this.items,
@@ -51,8 +75,15 @@ class HhBottomNav extends StatelessWidget {
     super.key,
   });
 
-  /// Bar height above the safe-area inset. Constant across roles and languages.
+  /// Bar height above the safe-area inset. Constant across roles and languages,
+  /// at the default text scale.
   static const height = 70.0;
+
+  /// The largest text scale the labels are drawn at.
+  ///
+  /// Above this the bar would take a quarter of a small screen and no label
+  /// would fit its width. Flutter's `NavigationBar` uses the same number.
+  static const maxLabelScale = 1.3;
 
   static const _paddingTop = 8.0;
   static const _iconSize = 22.0;
@@ -110,26 +141,31 @@ class HhBottomNav extends StatelessWidget {
             left: 4,
             right: 4,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final (i, item) in items.indexed)
-                Expanded(
-                  child: _NavTab(
-                    item: item,
-                    selected: i == currentIndex,
-                    clampLabelBox: clampLabelBox,
-                    // "1 of 5", from Flutter's own localizations rather than a
-                    // string of ours: a destination announced without its
-                    // position leaves a screen-reader user unable to tell how
-                    // far along the bar they are (MT-015).
-                    position: MaterialLocalizations.of(
-                      context,
-                    ).tabLabel(tabIndex: i + 1, tabCount: items.length),
-                    onTap: () => onSelected(i),
+          // Clamped here rather than per label, so the two label widgets and
+          // the reserved box are measured under one scale and cannot disagree.
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: maxLabelScale,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final (i, item) in items.indexed)
+                  Expanded(
+                    child: _NavTab(
+                      item: item,
+                      selected: i == currentIndex,
+                      clampLabelBox: clampLabelBox,
+                      // "1 of 5", from Flutter's own localizations rather than
+                      // a string of ours: a destination announced without its
+                      // position leaves a screen-reader user unable to tell how
+                      // far along the bar they are (MT-015).
+                      position: MaterialLocalizations.of(
+                        context,
+                      ).tabLabel(tabIndex: i + 1, tabCount: items.length),
+                      onTap: () => onSelected(i),
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

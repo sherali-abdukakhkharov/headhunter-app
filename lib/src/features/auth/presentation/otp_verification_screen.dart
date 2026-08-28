@@ -104,6 +104,18 @@ class _OtpVerificationScreenState
   /// toward warning early.
   int _wrongAttempts = 0;
 
+  /// The code this screen sent without being asked, so it cannot send the same
+  /// one twice.
+  ///
+  /// The field submits itself the moment it holds a full code — which is what
+  /// makes an autofilled SMS a zero-tap sign-in — and a refusal leaves those
+  /// digits in the box. Without this, the listener would fire again on the next
+  /// rebuild and spend the attempt budget on its own.
+  ///
+  /// Confirm stays enabled either way, so retrying the *same* code after a
+  /// timeout is still one tap. Automatic once, manual afterwards.
+  String? _autoSubmitted;
+
   /// True once the *server* has said this code is finished.
   ///
   /// Not derived from [_wrongAttempts]: the client's count is advisory and
@@ -140,7 +152,18 @@ class _OtpVerificationScreenState
     super.dispose();
   }
 
-  void _onCodeChanged() => setState(() => _error = null);
+  void _onCodeChanged() {
+    setState(() => _error = null);
+
+    // §4.2's code has a known length and there is nothing else on this screen
+    // to do with it. Waiting for a tap after the sixth digit — or after Android
+    // has filled all six from the message — is a step that asks the user to
+    // confirm what they have already said.
+    if (!_canVerify || _autoSubmitted == _code) return;
+
+    _autoSubmitted = _code;
+    unawaited(_verify());
+  }
 
   /// Guidance on the field while the code is short. Held back on an empty
   /// field: the user has just arrived and has been told nothing yet.
@@ -239,6 +262,9 @@ class _OtpVerificationScreenState
         // backend supersedes it. Leaving the old digits in the box invites the
         // user to submit them and be told they are wrong.
         _controller.clear();
+        // A new challenge may legitimately arrive at the same six digits, and
+        // it deserves the same automatic send as the first one.
+        _autoSubmitted = null;
       });
       _startCountdown();
       // A resend's only other visible effect is the countdown restarting, which
@@ -308,22 +334,37 @@ class _OtpVerificationScreenState
                 const SizedBox(height: HhSpace.md),
               ],
 
-              HhTextField(
-                label: l10n.authCodeLabel,
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                // Inline, where the problem is — not the page-level error
-                // state, whose heading says "Something went wrong" (MT-013).
-                errorText: _codeError(l10n),
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                maxLength: _codeLength,
-                textInputAction: TextInputAction.done,
-                enabled: !_busy,
-                onSubmitted: (_) {
-                  if (_canVerify) unawaited(_verify());
-                },
-                // No onChanged: the controller listener from initState clears
-                // the server's message and rebuilds for the button.
+              // `AutofillGroup` is what lets the platform act on the hint
+              // below; a field declaring one outside a group is ignored.
+              AutofillGroup(
+                child: HhTextField(
+                  label: l10n.authCodeLabel,
+                  controller: _controller,
+                  keyboardType: TextInputType.number,
+                  // The only thing on this screen to do. Arriving with the
+                  // caret in the box and the number pad already up removes a
+                  // tap from every sign-in, and it is safe here in a way it
+                  // would not be on a form: there is no second field for it to
+                  // steal focus from.
+                  autofocus: true,
+                  // Android reads the code out of the message and offers it
+                  // above the keyboard. Nothing is read without the user
+                  // choosing it, and the app never sees the SMS.
+                  autofillHints: const [AutofillHints.oneTimeCode],
+                  // Inline, where the problem is — not the page-level error
+                  // state, whose heading says "Something went wrong" (MT-013).
+                  errorText: _codeError(l10n),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  maxLength: _codeLength,
+                  textInputAction: TextInputAction.done,
+                  enabled: !_busy,
+                  onSubmitted: (_) {
+                    if (_canVerify) unawaited(_verify());
+                  },
+                  // No onChanged: the controller listener from initState clears
+                  // the server's message, rebuilds for the button, and sends a
+                  // complete code on its own.
+                ),
               ),
               const SizedBox(height: HhSpace.lg),
 
