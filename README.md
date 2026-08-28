@@ -28,6 +28,8 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
+Each release also carries **jobbridge-<version>.apk**, byte-identical to the one above. The link stays stable so it can be bookmarked; the versioned copy is the one worth keeping, because a file on a phone no longer knows which release it came from.
+
 Up to and including **v1.1.0** the asset was called `headhunter.apk`, and the
 rename kept both names until **v1.23.0** so links shared before it would still
 resolve. Twenty-two releases carried both; from v1.24.0 there is only

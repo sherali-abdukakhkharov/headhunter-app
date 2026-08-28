@@ -3,6 +3,9 @@
 #
 # The download link never changes:
 #   https://github.com/<owner>/<repo>/releases/latest/download/jobbridge.apk
+#
+# Each release also carries `jobbridge-<version>.apk`, byte-identical, because
+# once a file is on a phone the release title and tag are not.
 # GitHub resolves `latest` server-side, so README needs no edit per release.
 #
 # `headhunter.apk` was uploaded beside it as a byte-identical alias from the 1.1.0
@@ -201,40 +204,67 @@ jobs:
             --dart-define=FLAVOR=production \
             ${API_URL:+--dart-define=API_BASE_URL=$API_URL}
 
-      # A stable name, deliberately. `latest/download/<name>` only works if the
-      # asset name is identical in every release, so the version lives in the
-      # release title and tag - not in the filename. Which is also why the old
-      # name is copied rather than dropped: see the note at the top of this file.
+      # **Two names, and they are not an alias for each other.**
+      #
+      # `jobbridge-<version>.apk` is what a person downloads. A phone's Downloads
+      # folder is where a release loses its identity: four builds called
+      # `jobbridge.apk` become `jobbridge (1).apk` upward, and then nobody -
+      # least of all an auditor filling in "Application / Build Information" -
+      # can say which one they installed. The title and the tag are on the page,
+      # not in the file.
+      #
+      # `jobbridge.apk` stays because `latest/download/<name>` only resolves when
+      # the asset name is identical in every release, and that URL is the
+      # download button in README.md. Dropping it would break the one link this
+      # repository asks people to use.
+      #
+      # This is a different bargain from the `headhunter.apk` alias removed in
+      # 1.24.0. That one existed for URLs printed before the rename and pointed
+      # at nothing anybody still needed. Both of these are live: one is how you
+      # get the newest build, the other is how you know what you got.
       - name: Stage the artifact
         id: artifact
         run: |
-          mkdir -p dist
-          cp build/app/outputs/flutter-apk/app-production-release.apk \
-             dist/jobbridge.apk
+          version=$(grep -m1 '^version:' pubspec.yaml | sed 's/^version:[[:space:]]*//')
+          name="jobbridge-${version%%+*}.apk"
 
-          echo "size=$(du -h dist/jobbridge.apk | cut -f1)" >> "$GITHUB_OUTPUT"
-          echo "sha256=$(sha256sum dist/jobbridge.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-production-release.apk "dist/$name"
+          # Byte-identical, so which one a tester grabs cannot matter.
+          cp "dist/$name" dist/jobbridge.apk
+
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "size=$(du -h "dist/$name" | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "dist/$name" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
       # Also kept as a build artifact, so a workflow_dispatch run that creates no
-      # release still leaves something downloadable. Only the real name here -
-      # the alias exists for URLs already in circulation, and a CI artifact has
-      # none.
+      # release still leaves something downloadable. The versioned file only:
+      # a CI artifact has no permanent URL to keep working, and an untagged
+      # build is exactly the one whose identity is easiest to lose.
       - uses: actions/upload-artifact@v4
         with:
           name: jobbridge-apk
-          path: dist/jobbridge.apk
+          path: dist/${{ steps.artifact.outputs.name }}
           retention-days: 30
 
       - name: Publish the release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/jobbridge.apk
+          files: |
+            dist/${{ steps.artifact.outputs.name }}
+            dist/jobbridge.apk
           generate_release_notes: true
           body: |
             ### Download
 
-            **[jobbridge.apk](https://github.com/${{ github.repository }}/releases/latest/download/jobbridge.apk)** — ${{ steps.artifact.outputs.size }}
+            **[${{ steps.artifact.outputs.name }}](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${{ steps.artifact.outputs.name }})** — ${{ steps.artifact.outputs.size }}
+
+            Or always-the-newest:
+            [jobbridge.apk](https://github.com/${{ github.repository }}/releases/latest/download/jobbridge.apk).
+            The two files are byte-identical; the first one keeps its version in
+            the filename, which is what tells four builds in a Downloads folder
+            apart.
 
             Android only. Enable "install from unknown sources" if your phone asks.
 

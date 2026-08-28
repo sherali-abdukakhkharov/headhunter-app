@@ -24,6 +24,8 @@ release. The download link never changes, so the README needs no edit per releas
 https://github.com/sherali-abdukakhkharov/headhunter-app/releases/latest/download/jobbridge.apk
 ```
 
+Each release also carries **jobbridge-<version>.apk**, byte-identical. The stable link above stays so it can be bookmarked; the versioned copy is the one worth keeping, because a file sitting on a phone no longer knows which release it came from.
+
 The asset was called `headhunter.apk` up to and including **v1.1.0**, and the
 rename kept both names — the same bytes — so links shared before it kept
 resolving. **Dropped in v1.24.0**, after twenty-two releases had carried both:
