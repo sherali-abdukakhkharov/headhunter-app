@@ -1857,12 +1857,21 @@ this opens. Deep links moved to M8.
       recorded in full further down this section. Left checked-off rather than
       deleted because an open box above a closed entry gets read as the
       pessimistic half being current.
-- [~] Push registration and foreground/background handling — **config in place**
-      2026-08-07: `android/app/google-services.json` holds the Firebase project
-      `headhunter-app-b463f`, so one file covers every flavor. **No Firebase
-      package is in `pubspec.yaml` and no Gradle plugin is applied** — the file is
-      inert until this milestone opens, which is the owner's explicit ordering
-      (wire it last). The backend side is ready as of 2026-08-07
+- [x] **Push registration and foreground/background handling** — **this entry
+      was stale**, corrected 2026-08-28 by reading the code rather than the
+      checkbox. It described the state on 2026-08-07: "no Firebase package in
+      `pubspec.yaml` and no Gradle plugin applied".
+
+      All of it landed on 2026-08-24. `firebase_core` and `firebase_messaging`
+      are dependencies, `com.google.gms.google-services` is applied in
+      `android/app/build.gradle.kts`, `push_registration.dart` asks permission
+      and registers the token against `POST /notifications/devices`, and
+      `PushHost` handles a foreground message, a tap, and the tap that launched
+      the app cold.
+
+      What remains is a **device** check, not code: a notification cannot be
+      delivered to an emulator this machine can build for. That belongs with
+      the other device-only debt, not here
 - [x] **`google-services.json` was left stale deliberately, and it paid out**
       (JobBridge rename 2026-08-19; resolved 2026-08-24 by registering the
       three new apps in the console, which is what the note below prescribed). It cannot be fixed by
