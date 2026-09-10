@@ -63,6 +63,7 @@ choose), not for gaps that need typing. The two repos commit separately.
 | [MEMORY.md](MEMORY.md) | Why decisions were made; traps already paid for. |
 | [README.md](README.md) | Prerequisites, commands, run instructions. |
 | [CHANGELOG.md](CHANGELOG.md) | What each release shipped, and **how a release is cut** — the version in `pubspec.yaml` is what a device reports, so a tag alone is not a release. |
+| [docs/PLAY_STORE.md](docs/PLAY_STORE.md) | The Google Play launch: the account, the legal pages, the listing, signing, the testing tracks, and what must be true of the backend before real users arrive. |
 
 Before implementing anything from the spec, check ARCHITECTURE.md - several
 requirements have already been designed against, and the reasoning is not

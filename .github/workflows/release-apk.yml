@@ -325,6 +325,29 @@ jobs:
           cp build/app/outputs/flutter-apk/app-production-release.apk \
             "dist/jobbridge-${version%%+*}-arm64.apk"
 
+      # **The file Google Play takes.** Play accepts only an app bundle - it
+      # builds the per-device APKs from it itself - and a bundle cannot be
+      # installed by hand, so it sits beside the APKs rather than replacing
+      # them. Same flavour and the same defines, so the file uploaded to the
+      # Console is the one this tag produced, not one from a laptop. Its output
+      # path is its own (`outputs/bundle/`), so unlike the two APK builds above
+      # it does not care about ordering.
+      #
+      # Tag-only, like arm64: a bundle nobody uploads is three minutes of CI on
+      # every push. See docs/PLAY_STORE.md for what happens to it.
+      - name: Build the app bundle
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          API_URL: ${{ steps.api.outputs.url }}
+        run: |
+          flutter build appbundle --release \
+            --flavor production \
+            --dart-define=FLAVOR=production \
+            ${API_URL:+--dart-define=API_BASE_URL=$API_URL}
+          version=$(grep -m1 '^version:' pubspec.yaml | sed 's/^version:[[:space:]]*//')
+          cp build/app/outputs/bundle/productionRelease/app-production-release.aab \
+            "dist/jobbridge-${version%%+*}.aab"
+
       - name: Publish the release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -333,6 +356,7 @@ jobs:
             dist/${{ steps.artifact.outputs.name }}
             dist/jobbridge.apk
             dist/*-arm64.apk
+            dist/*.aab
             dist/notes-uz.txt
           generate_release_notes: true
           body: |

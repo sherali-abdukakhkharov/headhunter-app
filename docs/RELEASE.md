@@ -346,14 +346,27 @@ version: 1.0.1+2   # versionName 1.0.1, versionCode 2
 `versionCode` must **increase** for a device to treat the build as an upgrade
 rather than refusing to install it.
 
-## If Play Store distribution happens later
+## Play Store distribution
 
-This keystore works as the Play **upload** key. Prefer Play App Signing, which
-means Google holds the distribution key and this one only signs uploads — losing
-it then costs a key rotation rather than the listing. Note that Play App Signing
-introduces a *third* SHA-256 (Google's), which also has to be registered with
-BotFather, or login breaks for store installs only.
+The whole launch — the developer account, the legal pages, the listing, the
+testing tracks — is in [PLAY_STORE.md](PLAY_STORE.md). Two facts from it bear
+on this workflow:
 
-Play also wants an **app bundle** rather than an APK
-(`flutter build appbundle --flavor production`). The APK here is for direct
-download, which is what this workflow is for.
+**This keystore stays the *upload* key, and Google generates the app signing
+key.** It lives in GitHub Actions secrets and on one laptop, which is the right
+exposure for an upload key and the wrong one for the key every store install
+trusts: a leaked upload key is reset by Google through a form, a leaked app
+signing key is a new listing with no upgrade path. The price is paid once — a
+Play build does not install over a GitHub-download APK, because Android refuses
+an update whose signature changed — so every tester uninstalls the direct
+download when they move to a store track.
+
+**Play takes an app bundle, not an APK.** On a tag the workflow builds one
+beside the APKs (`jobbridge-<version>.aab`) from the same flavour and the same
+defines, so the file uploaded to the Console is the file the tag produced. The
+APKs remain what a person downloads; a bundle cannot be installed by hand.
+
+The note this section used to carry about registering a third SHA-256 with
+BotFather went with Telegram login (2026-08-19). Nothing in the app depends on
+the signing certificate’s fingerprint any more, so a Google-generated key needs
+no registration anywhere.
