@@ -80,8 +80,13 @@ organisation account happens before M13.
 
 | Asset | Spec | Status |
 |---|---|---|
-| App icon | 512 × 512 PNG, no transparency, ≤ 1 MB | To generate from the in-house brand mark; **decision:** launch with it, or wait for the client's logo (still not delivered). The icon can be changed later. |
-| Feature graphic | 1024 × 500 PNG/JPEG | To generate. |
+| App icon | 512 × 512 PNG, no transparency, ≤ 1 MB | **[docs/store/icon-512.png](store/icon-512.png)** — the in-house mark at 56 % on navy, the design's figure for square masks (owner's decision 2026-09-10: launch with it; the client's logo has not arrived and the icon can be replaced later). |
+| Feature graphic | 1024 × 500 PNG/JPEG | **[docs/store/feature-graphic-1024x500.png](store/feature-graphic-1024x500.png)** — the horizontal lockup on navy, one graphic for all four interface variants because the logotype is not translated. |
+
+Both are rendered from the real brand widgets by `test/store_assets_test.dart`
+— `flutter test test/store_assets_test.dart --dart-define=STORE_ASSETS_OUT=docs/store` —
+so when the brand changes, re-run that rather than editing a PNG. Without the
+define the file is one skipped test, which is what lets it live in `test/`.
 | Phone screenshots | 2–8, PNG/JPEG, no alpha, **long side ≤ 2 × short side** (so 1080 × 1920, *not* 1080 × 2400) | Brief in [STORE_SCREENSHOTS_BRIEF.md](STORE_SCREENSHOTS_BRIEF.md); taken by the tester from a real phone against the seeded data. |
 | Short description | ≤ 80 characters | Below, three languages. |
 | Full description | ≤ 4000 characters | Below. |
@@ -249,7 +254,9 @@ Four to five weeks from the day the lawyer receives the brief.
 
 ## Open decisions
 
-1. **Icon**: in-house brand mark now, or wait for the client's logo.
+1. ~~**Icon**: in-house brand mark now, or wait for the client's logo.~~
+   Decided 2026-09-10: the in-house mark. Replace the two files in
+   `docs/store/` if the client's logo ever arrives.
 2. **Target audience / minimum age**: lawyer.
 3. **Coins and Google Play Billing**: client, before M13.
 4. **Hosting** the API somewhere that is not a laptop: owner.
