@@ -54,10 +54,18 @@ release out without the app-content declarations that depend on them:
 - **Account deletion page.** Required for any app with account creation: how to
   delete in-app, and how to request deletion without the app. Same brief.
 
-Where they live: served by the backend at `https://hh.qitmir.uz/privacy` and
-`https://hh.qitmir.uz/account/delete` (three languages, one URL each with a
-language switch). The pages are deployed **after** approval — a draft privacy
-policy on a public URL is a published policy.
+**Both are live since 2026-09-22**, served by the backend at
+`https://hh.qitmir.uz/privacy` and `https://hh.qitmir.uz/account/delete` —
+one URL each, `?lang=uz|ru|en`, Uzbek by default. The operator's lawyer
+answered the brief's questions that day (`headhunter-backend/docs/legal/questions.md`;
+the answers are in the backend commit that published the pages). The source is
+`headhunter-backend/docs/legal/*.md`; editing it and running `pnpm legal:build`
+there is how the text changes.
+
+What the lawyer decided that shapes this launch: a link to the policy is
+sufficient consent (no checkbox required — the app keeps its existing one);
+the Play target audience is **18+**; the Data safety answers in the brief
+stand.
 
 ### 2. The developer account
 
