@@ -63,14 +63,17 @@ step below.
 
 | # | File name | Account | Where | What must be visible | What must not |
 |---|---|---|---|---|---|
-| 1 | `01-vacancies` | Aziza | Bottom tab **Vacancies** (the list) | Several vacancy cards with their category pictures — "Backend Developer (Node.js)" from Chinor Technologies near the top, and the seasonal "Harvest crew" card | An empty list, a loading spinner |
-| 2 | `02-vacancy` | Aziza | Tap "Backend Developer (Node.js)" | The picture band at the top with the category name, the pay, the location, and the **Apply** area at the bottom (she has already applied — the screen will say so; that is fine) | — |
-| 3 | `03-profile` | Aziza | Bottom tab **Profile** | Her photo (a monogram "AK"), the completeness card (about 91 %), and the list of profile sections | The phone number `+998 01 …` if it appears on this screen — scroll so it is out of frame |
-| 4 | `04-applications` | Aziza | Bottom tab **Applications**, then open the Chinor one | The application at the **Interview** stage with its timeline of stages | — |
+| 1 | `01-vacancies` | Aziza | Bottom tab **Vacancies** (the list) | Two vacancy cards with their category pictures — "Backend Developer (Node.js)" from Chinor Technologies, then the seasonal "Harvest crew" card. If Harvest is missing, its application deadline has passed: stop and ask engineering to re-seed rather than shooting a one-card list | An empty list, a loading spinner |
+| 2 | `02-vacancy` | Aziza | Tap "Backend Developer (Node.js)" | The picture band with the category name, the pay and the location. Scroll so the *Applied* line is in frame if it fits; if it does not, the band and the pay are the shot. The description is the employer's own text and stays in whatever language they wrote it | — |
+| 3 | `03-profile` | Aziza | Bottom tab **Profile** | The completeness card (about 91 %, "visible in search") and the list of profile sections. There is no photo on this screen — it lives under the Files section | The phone number `+998 01 …` if it appears — scroll it out of frame |
+| 4 | `04-applications` | Aziza | Bottom tab **Applications** | The application card at the **Interview** stage. There is no detail page behind it; the card is the shot | — |
 | 5 | `05-chat` | Aziza | Bottom tab **Messages**, open the conversation with Chinor Technologies | The four messages, the composer at the bottom | Keyboard open |
-| 6 | `06-employer-home` | Chinor | Bottom tab **Home** | The dashboard: three vacancies in three states (active, paused, waiting for moderation), the applications count, the Coin balance | — |
+| 6 | `06-employer-home` | Chinor | Bottom tab **Home** | The dashboard: the active-vacancy count, open positions, the hiring-progress card and the Coin balance. (The paused and the under-moderation vacancy are on the **Vacancies** tab, not counted here) | — |
 | 7 | `07-candidates` | Chinor | Bottom tab **Candidates**, search with no filters | Candidate cards. **Confirm no phone number is shown on any card** — if one is, that is a serious finding, report it immediately | Malika Usmonova — she is hidden and must not appear; if she does, report it |
-| 8 | `08-pipeline` | Chinor | Bottom tab **Vacancies** → "Backend Developer (Node.js)" → its applications | The applicants across their stages (viewed, interview, rejected) | — |
+| 8 | `08-pipeline` | Chinor | Bottom tab **Vacancies** → "Backend Developer (Node.js)" → its applications | The applicants across their stages (viewed, interview, rejected). **Their phone numbers and CVs are shown here, and that is correct**: an application is an entitlement to contact (the client's decision, 2026-08-20). Only the search cards in shot 7 must hide them | — |
+
+The delivered set lives in `docs/store/screenshots/<locale>/`; a retake
+replaces the file with the same name.
 
 Take each shot twice if unsure; keep the better one. Do not take screenshots of
 the **Company → Coins / Top up** screen (it says top-up is not available yet,

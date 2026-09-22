@@ -21,6 +21,11 @@ uning **auditoriyasi boshqa**: uni o'quvchi kod yozmaydi, ilovani o'rnatadi.
 
 ---
 
+## 1.35.0
+
+- Ilovada o‘zgarish yo‘q. Bu versiya Google Play uchun birinchi yig‘ma (App
+  Bundle) — do‘konga yuklanadigan fayl shu relizdan olinadi.
+
 ## 1.34.0
 
 - **1.33.0 ni o‘rnatmang** — undagi APK xato yig‘ilgan va hamma telefonga

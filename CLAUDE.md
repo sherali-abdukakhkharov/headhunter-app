@@ -143,10 +143,16 @@ device. See `test/core/design/semantics_test.dart`.
   them** (§10) - there is no web admin panel, ever (§2.4).
 - **Forms are schema-driven** because the field set depends on work category and
   admins add categories at runtime (§5.2, §6.3, §10.3).
-- **Never show a candidate's phone on a search card** (BR-09, §11.1). Since the
-  2026-08-10 spec revision the rule reaches further: phone, e-mail and CV are
-  released to an employer **only after a paid Candidate Unlock** (§6.6, §11.1).
-  An application no longer entitles an employer to contact on its own.
+- **Never show a candidate's phone on a search card** (BR-09, §11.1). Beyond
+  search, contact — phone, e-mail, CV — is released to an employer by an
+  **entitlement**, and there are three: a paid Candidate Unlock (§6.6), **an
+  application the candidate made to that employer, or an accepted invitation**.
+  The last two are the client's signed-off reading of §11.1's "another
+  explicitly approved entitlement" (2026-08-20; `headhunter-backend/MEMORY.md`,
+  2026-08-19 entry), so an applicant's phone on the employer's own pipeline is
+  correct, and the unlock exists for candidates who have *not* applied. This
+  paragraph said the opposite until 2026-09-22 and sent a QA pass to file the
+  pipeline as a leak.
 - **Money is the server's.** Coin price, unlock cost and the registration bonus
   are server configuration (§6.6) — a constant in Dart makes a price change a
   store release and disagrees with the ledger the moment it moves. The client

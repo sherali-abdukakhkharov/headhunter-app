@@ -17,6 +17,30 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.35.0+45 — 2026-09-22
+
+### Changed
+
+- **The first build for Google Play.** Nothing inside the app changed. This
+  release exists because the release workflow now builds an Android App Bundle
+  beside the APKs, and 1.34.0 predates that step: `jobbridge-1.35.0.aab` is the
+  file the Play Console takes, signed here by the upload key and re-signed by
+  Google. The APKs remain the direct download for the same app.
+- What landed between the two releases, all outside `lib/`: the launch
+  checklist ([docs/PLAY_STORE.md](docs/PLAY_STORE.md)), the store assets under
+  `docs/store/` — icon, feature graphic, and the QA pass's 24 screenshots — and
+  the two briefs the launch hands to other people.
+
+### Fixed
+
+- **CLAUDE.md said an application no longer entitles an employer to a
+  candidate's contact details.** The client signed off the opposite reading on
+  2026-08-20 (`headhunter-backend/MEMORY.md`, 2026-08-19 entry): an
+  application, an accepted invitation, or a paid unlock each release contact,
+  and the unlock exists for candidates who have *not* applied. The wrong
+  sentence sent a QA pass to file the employer's own applicant pipeline as a
+  BR-09 leak. Corrected, with the screenshot brief.
+
 ## 1.34.0+44 — 2026-08-29
 
 ### Fixed
