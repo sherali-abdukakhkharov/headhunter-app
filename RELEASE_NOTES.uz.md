@@ -21,6 +21,13 @@ uning **auditoriyasi boshqa**: uni o'quvchi kod yozmaydi, ilovani o'rnatadi.
 
 ---
 
+## 1.35.1
+
+- Bildirishnomalar oynasida "Hammasi / O‘qilmagan" tanlagichi endi to‘liq
+  ko‘rinadi — avval o‘zbek va rus tillarida yozuvlar kesilib qolardi.
+- Profil to‘ldirilgach ariza yuborishda chiqadigan "Xuddi shu so‘rov
+  bajarilmoqda" xatosi tuzatildi (server tomonida).
+
 ## 1.35.0
 
 - Ilovada o‘zgarish yo‘q. Bu versiya Google Play uchun birinchi yig‘ma (App

@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/auth/app_role.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
+import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/notifications/data/notification_repository.dart';
@@ -115,6 +120,7 @@ void main() {
   Future<_FakeNotifications> pump(
     WidgetTester tester, {
     List<List<AppNotification>> pages = const [],
+    Locale locale = const Locale('en'),
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -132,7 +138,7 @@ void main() {
         ],
         child: MaterialApp(
           theme: HhTheme.light,
-          locale: const Locale('en'),
+          locale: locale,
           localizationsDelegates: AppL10n.localizationsDelegates,
           supportedLocales: AppL10n.supportedLocales,
           home: const NotificationsScreen(),
@@ -144,6 +150,51 @@ void main() {
 
     return fake;
   }
+
+  group('the filter reads in every interface variant', () {
+    // Found on a phone, 2026-09-23: the filter and "mark all read" shared one
+    // row, the button took its full label's width first, and in Uzbek that
+    // left the two segments about 100pt — drawn as "H…" and "O‘…". Every
+    // other test here pumps English, whose label is short enough to hide it.
+    // 360pt is the narrowest common Android width.
+    //
+    // Measured in the real font. The test default draws every glyph as a
+    // square one font-size wide, which makes "Непрочитанные" 182pt against
+    // a 161pt segment — a failure no phone would show.
+    setUpAll(() async {
+      final bytes = await File(
+        'assets/fonts/GolosText-Variable.ttf',
+      ).readAsBytes();
+      await (FontLoader(HhTypography.family)..addFont(
+            Future.value(ByteData.view(Uint8List.fromList(bytes).buffer)),
+          ))
+          .load();
+    });
+
+    for (final variant in AppLocale.values) {
+      testWidgets('${variant.tag}: neither segment is cut short at 360pt', (
+        tester,
+      ) async {
+        await pump(tester, locale: variant.locale);
+
+        final l10n = await AppL10n.delegate.load(variant.locale);
+        for (final label in [l10n.notificationsAll, l10n.notificationsUnread]) {
+          final paragraph = tester.renderObject<RenderParagraph>(
+            find.text(label),
+          );
+          expect(
+            paragraph.didExceedMaxLines,
+            isFalse,
+            reason: '"$label" is ellipsized',
+          );
+        }
+
+        // And the action the filter used to be squeezed by is still there.
+        expect(find.text(l10n.notificationsMarkAllRead), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  });
 
   group('the sentence is the server’s and the branch is the code', () {
     testWidgets('the text is shown as given', (tester) async {

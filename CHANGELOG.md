@@ -17,6 +17,31 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.35.1+46 — 2026-09-23
+
+### Fixed
+
+- **The notification centre's filter read "H…" and "O‘…" in Uzbek.** The
+  All / Unread control shared a row with "mark all read", and the button took
+  its whole label's width first. "Mark all read" is short enough to leave the
+  segments room; "Hammasini o‘qilgan deb belgilash" left them about 100pt. The
+  two now stack, the filter full width and the action beneath it. Every test of
+  the screen pumped English, so a new one pumps all four interface variants at
+  360pt **in the bundled Golos Text** — the test font's square glyphs would
+  have failed Russian on a layout no phone breaks. Against the old layout it
+  fails for both Uzbek variants and Russian and passes for English, which is
+  what the phone showed. Not run on a device here.
+
+### Also, on the server (no app change)
+
+- **Applying after a refusal answered "the same request is in progress"
+  forever.** A new candidate tapped Apply before filling in a profile, filled
+  it in, and every retry was refused. The app keeps its idempotency key until
+  it sees a success, as §12.4 requires, and the server never released the key
+  of a refused attempt. Fixed and deployed on 2026-09-23 (`headhunter-backend`
+  `60ad5e3`); the key is now given back on any refusal, and the claims already
+  stuck free themselves. Nothing in this app changed for it.
+
 ## 1.35.0+45 — 2026-09-22
 
 ### Changed

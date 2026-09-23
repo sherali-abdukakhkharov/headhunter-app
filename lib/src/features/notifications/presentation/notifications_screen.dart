@@ -77,28 +77,39 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       ),
       body: Column(
         children: [
+          // Stacked, not side by side. In one Row the button took its whole
+          // label's width first and the segments shared what was left: in
+          // English ("Mark all read") that fitted, and in Uzbek ("Hammasini
+          // o‘qilgan deb belgilash") it left the filter about 100pt, drawn as
+          // "H…" and "O‘…" on a real phone (2026-09-23).
           Padding(
-            padding: const EdgeInsets.all(HhSpace.gutter),
-            child: Row(
+            padding: const EdgeInsets.fromLTRB(
+              HhSpace.gutter,
+              HhSpace.gutter,
+              HhSpace.gutter,
+              HhSpace.xs,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: HhSegmented(
-                    labels: [
-                      l10n.notificationsAll,
-                      l10n.notificationsUnread,
-                    ],
-                    selectedIndex: _unreadOnly ? 1 : 0,
-                    // Screen state, not the location: this screen is pushed
-                    // rather than routed, so there is no branch for a `go` to
-                    // land in the wrong half of.
-                    onChanged: (index) =>
-                        setState(() => _unreadOnly = index == 1),
-                  ),
+                HhSegmented(
+                  labels: [
+                    l10n.notificationsAll,
+                    l10n.notificationsUnread,
+                  ],
+                  selectedIndex: _unreadOnly ? 1 : 0,
+                  // Screen state, not the location: this screen is pushed
+                  // rather than routed, so there is no branch for a `go` to
+                  // land in the wrong half of.
+                  onChanged: (index) =>
+                      setState(() => _unreadOnly = index == 1),
                 ),
-                const SizedBox(width: HhSpace.sm),
-                HhButton.text(
-                  label: l10n.notificationsMarkAllRead,
-                  onPressed: () => _markAllRead(context),
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: HhButton.text(
+                    label: l10n.notificationsMarkAllRead,
+                    onPressed: () => _markAllRead(context),
+                  ),
                 ),
               ],
             ),
