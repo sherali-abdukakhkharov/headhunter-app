@@ -15,7 +15,7 @@ publish_to: 'none'
 # sharing a number cannot upgrade each other on a device: the install fails, or
 # the tester keeps looking at the old app. One build number per release, counted
 # from the first — see CHANGELOG.md.
-version: 1.35.1+46
+version: 1.36.0+47
 
 environment:
   sdk: ^3.12.2

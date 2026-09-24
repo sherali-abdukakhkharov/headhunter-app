@@ -9,6 +9,7 @@ import 'package:jobbridge_app/src/core/config/app_flavor.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
 import 'package:jobbridge_app/src/core/l10n/app_locale.dart';
 import 'package:jobbridge_app/src/core/l10n/locale_controller.dart';
+import 'package:jobbridge_app/src/core/links/link_opener.dart';
 import 'package:jobbridge_app/src/core/network/api_exception.dart';
 import 'package:jobbridge_app/src/core/router/routes.dart';
 import 'package:jobbridge_app/src/features/account/data/locale_sync.dart';
@@ -157,6 +158,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ? null
       : l10n.authPhoneInvalid;
 
+  /// §4.1 step 2's policy, in the language this screen is showing.
+  ///
+  /// Opened in the browser rather than inside the app: the page is the
+  /// operator's public document, the same URL the store listing gives, and a
+  /// copy rendered here would be a second text to keep in step with it.
+  Future<void> _openPrivacyPolicy(AppLocale locale) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppL10n.of(context);
+
+    try {
+      await ref.read(linkOpenerProvider).open(LegalLinks.privacyPolicy(locale));
+    } on NoBrowserException {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.linkNoBrowser)));
+    }
+  }
+
   Future<void> _sendCode() async {
     final phone = _phone;
 
@@ -276,7 +293,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               const SizedBox(height: HhSpace.lg),
 
               HhCheckboxRow(
-                label: l10n.authTermsAgree,
+                // The policy only. There is no terms-of-service document, and
+                // until 1.36.0 this also accepted one — consent to a text
+                // nobody could open, beside a policy nobody could open either.
+                label: l10n.authPrivacyAgree,
+                link: HhInlineLink(
+                  text: l10n.authPrivacyPolicyLink,
+                  actionLabel: l10n.authPrivacyPolicyOpen,
+                  onTap: () => unawaited(_openPrivacyPolicy(activeLocale)),
+                ),
                 value: _termsAccepted,
                 onChanged: (accepted) =>
                     setState(() => _termsAccepted = accepted),

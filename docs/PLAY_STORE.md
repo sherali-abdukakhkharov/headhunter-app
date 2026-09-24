@@ -63,7 +63,9 @@ the answers are in the backend commit that published the pages). The source is
 there is how the text changes.
 
 What the lawyer decided that shapes this launch: a link to the policy is
-sufficient consent (no checkbox required — the app keeps its existing one);
+sufficient consent (no checkbox required — the app keeps its existing one,
+which since 1.36.0 links the policy in the reader's language and names nothing
+else: there is no terms-of-service document, so it no longer claims one);
 the Play target audience is **18+**; the Data safety answers in the brief
 stand.
 

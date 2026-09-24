@@ -338,18 +338,25 @@ lib/
 Feature-first: a feature owns its data, domain and presentation. Only put
 things in `core/` or `shared/` when a second feature actually needs them.
 
-## The native code is two MethodChannels, and neither is a plugin
+## The native code is three MethodChannels, and none is a plugin
 
-`android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries both:
+`android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries all
+three:
 
 - **`/attachments`** hands a downloaded file to the OS through a `FileProvider`;
 - **`/push`** creates the notification channel FCM posts to, and reads
-  `versionName` for the device registration.
+  `versionName` for the device registration;
+- **`/links`** (1.36.0) hands an **https** page to the browser — the privacy
+  policy the sign-in consent names. It refuses every other scheme, because an
+  `ACTION_VIEW` intent opens whatever a URI says. `LinkOpener` is the Dart side.
 
-Every pub package that does either applies the Kotlin Gradle Plugin — a warning
-future Flutter versions refuse — and the app module's *own* Kotlin does not
-appear on that list. `flutter_local_notifications` and `package_info_plus` are
-the usual answers and both are on it.
+Every pub package that does any of these applies the Kotlin Gradle Plugin — a
+warning future Flutter versions refuse — and the app module's *own* Kotlin does
+not appear on that list. `flutter_local_notifications`, `package_info_plus` and
+`url_launcher` are the usual answers and all are on it. Several comments say a
+link "needs url_launcher" and so is copied rather than opened (the interview
+link, a phone number on the moderation screen); that was true until `/links`
+existed, and each can now be revisited on its merits.
 
 **The list already has one name on it: `file_picker`**, since 2026-08-07. CI
 prints it on every build. Removing `telegram_login` on 2026-08-19 took the list

@@ -777,8 +777,17 @@ class AppL10nRu extends AppL10n {
   String get authTelegramSignIn => 'Войти через Telegram';
 
   @override
-  String get authTermsAgree =>
-      'Я принимаю Условия использования и Политику конфиденциальности';
+  String get authPrivacyAgree => 'Я принимаю Политику конфиденциальности';
+
+  @override
+  String get authPrivacyPolicyLink => 'Политику конфиденциальности';
+
+  @override
+  String get authPrivacyPolicyOpen => 'Открыть Политику конфиденциальности';
+
+  @override
+  String get linkNoBrowser =>
+      'На этом телефоне нет приложения, которое может открыть ссылку.';
 
   @override
   String get authSignInFailed =>

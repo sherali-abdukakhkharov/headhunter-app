@@ -17,6 +17,36 @@ Both rules are now enforced by `release-apk.yml`, which refuses to build when th
 tag and this file disagree. They had been documented in three places and broken in
 three releases out of four.
 
+## 1.36.0+47 — 2026-09-24
+
+### Changed
+
+- **The sign-in consent links the privacy policy, and names nothing else.**
+  Reported from a phone: the checkbox read "I accept the Terms of Service and
+  the Privacy Policy" and neither was a link. One of the two did not exist —
+  there is no terms-of-service document — so the sentence now accepts the
+  policy alone (owner decision, 2026-09-24; the lawyer had already said a link
+  to the policy is sufficient consent). The policy's words are underlined and
+  open `https://hh.qitmir.uz/privacy` in the browser, in the reader's language;
+  Uzbek Cyrillic gets the Uzbek page, since the pages exist in uz, ru and en.
+  Reading the policy does not tick the box.
+- **`HhCheckboxRow` takes an `HhInlineLink`.** The link is placed by finding
+  its words verbatim in the label, so the label stays one translatable
+  sentence and each language chooses which words are the link. A span's
+  recognizer wins the tap over the row, and a screen reader, whose node
+  excludes the text, gets the link as a custom action ("Open the Privacy
+  Policy") beside the checkbox's own double-tap. Pinned headlessly, and shown
+  in `/_design`.
+- **A third MethodChannel, `/links`**, opens an https page in the browser —
+  the dozen lines of Kotlin `url_launcher` would otherwise have cost, since it
+  applies the Kotlin Gradle Plugin. It refuses every other scheme: an
+  `ACTION_VIEW` intent opens whatever a URI names.
+
+Not verified here: the Kotlin compiles only in CI, and nothing here has
+opened a browser on a device. The Dart side, the channel contract, the tap
+routing and the semantics are covered by tests; the policy URL's route and
+languages are cross-checked against the backend's source.
+
 ## 1.35.1+46 — 2026-09-23
 
 ### Fixed

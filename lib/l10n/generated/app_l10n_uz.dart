@@ -766,8 +766,16 @@ class AppL10nUz extends AppL10n {
   String get authTelegramSignIn => 'Telegram orqali kirish';
 
   @override
-  String get authTermsAgree =>
-      'Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman';
+  String get authPrivacyAgree => 'Maxfiylik siyosatini qabul qilaman';
+
+  @override
+  String get authPrivacyPolicyLink => 'Maxfiylik siyosatini';
+
+  @override
+  String get authPrivacyPolicyOpen => 'Maxfiylik siyosatini ochish';
+
+  @override
+  String get linkNoBrowser => 'Bu telefonda havolani ocha oladigan ilova yo‘q.';
 
   @override
   String get authSignInFailed =>
@@ -4158,8 +4166,16 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get authTelegramSignIn => 'Telegram орқали кириш';
 
   @override
-  String get authTermsAgree =>
-      'Фойдаланиш шартлари ва Махфийлик сиёсатини қабул қиламан';
+  String get authPrivacyAgree => 'Махфийлик сиёсатини қабул қиламан';
+
+  @override
+  String get authPrivacyPolicyLink => 'Махфийлик сиёсатини';
+
+  @override
+  String get authPrivacyPolicyOpen => 'Махфийлик сиёсатини очиш';
+
+  @override
+  String get linkNoBrowser => 'Бу телефонда ҳаволани оча оладиган илова йўқ.';
 
   @override
   String get authSignInFailed =>
@@ -7540,8 +7556,16 @@ class AppL10nUzLatn extends AppL10nUz {
   String get authTelegramSignIn => 'Telegram orqali kirish';
 
   @override
-  String get authTermsAgree =>
-      'Foydalanish shartlari va Maxfiylik siyosatini qabul qilaman';
+  String get authPrivacyAgree => 'Maxfiylik siyosatini qabul qilaman';
+
+  @override
+  String get authPrivacyPolicyLink => 'Maxfiylik siyosatini';
+
+  @override
+  String get authPrivacyPolicyOpen => 'Maxfiylik siyosatini ochish';
+
+  @override
+  String get linkNoBrowser => 'Bu telefonda havolani ocha oladigan ilova yo‘q.';
 
   @override
   String get authSignInFailed =>

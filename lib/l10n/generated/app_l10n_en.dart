@@ -772,8 +772,16 @@ class AppL10nEn extends AppL10n {
   String get authTelegramSignIn => 'Log in with Telegram';
 
   @override
-  String get authTermsAgree =>
-      'I accept the Terms of Service and the Privacy Policy';
+  String get authPrivacyAgree => 'I accept the Privacy Policy';
+
+  @override
+  String get authPrivacyPolicyLink => 'Privacy Policy';
+
+  @override
+  String get authPrivacyPolicyOpen => 'Open the Privacy Policy';
+
+  @override
+  String get linkNoBrowser => 'No app on this phone can open the link.';
 
   @override
   String get authSignInFailed =>

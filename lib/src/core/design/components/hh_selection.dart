@@ -1,14 +1,41 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 
 import 'package:jobbridge_app/src/core/design/hh_colors.dart';
 import 'package:jobbridge_app/src/core/design/hh_icons.dart';
 import 'package:jobbridge_app/src/core/design/hh_metrics.dart';
 import 'package:jobbridge_app/src/core/design/hh_typography.dart';
 
+/// Part of a selection row's label that opens something — the document a
+/// consent names.
+///
+/// [text] must occur **verbatim** in the row's label, and that is how it is
+/// placed: the label stays one translatable sentence, and each language
+/// chooses which words are the link ("Maxfiylik siyosatini" in Uzbek,
+/// "Политику конфиденциальности" in Russian). If it does not occur the label
+/// is drawn plain and the link survives only as the screen-reader action —
+/// a translation slip costs the underline, never the document.
+class HhInlineLink {
+  const HhInlineLink({
+    required this.text,
+    required this.actionLabel,
+    required this.onTap,
+  });
+
+  final String text;
+
+  /// What a screen reader offers in its actions menu — a verb phrase such as
+  /// "Open the Privacy Policy", since [text] is inflected to fit a sentence.
+  final String actionLabel;
+  final VoidCallback onTap;
+}
+
 /// A checkbox with its label, as one tappable row.
 ///
 /// The whole row is the target, not just the 22px box — on a phone, hitting a
-/// 22px square is a miss waiting to happen.
+/// 22px square is a miss waiting to happen. A [link] inside the label is the
+/// one exception: tapping those words opens it and leaves the box alone.
 class HhCheckboxRow extends StatelessWidget {
   const HhCheckboxRow({
     required this.label,
@@ -16,9 +43,14 @@ class HhCheckboxRow extends StatelessWidget {
     required this.onChanged,
     super.key,
     this.description,
+    this.link,
   });
 
   final String label;
+
+  /// Words in [label] that open something, drawn as a link. See
+  /// [HhInlineLink].
+  final HhInlineLink? link;
 
   /// Optional second line saying what the choice means, mirroring
   /// [HhSwitchRow.description].
@@ -34,6 +66,7 @@ class HhCheckboxRow extends StatelessWidget {
   Widget build(BuildContext context) => _SelectionRow(
     label: label,
     description: description,
+    link: link,
     onTap: onChanged == null ? null : () => onChanged!(!value),
     semantics: (checked: value, inMutuallyExclusiveGroup: false),
     control: AnimatedContainer(
@@ -209,10 +242,12 @@ class _SelectionRow extends StatelessWidget {
     required this.onTap,
     required this.semantics,
     this.description,
+    this.link,
   });
 
   final String label;
   final String? description;
+  final HhInlineLink? link;
   final Widget control;
   final VoidCallback? onTap;
   final ({bool checked, bool inMutuallyExclusiveGroup}) semantics;
@@ -232,6 +267,15 @@ class _SelectionRow extends StatelessWidget {
     // restated because excluding the subtree also drops the InkWell's.
     excludeSemantics: true,
     onTap: onTap,
+    // The inline link is inside the excluded subtree, so it is restated too —
+    // as a custom action, the way TalkBack offers a second thing a control can
+    // do. Double-tap still checks the box; the policy is in the actions menu.
+    customSemanticsActions: switch (link) {
+      final link? => {
+        CustomSemanticsAction(label: link.actionLabel): link.onTap,
+      },
+      null => null,
+    },
     child: InkWell(
       onTap: onTap,
       child: Container(
@@ -256,13 +300,10 @@ class _SelectionRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    label,
-                    style: HhTypography.body.copyWith(
-                      fontSize: 14.5,
-                      color: HhColors.brand900,
-                    ),
-                  ),
+                  switch (link) {
+                    final link? => _LinkedLabel(label: label, link: link),
+                    null => Text(label, style: _labelStyle),
+                  },
                   if (description case final text?) ...[
                     const SizedBox(height: 2),
                     Text(text, style: HhTypography.caption),
@@ -275,4 +316,67 @@ class _SelectionRow extends StatelessWidget {
       ),
     ),
   );
+}
+
+final TextStyle _labelStyle = HhTypography.body.copyWith(
+  fontSize: 14.5,
+  color: HhColors.brand900,
+);
+
+/// A selection label with one span that opens something.
+///
+/// Stateful only to own the recognizer, which has to be disposed. A span's
+/// recognizer wins the tap over the row's `InkWell` — it joins the gesture
+/// arena first, being deeper — so the link opens without toggling the box.
+class _LinkedLabel extends StatefulWidget {
+  const _LinkedLabel({required this.label, required this.link});
+
+  final String label;
+  final HhInlineLink link;
+
+  @override
+  State<_LinkedLabel> createState() => _LinkedLabelState();
+}
+
+class _LinkedLabelState extends State<_LinkedLabel> {
+  // Reads `widget` at tap time, so a rebuilt row with a new callback is the
+  // one that runs.
+  late final _recognizer = TapGestureRecognizer()
+    ..onTap = () => widget.link.onTap();
+
+  @override
+  void dispose() {
+    _recognizer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final label = widget.label;
+    final text = widget.link.text;
+    final start = label.indexOf(text);
+
+    if (text.isEmpty || start < 0) return Text(label, style: _labelStyle);
+
+    return Text.rich(
+      TextSpan(
+        style: _labelStyle,
+        children: [
+          TextSpan(text: label.substring(0, start)),
+          TextSpan(
+            text: text,
+            // Colour **and** an underline: a link that is only a different
+            // blue is colour alone, which this design system does not do.
+            style: const TextStyle(
+              color: HhColors.brand600,
+              decoration: TextDecoration.underline,
+              decorationColor: HhColors.brand600,
+            ),
+            recognizer: _recognizer,
+          ),
+          TextSpan(text: label.substring(start + text.length)),
+        ],
+      ),
+    );
+  }
 }

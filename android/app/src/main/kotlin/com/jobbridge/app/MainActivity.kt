@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import io.flutter.embedding.android.FlutterActivity
@@ -37,6 +38,9 @@ class MainActivity : FlutterActivity() {
 
         /** Must match `PushPlatform.channelName`. */
         const val PUSH_CHANNEL = "com.jobbridge.app/push"
+
+        /** Must match `LinkOpener.channelName`. */
+        const val LINKS_CHANNEL = "com.jobbridge.app/links"
 
         /**
          * The one cache subdirectory `res/xml/file_paths.xml` exposes.
@@ -74,6 +78,47 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, LINKS_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "open" -> openLink(call, result)
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    /**
+     * Hands a web page to the browser - the privacy policy the sign-in consent
+     * names (§4.1 step 2).
+     *
+     * *Why here and not a plugin.* `url_launcher` is the usual answer, and the
+     * same rule as above applies: this is a dozen lines of the app's own Kotlin.
+     *
+     * *Why https and nothing else.* An `ACTION_VIEW` intent opens whatever the
+     * URI names - `tel:`, `intent:`, a `file:` path, another app's deep link.
+     * Every link this app shows is an https page, so the channel accepts exactly
+     * that, and a bug upstream cannot turn it into a way to start something else.
+     */
+    private fun openLink(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("url")?.let { Uri.parse(it) }
+        if (uri == null || uri.scheme != "https" || uri.host.isNullOrEmpty()) {
+            result.error("bad_argument", "an https URL is required", null)
+            return
+        }
+
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+        }
+
+        try {
+            startActivity(intent)
+            result.success(null)
+        } catch (e: ActivityNotFoundException) {
+            // A phone with every browser disabled. Rare, and a real state rather
+            // than a bug, so Dart gets a code it can say something useful about.
+            result.error("no_browser", "No installed app can open this link.", null)
+        }
     }
 
     /**

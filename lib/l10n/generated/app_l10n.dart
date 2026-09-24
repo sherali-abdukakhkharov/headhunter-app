@@ -1415,11 +1415,29 @@ abstract class AppL10n {
   /// **'Log in with Telegram'**
   String get authTelegramSignIn;
 
-  /// §4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked.
+  /// §4.1 step 2. Consent must be given before sign-in, and it is not optional - the button stays disabled until this is checked. Names only the privacy policy: there is no terms-of-service document (owner decision, 2026-09-24), and consent to a document nobody can read is not consent. Must contain authPrivacyPolicyLink verbatim - that is how the link is placed.
   ///
   /// In en, this message translates to:
-  /// **'I accept the Terms of Service and the Privacy Policy'**
-  String get authTermsAgree;
+  /// **'I accept the Privacy Policy'**
+  String get authPrivacyAgree;
+
+  /// The words of authPrivacyAgree drawn as the link to the policy. Must occur verbatim in authPrivacyAgree, inflected as the sentence needs it (Uzbek keeps the accusative -ni).
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get authPrivacyPolicyLink;
+
+  /// The screen reader's action for the link inside the consent checkbox: a verb phrase, since the link text is inflected to fit a sentence.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the Privacy Policy'**
+  String get authPrivacyPolicyOpen;
+
+  /// A link was tapped and nothing on the device can open a web page - every browser disabled. Not a network failure.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this phone can open the link.'**
+  String get linkNoBrowser;
 
   /// DEPRECATED with the Telegram flow. Telegram or its SDK failed for a reason the user cannot act on beyond retrying.
   ///

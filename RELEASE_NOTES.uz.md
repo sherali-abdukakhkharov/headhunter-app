@@ -21,6 +21,13 @@ uning **auditoriyasi boshqa**: uni o'quvchi kod yozmaydi, ilovani o'rnatadi.
 
 ---
 
+## 1.36.0
+
+- Kirish oynasida "Maxfiylik siyosati" endi havola — bosilsa, siyosat
+  brauzerda ilova tilida ochiladi.
+- Mavjud bo‘lmagan "Foydalanish shartlari" roziligi olib tashlandi: endi faqat
+  Maxfiylik siyosatiga rozilik so‘raladi.
+
 ## 1.35.1
 
 - Bildirishnomalar oynasida "Hammasi / O‘qilmagan" tanlagichi endi to‘liq

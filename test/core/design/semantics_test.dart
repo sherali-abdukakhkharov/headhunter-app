@@ -27,6 +27,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/l10n/generated/app_l10n.dart';
 import 'package:jobbridge_app/src/core/design/design.dart';
@@ -371,6 +372,102 @@ void main() {
       expect(taps, 1);
 
       handle.dispose();
+    });
+  });
+
+  group('a link inside a checkbox label', () {
+    // The sign-in consent: the policy the box accepts has to be one tap away,
+    // and the tap that opens it must not also tick the box — nor may the link
+    // vanish for a screen reader, whose node excludes the text it sits in.
+    const sentence = 'I accept the Privacy Policy';
+
+    Future<({List<bool> changes, List<String> opened})> pumpConsent(
+      WidgetTester tester, {
+      String linkText = 'Privacy Policy',
+    }) async {
+      final changes = <bool>[];
+      final opened = <String>[];
+      await pump(
+        tester,
+        HhCheckboxRow(
+          label: sentence,
+          link: HhInlineLink(
+            text: linkText,
+            actionLabel: 'Open the Privacy Policy',
+            onTap: () => opened.add('policy'),
+          ),
+          value: false,
+          onChanged: changes.add,
+        ),
+      );
+      return (changes: changes, opened: opened);
+    }
+
+    testWidgets('tapping the words opens the link and leaves the box', (
+      tester,
+    ) async {
+      final (:changes, :opened) = await pumpConsent(tester);
+
+      await tester.tapOnText(find.textRange.ofSubstring('Privacy Policy'));
+      await tester.pump();
+
+      expect(opened, ['policy']);
+      expect(changes, isEmpty);
+    });
+
+    testWidgets('tapping the rest of the row still ticks the box', (
+      tester,
+    ) async {
+      final (:changes, :opened) = await pumpConsent(tester);
+
+      await tester.tapOnText(find.textRange.ofSubstring('I accept'));
+      await tester.pump();
+
+      expect(changes, [true]);
+      expect(opened, isEmpty);
+    });
+
+    testWidgets('a screen reader hears one sentence and gets the link as an '
+        'action', (tester) async {
+      final handle = tester.ensureSemantics();
+      final (:changes, :opened) = await pumpConsent(tester);
+
+      final node = tester.getSemantics(find.bySemanticsLabel(sentence));
+      expect(
+        node,
+        isSemantics(
+          label: sentence,
+          hasCheckedState: true,
+          hasTapAction: true,
+          customActions: const [
+            CustomSemanticsAction(label: 'Open the Privacy Policy'),
+          ],
+        ),
+      );
+
+      node.owner!.performAction(
+        node.id,
+        SemanticsAction.customAction,
+        CustomSemanticsAction.getIdentifier(
+          const CustomSemanticsAction(label: 'Open the Privacy Policy'),
+        ),
+      );
+      await tester.pump();
+
+      expect(opened, ['policy']);
+      expect(changes, isEmpty);
+
+      handle.dispose();
+    });
+
+    testWidgets('a translation that lost the link words still reads', (
+      tester,
+    ) async {
+      // A translator's slip costs the underline, not the sentence — and the
+      // action above still reaches the policy.
+      await pumpConsent(tester, linkText: 'Politika');
+
+      expect(find.text(sentence), findsOneWidget);
     });
   });
 

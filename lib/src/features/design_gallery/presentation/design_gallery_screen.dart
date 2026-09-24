@@ -26,6 +26,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
   bool _licence = true;
   bool _car = false;
   bool _employerRole = false;
+  bool _consent = false;
   bool _visible = true;
   String _crew = 'solo';
   bool _saved = true;
@@ -316,6 +317,20 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
               "gaplashmoqchi bo'lganlaringizni taklif qiling.",
           value: _employerRole,
           onChanged: (v) => setState(() => _employerRole = v),
+        ),
+        // With an inline link, as the sign-in consent draws it. Worth checking
+        // on a device: tapping the underlined words must not tick the box.
+        HhCheckboxRow(
+          label: 'Maxfiylik siyosatini qabul qilaman',
+          link: HhInlineLink(
+            text: 'Maxfiylik siyosatini',
+            actionLabel: 'Maxfiylik siyosatini ochish',
+            onTap: () => ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Link tapped'))),
+          ),
+          value: _consent,
+          onChanged: (v) => setState(() => _consent = v),
         ),
         HhRadioRow<String>(
           label: 'Yakka tartibda ishlayman',
