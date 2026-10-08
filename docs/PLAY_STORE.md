@@ -242,6 +242,19 @@ and searchable candidates that a real employer could pay Coins to unlock.
 stays true — but hides every candidate, publishes no vacancy and creates no
 application. `TEST_ACCOUNTS.md` documents the difference.
 
+**Done 2026-10-08**, when the closed test ended, after a verified backup. The
+production instance then had **no active vacancy** and four searchable
+candidates, all real testers — so at launch the job feed is empty until the
+client's employers post. The ten reviewer accounts sign in as before.
+
+Still there, and invisible to the public: 5,026 integration-test users
+(`+9987…`, fifteen digits, unmistakably synthetic) and roughly 12,000 users in
+the old fixture format (`+9989x` and seven random digits), which cannot be told
+from real numbers by prefix. Neither has an active vacancy or a searchable
+profile; both show in the administrator's user lists. Purging them needs the
+anonymise-what-cannot-be-deleted logic of the demo teardown and, for the old
+format, a way to tell fixtures from people — a separate job, not a launch gate.
+
 And check the deployment itself: the API runs on one Windows machine behind a
 Cloudflare tunnel with `restart: unless-stopped`. That survives a reboot, not
 a power cut or an ISP outage — and a store app is one the public expects to
