@@ -6,13 +6,16 @@ still open. Written 2026-09-10 against Play Console as it is then; the Console
 changes its forms every few months, so check a step against the screen before
 trusting it.
 
-**Status: in production since 2026-10-10** (Console submission 6, published
-12:09 Tashkent), after a closed test from 2026-09-24. Two things differ from the
-plan below and are the owner's to settle: the production release went to **all
-177 countries plus "rest of world"**, not Uzbekistan only — so the EU trader
+**Status, 2026-10-10: production access granted, but no release yet.** Console
+submission 6 ("Published", 12:09 Tashkent) carried only the production track's
+*countries* — the track itself showed **Inactive**, with 47 (1.36.0) still a
+**Draft**. A submission listing "Countries/regions" and nothing else has not
+shipped the app; the track summary is what says whether it is live. Two things
+differ from the plan below and are the owner's to settle: the countries are
+**all 177 plus "rest of world"**, not Uzbekistan only — so the EU trader
 disclosure and privacy law outside Uzbekistan, neither of which the lawyer
-reviewed, now apply in principle — and **managed publishing is on**, so an
-approved update waits for someone to press *Publish*.
+reviewed, apply in principle — and **managed publishing is on**, so an approved
+release waits for someone to press *Publish*.
 
 ## The decisions already made
 
