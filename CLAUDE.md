@@ -64,6 +64,7 @@ choose), not for gaps that need typing. The two repos commit separately.
 | [README.md](README.md) | Prerequisites, commands, run instructions. |
 | [CHANGELOG.md](CHANGELOG.md) | What each release shipped, and **how a release is cut** — the version in `pubspec.yaml` is what a device reports, so a tag alone is not a release. |
 | [docs/PLAY_STORE.md](docs/PLAY_STORE.md) | The Google Play launch: the account, the legal pages, the listing, signing, the testing tracks, and what must be true of the backend before real users arrive. |
+| [docs/COMPANY_PUBLISHING.md](docs/COMPANY_PUBLISHING.md) | Moving both stores to the client's company: the Play transfer, the App Store enrollment and listing, and what the iOS build is missing. |
 
 Before implementing anything from the spec, check ARCHITECTURE.md - several
 requirements have already been designed against, and the reasoning is not
@@ -477,26 +478,25 @@ Revisit the whole block together when a Flutter release unpins `meta`.
 (3.2.5 caps at <11; the analyzer-12 build is the 3.2.6-dev.1 prerelease). Add
 it when a stable release lands and migrate models then.
 
-## iOS - out of scope
+## iOS - back in scope, not started
 
-**Owner direction 2026-08-05: do no iOS work, and do not raise iOS as a
-consideration, until asked.** Android only.
+**Owner direction 2026-10-12: publish on the App Store, under the client's
+company account.** iOS was out of scope from 2026-08-05 until then, so `ios/` is
+still the bare Flutter scaffold. The plan, and the list of what the iOS build is
+missing, is [docs/COMPANY_PUBLISHING.md](docs/COMPANY_PUBLISHING.md). The short
+version:
 
-- Do not edit anything under `ios/`, and do not touch
-  `IPHONEOS_DEPLOYMENT_TARGET`.
-- `ios-build.yml` is **`workflow_dispatch`-only** — it no longer runs on push.
-  The reason it would have failed anyway is gone: `telegram_login` needed iOS 15
-  against the project's 13, and it was removed on 2026-08-19. Whether the iOS
-  build now passes is **untested**, and testing it is not worth doing while iOS is
-  out of scope.
-- **Nothing catches iOS compile breakage now.** That is accepted.
-- Keep Dart cross-platform regardless. No Android-only concessions in `lib/` —
-  they cost more to undo than they save.
-
-Background, if this ever reverses: iOS cannot be built on this Windows machine
-(Xcode is macOS-only), an installable `.ipa` needs a Mac and an Apple Developer
-account. (Telegram login also needed a bundle id + Apple Team ID registered with
-BotFather, but that dependency is gone — see docs/TELEGRAM_LOGIN.md.)
+- The bundle id is still the pre-rename **`com.headhunter.app`** and the display
+  name "Headhunter App". Neither has been on a store, so both can still change.
+- **None of the three MethodChannels exists in Swift.** On an iPhone, opening a
+  CV, opening the privacy policy and configuring push would all throw
+  `MissingPluginException` today.
+- No Firebase plist, no push entitlement, no APNs key, iPhone + iPad targeted.
+- iOS cannot be built on this Windows machine. `ios-build.yml` is
+  **`workflow_dispatch`-only and untested** since `telegram_login` (which needed
+  iOS 15) was removed on 2026-08-19. A macOS runner is the only check — say
+  plainly in a commit what it did not compile.
+- Keep Dart cross-platform, as before. No Android-only concessions in `lib/`.
 
 ## Backend contract
 
