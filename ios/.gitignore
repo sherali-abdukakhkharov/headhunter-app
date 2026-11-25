@@ -32,3 +32,8 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Firebase for iOS (push). Supplied per machine, like
+# android/app/google-services.json; CI writes it from the
+# GOOGLE_SERVICE_INFO_PLIST_BASE64 secret. See docs/APP_STORE.md, section 6.3.
+Runner/GoogleService-Info.plist

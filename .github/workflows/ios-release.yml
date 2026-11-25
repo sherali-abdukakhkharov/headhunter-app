@@ -1,0 +1,177 @@
+# Builds a signed iOS release and uploads it to App Store Connect, where it
+# appears in TestFlight. Submitting it for review is done by hand in App Store
+# Connect - docs/APP_STORE.md, section 10.
+#
+# Trigger: the same version tag that release-apk.yml builds the APK from.
+#   git tag v1.37.0 && git push origin v1.37.0
+# or by hand from the Actions tab.
+#
+# ## No Mac anywhere
+#
+# Signing is done with an App Store Connect API key and Codemagic's open-source
+# CLI tools, which create the distribution certificate and the App Store
+# provisioning profile through Apple's API and install them on the runner. The
+# certificate is made from CERTIFICATE_PRIVATE_KEY, and that key is a secret
+# rather than generated per run for a reason: Apple allows only a few
+# distribution certificates per account, and the tools find the existing one by
+# matching its key. A new key every run would mint a new certificate every run.
+#
+# ## Until the Apple account exists, this skips
+#
+# None of the secrets below exist before the owner enrolls (docs/APP_STORE.md,
+# sections 5-6), and every release tag would otherwise turn this red beside a
+# perfectly good APK. With **none** of them set the job says so and stops green.
+# With **some** of them set it fails: half a configuration is a mistake.
+name: ios-release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: ios-release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: 3.44.8
+  # Must equal the Android production applicationId and the Xcode project's
+  # PRODUCT_BUNDLE_IDENTIFIER; test/ios_project_test.dart checks all three.
+  BUNDLE_ID: com.jobbridge.app
+
+permissions:
+  contents: read
+
+jobs:
+  testflight:
+    runs-on: macos-latest
+    steps:
+      - name: Check the App Store Connect secrets
+        id: secrets
+        env:
+          ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          CERTIFICATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+          FIREBASE_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+        run: |
+          missing=""
+          count=0
+          note() { missing="$missing $1"; count=$((count + 1)); }
+          [ -z "$ISSUER_ID" ]       && note APP_STORE_CONNECT_ISSUER_ID
+          [ -z "$KEY_ID" ]          && note APP_STORE_CONNECT_KEY_ID
+          [ -z "$PRIVATE_KEY" ]     && note APP_STORE_CONNECT_PRIVATE_KEY
+          [ -z "$CERTIFICATE_KEY" ] && note CERTIFICATE_PRIVATE_KEY
+          [ -z "$FIREBASE_PLIST" ]  && note GOOGLE_SERVICE_INFO_PLIST_BASE64
+
+          if [ "$count" -eq 5 ]; then
+            echo "::notice::App Store Connect is not set up yet, so no iOS build was uploaded. See docs/APP_STORE.md, sections 5-6."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing - see docs/APP_STORE.md, section 6.5."
+            exit 1
+          fi
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.secrets.outputs.configured == 'true'
+
+      # The version a phone reports is pubspec.yaml's, as on Android. The
+      # build-number half of that check lives in release-apk.yml, which runs on
+      # the same tag; App Store Connect refuses a reused build number itself.
+      - name: Check the tag matches pubspec.yaml
+        if: steps.secrets.outputs.configured == 'true' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version=$(grep -m1 '^version:' pubspec.yaml | sed 's/^version:[[:space:]]*//')
+          tag=${GITHUB_REF_NAME#v}
+          if [ "$tag" != "${version%%+*}" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME would upload a build reporting ${version%%+*}. Bump pubspec.yaml - see CHANGELOG.md."
+            exit 1
+          fi
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: steps.secrets.outputs.configured == 'true'
+        with:
+          xcode-version: latest-stable
+
+      # Apple has refused uploads built with anything older since 2026-04-28.
+      # Failing here costs a minute; failing at upload costs the whole build.
+      - name: Require Xcode 26 or later
+        if: steps.secrets.outputs.configured == 'true'
+        run: |
+          xcodebuild -version
+          major=$(xcodebuild -version | head -1 | sed -E 's/^Xcode ([0-9]+).*/\1/')
+          if [ "$major" -lt 26 ]; then
+            echo "::error::Xcode $major is too old for App Store Connect, which requires Xcode 26 and the iOS 26 SDK."
+            exit 1
+          fi
+
+      - uses: subosito/flutter-action@v2
+        if: steps.secrets.outputs.configured == 'true'
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+        if: steps.secrets.outputs.configured == 'true'
+
+      # Gitignored and supplied per machine, like android/app/google-services.json.
+      # The Xcode build phase refuses a Release without it; checking the bundle id
+      # here catches the other way it goes wrong - the plist of a different app,
+      # which initialises Firebase and then never receives a token.
+      - name: Restore GoogleService-Info.plist
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          FIREBASE_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+        run: |
+          echo "$FIREBASE_PLIST" | base64 -d > ios/Runner/GoogleService-Info.plist
+          bundle=$(/usr/libexec/PlistBuddy -c 'Print :BUNDLE_ID' ios/Runner/GoogleService-Info.plist)
+          if [ "$bundle" != "$BUNDLE_ID" ]; then
+            echo "::error::GoogleService-Info.plist is for $bundle, not $BUNDLE_ID. Download the iOS app's plist from the Firebase console again."
+            exit 1
+          fi
+
+      - name: Install the signing tools
+        if: steps.secrets.outputs.configured == 'true'
+        run: pipx install codemagic-cli-tools
+
+      - name: Set up code signing
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+        run: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --project ios/Runner.xcodeproj
+
+      - name: Build the IPA
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          API_URL: ${{ vars.API_BASE_URL }}
+        run: |
+          flutter build ipa --release \
+            --dart-define=FLAVOR=production \
+            ${API_URL:+--dart-define=API_BASE_URL=$API_URL} \
+            --export-options-plist="$HOME/export_options.plist"
+
+      - name: Upload to App Store Connect
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          ipa=$(find build/ios/ipa -name '*.ipa' | head -1)
+          if [ -z "$ipa" ]; then
+            echo "::error::flutter build ipa produced no .ipa"
+            exit 1
+          fi
+          app-store-connect publish --path "$ipa"

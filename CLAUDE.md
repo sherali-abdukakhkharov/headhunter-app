@@ -65,6 +65,7 @@ choose), not for gaps that need typing. The two repos commit separately.
 | [CHANGELOG.md](CHANGELOG.md) | What each release shipped, and **how a release is cut** — the version in `pubspec.yaml` is what a device reports, so a tag alone is not a release. |
 | [docs/PLAY_STORE.md](docs/PLAY_STORE.md) | The Google Play launch: the account, the legal pages, the listing, signing, the testing tracks, and what must be true of the backend before real users arrive. |
 | [docs/COMPANY_PUBLISHING.md](docs/COMPANY_PUBLISHING.md) | Moving both stores to the client's company: the Play transfer, the App Store enrollment and listing, and what the iOS build is missing. |
+| [docs/APP_STORE.md](docs/APP_STORE.md) | The App Store launch on the owner's **personal** account (2026-11-24), in Uzbek: enrollment, keys, listing, App Privacy, review risks, transfer later. |
 
 Before implementing anything from the spec, check ARCHITECTURE.md - several
 requirements have already been designed against, and the reasoning is not
@@ -342,7 +343,8 @@ things in `core/` or `shared/` when a second feature actually needs them.
 ## The native code is three MethodChannels, and none is a plugin
 
 `android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries all
-three:
+three on Android, and `ios/Runner/AppDelegate.swift` the same three on iOS
+(2026-11-24, uncompiled — see the iOS section):
 
 - **`/attachments`** hands a downloaded file to the OS through a `FileProvider`;
 - **`/push`** creates the notification channel FCM posts to, and reads
@@ -478,24 +480,39 @@ Revisit the whole block together when a Flutter release unpins `meta`.
 (3.2.5 caps at <11; the analyzer-12 build is the 3.2.6-dev.1 prerelease). Add
 it when a stable release lands and migrate models then.
 
-## iOS - back in scope, not started
+## iOS - in progress, never compiled
 
-**Owner direction 2026-10-12: publish on the App Store, under the client's
-company account.** iOS was out of scope from 2026-08-05 until then, so `ios/` is
-still the bare Flutter scaffold. The plan, and the list of what the iOS build is
-missing, is [docs/COMPANY_PUBLISHING.md](docs/COMPANY_PUBLISHING.md). The short
-version:
+**Owner direction 2026-10-12: publish on the App Store.** iOS was out of scope
+from 2026-08-05 until then. **Changed 2026-11-24: the listing goes up under the
+owner's personal (Individual) Apple account first**, the way Play did, and
+moves to the company later by app transfer — not under the company from the
+start. The owner's step-by-step guide, in Uzbek, is
+[docs/APP_STORE.md](docs/APP_STORE.md).
 
-- The bundle id is still the pre-rename **`com.headhunter.app`** and the display
-  name "Headhunter App". Neither has been on a store, so both can still change.
-- **None of the three MethodChannels exists in Swift.** On an iPhone, opening a
-  CV, opening the privacy policy and configuring push would all throw
-  `MissingPluginException` today.
-- No Firebase plist, no push entitlement, no APNs key, iPhone + iPad targeted.
-- iOS cannot be built on this Windows machine. `ios-build.yml` is
-  **`workflow_dispatch`-only and untested** since `telegram_login` (which needed
-  iOS 15) was removed on 2026-08-19. A macOS runner is the only check — say
-  plainly in a commit what it did not compile.
+The engineering half was written on 2026-11-24, **on a machine with no Mac, no
+Xcode and no Flutter SDK**. So none of it has been compiled or run, and
+`test/ios_project_test.dart` pins what can be pinned from Dart:
+
+- Bundle id **`com.jobbridge.app`**, the Android production id (it was still the
+  pre-rename `com.headhunter.app`); display name JobBridge; **iPhone only**;
+  **iOS 15** (Firebase's SDK requires it). The project uses **Swift Package
+  Manager**, not CocoaPods — there is no Podfile, and that is not an omission.
+- **The three MethodChannels are in `ios/Runner/AppDelegate.swift`**, in a
+  `JobBridgeChannels` class registered from `didInitializeImplicitFlutterEngine`.
+  The test holds their names, methods and error codes equal to `MainActivity.kt`.
+- Push: `Runner.entitlements` (`aps-environment`), and a build phase that copies
+  the gitignored `GoogleService-Info.plist` into the bundle — warning without it,
+  **failing a Release** without it. The device registration now sends
+  `platform: ios` on an iPhone; it said `android` unconditionally.
+- The icon is rendered by **`node tool/ios_app_icon.js`**, not by
+  `store_assets_test.dart`: App Store Connect refuses an alpha channel and
+  Flutter's PNG encoder always writes one. It reads the mark from `hh_brand.dart`,
+  and `--compare docs/store/icon-512.png` checks it against the Flutter render.
+- `ios-build.yml` compiles unsigned on changes to `ios/` and the pubspec;
+  `ios-release.yml` signs and uploads to TestFlight on a `v*` tag, and **skips
+  green until the App Store Connect secrets exist**. Neither has ever run.
+- iOS cannot be built on the Windows machine. A macOS runner is the only check —
+  say plainly in a commit what it did not compile.
 - Keep Dart cross-platform, as before. No Android-only concessions in `lib/`.
 
 ## Backend contract

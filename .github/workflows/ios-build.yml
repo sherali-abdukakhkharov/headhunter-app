@@ -1,28 +1,35 @@
-# iOS is OUT OF SCOPE (owner direction, 2026-08-05). Do not re-enable without
-# being asked for it.
+# Compiles the iOS app. There is no Mac and no Xcode on the machine this
+# project is developed on, so this job is the only thing that ever compiles
+# ios/ - the Swift channels in AppDelegate.swift, the Xcode project, the plugin
+# packages - before a TestFlight upload does.
 #
-# This workflow is kept, not deleted, because the configuration is correct and
-# rewriting it later is pure waste - but it no longer runs on push or pull
-# request. `workflow_dispatch` means it can still be started by hand from the
-# Actions tab if anyone wants to check the iOS target.
+# Unsigned and in Debug, so it needs no Apple account and no secret: the
+# `Copy GoogleService-Info.plist` build phase only warns when the file is
+# absent outside Release. A signed Release build is ios-release.yml.
 #
-# Why it would fail if left on: `telegram_login` requires **iOS 15**, and the
-# project deliberately stays at the Flutter default of 13.0 because raising it is
-# an iOS product decision nobody has asked for. So this job would break on every
-# push, and fixing it is exactly the iOS work that is out of scope.
+# It runs when something that can break the native build changes. A Dart-only
+# change cannot, and `flutter analyze` already covers Dart.
 #
-# Original purpose, for whoever turns it back on: iOS cannot be built on the
-# Windows dev machine (Xcode is macOS-only), so this was the only thing that
-# compiled the iOS target. It builds without code signing, which needs no
-# certificates - enough to catch iOS-specific compile and plugin breakage.
-# Producing an installable .ipa additionally needs an Apple Developer account.
-#
-# To bring iOS back: raise IPHONEOS_DEPLOYMENT_TARGET to 15.0, restore the
-# `push`/`pull_request` triggers below, and see docs/TELEGRAM_LOGIN.md for the
-# BotFather registration (bundle id + Apple Team ID) that login needs.
+# iOS was out of scope from 2026-08-05 to 2026-10-12, and this workflow was
+# hand-run only for that stretch. It came back with the App Store launch
+# (docs/APP_STORE.md).
 name: ios-build
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/ios-*.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/ios-*.yml'
   workflow_dispatch:
 
 concurrency:
@@ -38,6 +45,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The newest stable Xcode the image has. Apple has accepted only Xcode 26
+      # builds since 2026-04-28, so compiling with an older default would check
+      # a toolchain the upload would refuse.
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - run: xcodebuild -version
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -46,9 +62,10 @@ jobs:
 
       - run: flutter pub get
 
-      # No --flavor here: iOS flavors are Xcode schemes, which were never
-      # created. The Dart half works everywhere, so FLAVOR is passed on its own.
+      # No --flavor: iOS has one target and no Xcode schemes per flavor. The
+      # Dart half of the flavor is the define, and production is the only one
+      # that ships on iOS.
       - name: Build iOS (no code signing)
         run: >
           flutter build ios --debug --no-codesign
-          --dart-define=FLAVOR=development
+          --dart-define=FLAVOR=production

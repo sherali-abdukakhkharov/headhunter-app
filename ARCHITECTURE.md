@@ -487,10 +487,12 @@ full-bleed navy plate and renders as a solid white square.
 
 ### iOS reality
 
-iOS cannot be built on the Windows development machine. `ios/` is generated and
-the Dart code is cross-platform; CI compiles it with `--no-codesign`. An
-installable build needs a Mac and an Apple Developer account. See
-[CLAUDE.md](CLAUDE.md).
+iOS cannot be built on the Windows development machine. The Dart code is
+cross-platform, and the three channels exist twice — `MainActivity.kt` and
+`ios/Runner/AppDelegate.swift`, held equal by `test/ios_project_test.dart`.
+CI compiles iOS with `--no-codesign` (`ios-build.yml`) and signs and uploads to
+TestFlight without a Mac (`ios-release.yml`), using an App Store Connect API
+key. See [CLAUDE.md](CLAUDE.md) and [docs/APP_STORE.md](docs/APP_STORE.md).
 
 ---
 

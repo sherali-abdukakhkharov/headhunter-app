@@ -33,7 +33,8 @@ class LinkOpener {
 
   final MethodChannel _channel;
 
-  /// Must match the name `MainActivity.kt` registers.
+  /// Must match the name `MainActivity.kt` and `AppDelegate.swift` register;
+  /// `test/ios_project_test.dart` checks all three.
   static const channelName = 'com.jobbridge.app/links';
 
   /// Opens [url] in the browser.

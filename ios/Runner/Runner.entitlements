@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+		Push (§9.2). `development` is correct here even for the App Store: the
+		distribution profile overrides it with `production` when the archive is
+		exported, and a development build has to talk to the sandbox APNs.
+
+		This is the app's only capability, deliberately. Every capability added
+		(App Groups, iCloud, Sign in with Apple) is one more thing an app transfer
+		to the company account has to carry - docs/APP_STORE.md, section 11.
+	-->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

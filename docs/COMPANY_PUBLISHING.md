@@ -56,6 +56,12 @@ The package `com.jobbridge.app` stays; users see nothing but the developer name.
 
 ## App Store: new listing under the company
 
+> **Superseded 2026-11-24 (owner):** the App Store listing is published under
+> the owner's **personal (Individual)** account first, like Play, and
+> transferred to the company once it has a released version. The steps are in
+> [APP_STORE.md](APP_STORE.md). What follows still describes the company
+> enrollment that the transfer will need.
+
 Organisation enrollment (US$99/year): an Apple Account with two-factor
 authentication in the enroller's **legal** name, enrolled by someone with
 authority to bind the company (the director, or an employee authorised by
@@ -80,7 +86,14 @@ decision the client still owes, now on two stores.
 
 ## The iOS engineering list
 
-`ios/` was frozen while iOS was out of scope (2026-08-05 to 2026-10-12) and is
+> **Status 2026-11-24:** items 1–7 are written but **never compiled** (no Mac,
+> no Xcode, no Flutter SDK on the machine that wrote them); item 8 waits on the
+> Apple account. The current state, and what was decided differently from the
+> list below (orientation follows Android; no Background Modes; no app-level
+> privacy manifest until Apple asks for one), is in
+> [APP_STORE.md](APP_STORE.md), section 8.
+
+`ios/` was frozen while iOS was out of scope (2026-08-05 to 2026-10-12) and was
 the bare scaffold. Before a TestFlight build is worth uploading:
 
 1. **Identity:** bundle id `com.headhunter.app` → `com.jobbridge.app`; display

@@ -6,16 +6,33 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<!--
+		The launcher name. "JobBridge" everywhere - it is a logotype and is not
+		translated (HhBrandWordmark.text), so there is no InfoPlist.strings for it.
+	-->
 	<key>CFBundleDisplayName</key>
-	<string>Headhunter App</string>
+	<string>JobBridge</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<!--
+		The interface's languages (§2.4). iOS reports a preferred language to the
+		app only if the bundle declares it, so without this list a phone set to
+		Russian would arrive in Flutter as English. Uzbek is listed in both
+		scripts because the app ships both, even where iOS itself offers neither.
+	-->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>uz</string>
+		<string>uz-Cyrl</string>
+		<string>ru</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleName</key>
-	<string>headhunter_app</string>
+	<string>JobBridge</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -24,6 +41,14 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!--
+		HTTPS is the only encryption in the app, and it is the operating system's.
+		Declaring that here answers App Store Connect's export-compliance question
+		for every build, instead of it being asked - and blocking TestFlight - on
+		each upload.
+	-->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
@@ -53,16 +78,14 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!--
+		The same three the Android build allows, which declares no orientation
+		lock. iPhone only (TARGETED_DEVICE_FAMILY = 1), so there is no ~ipad
+		variant: an iPad runs this as an iPhone app and needs no list of its own.
+	-->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>

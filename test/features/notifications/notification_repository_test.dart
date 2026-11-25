@@ -25,6 +25,7 @@ library;
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobbridge_app/src/features/notifications/data/notification_repository.dart';
 import 'package:jobbridge_app/src/features/notifications/domain/app_notification.dart';
@@ -193,6 +194,21 @@ void main() {
         'platform': 'android',
         'appVersion': '1.11.0 (16)',
       });
+    });
+
+    test('and an iPhone says it is one', () async {
+      // Hardcoded 'android' until iOS came back into scope: an iPhone would
+      // have registered as an Android device, which the server would have
+      // stored without complaint.
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+      final requests = await _exerciseEveryRoute();
+      final register = requests.singleWhere(
+        (request) => request.path == '/notifications/devices',
+      );
+
+      expect((register.data as Map<String, dynamic>)['platform'], 'ios');
     });
   });
 

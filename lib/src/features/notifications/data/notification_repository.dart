@@ -173,9 +173,13 @@ class NotificationRepository {
         '/notifications/devices',
         data: {
           'token': token,
-          // The only platform this build runs on. iOS is out of scope by
-          // owner direction and there is no second value to derive.
-          'platform': 'android',
+          // `ios` or `android`, the two values the DTO accepts. Read from the
+          // target platform rather than `dart:io`, so a test can be both. An
+          // FCM token works the same on either, but the server records the
+          // platform and the field is required.
+          'platform': defaultTargetPlatform == TargetPlatform.iOS
+              ? 'ios'
+              : 'android',
           // Omitted rather than sent as null when the platform cannot say:
           // the field is optional and the server stores what it is given.
           'appVersion': ?appVersion,
