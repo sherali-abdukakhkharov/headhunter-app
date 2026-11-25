@@ -410,11 +410,10 @@ mamlakatidan tashqari hammasi** (yoki faqat O'zbekiston).
 
 ## 8. iOS kodini tayyorlash 🛠
 
-**2026-11-24 holati: kod yozildi, lekin hali hech qachon kompilyatsiya
-qilinmagan.** Ish Mac, Xcode va Flutter SDK bo'lmagan mashinada bajarilgan.
-Birinchi tekshiruv — `main`'ga push bo'lgandan keyingi `ios-build.yml`.
-Dart'dan tekshirsa bo'ladigan narsalar `test/ios_project_test.dart`'da
-qotirilgan.
+**2026-11-26 holati: kod yozildi va CI'da kompilyatsiya bo'ldi**
+(`ios-build.yml`, Xcode 26.6, imzosiz). Lekin hali **imzolanmagan,
+TestFlight'ga yuklanmagan va iPhone'da ishga tushirilmagan**. Dart'dan
+tekshirsa bo'ladigan narsalar `test/ios_project_test.dart`'da qotirilgan.
 
 **Qilindi:**
 
@@ -447,8 +446,9 @@ qotirilgan.
 
 **Qolgan ishlar:**
 
-7. **Birinchi CI ishga tushishi** va u topgan narsalarni tuzatish. Swift kodi
-   va Xcode loyihasi qo'lda tahrirlangan, kompilyator ularni hali ko'rmagan.
+7. **Birinchi imzolangan build va TestFlight.** Imzosiz kompilyatsiya
+   2026-11-26 da o'tdi. Imzolash (`codemagic-cli-tools`, App Manager kaliti)
+   Apple akkaunti va 6.5'dagi secret'lar paydo bo'lgandagina sinaladi.
 8. **Support sahifasi:** App Store **Support URL** talab qiladi. Backend'da
    faqat `/privacy` va `/account/delete` bor. `https://hh.qitmir.uz/support`
    ni xuddi shu `legal` moduli orqali qo'shish kerak (aloqa email'i, hisobni
@@ -649,7 +649,8 @@ xabarlar bor — transfer oldidan Apple Developer Support'dan tasdiqlab oling.
 - [x] Push: entitlements, plist build bosqichi, `platform: ios`
 - [x] Info.plist kalitlari
 - [x] CI: kompilyatsiya tekshiruvi va imzolangan build → TestFlight
-- [ ] Birinchi `ios-build.yml` ishga tushishi — hech narsa kompilyatsiya qilinmagan
+- [x] Birinchi `ios-build.yml` — 2026-11-26 da yashil (Xcode 26.6)
+- [ ] Birinchi imzolangan build → TestFlight (Apple akkauntidan keyin)
 - [ ] `/support` sahifasi (backend)
 - [ ] Maxfiylik siyosatiga iOS (advokat ko'rgandan keyin)
 - [ ] TestFlight QA, skrinshotlar

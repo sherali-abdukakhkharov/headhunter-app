@@ -344,7 +344,7 @@ things in `core/` or `shared/` when a second feature actually needs them.
 
 `android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries all
 three on Android, and `ios/Runner/AppDelegate.swift` the same three on iOS
-(2026-11-24, uncompiled — see the iOS section):
+(2026-11-24; compiled by CI, never run on a device — see the iOS section):
 
 - **`/attachments`** hands a downloaded file to the OS through a `FileProvider`;
 - **`/push`** creates the notification channel FCM posts to, and reads
@@ -480,7 +480,7 @@ Revisit the whole block together when a Flutter release unpins `meta`.
 (3.2.5 caps at <11; the analyzer-12 build is the 3.2.6-dev.1 prerelease). Add
 it when a stable release lands and migrate models then.
 
-## iOS - in progress, never compiled
+## iOS - compiles, never run on a device
 
 **Owner direction 2026-10-12: publish on the App Store.** iOS was out of scope
 from 2026-08-05 until then. **Changed 2026-11-24: the listing goes up under the
@@ -489,8 +489,9 @@ moves to the company later by app transfer — not under the company from the
 start. The owner's step-by-step guide, in Uzbek, is
 [docs/APP_STORE.md](docs/APP_STORE.md).
 
-The engineering half was written on 2026-11-24, **on a machine with no Mac, no
-Xcode and no Flutter SDK**. So none of it has been compiled or run, and
+The engineering half was written on 2026-11-24 on a machine with no Mac and no
+Xcode. **`ios-build.yml` compiled it unsigned on 2026-11-26** (Xcode 26.6,
+commit `6533203`); it has **never been signed, uploaded or run on an iPhone**.
 `test/ios_project_test.dart` pins what can be pinned from Dart:
 
 - Bundle id **`com.jobbridge.app`**, the Android production id (it was still the
@@ -510,7 +511,8 @@ Xcode and no Flutter SDK**. So none of it has been compiled or run, and
   and `--compare docs/store/icon-512.png` checks it against the Flutter render.
 - `ios-build.yml` compiles unsigned on changes to `ios/` and the pubspec;
   `ios-release.yml` signs and uploads to TestFlight on a `v*` tag, and **skips
-  green until the App Store Connect secrets exist**. Neither has ever run.
+  green until the App Store Connect secrets exist** — so its signing half has
+  never run.
 - iOS cannot be built on the Windows machine. A macOS runner is the only check —
   say plainly in a commit what it did not compile.
 - Keep Dart cross-platform, as before. No Android-only concessions in `lib/`.

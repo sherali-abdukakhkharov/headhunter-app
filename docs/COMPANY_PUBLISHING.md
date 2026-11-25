@@ -86,9 +86,9 @@ decision the client still owes, now on two stores.
 
 ## The iOS engineering list
 
-> **Status 2026-11-24:** items 1–7 are written but **never compiled** (no Mac,
-> no Xcode, no Flutter SDK on the machine that wrote them); item 8 waits on the
-> Apple account. The current state, and what was decided differently from the
+> **Status 2026-11-26:** items 1–7 are written, and `ios-build.yml` compiles
+> them unsigned (Xcode 26.6). Nothing has been signed or run on an iPhone;
+> item 8 waits on the Apple account. The current state, and what was decided differently from the
 > list below (orientation follows Android; no Background Modes; no app-level
 > privacy manifest until Apple asks for one), is in
 > [APP_STORE.md](APP_STORE.md), section 8.
