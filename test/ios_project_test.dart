@@ -97,6 +97,21 @@ void main() {
       expect(_plistValue(infoPlist, 'ITSAppUsesNonExemptEncryption'), 'false');
     });
 
+    test('the purpose strings the upload scan demands are present', () {
+      // Build 47 was refused after upload (ITMS-90683) without these two:
+      // file_picker's Swift package always compiles its photo and camera
+      // picker, so Apple requires them although the app never asks for
+      // either permission. The refusal arrives by e-mail an hour after an
+      // upload that reported success, so it is cheaper to pin it here.
+      for (final key in [
+        'NSCameraUsageDescription',
+        'NSPhotoLibraryUsageDescription',
+      ]) {
+        expect(_plistValue(infoPlist, key), isNotNull, reason: key);
+        expect(_plistValue(infoPlist, key), isNotEmpty, reason: key);
+      }
+    });
+
     test('every interface language is declared to iOS', () {
       // Without it iOS reports only English to the app, whatever the phone is
       // set to, and the first launch picks the wrong variant.

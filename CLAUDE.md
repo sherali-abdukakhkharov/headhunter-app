@@ -520,6 +520,11 @@ an iPhone**. `test/ios_project_test.dart` pins what can be pinned from Dart:
   certificate and the App Store profile itself, and **the profile takes its
   capabilities from the App ID** — the first run failed because Push
   Notifications was not ticked there, not because of anything in `ios/`.
+- **`Info.plist` carries camera and photo purpose strings the app never shows.**
+  Do not remove them as unused: `file_picker`'s Swift package always compiles
+  its media picker, and App Store Connect refused build 47 after a successful
+  upload for lacking them (ITMS-90683, 2026-11-27). That refusal comes only by
+  e-mail, about an hour later, and the build never appears in TestFlight.
 - **From April 2027 App Store Connect requires the iOS 27 SDK** (ITMS-90725,
   warned on the first upload); raise the workflow's Xcode floor to 27 then.
 - iOS cannot be built on the Windows machine. A macOS runner is the only check —

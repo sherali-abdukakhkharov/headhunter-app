@@ -51,6 +51,26 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!--
+		Demanded by App Store Connect, not by anything the app does. Build 47 was
+		refused on 2026-11-27 with ITMS-90683 for these two keys: file_picker's
+		Swift package compiles its photo and camera picker in unconditionally
+		(PICKER_MEDIA in its Package.swift), and Apple's upload scan requires a
+		purpose string for any API the binary references, called or not.
+
+		The app calls only the document picker (FileType.custom and .any), so no
+		permission is ever requested and neither string is ever shown. That is
+		why they are English only, with no InfoPlist.strings: if the media
+		picker is ever used, translate them then. Each says only what the code
+		behind it would do.
+
+		The same e-mail named NSLocationWhenInUseUsageDescription as advisory,
+		not required. Nothing in the app reads location, so it is not here.
+	-->
+	<key>NSCameraUsageDescription</key>
+	<string>JobBridge uses the camera only when you choose to photograph a document to attach, such as your CV or a certificate.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>JobBridge uses your photos only when you choose one to attach, such as a picture of your CV or a certificate.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

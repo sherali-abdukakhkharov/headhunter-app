@@ -468,9 +468,14 @@ qotirilgan.
    → deploy. Mazmun o'zgargani uchun **advokat ko'radi**.
 10. **Apple'ning yuklashdan keyingi xatlari:** ITMS-90683 (permission matni
     yetishmaydi) yoki ITMS-91053 (privacy manifest yetishmaydi) kelsa — aynan
-    nomlangan kalitni qo'shish. Ilova fayllarni faqat hujjat tanlagich orqali
-    oladi (rasm galereyasi ishlatilmaydi), shuning uchun oldindan hech narsa
-    qo'shilmadi: ishlatilmaydigan ruxsat uchun matn yozish noto'g'ri bo'lardi.
+    nomlangan kalitni qo'shish. **Bu 2026-11-27 da bo'ldi:** build 47
+    "muvaffaqiyatli yuklandi", lekin bir soatdan keyin email keldi va TestFlight'da
+    umuman ko'rinmadi. Sabab — `file_picker` paketi rasm va kamera tanlagichini
+    doim kompilyatsiya qiladi, Apple esa skanerda `NSCameraUsageDescription` va
+    `NSPhotoLibraryUsageDescription` ni talab qildi. Ikkalasi qo'shildi (ilova
+    bu ruxsatlarni hech qachon so'ramaydi, shuning uchun matnlar ko'rinmaydi) va
+    build 48 yuklandi. Xuddi shu xatdagi `NSLocationWhenInUseUsageDescription`
+    majburiy emas deb belgilangan — qo'shilmadi.
 11. **2027-yil aprelidan iOS 27 SDK (Xcode 27) majburiy.** Birinchi yuklash
     ITMS-90725 ogohlantirishi bilan qabul qilindi. Shu paytgacha
     `ios-release.yml`'dagi Xcode chegarasini 27 ga ko'tarish kerak.
@@ -481,7 +486,10 @@ qotirilgan.
 **Versiya:** `pubspec.yaml`'dagi `version` iOS'da ham ishlatiladi
 (`1.36.0+47` → `CFBundleShortVersionString` `1.36.0`, `CFBundleVersion` `47`).
 Build raqami har yuklashda oshishi shart — reliz jarayoni allaqachon shunday
-([CHANGELOG.md](../CHANGELOG.md)).
+([CHANGELOG.md](../CHANGELOG.md)). Rad etilgan build ham o'z raqamini band
+qiladi. Shuning uchun tegsiz, faqat iOS uchun qayta yuklashda ham `pubspec.yaml`
+dagi raqam oshiriladi: 2026-11-27 da `1.36.0+47` → `+48`. Keyingi reliz `+49`
+dan davom etadi.
 
 ---
 
