@@ -99,6 +99,9 @@ jobs:
 
       # Apple has refused uploads built with anything older since 2026-04-28.
       # Failing here costs a minute; failing at upload costs the whole build.
+      # From April 2027 the floor is the iOS 27 SDK (Xcode 27): the first upload,
+      # on 2026-11-27, was accepted with warning ITMS-90725 saying so. Raise the
+      # number below then.
       - name: Require Xcode 26 or later
         if: steps.secrets.outputs.configured == 'true'
         run: |

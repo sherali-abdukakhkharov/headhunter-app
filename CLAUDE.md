@@ -344,7 +344,8 @@ things in `core/` or `shared/` when a second feature actually needs them.
 
 `android/app/src/main/kotlin/com/jobbridge/app/MainActivity.kt` carries all
 three on Android, and `ios/Runner/AppDelegate.swift` the same three on iOS
-(2026-11-24; compiled by CI, never run on a device — see the iOS section):
+(2026-11-24; signed and uploaded by CI, never run on a device — see the iOS
+section):
 
 - **`/attachments`** hands a downloaded file to the OS through a `FileProvider`;
 - **`/push`** creates the notification channel FCM posts to, and reads
@@ -480,7 +481,7 @@ Revisit the whole block together when a Flutter release unpins `meta`.
 (3.2.5 caps at <11; the analyzer-12 build is the 3.2.6-dev.1 prerelease). Add
 it when a stable release lands and migrate models then.
 
-## iOS - compiles, never run on a device
+## iOS - uploaded to App Store Connect, never run on a device
 
 **Owner direction 2026-10-12: publish on the App Store.** iOS was out of scope
 from 2026-08-05 until then. **Changed 2026-11-24: the listing goes up under the
@@ -491,13 +492,17 @@ start. The owner's step-by-step guide, in Uzbek, is
 
 The engineering half was written on 2026-11-24 on a machine with no Mac and no
 Xcode. **`ios-build.yml` compiled it unsigned on 2026-11-26** (Xcode 26.6,
-commit `6533203`); it has **never been signed, uploaded or run on an iPhone**.
-`test/ios_project_test.dart` pins what can be pinned from Dart:
+commit `6533203`), and **`ios-release.yml` signed 1.36.0 (47) and uploaded it
+to App Store Connect on 2026-11-27** (run 45995444807). It has **never run on
+an iPhone**. `test/ios_project_test.dart` pins what can be pinned from Dart:
 
 - Bundle id **`com.jobbridge.app`**, the Android production id (it was still the
   pre-rename `com.headhunter.app`); display name JobBridge; **iPhone only**;
   **iOS 15** (Firebase's SDK requires it). The project uses **Swift Package
   Manager**, not CocoaPods — there is no Podfile, and that is not an omission.
+  One plugin, `flutter_secure_storage`, has no SwiftPM support yet, so the build
+  still runs `pod install` for it on the runner and warns that this "will
+  become an error in a future version of Flutter".
 - **The three MethodChannels are in `ios/Runner/AppDelegate.swift`**, in a
   `JobBridgeChannels` class registered from `didInitializeImplicitFlutterEngine`.
   The test holds their names, methods and error codes equal to `MainActivity.kt`.
@@ -510,9 +515,13 @@ commit `6533203`); it has **never been signed, uploaded or run on an iPhone**.
   Flutter's PNG encoder always writes one. It reads the mark from `hh_brand.dart`,
   and `--compare docs/store/icon-512.png` checks it against the Flutter render.
 - `ios-build.yml` compiles unsigned on changes to `ios/` and the pubspec;
-  `ios-release.yml` signs and uploads to TestFlight on a `v*` tag, and **skips
-  green until the App Store Connect secrets exist** — so its signing half has
-  never run.
+  `ios-release.yml` signs and uploads to TestFlight on a `v*` tag or by hand.
+  Its five secrets exist since 2026-11-27. The API key creates the distribution
+  certificate and the App Store profile itself, and **the profile takes its
+  capabilities from the App ID** — the first run failed because Push
+  Notifications was not ticked there, not because of anything in `ios/`.
+- **From April 2027 App Store Connect requires the iOS 27 SDK** (ITMS-90725,
+  warned on the first upload); raise the workflow's Xcode floor to 27 then.
 - iOS cannot be built on the Windows machine. A macOS runner is the only check —
   say plainly in a commit what it did not compile.
 - Keep Dart cross-platform, as before. No Android-only concessions in `lib/`.

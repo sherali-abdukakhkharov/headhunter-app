@@ -185,6 +185,8 @@ enrollment** → shu Apple Account bilan kiring.
 - Description: `JobBridge`
 - Bundle ID: **Explicit** → `com.jobbridge.app`
 - Capabilities: faqat **Push Notifications** ni belgilang. Boshqasini emas.
+  Belgilanmasa, build "Provisioning profile doesn't include the Push
+  Notifications capability" bilan yiqiladi (2026-11-27 da shunday bo'lgan).
 
 → **Continue** → **Register**.
 
@@ -410,10 +412,11 @@ mamlakatidan tashqari hammasi** (yoki faqat O'zbekiston).
 
 ## 8. iOS kodini tayyorlash 🛠
 
-**2026-11-26 holati: kod yozildi va CI'da kompilyatsiya bo'ldi**
-(`ios-build.yml`, Xcode 26.6, imzosiz). Lekin hali **imzolanmagan,
-TestFlight'ga yuklanmagan va iPhone'da ishga tushirilmagan**. Dart'dan
-tekshirsa bo'ladigan narsalar `test/ios_project_test.dart`'da qotirilgan.
+**2026-11-27 holati: birinchi imzolangan build — `1.36.0 (47)` — App Store
+Connect'ga yuklandi** (`ios-release.yml`, Mac'siz). Kod 2026-11-26 da CI'da
+imzosiz kompilyatsiya bo'lgan edi. **iPhone'da hali ishga tushirilmagan.**
+Dart'dan tekshirsa bo'ladigan narsalar `test/ios_project_test.dart`'da
+qotirilgan.
 
 **Qilindi:**
 
@@ -444,11 +447,16 @@ tekshirsa bo'ladigan narsalar `test/ios_project_test.dart`'da qotirilgan.
    Ikkalasi ham eng yangi barqaror Xcode'ni tanlaydi; reliz Xcode 26 dan
    eskisini rad etadi.
 
+7. **Birinchi imzolangan build — 2026-11-27.** CI API kaliti orqali
+   distribution sertifikati va provisioning profile'ni o'zi yaratdi, IPA'ni
+   imzoladi va yukladi. Birinchi urinish yiqildi: App ID'da **Push
+   Notifications belgilanmagan** edi, profile esa imkoniyatlarni App ID'dan
+   oladi ("Provisioning profile doesn't include the Push Notifications
+   capability"). Belgilangach, qayta ishga tushirish kifoya qildi — kod
+   o'zgarmadi.
+
 **Qolgan ishlar:**
 
-7. **Birinchi imzolangan build va TestFlight.** Imzosiz kompilyatsiya
-   2026-11-26 da o'tdi. Imzolash (`codemagic-cli-tools`, App Manager kaliti)
-   Apple akkaunti va 6.5'dagi secret'lar paydo bo'lgandagina sinaladi.
 8. **Support sahifasi:** App Store **Support URL** talab qiladi. Backend'da
    faqat `/privacy` va `/account/delete` bor. `https://hh.qitmir.uz/support`
    ni xuddi shu `legal` moduli orqali qo'shish kerak (aloqa email'i, hisobni
@@ -463,6 +471,12 @@ tekshirsa bo'ladigan narsalar `test/ios_project_test.dart`'da qotirilgan.
     nomlangan kalitni qo'shish. Ilova fayllarni faqat hujjat tanlagich orqali
     oladi (rasm galereyasi ishlatilmaydi), shuning uchun oldindan hech narsa
     qo'shilmadi: ishlatilmaydigan ruxsat uchun matn yozish noto'g'ri bo'lardi.
+11. **2027-yil aprelidan iOS 27 SDK (Xcode 27) majburiy.** Birinchi yuklash
+    ITMS-90725 ogohlantirishi bilan qabul qilindi. Shu paytgacha
+    `ios-release.yml`'dagi Xcode chegarasini 27 ga ko'tarish kerak.
+12. **`flutter_secure_storage` hali Swift Package Manager'ni qo'llamaydi**, shuning
+    uchun build u uchun CocoaPods ishlatadi. Hozir bu ogohlantirish; Flutter
+    keyinroq uni xatoga aylantiradi — paket yangilanishini kuzatib boring.
 
 **Versiya:** `pubspec.yaml`'dagi `version` iOS'da ham ishlatiladi
 (`1.36.0+47` → `CFBundleShortVersionString` `1.36.0`, `CFBundleVersion` `47`).
@@ -629,15 +643,17 @@ xabarlar bor — transfer oldidan Apple Developer Support'dan tasdiqlab oling.
 ## Qisqa nazorat ro'yxati
 
 👤 **Siz:**
-- [ ] Alohida email, Visa/Mastercard (xalqaro to'lov ochiq), iloji bo'lsa iPhone
-- [ ] Apple Account (pasportdagi ism, region Uzbekistan, 2FA)
-- [ ] Developer Program — Individual, $99, auto-renew
-- [ ] Team ID → dasturchiga
+- [x] Alohida email, Visa/Mastercard (xalqaro to'lov ochiq), iloji bo'lsa iPhone
+- [x] Apple Account (pasportdagi ism, region Uzbekistan, 2FA)
+- [x] Developer Program — Individual, $99, auto-renew (Free Apps shartnomasi
+  2026-11-26 dan faol)
+- [x] Team ID → dasturchiga
 - [ ] DSA: not a trader (EI'da tarqatilmaydi)
-- [ ] App ID `com.jobbridge.app` + Push Notifications
-- [ ] APNs `.p8` → Firebase; Firebase iOS app → `GoogleService-Info.plist`
-- [ ] App Store Connect API kaliti (App Manager) → GitHub secrets
-- [ ] App Store Connect'da "JobBridge" yozuvi
+- [x] App ID `com.jobbridge.app` + Push Notifications
+- [x] APNs `.p8` → Firebase; Firebase iOS app → `GoogleService-Info.plist`
+- [x] App Store Connect API kaliti (App Manager) → GitHub secrets (beshtasi
+  2026-11-27 da qo'yildi)
+- [x] App Store Connect'da "JobBridge" yozuvi
 - [ ] 12-bo'lim qarorlari
 - [ ] Matnlar, skrinshotlar, App Privacy, yosh reytingi, mamlakatlar
 - [ ] Yuborish kuni: server ishlayapti, real vakansiyalar bor
@@ -650,7 +666,7 @@ xabarlar bor — transfer oldidan Apple Developer Support'dan tasdiqlab oling.
 - [x] Info.plist kalitlari
 - [x] CI: kompilyatsiya tekshiruvi va imzolangan build → TestFlight
 - [x] Birinchi `ios-build.yml` — 2026-11-26 da yashil (Xcode 26.6)
-- [ ] Birinchi imzolangan build → TestFlight (Apple akkauntidan keyin)
+- [x] Birinchi imzolangan build → App Store Connect — 2026-11-27, `1.36.0 (47)`
 - [ ] `/support` sahifasi (backend)
 - [ ] Maxfiylik siyosatiga iOS (advokat ko'rgandan keyin)
 - [ ] TestFlight QA, skrinshotlar
