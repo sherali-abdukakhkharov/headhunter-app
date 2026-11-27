@@ -1,0 +1,161 @@
+# Takes the App Store screenshots on an iOS simulator, against the production
+# API with the seeded demo accounts, and uploads them as an artifact.
+#
+# Run by hand from the Actions tab, or:
+#   gh workflow run ios-screenshots.yml --ref main
+# or by pushing a branch called ios-screenshots, which is how a change to this
+# file or to test_driver/ is tried before it reaches main: GitHub dispatches
+# only workflows that already exist on the default branch.
+#
+# The scenes are docs/STORE_SCREENSHOTS_BRIEF.md's eight; the script that takes
+# them is test_driver/screenshots.dart. The default simulator's screen is
+# 1320 x 2868, the 6.9-inch size App Store Connect scales every smaller iPhone
+# from (docs/APP_STORE.md, section 7.3), and the job refuses any other size
+# rather than uploading pictures the listing would reject.
+#
+# ## A debug build, and why that is fine for a photograph
+#
+# The simulator runs only debug builds. The pixels are the same widgets in the
+# same theme; what differs is speed, which a photograph does not show. The
+# Dart side is told FLAVOR=production, so no development surface is
+# registered, and MaterialApp's debug banner is off in every build.
+#
+# ## No secrets
+#
+# Push is disabled in test_driver/app.dart, so GoogleService-Info.plist is not
+# restored and the debug build only warns about its absence. The accounts'
+# codes are published (headhunter-backend docs/TEST_ACCOUNTS.md) and send no
+# SMS.
+name: ios-screenshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      locales:
+        description: Interface variants, comma-separated (en, ru, uz-Latn, uz-Cyrl)
+        default: en,ru,uz-Latn
+      device:
+        description: Simulator to photograph on
+        default: iPhone 17 Pro Max
+      size:
+        description: The screen size the pictures must come out at
+        default: 1320x2868
+  push:
+    branches:
+      - ios-screenshots
+
+concurrency:
+  group: ios-screenshots
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.44.8
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # The newest iOS runtime that has the device, booted in light mode with
+      # Apple's own marketing status bar: 9:41, full battery, full bars, no
+      # carrier name.
+      - name: Boot the simulator
+        id: simulator
+        env:
+          DEVICE: ${{ inputs.device || 'iPhone 17 Pro Max' }}
+        run: |
+          udid=$(xcrun simctl list devices available --json | /usr/bin/python3 -c '
+          import json, os, sys
+          wanted = os.environ["DEVICE"]
+          best = None
+          for runtime, devices in json.load(sys.stdin)["devices"].items():
+              if ".iOS-" not in runtime:
+                  continue
+              version = tuple(int(p) for p in runtime.split(".iOS-")[1].split("-"))
+              for device in devices:
+                  if device["name"] == wanted and (best is None or version > best[0]):
+                      best = (version, device["udid"])
+          print(best[1] if best else "")
+          ')
+          if [ -z "$udid" ]; then
+            echo "::error::No available simulator is called '$DEVICE'. These are:"
+            xcrun simctl list devices available
+            exit 1
+          fi
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          xcrun simctl ui "$udid" appearance light
+          xcrun simctl status_bar "$udid" override \
+            --time 9:41 \
+            --dataNetwork wifi --wifiMode active --wifiBars 3 \
+            --cellularMode active --cellularBars 4 --operatorName '' \
+            --batteryState charged --batteryLevel 100
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+
+      - name: Take the screenshots
+        env:
+          SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
+          SCREENSHOT_DIR: ${{ github.workspace }}/screenshots
+          SCREENSHOT_LOCALES: ${{ inputs.locales || 'en,ru,uz-Latn' }}
+          API_URL: ${{ vars.API_BASE_URL }}
+        run: |
+          flutter drive \
+            --target=test_driver/app.dart \
+            --driver=test_driver/screenshots.dart \
+            -d "$SIMULATOR_UDID" \
+            --dart-define=FLAVOR=production \
+            ${API_URL:+--dart-define=API_BASE_URL=$API_URL}
+
+      # App Store Connect refuses a picture of the wrong size or with an alpha
+      # channel, and says so only after the upload.
+      - name: Check every picture
+        env:
+          SIZE: ${{ inputs.size || '1320x2868' }}
+        run: |
+          status=0
+          for f in screenshots/*/*.png; do
+            case "$f" in screenshots/failures/*) continue ;; esac
+            w=$(sips -g pixelWidth "$f" | awk '/pixelWidth/ {print $2}')
+            h=$(sips -g pixelHeight "$f" | awk '/pixelHeight/ {print $2}')
+            alpha=$(sips -g hasAlpha "$f" | awk '/hasAlpha/ {print $2}')
+            echo "$f ${w}x${h} alpha=$alpha"
+            if [ "${w}x${h}" != "$SIZE" ]; then
+              echo "::error file=$f::${w}x${h}, not $SIZE"
+              status=1
+            fi
+            if [ "$alpha" = "yes" ]; then
+              # Dropped losslessly: a screen has nothing transparent to lose.
+              # sips cannot do this without a detour through JPEG.
+              if [ ! -x "$RUNNER_TEMP/venv/bin/python" ]; then
+                python3 -m venv "$RUNNER_TEMP/venv"
+                "$RUNNER_TEMP/venv/bin/pip" install --quiet pillow
+              fi
+              "$RUNNER_TEMP/venv/bin/python" -c 'import sys; from PIL import Image; Image.open(sys.argv[1]).convert("RGB").save(sys.argv[1])' "$f"
+              echo "  alpha removed: $(sips -g hasAlpha "$f" | awk '/hasAlpha/ {print $2}')"
+            fi
+          done
+          exit $status
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-store-screenshots
+          path: screenshots/
+          if-no-files-found: warn

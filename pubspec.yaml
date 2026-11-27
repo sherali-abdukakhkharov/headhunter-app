@@ -119,6 +119,14 @@ dev_dependencies:
   # Codegen.
   build_runner: ">=2.4.0 <2.15.2"
 
+  # Drives the app on the iOS simulator for the App Store screenshots
+  # (test_driver/, .github/workflows/ios-screenshots.yml). Part of the SDK and
+  # pure Dart: it registers no plugin, so it adds nothing to either native
+  # project and does not lengthen the list in CLAUDE.md. integration_test was
+  # the alternative and is a plugin on both platforms.
+  flutter_driver:
+    sdk: flutter
+
   flutter_test:
     sdk: flutter
 
