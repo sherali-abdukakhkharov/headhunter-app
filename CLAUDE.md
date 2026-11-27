@@ -532,6 +532,14 @@ an iPhone**. `test/ios_project_test.dart` pins what can be pinned from Dart:
   e-mail, about an hour later, and the build never appears in TestFlight.
 - **From April 2027 App Store Connect requires the iOS 27 SDK** (ITMS-90725,
   warned on the first upload); raise the workflow's Xcode floor to 27 then.
+- **The App Store screenshots come from `ios-screenshots.yml`** (2026-11-27):
+  an iPhone 17 Pro Max simulator, `test_driver/` driving the brief's eight
+  scenes, and a **throwaway backend on the runner** seeded with the demo world —
+  never production, which has had only the reviewer accounts since 2026-10-08
+  and so shows empty screens. `tool/fake_telegram.mjs` stands in for the file
+  store. `flutter_driver` is the SDK package and registers no plugin.
+  Dispatch needs the workflow on main; until then, push a branch named
+  `ios-screenshots`.
 - iOS cannot be built on the Windows machine. A macOS runner is the only check —
   say plainly in a commit what it did not compile.
 - Keep Dart cross-platform, as before. No Android-only concessions in `lib/`.

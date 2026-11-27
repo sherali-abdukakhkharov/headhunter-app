@@ -344,10 +344,23 @@ metadata tiliga bog'liq emas.
   1-band).
 - **Android skrinshotlarini ishlatmang.** Android status bar yoki navigatsiya
   tugmalari ko'rinsa — Guideline 2.3.10 bo'yicha rad etiladi.
-- Qayerdan olinadi: TestFlight'dagi build'dan **iPhone 15/16/17 Pro Max**'da
-  (yon tugma + ovoz balandligi), yoki dasturchi CI'dagi simulator'dan
-  oladi. Sahnalar — [STORE_SCREENSHOTS_BRIEF.md](STORE_SCREENSHOTS_BRIEF.md),
-  seed qilingan test akkauntlari bilan.
+- **Tayyor (2026-11-27):**
+  [`docs/store/app-store-screenshots/`](store/app-store-screenshots/) —
+  `en/` English lokalizatsiyaga, `ru/` Russian'ga, har birida 8 ta,
+  1320 × 2868, alpha'siz. `uz-Latn/` ham bor, agar inglizcha sahifada o'zbekcha
+  interfeysni ko'rsatmoqchi bo'lsangiz. Yuklashdan oldin
+  [notes.md](store/app-store-screenshots/notes.md)'dagi "Worth a look" bandini
+  o'qing.
+- Ular **`ios-screenshots.yml`** workflow'idan chiqadi: CI'da iPhone 17 Pro Max
+  simulator, Apple'ning 9:41 status bar'i, sahnalar
+  [STORE_SCREENSHOTS_BRIEF.md](STORE_SCREENSHOTS_BRIEF.md)'dagi sakkizta.
+  **Production'dan olinmaydi** — u yerda 2026-10-08 dan beri faqat reviewer
+  akkauntlari bor (vakansiya ham, ariza ham yo'q). Workflow runner'ning o'zida
+  vaqtinchalik backend ko'tarib, to'liq demo seed bilan suratga oladi. Ilova
+  yangilansa: GitHub → Actions → **ios-screenshots** → Run workflow, keyin
+  artifact'ni yuklab oling.
+- iPhone'da qo'lda olish ham mumkin, lekin production'da demo ma'lumot
+  yo'qligi sababli ekranlar bo'sh chiqadi.
 
 ### 7.4 App Privacy ("nutrition label")
 
@@ -668,4 +681,4 @@ xabarlar bor — transfer oldidan Apple Developer Support'dan tasdiqlab oling.
 - [x] Birinchi imzolangan build → App Store Connect — 2026-11-27, `1.36.0 (47)`
 - [ ] `/support` sahifasi (backend)
 - [ ] Maxfiylik siyosatiga iOS (advokat ko'rgandan keyin)
-- [ ] TestFlight QA, skrinshotlar
+- [ ] TestFlight QA, skrinshotlar (skrinshotlar tayyor, 2026-11-27 — 7.3)

@@ -1,5 +1,11 @@
 # Brief for the tester taking the Google Play screenshots
 
+*The App Store set is not taken by hand: `.github/workflows/ios-screenshots.yml`
+drives these same eight scenes on an iOS simulator (`test_driver/screenshots.dart`)
+against a throwaway backend seeded with the demo world, because production has
+carried only the reviewer accounts since 2026-10-08. Change a scene here and
+there together. Output and notes: `docs/store/app-store-screenshots/`.*
+
 *Hand everything below this line to the tester (a person with an Android phone,
 or an agent driving one). It is self-contained. Do not start before the
 engineering team confirms that the demo data has been refreshed — the employer
