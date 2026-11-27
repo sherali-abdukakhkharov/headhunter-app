@@ -1,5 +1,5 @@
-# Takes the App Store screenshots on an iOS simulator, against the production
-# API with the seeded demo accounts, and uploads them as an artifact.
+# Takes the App Store screenshots on an iOS simulator and uploads them as an
+# artifact.
 #
 # Run by hand from the Actions tab, or:
 #   gh workflow run ios-screenshots.yml --ref main
@@ -13,6 +13,18 @@
 # from (docs/APP_STORE.md, section 7.3), and the job refuses any other size
 # rather than uploading pictures the listing would reject.
 #
+# ## Against a throwaway backend, never production
+#
+# The pictures need the full demo world - vacancies, applications, a chat - and
+# production must not have it: since 2026-10-08 it carries only the reviewer
+# accounts, because the full world's vacancies reach real job seekers and its
+# candidates can be unlocked for real Coins (headhunter-backend
+# docs/TEST_ACCOUNTS.md, "Before a public launch"). So this job runs its own:
+# headhunter-backend from GitHub, its own Postgres, `pnpm seed` and
+# `pnpm seed:demo`, on this runner's loopback, where the simulator reaches it
+# directly. Uploaded files go to tool/fake_telegram.mjs instead of a real bot.
+# Nothing leaves the runner, and the deadlines are fresh on every run.
+#
 # ## A debug build, and why that is fine for a photograph
 #
 # The simulator runs only debug builds. The pixels are the same widgets in the
@@ -23,9 +35,9 @@
 # ## No secrets
 #
 # Push is disabled in test_driver/app.dart, so GoogleService-Info.plist is not
-# restored and the debug build only warns about its absence. The accounts'
-# codes are published (headhunter-backend docs/TEST_ACCOUNTS.md) and send no
-# SMS.
+# restored and the debug build only warns about its absence. The backend runs
+# on .env.example's development values, and the accounts sign in with their
+# published fixed codes.
 name: ios-screenshots
 
 on:
@@ -40,6 +52,9 @@ on:
       size:
         description: The screen size the pictures must come out at
         default: 1320x2868
+      backend-ref:
+        description: headhunter-backend branch or tag to seed the demo world from
+        default: feat/m1-auth
   push:
     branches:
       - ios-screenshots
@@ -57,9 +72,57 @@ permissions:
 jobs:
   screenshots:
     runs-on: macos-latest
-    timeout-minutes: 60
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
+
+      # Public, so no token. feat/m1-auth is what production runs.
+      - uses: actions/checkout@v4
+        with:
+          repository: sherali-abdukakhkharov/headhunter-backend
+          ref: ${{ inputs.backend-ref || 'feat/m1-auth' }}
+          path: backend
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # .env.example's own connection values, so the file needs no edit. 17
+      # rather than production's 18: the migrations need 15 (NULLS NOT
+      # DISTINCT) and nothing newer.
+      - uses: ikalnytskyi/action-setup-postgres@v7
+        with:
+          username: headhunter
+          password: local_dev_password
+          database: headhunter
+          port: 5435
+          postgres-version: '17'
+
+      - name: Start the backend with the demo world
+        working-directory: backend
+        # Environment beats .env for both dotenv and Nest's ConfigModule.
+        env:
+          TELEGRAM_API_BASE_URL: http://127.0.0.1:8081
+          LOG_LEVEL: info
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+          cp .env.example .env
+
+          nohup node ../tool/fake_telegram.mjs > ../fake-telegram.log 2>&1 &
+
+          pnpm migrate:latest
+          pnpm seed
+          pnpm seed:demo
+
+          nohup node dist/main > ../backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:3001/health; then echo; exit 0; fi
+            sleep 2
+          done
+          echo "::error::The backend did not answer /health in two minutes"
+          tail -100 ../backend.log
+          exit 1
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -74,8 +137,8 @@ jobs:
       - run: flutter pub get
 
       # The newest iOS runtime that has the device, booted in light mode with
-      # Apple's own marketing status bar: 9:41, full battery, full bars, no
-      # carrier name.
+      # Apple's own marketing status bar: 9:41, a full battery that is not
+      # charging, full bars, no carrier name.
       - name: Boot the simulator
         id: simulator
         env:
@@ -106,52 +169,55 @@ jobs:
             --time 9:41 \
             --dataNetwork wifi --wifiMode active --wifiBars 3 \
             --cellularMode active --cellularBars 4 --operatorName '' \
-            --batteryState charged --batteryLevel 100
+            --batteryState discharging --batteryLevel 100
           echo "udid=$udid" >> "$GITHUB_OUTPUT"
 
+      # The simulator shares the Mac's network, so the runner's loopback is
+      # the app's too. Plain http to loopback is allowed by dart:io whatever
+      # Info.plist says.
       - name: Take the screenshots
         env:
           SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
           SCREENSHOT_DIR: ${{ github.workspace }}/screenshots
           SCREENSHOT_LOCALES: ${{ inputs.locales || 'en,ru,uz-Latn' }}
-          API_URL: ${{ vars.API_BASE_URL }}
         run: |
           flutter drive \
             --target=test_driver/app.dart \
             --driver=test_driver/screenshots.dart \
             -d "$SIMULATOR_UDID" \
             --dart-define=FLAVOR=production \
-            ${API_URL:+--dart-define=API_BASE_URL=$API_URL}
+            --dart-define=API_BASE_URL=http://127.0.0.1:3001
 
       # App Store Connect refuses a picture of the wrong size or with an alpha
-      # channel, and says so only after the upload.
+      # channel, and says so only after the upload. simctl writes RGBA.
       - name: Check every picture
         env:
           SIZE: ${{ inputs.size || '1320x2868' }}
         run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet pillow
           status=0
           for f in screenshots/*/*.png; do
             case "$f" in screenshots/failures/*) continue ;; esac
+            # Dropped losslessly: a screen has nothing transparent to lose.
+            # sips cannot do this without a detour through JPEG.
+            "$RUNNER_TEMP/venv/bin/python" -c 'import sys; from PIL import Image; Image.open(sys.argv[1]).convert("RGB").save(sys.argv[1])' "$f"
             w=$(sips -g pixelWidth "$f" | awk '/pixelWidth/ {print $2}')
             h=$(sips -g pixelHeight "$f" | awk '/pixelHeight/ {print $2}')
             alpha=$(sips -g hasAlpha "$f" | awk '/hasAlpha/ {print $2}')
             echo "$f ${w}x${h} alpha=$alpha"
-            if [ "${w}x${h}" != "$SIZE" ]; then
-              echo "::error file=$f::${w}x${h}, not $SIZE"
+            if [ "${w}x${h}" != "$SIZE" ] || [ "$alpha" != "no" ]; then
+              echo "::error file=$f::${w}x${h}, alpha=$alpha; App Store Connect wants $SIZE with no alpha"
               status=1
-            fi
-            if [ "$alpha" = "yes" ]; then
-              # Dropped losslessly: a screen has nothing transparent to lose.
-              # sips cannot do this without a detour through JPEG.
-              if [ ! -x "$RUNNER_TEMP/venv/bin/python" ]; then
-                python3 -m venv "$RUNNER_TEMP/venv"
-                "$RUNNER_TEMP/venv/bin/pip" install --quiet pillow
-              fi
-              "$RUNNER_TEMP/venv/bin/python" -c 'import sys; from PIL import Image; Image.open(sys.argv[1]).convert("RGB").save(sys.argv[1])' "$f"
-              echo "  alpha removed: $(sips -g hasAlpha "$f" | awk '/hasAlpha/ {print $2}')"
             fi
           done
           exit $status
+
+      - name: Keep the server logs with the pictures
+        if: always()
+        run: |
+          mkdir -p screenshots/logs
+          cp backend.log fake-telegram.log screenshots/logs/ 2>/dev/null || true
 
       - uses: actions/upload-artifact@v4
         if: always()
