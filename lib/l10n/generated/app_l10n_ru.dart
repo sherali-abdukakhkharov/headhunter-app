@@ -1297,8 +1297,7 @@ class AppL10nRu extends AppL10n {
   String get walletTopUp => 'Пополнить';
 
   @override
-  String get walletTopUpUnavailable =>
-      'Пополнение пока недоступно. Оно появится вместе с поддержкой Payme и CLICK.';
+  String get walletTopUpUnavailable => 'Пополнение пока недоступно.';
 
   @override
   String get walletActivity => 'Последние операции';

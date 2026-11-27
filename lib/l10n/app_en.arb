@@ -1643,9 +1643,9 @@
   "@walletTopUp": {
     "description": "§6.2's Top up action, which opens §6.7's Payme / CLICK checkout."
   },
-  "walletTopUpUnavailable": "Top-up is not available yet. It arrives with Payme and CLICK support.",
+  "walletTopUpUnavailable": "Top-up is not available yet.",
   "@walletTopUpUnavailable": {
-    "description": "Shown when Top up is tapped before M13 ships. An honest sentence rather than a dead button: a control that does nothing reads as a broken app, and the ten free Coins mean nobody is stuck."
+    "description": "Shown when Top up is tapped before M13 ships. An honest sentence rather than a dead button: a control that does nothing reads as a broken app, and the ten free Coins mean nobody is stuck. It named Payme and CLICK until 2026-11-27; the names were dropped by owner direction because App Review reads a named outside payment method as steering away from In-App Purchase (Guideline 3.1.1)."
   },
   "walletActivity": "Recent activity",
   "@walletActivity": {

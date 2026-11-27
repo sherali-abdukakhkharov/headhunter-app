@@ -363,7 +363,7 @@
   "walletUnlockPriceLabel": "Nomzod kontaktlarini ochish",
   "walletRegistrationBonusOn": "Ro'yxatdan o'tish bonusi berildi: {date}",
   "walletTopUp": "To'ldirish",
-  "walletTopUpUnavailable": "To'ldirish hozircha mavjud emas. U Payme va CLICK qo'llab-quvvatlashi bilan birga keladi.",
+  "walletTopUpUnavailable": "To'ldirish hozircha mavjud emas.",
   "walletActivity": "So'nggi operatsiyalar",
   "walletActivityEmpty": "Bu hamyonda hali hech qanday harakat bo'lmagan. Kirim ham, chiqim ham shu yerda ko'rinadi va biror yozuv hech qachon o'chirilmaydi.",
   "walletBalanceAfter": "Balans {count}",

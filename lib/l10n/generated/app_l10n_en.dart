@@ -1284,8 +1284,7 @@ class AppL10nEn extends AppL10n {
   String get walletTopUp => 'Top up';
 
   @override
-  String get walletTopUpUnavailable =>
-      'Top-up is not available yet. It arrives with Payme and CLICK support.';
+  String get walletTopUpUnavailable => 'Top-up is not available yet.';
 
   @override
   String get walletActivity => 'Recent activity';

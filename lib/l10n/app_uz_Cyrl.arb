@@ -363,7 +363,7 @@
   "walletUnlockPriceLabel": "Номзод контактларини очиш",
   "walletRegistrationBonusOn": "Рўйхатдан ўтиш бонуси берилди: {date}",
   "walletTopUp": "Тўлдириш",
-  "walletTopUpUnavailable": "Тўлдириш ҳозирча мавжуд эмас. У Payme ва CLICK қўллаб-қувватлаши билан бирга келади.",
+  "walletTopUpUnavailable": "Тўлдириш ҳозирча мавжуд эмас.",
   "walletActivity": "Сўнгги операциялар",
   "walletActivityEmpty": "Бу ҳамёнда ҳали ҳеч қандай ҳаракат бўлмаган. Кирим ҳам, чиқим ҳам шу ерда кўринади ва бирор ёзув ҳеч қачон ўчирилмайди.",
   "walletBalanceAfter": "Баланс {count}",

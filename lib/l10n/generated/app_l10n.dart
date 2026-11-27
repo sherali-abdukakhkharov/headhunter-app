@@ -2279,10 +2279,10 @@ abstract class AppL10n {
   /// **'Top up'**
   String get walletTopUp;
 
-  /// Shown when Top up is tapped before M13 ships. An honest sentence rather than a dead button: a control that does nothing reads as a broken app, and the ten free Coins mean nobody is stuck.
+  /// Shown when Top up is tapped before M13 ships. An honest sentence rather than a dead button: a control that does nothing reads as a broken app, and the ten free Coins mean nobody is stuck. It named Payme and CLICK until 2026-11-27; the names were dropped by owner direction because App Review reads a named outside payment method as steering away from In-App Purchase (Guideline 3.1.1).
   ///
   /// In en, this message translates to:
-  /// **'Top-up is not available yet. It arrives with Payme and CLICK support.'**
+  /// **'Top-up is not available yet.'**
   String get walletTopUpUnavailable;
 
   /// Heading over the Coin ledger (§6.2 "recent wallet activity").

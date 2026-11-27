@@ -1275,8 +1275,7 @@ class AppL10nUz extends AppL10n {
   String get walletTopUp => 'To\'ldirish';
 
   @override
-  String get walletTopUpUnavailable =>
-      'To\'ldirish hozircha mavjud emas. U Payme va CLICK qo\'llab-quvvatlashi bilan birga keladi.';
+  String get walletTopUpUnavailable => 'To\'ldirish hozircha mavjud emas.';
 
   @override
   String get walletActivity => 'So\'nggi operatsiyalar';
@@ -4675,8 +4674,7 @@ class AppL10nUzCyrl extends AppL10nUz {
   String get walletTopUp => 'Тўлдириш';
 
   @override
-  String get walletTopUpUnavailable =>
-      'Тўлдириш ҳозирча мавжуд эмас. У Payme ва CLICK қўллаб-қувватлаши билан бирга келади.';
+  String get walletTopUpUnavailable => 'Тўлдириш ҳозирча мавжуд эмас.';
 
   @override
   String get walletActivity => 'Сўнгги операциялар';
@@ -8065,8 +8063,7 @@ class AppL10nUzLatn extends AppL10nUz {
   String get walletTopUp => 'To\'ldirish';
 
   @override
-  String get walletTopUpUnavailable =>
-      'To\'ldirish hozircha mavjud emas. U Payme va CLICK qo\'llab-quvvatlashi bilan birga keladi.';
+  String get walletTopUpUnavailable => 'To\'ldirish hozircha mavjud emas.';
 
   @override
   String get walletActivity => 'So\'nggi operatsiyalar';

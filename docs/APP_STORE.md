@@ -488,7 +488,7 @@ qotirilgan.
 Build raqami har yuklashda oshishi shart — reliz jarayoni allaqachon shunday
 ([CHANGELOG.md](../CHANGELOG.md)). Rad etilgan build ham o'z raqamini band
 qiladi. Shuning uchun tegsiz, faqat iOS uchun qayta yuklashda ham `pubspec.yaml`
-dagi raqam oshiriladi: 2026-11-27 da `1.36.0+47` → `+48`. Keyingi reliz `+49`
+dagi raqam oshiriladi: 2026-11-27 da `1.36.0+47` → `+48`, keyin Top up matni uchun `+49`. Keyingi reliz `+50`
 dan davom etadi.
 
 ---
@@ -522,7 +522,7 @@ dan davom etadi.
 
 | # | Xavf | Guideline | Holat | Nima qilish kerak |
 |---|---|---|---|---|
-| 1 | **"Top up" tugmasi "Payme va CLICK bilan keladi" deydi** | 3.1.1 (tashqi to'lovga yo'naltirish), 2.1 (tugallanmagan funksiya) | Android'da owner qarori bilan aynan shunday qoldirilgan (2026-08-28) | **Owner qarori** (12-bo'lim, 1). |
+| 1 | **"Top up" tugmasi "Payme va CLICK bilan keladi" degan edi** | 3.1.1 (tashqi to'lovga yo'naltirish), 2.1 (tugallanmagan funksiya) | ✅ **Hal qilindi, 2026-11-27 (owner qarori):** matn endi faqat "To'ldirish hozircha mavjud emas" deydi — to'rt variantda, ikkala platformada | Hech narsa. Build 49 dan boshlab. |
 | 2 | **Coin sotuvi** | 3.1.1 | Hozir sotuv yo'q, Coin faqat bepul ro'yxatdan o'tish bonusi | Launch'ni bloklamaydi. Sotuv boshlansa iOS'da **faqat In-App Purchase** (Payme/CLICK emas). Apple Small Business Program'da komissiya 15%. Buning uchun Paid Apps shartnomasi, bank hisobi (USD/SWIFT) va soliq formasi kerak bo'ladi. |
 | 3 | **Bo'sh ilova** | 2.1, 4.2 | Play launch'ida demo ma'lumot o'chirilgan, feed bo'sh edi | Yuborish kuni production'da **real faol vakansiyalar** borligini tekshiring. Bo'sh lenta reviewer'ga "ishlamaydigan ilova" bo'lib ko'rinadi. |
 | 4 | **Server o'chiq bo'lsa** | 2.1 | API bitta Windows mashinada, Cloudflare tunnel orqali | Review paytida (1–3 kun) `https://hh.qitmir.uz/health` `ok` bo'lishi shart. |
@@ -625,17 +625,8 @@ xabarlar bor — transfer oldidan Apple Developer Support'dan tasdiqlab oling.
 
 ## 12. Owner qarorlari kerak
 
-1. **"Top up" matni iOS'da.** Android'da "Payme va CLICK bilan keladi" deb
-   qoldirilgan (2026-08-28 qarori). App Store'da tashqi to'lov tizimini
-   nomlash Guideline 3.1.1 bo'yicha rad etish sababi bo'lishi mumkin.
-   Variantlar:
-   - **a)** Matnni hamma joyda "Hisobni to'ldirish hozircha mavjud emas" ga
-     qisqartirish — Payme/CLICK nomi yo'qoladi, ikkala platforma bir xil
-     qoladi. **Tavsiyam shu.**
-   - **b)** Hozirgidek qoldirish va Notes'da tushuntirish — rad etilish xavfi
-     bilan.
-   - **c)** iOS'da tugmani yashirish — `lib/`'da platformaga xos istisno
-     paydo bo'ladi, loyiha qoidasiga zid.
+1. ~~**"Top up" matni iOS'da.**~~ **Hal qilindi 2026-11-27:** a) varianti —
+   Payme/CLICK nomlari hamma joyda olib tashlandi.
 2. **Mamlakatlar:** EI'siz hamma (tavsiya) yoki faqat O'zbekiston.
 3. **Yosh reytingi va minimal yosh (14+ / 18+):** advokat, Play bilan bir xil.
 4. **Foydalanish shartlari (nol tolerantlik bandi bilan):** hozir

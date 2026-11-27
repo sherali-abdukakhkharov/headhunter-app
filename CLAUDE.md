@@ -163,9 +163,14 @@ device. See `test/core/design/semantics_test.dart`.
   §6.7's checkout needs Payme and CLICK *test merchant credentials*, which the
   client has not supplied; nothing in M13 can be built or demonstrated without
   them. **Owner direction, 2026-08-28: leave the control exactly as it is until
-  the keys arrive.** Not hidden, not removed, not reworded — an employer who
-  taps it is told plainly that top-up arrives with Payme and CLICK, and that is
-  a truthful answer to a question they were right to ask.
+  the keys arrive.** Not hidden and not removed — an employer who taps it is
+  told plainly that top-up is not available yet, and that is a truthful answer
+  to a question they were right to ask.
+  **One amendment, owner direction 2026-11-27: the message no longer names
+  Payme and CLICK**, on every platform. App Review reads a named outside payment
+  method as steering away from In-App Purchase (Guideline 3.1.1), and a coin
+  sale on iOS will have to be In-App Purchase anyway, so the names promised
+  something the iPhone build cannot keep. Do not put them back.
   So **a QA pass should stop filing this**. It has been MT-006 in four
   consecutive audits, each time recommending either "implement it" or "remove
   it": the first is blocked on somebody outside this repository and the second

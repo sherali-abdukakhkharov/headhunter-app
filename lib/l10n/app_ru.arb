@@ -363,7 +363,7 @@
   "walletUnlockPriceLabel": "Доступ к контактам кандидата",
   "walletRegistrationBonusOn": "Бонус за регистрацию начислен {date}",
   "walletTopUp": "Пополнить",
-  "walletTopUpUnavailable": "Пополнение пока недоступно. Оно появится вместе с поддержкой Payme и CLICK.",
+  "walletTopUpUnavailable": "Пополнение пока недоступно.",
   "walletActivity": "Последние операции",
   "walletActivityEmpty": "В этом кошельке пока ничего не происходило. Здесь появляются и начисления, и списания, и ни одна запись никогда не удаляется.",
   "walletBalanceAfter": "Баланс {count}",
