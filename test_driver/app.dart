@@ -86,8 +86,17 @@ Future<String> _handle(ProviderContainer container, String message) async {
       await container.read(localeControllerProvider.notifier).select(locale);
       return locale.tag;
 
+    // Several screens - the vacancy detail among them - are opened with a
+    // plain Navigator.push on the root navigator. Such a route is not one of
+    // the router's pages, so a `go` leaves it on top of whatever it navigated
+    // to, and every later shot photographs it again. Closed first, as a
+    // person would with the back button.
     case 'go':
-      container.read(appRouterProvider).go(arguments.single);
+      final router = container.read(appRouterProvider);
+      router.routerDelegate.navigatorKey.currentState?.popUntil(
+        (route) => route.settings is Page<Object?>,
+      );
+      router.go(arguments.single);
       return 'ok';
 
     case 'location':

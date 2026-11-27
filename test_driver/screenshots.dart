@@ -11,6 +11,7 @@
 // candidate: each set then shows the same data, and the run signs in twice
 // instead of six times. The language is switched on the device only, so the
 // accounts' own languages are untouched (test_driver/app.dart).
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_driver/flutter_driver.dart';
@@ -60,6 +61,18 @@ Future<void> main() async {
   } finally {
     await shots.driver.close();
   }
+}
+
+/// A control's label in [locale], from the ARB the app was built from - the
+/// way to find a button whose words change with the language. Read relative
+/// to the working directory, which `flutter drive` sets to the project root.
+String _arb(String locale, String key) {
+  final file = File('lib/l10n/app_${locale.replaceAll('-', '_')}.arb');
+  final strings = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+  final value = strings[key];
+  if (value is! String) throw StateError('$key is not in ${file.path}');
+
+  return value;
 }
 
 String _env(String name) {
@@ -126,7 +139,13 @@ class _Shots {
     await _go('/employer/home');
     await _shot(locale, '06-employer-home');
 
+    // The tab opens on the query, not the results. Once a search has run the
+    // results replace the button, so a later language finds none to press.
     await _go('/employer/candidates');
+    final search = find.text(_arb(locale, 'searchRun'));
+    if (await _see(search, timeout: const Duration(seconds: 5))) {
+      await driver.tap(search);
+    }
     await _shot(locale, '07-candidates');
 
     // The pipeline is reached through the vacancy, as an employer would, and
@@ -152,17 +171,24 @@ class _Shots {
     await _settle();
   }
 
-  /// Waits for [finder]. A required one fails the run; any other only says it
-  /// was not there, and the picture is taken anyway for a person to judge.
-  Future<void> _see(SerializableFinder finder, {bool required = false}) async {
+  /// Waits for [finder], and says whether it came. A required one fails the
+  /// run; any other only logs, and the picture is taken anyway for a person
+  /// to judge.
+  Future<bool> _see(
+    SerializableFinder finder, {
+    bool required = false,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
     try {
-      await driver.waitFor(finder, timeout: const Duration(seconds: 30));
+      await driver.waitFor(finder, timeout: timeout);
+      return true;
       // DriverError is an Error, but it is what flutter_driver throws for a
       // timeout, and a timeout is the answer being asked for here.
       // ignore: avoid_catching_errors
     } on DriverError catch (error) {
       if (required) rethrow;
       stderr.writeln('Not seen on $_scene: $error');
+      return false;
     }
   }
 
